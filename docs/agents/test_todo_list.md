@@ -41,8 +41,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
-lastReviewedNote: 'Reviewed for Platform #1076 closeout: the reference baseline is intentionally untouched, because this document is a checked-in reference and a delivery's post-commit full-gate counts belong in that delivery's PR evidence. The current state gains one line recording that the SPA-external static inventory now covers the hosted not-found document.'
+lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
+lastReviewedNote: 'Reviewed for Platform #1081: the EdgeOne Pages deploy target in both workflows now names the existing production project, so the release path and the manual CI fallback publish where the public site is actually served. The reference baseline is intentionally untouched, because a delivery's post-commit gate counts belong in that delivery's PR evidence.'
 ---
 
 # Testing Execution State

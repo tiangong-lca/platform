@@ -43,8 +43,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
-lastReviewedNote: 'Reviewed for Platform #1076 closeout: the pre-push contract itself is unchanged. The managed gate stopped at five required testing-document reviews because the inventory correction at 083122a7 touches tests/**; this review records that no exact gate command, scope, target-trigger rule or adoption condition changed, and the managed checked push remains the one owned path with no bypass.'
+lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
+lastReviewedNote: 'Reviewed for Platform #1081: the EdgeOne Pages deploy target in both workflows now names the existing production project, so the release path and the manual CI fallback publish where the public site is actually served. The protected-branch and pre-push rollout contract is unchanged: same gate, same trigger rules, same adoption conditions.'
 ---
 
 # Pre-Push Gate Policy

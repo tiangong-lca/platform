@@ -46,8 +46,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
-lastReviewedNote: 'Reviewed for Platform #1076: the application host keeps an explicit nonindex boundary while crawling stays allowed, so crawlers can read the directive. public/robots.txt is a real text file; public/404.html answers unknown paths instead of the application shell; the shell declares metas robots=noindex so every hash route inherits it; and public/edgeone.json adds X-Robots-Tag for the shell and the consent bridge while preserving the OAuth consent rewrite and its security headers. Live read-only checks recorded /robots.txt returning the shell with the same ETag as / and the three sibling sites on the same host answering 404 for unknown paths; the app is hash-routed, so no valid route depended on that fallback. pnpm lint and the production pnpm build pass, and the built artifacts were inspected. Deployment, provider recrawl and live acceptance remain pending.'
+lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
+lastReviewedNote: 'Reviewed for Platform #1081: the EdgeOne Pages deploy target in both workflows now names the existing production project, so the release path and the manual CI fallback publish where the public site is actually served. No branch rule, ownership boundary, hard boundary or documented command changes, and the project value stays in the workflow rather than being restated here.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

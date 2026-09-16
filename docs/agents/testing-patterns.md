@@ -43,8 +43,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
-lastReviewedNote: 'Reviewed for Platform #1076 closeout: no pattern changes. The correction applies an existing rule - a newly shipped static document must be added to the exact inventory a test asserts, and the discovered set must not drift - so the global rules, helper table and focused command shapes remain accurate as written.'
+lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
+lastReviewedNote: 'Reviewed for Platform #1081: the EdgeOne Pages deploy target in both workflows now names the existing production project, so the release path and the manual CI fallback publish where the public site is actually served. No test-selection or structure pattern changes, and no new test mirrors the constant: no existing suite pins the deploy target.'
 ---
 
 # Testing Patterns Reference

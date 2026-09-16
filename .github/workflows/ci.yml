@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EDGEONE_OUTPUT_DIR: dist
-      EDGEONE_PROJECT_NAME: tiangong-lca-next-upload
+      EDGEONE_PROJECT_NAME: tiangong-lca-platform
       EDGEONE_CLI_VERSION: 1.4.6
 
     steps:

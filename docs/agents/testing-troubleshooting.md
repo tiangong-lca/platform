@@ -40,8 +40,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
-lastReviewedNote: 'Reviewed for Platform #1076 closeout: no recovery path changes. What stopped the push was a governed-document review gate, not a test, coverage or runtime failure, so the focused recovery commands, failure diagnosis and verification sections remain accurate; there is no new failure mode to document.'
+lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
+lastReviewedNote: 'Reviewed for Platform #1081: the EdgeOne Pages deploy target in both workflows now names the existing production project, so the release path and the manual CI fallback publish where the public site is actually served. No recovery path changes; the failure modes this document covers are unaffected by the target value.'
 ---
 
 # Testing Troubleshooting
