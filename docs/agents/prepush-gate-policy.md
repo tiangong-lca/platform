@@ -42,9 +42,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: ccfb4a0cd12e342cd5980a5f53781b1591fe43f7
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution and the unchanged explicit override are characterized with isolated temporary fixtures only.'
+lastReviewedAt: 2026-09-16
+lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
+lastReviewedNote: 'Reviewed for Platform #1076 closeout: the pre-push contract itself is unchanged. The managed gate stopped at five required testing-document reviews because the inventory correction at 083122a7 touches tests/**; this review records that no exact gate command, scope, target-trigger rule or adoption condition changed, and the managed checked push remains the one owned path with no bypass.'
 ---
 
 # Pre-Push Gate Policy

@@ -39,9 +39,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: ccfb4a0cd12e342cd5980a5f53781b1591fe43f7
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution and the unchanged explicit override are characterized with isolated temporary fixtures only.'
+lastReviewedAt: 2026-09-16
+lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
+lastReviewedNote: 'Reviewed for Platform #1076 closeout: no recovery path changes. What stopped the push was a governed-document review gate, not a test, coverage or runtime failure, so the focused recovery commands, failure diagnosis and verification sections remain accurate; there is no new failure mode to document.'
 ---
 
 # Testing Troubleshooting

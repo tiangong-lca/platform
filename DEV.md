@@ -42,9 +42,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: ccfb4a0cd12e342cd5980a5f53781b1591fe43f7
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution and the unchanged explicit override are characterized with isolated temporary fixtures only.'
+lastReviewedAt: 2026-09-16
+lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
+lastReviewedNote: 'Reviewed for Platform #1076: the default work loop now names what a hosting-boundary build must leave behind, so DEV.md agrees with the implemented crawler and unknown-path behavior in public/robots.txt, public/404.html, public/edgeone.json and the shell metas. No bootstrap step, command, prerequisite or release flow changed.'
 ---
 
 # Development Bootstrap
@@ -102,7 +102,7 @@ pnpm e2e:env:doctor
 3. make the scoped change
 4. run focused validation
 5. run `pnpm lint`
-6. run `pnpm build` when the change affects shipped behavior or static assets
+6. run `pnpm build` when the change affects shipped behavior or static assets. A build that touches the hosting boundary must leave `dist/robots.txt` and `dist/404.html` present, the noindex meta in `dist/index.html`, and the OAuth consent rewrite plus its headers in `dist/edgeone.json`
 7. commit the final controlled tracked change and run `pnpm push:checked origin <branch>`; its ordinary hook owns the one full gate. Do not pass a reduced gate profile manually; the deterministic release commands own those restricted profiles.
 
 If no push will occur and a standalone handoff needs final evidence, run `pnpm docpact:gate` and then `pnpm prepush:gate` manually instead. Do not also push the same unchanged checkpoint merely to repeat those gates.

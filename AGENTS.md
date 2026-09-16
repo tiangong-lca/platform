@@ -45,9 +45,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: ccfb4a0cd12e342cd5980a5f53781b1591fe43f7
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution and the unchanged explicit override are characterized with isolated temporary fixtures only.'
+lastReviewedAt: 2026-09-16
+lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
+lastReviewedNote: 'Reviewed for Platform #1076: the application host keeps an explicit nonindex boundary while crawling stays allowed, so crawlers can read the directive. public/robots.txt is a real text file; public/404.html answers unknown paths instead of the application shell; the shell declares metas robots=noindex so every hash route inherits it; and public/edgeone.json adds X-Robots-Tag for the shell and the consent bridge while preserving the OAuth consent rewrite and its security headers. Live read-only checks recorded /robots.txt returning the shell with the same ETag as / and the three sibling sites on the same host answering 404 for unknown paths; the app is hash-routed, so no valid route depended on that fallback. pnpm lint and the production pnpm build pass, and the built artifacts were inspected. Deployment, provider recrawl and live acceptance remain pending.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -142,6 +142,7 @@ Do not start from additional governed source docs, proposal docs, or README-leve
 - data workflow result fixture relationships live in `tests/data-workflows/fixtures/result/README.md`; proof selection stays in `docs/agents/repo-validation.md`
 - run Umi-generating focused tests, coverage, and `pnpm prepush:gate` serially; for ordinary delivery, use focused proof during iteration and let the push hook own the one full gate after the final controlled tracked change. Run manual hermetic browser qualification on the open business PR before merge or release-to-dev when the change risk warrants it, so a failure can be fixed on that same PR. Deterministic release/promotion pushes use only their repo-owned restricted profiles because the exact dev Release PR owns the non-browser release gate. The hook skips no-update and raw deletion-only pushes, accepts `HEAD` only as the current exact branch source, and rejects other ineligible checked ref shapes before any expensive gate.
 - new dependencies require human approval
+- the application host's crawler and response boundary is `public/robots.txt`, `public/404.html`, `public/edgeone.json`, plus the shell `metas` in `config/config.ts`; the host is noindex by design while crawling stays allowed, and unknown paths must answer 404 rather than the application shell
 - production-writing E2E requires a host without `CI` or `GITHUB_ACTIONS`; only after that check may the controller clear image-inherited CI markers for the local container. Authenticated mode plus two write guards remain mandatory: `E2E_ALLOW_PRODUCTION_DATA=true` and `E2E_PRODUCTION_WRITE_CONFIRMATION=I_AUTHORIZE_ONE_CODEX_E2E_PRODUCTION_PROCESS`; verified tracked evidence additionally requires `E2E_WRITE_VERIFIED_EVIDENCE=true`. Before create it writes an intent ledger, and before delete it verifies the production row's UUID, authenticated owner, and all five multilingual fields across every registry authoring language, then proves `created=cleaned` and `leaked=0`
 
 ## Minimal Execution Facts
@@ -246,6 +247,7 @@ Use the role table in this file as the update map.
 - do not pass documentation screenshot credentials on the command line, persist browser profiles/storage state, or treat missing/invalid credentials as verified authorization denial
 - do not use the screenshot executor for data creation or mutation; only the explicit authentication/session exchange may use non-GET requests
 - do not treat a merged repo PR here as workspace-delivery complete if the root repo still needs a submodule bump
+- do not remove the application host's noindex boundary, convert `robots.txt` into a disallow list, or reintroduce a path-based fallback that answers the application shell for unknown paths; app routes are hash-routed, so no valid route depends on such a fallback
 
 ## Workspace Integration
 

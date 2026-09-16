@@ -160,6 +160,13 @@ export default defineConfig({
     strategy: 'normal',
   },
   favicons: [favicon],
+  /**
+   * @name 文档索引策略
+   * @description 该地址提供的是登录后使用的应用外壳，不是公开内容；应用路由使用 hash 模式，
+   * 因此所有页面都由同一份 index.html 渲染。这里统一声明 noindex，让搜索引擎抓取后不再收录；
+   * robots.txt 保持允许抓取，否则爬虫无法读取该指令。公开文档与数据入口在其他站点。
+   */
+  metas: [{ name: 'robots', content: 'noindex' }],
   esbuildMinifyIIFE: true,
   requestRecord: {},
   // publicPath: process.env.NODE_ENV === 'production' ? './' : '/',

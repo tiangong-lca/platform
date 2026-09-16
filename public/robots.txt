@@ -1,0 +1,11 @@
+# TianGong LCA application host (lca.tiangong.earth)
+#
+# This host serves an authenticated application, not public content. Its documents are marked
+# noindex rather than disallowed on purpose: a crawler that is blocked here cannot read the
+# noindex directive, so blocked URLs can still be listed. Crawling stays allowed so search
+# engines can fetch the pages, read noindex, and drop them.
+#
+# Public documentation and data entry points live on other hosts, which publish their own
+# robots.txt and sitemap files.
+User-agent: *
+Allow: /

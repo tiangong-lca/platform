@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Unknown paths must stay out of search: this document is a response, not a page of the app. -->
+    <meta name="robots" content="noindex" />
+    <title>Not found · TianGong LCA</title>
+    <style>
+      :root { color-scheme: light; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      * { box-sizing: border-box; }
+      html, body { min-width: 320px; min-height: 100%; margin: 0; }
+      body {
+        display: grid; min-height: 100vh; place-items: center; padding: 28px 20px;
+        color: #251a29;
+        background: radial-gradient(circle at 18% 16%, rgb(92 36 106 / 14%), transparent 36%),
+          radial-gradient(circle at 84% 80%, rgb(92 36 106 / 10%), transparent 34%), #f7f5fa;
+      }
+      main {
+        width: min(100%, 620px); padding: 50px 44px 42px; text-align: center;
+        background: rgb(255 255 255 / 95%); border: 1px solid rgb(92 36 106 / 12%);
+        border-radius: 24px; box-shadow: 0 24px 64px rgb(35 18 41 / 12%);
+      }
+      .icon {
+        display: grid; width: 72px; height: 72px; margin: 0 auto 20px; place-items: center;
+        color: #5c246a; font-size: 36px; background: rgb(92 36 106 / 10%); border-radius: 20px;
+      }
+      .tag {
+        display: inline-block; margin-bottom: 16px; padding: 6px 12px; color: #874d00;
+        font-size: 13px; font-weight: 700; background: #fff7e6; border: 1px solid #ffd591; border-radius: 999px;
+      }
+      h1 { margin: 0 0 16px; font-size: clamp(30px, 6vw, 42px); line-height: 1.18; }
+      p { margin: 0 auto 28px; color: #625668; font-size: 17px; line-height: 1.75; }
+      a.primary {
+        display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; color: white;
+        font-weight: 650; text-decoration: none; background: #5c246a; border-radius: 10px;
+      }
+      a.primary:focus-visible { outline: 3px solid rgb(92 36 106 / 30%); outline-offset: 3px; }
+      small { display: block; margin-top: 14px; color: #817486; }
+      @media (max-width: 520px) { main { padding: 40px 24px 34px; } }
+    </style>
+  </head>
+  <body>
+    <main aria-labelledby="title">
+      <div class="icon" aria-hidden="true">⌕</div>
+      <div class="tag" id="tag">Not found</div>
+      <h1 id="title">This address does not exist</h1>
+      <p id="description">The requested address does not exist on this site, or it has moved. Application pages open from the home page.</p>
+      <a class="primary" id="home" href="/">Go to the application</a>
+      <small id="hint">Error 404</small>
+    </main>
+    <script>
+      (function () {
+        var messages = {
+          'zh-CN': ['页面不存在', '找不到这个地址', '该地址在此站点上不存在，或已经移动。应用内的页面请从首页进入。', '进入应用'],
+          'en-US': ['Not found', 'This address does not exist', 'The requested address does not exist on this site, or it has moved. Application pages open from the home page.', 'Go to the application'],
+          'de-DE': ['Nicht gefunden', 'Diese Adresse existiert nicht', 'Die angeforderte Adresse existiert auf dieser Website nicht oder wurde verschoben. Anwendungsseiten öffnen Sie über die Startseite.', 'Zur Anwendung'],
+          'fr-FR': ['Introuvable', 'Cette adresse n’existe pas', 'L’adresse demandée n’existe pas sur ce site ou a été déplacée. Les pages de l’application s’ouvrent depuis la page d’accueil.', 'Ouvrir l’application']
+        };
+        var language = (navigator.language || 'en-US').toLowerCase();
+        var locale = language.indexOf('zh') === 0 ? 'zh-CN' : language.indexOf('de') === 0 ? 'de-DE' : language.indexOf('fr') === 0 ? 'fr-FR' : 'en-US';
+        var copy = messages[locale];
+        document.documentElement.lang = locale;
+        document.getElementById('tag').textContent = copy[0];
+        document.getElementById('title').textContent = copy[1];
+        document.getElementById('description').textContent = copy[2];
+        document.getElementById('home').textContent = copy[3];
+      })();
+    </script>
+  </body>
+</html>

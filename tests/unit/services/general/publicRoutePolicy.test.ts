@@ -105,8 +105,9 @@ describe('anonymous route policy', () => {
     expect(resolveSafeLoginRedirect(redirect)).toBe(expected);
   });
 
-  it('keeps SPA-external anonymous HTML limited to maintenance and legal pages', () => {
+  it('keeps SPA-external HTML limited to error, maintenance, consent and legal documents', () => {
     expect(collectPublicHtmlPaths(publicRoot)).toEqual([
+      '/404.html',
       '/maintenance.html',
       '/oauth-consent-bridge.html',
       '/privacy_notice.html',

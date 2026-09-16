@@ -7,12 +7,25 @@
   ],
   "headers": [
     {
+      "source": "/",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    },
+    {
       "source": "/oauth/consent",
       "headers": [
         { "key": "Cache-Control", "value": "no-store" },
         { "key": "Referrer-Policy", "value": "no-referrer" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
       ]
     },
     {
@@ -21,7 +34,8 @@
         { "key": "Cache-Control", "value": "no-store" },
         { "key": "Referrer-Policy", "value": "no-referrer" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
       ]
     }
   ]

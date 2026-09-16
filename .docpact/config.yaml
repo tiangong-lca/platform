@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-09-14"
-lastReviewedCommit: "ccfb4a0cd12e342cd5980a5f53781b1591fe43f7"
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution is characterized with isolated temporary fixtures only.'
+lastReviewedAt: "2026-09-16"
+lastReviewedCommit: "483f2ea90f7b1b214853574527d150274b4c5f8d"
+lastReviewedNote: 'Reviewed for Platform #1076: the application host keeps an explicit nonindex boundary while crawling stays allowed, so crawlers can read the directive. public/robots.txt is a real text file; public/404.html answers unknown paths instead of the application shell; the shell declares metas robots=noindex so every hash route inherits it; and public/edgeone.json adds X-Robots-Tag for the shell and the consent bridge while preserving the OAuth consent rewrite and its security headers. Live read-only checks recorded /robots.txt returning the shell with the same ETag as / and the three sibling sites on the same host answering 404 for unknown paths; the app is hash-routed, so no valid route depended on that fallback. pnpm lint and the production pnpm build pass, and the built artifacts were inspected. Deployment, provider recrawl and live acceptance remain pending. This change also adds the governed next-hosted-indexing-boundary-contract rule so the crawler policy, the unknown-path document and the hosting response headers keep an owning rule.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.
@@ -664,6 +664,26 @@ rules:
       - path: docs/agents/supabase-branching.md
         mode: review_or_update
     reason: OAuth consent, same-origin login continuation, callback safety, grant revocation, EdgeOne bridging, and the absence of retired compatibility surfaces must remain one reviewed frontend authorization boundary.
+  - id: next-hosted-indexing-boundary-contract
+    scope: repo
+    repo: next
+    triggers:
+      - path: public/robots.txt
+        kind: crawler-policy
+      - path: public/404.html
+        kind: unknown-path-response
+      - path: public/edgeone.json
+        kind: hosting-response-headers
+    requiredDocs:
+      - path: AGENTS.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+    reason: This host serves an authenticated application, so the shell and unknown paths must stay out of search while crawling remains allowed to let crawlers read the directive, and the hosting rewrite and response headers must keep their reviewed shape.
   - id: next-branding-and-packaging-contract
     scope: repo
     repo: next

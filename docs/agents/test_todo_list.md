@@ -40,9 +40,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: ccfb4a0cd12e342cd5980a5f53781b1591fe43f7
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution and the unchanged explicit override are characterized with isolated temporary fixtures only.'
+lastReviewedAt: 2026-09-16
+lastReviewedCommit: 483f2ea90f7b1b214853574527d150274b4c5f8d
+lastReviewedNote: 'Reviewed for Platform #1076 closeout: the reference baseline is intentionally untouched, because this document is a checked-in reference and a delivery's post-commit full-gate counts belong in that delivery's PR evidence. The current state gains one line recording that the SPA-external static inventory now covers the hosted not-found document.'
 ---
 
 # Testing Execution State
@@ -106,6 +106,7 @@ This is a checked-in reference, not a per-PR execution ledger. A delivery's post
 - dataset SDK validation adapters, shared localized validation helpers, and validation-report navigation now ride on the maintained full-closure baseline
 - Issue #910 adds focused TIDAS scalar normalization, Process/Flow serializer, and six save-entrypoint regression coverage; it creates no open coverage queue
 - data workflow smoke fixtures now pair `fixtures/data/**` input JSON with `fixtures/result/**` expected-result Markdown; the current relationship map is in `tests/data-workflows/fixtures/result/README.md`
+- the SPA-external static HTML inventory asserted by `tests/unit/services/general/publicRoutePolicy.test.ts` now also covers the hosted not-found document `/404.html`, alongside maintenance, OAuth consent and the legal pages: the application host answers unknown paths with that document instead of the application shell
 - file-level coverage collection currently excludes a small set of UI orchestration wrappers from direct collection, including the canvas-heavy national carbon dashboard wallboard shell and the Review Admin quality-diagnostic report panel; the latter retains focused component proof for latest-report loading, explicit manual start, non-blocking active state, report rendering, and retryable runtime failure. If that list changes, re-check save, validation, navigation, highlighting, diagnostic-report, or visual screenshot flows before treating the baseline as settled
 
 ## Reopen Conditions

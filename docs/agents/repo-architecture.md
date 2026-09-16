@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-14
-lastReviewedCommit: ccfb4a0cd12e342cd5980a5f53781b1591fe43f7
-lastReviewedNote: 'Reviewed for Platform #1072: docker/desensitize_data.sql.sh resolves the worker connection env from the canonical ../worker/.env before the pre-rename ../tiangong-lca-worker/.env and the retired ../tiangong-lca-calculator/.env, while keeping explicit REMOTE_DB_URL, SUPABASE_REMOTE_DB_URL, SUPABASE_DB_URL and CONN precedence and the docker/.env then repo .env order unchanged. No Docker, database or production action is performed or authorized; the resolution is characterized with isolated temporary fixtures only.'
+lastReviewedAt: 2026-09-16
+lastReviewedCommit: '088675136b5c1fe46917678f7c49398922a307af'
+lastReviewedNote: 'Reviewed for Platform #1076: the application host keeps an explicit nonindex boundary while crawling stays allowed, so crawlers can read the directive. public/robots.txt is a real text file; public/404.html answers unknown paths instead of the application shell; the shell declares metas robots=noindex so every hash route inherits it; and public/edgeone.json adds X-Robots-Tag for the shell and the consent bridge while preserving the OAuth consent rewrite and its security headers. Live read-only checks recorded /robots.txt returning the shell with the same ETag as / and the three sibling sites on the same host answering 404 for unknown paths; the app is hash-routed, so no valid route depended on that fallback. pnpm lint and the production pnpm build pass, and the built artifacts were inspected. Deployment, provider recrawl and live acceptance remain pending.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -58,6 +58,7 @@ This repo is a Umi `4.7.9` React 19 SPA on one native Ant Design `6.6.2` / ProCo
 | `src/locales/**` | UI strings; every supported locale follows one canonical message manifest, with leaf topology, key ownership, placeholders, and dynamic families kept aligned |
 | `src/global.less`, `src/style/**`, `src/manifest.json`, `src/service-worker.js`, `src/utils/appUrl.ts`, `src/utils/browserNavigation.ts`, `src/utils/ruleVerification.ts`, `src/typings.d.ts` | browser shell support, global styling, explicit navigation side-effect boundaries, and support utilities |
 | `public/**` | generated or reviewed static resource bundles consumed by the app, including the EdgeOne OAuth path rewrite and no-store hash-history consent bridge |
+| `public/robots.txt`, `public/404.html`, `public/edgeone.json` | the application host's crawler and response boundary: crawling is deliberately allowed so crawlers can read noindex, the shell and the unknown-path document are noindex, and this file also owns the OAuth path rewrite and response headers |
 | `scripts/reference-data/**` | deterministic classification/location generation and fail-closed evidence validation |
 | `scripts/e2e/**`, `docker/e2e/**` | test-only exact-candidate release-E2E orchestration, deterministic closed-simulator backend profile, isolated environment, static server, preflight, diagnostics, and bounded continuation |
 | `scripts/qualification/**`, `playwright.closure-download.config.ts`, `tests/browser/**` | test-only exact-commit scope-closure Next adapter and loopback browser contract accepted by the Worker provider aggregator |
@@ -206,6 +207,7 @@ Next owns read orchestration, release dataset identity display, directional LCI/
 - `docker/volumes/functions/**` is a generated exact-Edge-revision mirror, not a primary edit surface; refresh it only through the delete-aware helper and retain its source receipt
 - app-side data access does not belong outside `src/services/**`
 - a merged child PR does not finish workspace delivery
+- this host is an authenticated application, not a public content site: the shell and the unknown-path document are noindex, and `public/robots.txt` keeps crawling allowed on purpose so crawlers can read that directive; public documentation and data entry points live on other hosts
 
 The self-hosted snapshot tools keep the generated Edge tree and Database initializer paired. `docker/scripts/export-snapshot-bootstrap.sql` projects constrained roles and source ACL boundaries; `export-snapshot-queue-bootstrap.sql` recreates extension-owned empty queue storage and the Database-owned visibility fence after schema restoration. Runtime/backend semantics remain in their owning repositories.
 
