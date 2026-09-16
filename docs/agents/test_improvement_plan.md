@@ -44,8 +44,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
-lastReviewedNote: 'Reviewed for Platform #1081: the EdgeOne Pages deploy target in both workflows now names the existing production project, so the release path and the manual CI fallback publish where the public site is actually served. The strategic state and every reopen condition are unchanged; this is a production-target repair, not new coverage work.'
+lastReviewedCommit: 740173082e261a5dcd0b2bd53b42fc6f4742da51
+lastReviewedNote: 'Reviewed for Platform #1086 after independent root review: pinned CLI generates the complete deployment bundle and only its terminal file fallback changes to404. Staging checks bundle and .edgeone parents before invalidating old routes; rejected symlink targets retain external files. Verification checks every staged file without depth/count truncation and requires real root,404,robots and consent documents. All24artifact regressions pass, including repeated builds, actual compiled routes, high/deep inventories, absent boundary documents and symlink side effects. Provider404 behavior remains unverified until production deployment; no authentication, domain, region, CLI dependency or application routing change is claimed.'
 ---
 
 # Testing Strategy

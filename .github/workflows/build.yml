@@ -364,7 +364,7 @@ jobs:
       ${{ !cancelled() && needs.release-context.result == 'success' && needs.release-context.outputs.should_release == 'true' && needs.release-qualified.result == 'success' && needs.release-tag.result == 'success' }}
     runs-on: ubuntu-latest
     env:
-      EDGEONE_OUTPUT_DIR: dist
+      EDGEONE_OUTPUT_DIR: dist-edgeone
       EDGEONE_PROJECT_NAME: tiangong-lca-platform
       EDGEONE_CLI_VERSION: 1.4.6
       EDGEONE_VITEST_VERSION: 3.2.4
@@ -389,6 +389,22 @@ jobs:
 
       - name: Build project
         run: pnpm build
+
+      - name: Prepare the EdgeOne deploy bundle
+        run: |
+          set -euo pipefail
+
+          pnpm edgeone:bundle:stage
+          (
+            cd "$EDGEONE_OUTPUT_DIR"
+            pnpm dlx \
+              --package "edgeone@${EDGEONE_CLI_VERSION}" \
+              --package "vitest@${EDGEONE_VITEST_VERSION}" \
+              --package "vite-node@${EDGEONE_VITE_NODE_VERSION}" \
+              edgeone pages generate-routes
+          )
+          pnpm edgeone:bundle:correct
+          pnpm edgeone:bundle:check
 
       - name: Deploy to EdgeOne Pages
         env:

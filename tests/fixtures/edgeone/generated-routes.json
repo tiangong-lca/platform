@@ -1,0 +1,94 @@
+{
+  "version": 3,
+  "routes": [
+    {
+      "handle": "filesystem",
+      "src": "^/classifications(?:/.*)?$|^/icons(?:/.*)?$|^/images/tidas(?:/.*)?$|^/lciamethods(?:/.*)?$|^/locations(?:/.*)?$|^/maps(?:/.*)?$|^/(\\.edgeone-assets-config|edgeone)\\.json$|^/(114\\.f90e9e33\\.async|156\\.fd7d8017\\.async|184\\.33c1eadc\\.async|19\\.667c3bae\\.async|197\\.12293268\\.async|238\\.ae0c8860\\.async|253\\.235f0dc5\\.async|272\\.8314c0fc\\.async|31\\.ada0006d\\.async|334\\.0d3c27e2\\.async|408\\.7642923f\\.async|420\\.64459494\\.async|422\\.124dbec7\\.async|43\\.567d05c7\\.async|434\\.63b9dad7\\.async|511\\.d63dbd68\\.async|521\\.508bf8f4\\.async|552\\.27c9d865\\.async|634\\.7bae9c86\\.async|74\\.7d019dd6\\.async|763\\.ebf4ed88\\.async|829\\.2b1f2d5d\\.async|892\\.987b49e5\\.async|91\\.b5a531ae\\.async|971\\.ffeb1799\\.async|998\\.ba5953ea\\.async|oauth-consent-bridge|p__404\\.8678f3e8\\.async|p__Account__index\\.044d0396\\.async|p__Contacts__index\\.c0edaca4\\.async|p__DataProcessing__index\\.ef947856\\.async|p__Flowproperties__index\\.18f659c6\\.async|p__Flows__index\\.67c497d3\\.async|p__LifeCycleModels__index\\.6523665a\\.async|p__ManageSystem__index\\.cb79d513\\.async|p__NationalCarbonDashboard__index\\.ffb3a08b\\.async|p__OAuth__Consent__index\\.ce09fbf4\\.async|p__Processes__Analysis__index\\.66971df5\\.async|p__Review__index\\.6bacdc49\\.async|p__Sources__index\\.d9ca38c6\\.async|p__Teams__index\\.dee1be9c\\.async|p__Unitgroups__index\\.698c7f52\\.async|p__User__Login__index\\.14287651\\.async|p__User__Login__password_forgot\\.c02643e8\\.async|p__User__Login__password_reset\\.eadc3bf2\\.async|p__Welcome\\.23feb31a\\.async|preload_helper\\.f3ba2e32|t__plugin-layout__Layout\\.07bf543d\\.async|umi\\.67e868ae|wrappers__AuthGuard\\.d991dcfd\\.async)\\.js$|^/(404|maintenance|oauth-consent-bridge|privacy_notice|terms_of_use)(\\.html)?$|^/(index\\.html)?$|^/(logo|logo_dark)\\.svg$|^/(p__Account__index\\.9de9cd75\\.chunk|p__Contacts__index\\.83e102ac\\.chunk|p__DataProcessing__index\\.1a3a48b7\\.chunk|p__Flowproperties__index\\.83e102ac\\.chunk|p__Flows__index\\.83e102ac\\.chunk|p__LifeCycleModels__index\\.83e102ac\\.chunk|p__NationalCarbonDashboard__index\\.5128c920\\.chunk|p__OAuth__Consent__index\\.efff3504\\.chunk|p__Processes__index\\.83e102ac\\.chunk|p__Review__index\\.3087b685\\.chunk|p__Sources__index\\.83e102ac\\.chunk|p__Teams__index\\.a49220b8\\.chunk|p__Unitgroups__index\\.83e102ac\\.chunk|t__plugin-layout__Layout\\.5012e1ab\\.chunk|umi\\.51f762e1)\\.css$|^/(wrappers__LoginFlowGuard\\.ee40678e\\.async)\\.js$|^/CNAME$|^/favicon\\.ico$|^/robots\\.txt$|^/scripts/loading\\.js$"
+    },
+    {
+      "src": "/.*",
+      "dest": "/404.html",
+      "server-name": "file"
+    }
+  ],
+  "conf": {
+    "headers": [
+      {
+        "source": "/",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex"
+          }
+        ]
+      },
+      {
+        "source": "/index.html",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex"
+          }
+        ]
+      },
+      {
+        "source": "/oauth/consent",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex"
+          }
+        ]
+      },
+      {
+        "source": "/oauth-consent-bridge.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex"
+          }
+        ]
+      }
+    ],
+    "redirects": [],
+    "rewrites": [
+      {
+        "source": "/oauth/consent",
+        "destination": "/oauth-consent-bridge.html"
+      }
+    ],
+    "caches": []
+  }
+}

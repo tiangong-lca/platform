@@ -43,8 +43,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-09-16
-lastReviewedCommit: 0fbc9941f304c03715b0b59a6d0eb4114d4d3c67
-lastReviewedNote: 'Reviewed for Platform #1081: the deploy target value changed in both workflows. No bootstrap step, command, prerequisite or release flow in this document changes, and no new environment value is needed: the workflow keeps the target as its single source.'
+lastReviewedCommit: 740173082e261a5dcd0b2bd53b42fc6f4742da51
+lastReviewedNote: 'Reviewed for Platform #1086 after independent root review: pinned CLI generates the complete deployment bundle and only its terminal file fallback changes to404. Staging checks bundle and .edgeone parents before invalidating old routes; rejected symlink targets retain external files. Verification checks every staged file without depth/count truncation and requires real root,404,robots and consent documents. All24artifact regressions pass, including repeated builds, actual compiled routes, high/deep inventories, absent boundary documents and symlink side effects. Provider404 behavior remains unverified until production deployment; no authentication, domain, region, CLI dependency or application routing change is claimed.'
 ---
 
 # Development Bootstrap
@@ -102,7 +102,7 @@ pnpm e2e:env:doctor
 3. make the scoped change
 4. run focused validation
 5. run `pnpm lint`
-6. run `pnpm build` when the change affects shipped behavior or static assets. A build that touches the hosting boundary must leave `dist/robots.txt` and `dist/404.html` present, the noindex meta in `dist/index.html`, and the OAuth consent rewrite plus its headers in `dist/edgeone.json`
+6. run `pnpm build` when the change affects shipped behavior or static assets. A build that touches the hosting boundary must leave `dist/robots.txt` and `dist/404.html` present, the noindex meta in `dist/index.html`, and the OAuth consent rewrite plus its headers in `dist/edgeone.json`. The deploy bundle then adds the platform routing: `pnpm edgeone:bundle:stage` stages `dist-edgeone`, the pinned CLI's `edgeone pages generate-routes` runs there, and `pnpm edgeone:bundle:correct` plus `pnpm edgeone:bundle:check` verify the table before deploy. The correction only turns the CLI's terminal fallback into `dest: /404.html` with `status: 404`; a bundle whose compiled pattern does not cover its own assets, or whose table needs no such fallback, fails verification instead of deploying.
 7. commit the final controlled tracked change and run `pnpm push:checked origin <branch>`; its ordinary hook owns the one full gate. Do not pass a reduced gate profile manually; the deterministic release commands own those restricted profiles.
 
 If no push will occur and a standalone handoff needs final evidence, run `pnpm docpact:gate` and then `pnpm prepush:gate` manually instead. Do not also push the same unchanged checkpoint merely to repeat those gates.
@@ -116,6 +116,9 @@ If no push will occur and a standalone handoff needs final evidence, run `pnpm d
 | explicit `main` env | `pnpm start:main` |
 | sync the self-hosted Edge mirror from one reviewed commit | `./docker/pull-edge-functions.sh --ref <40-character-commit-sha>` |
 | local docpact gate | `pnpm docpact:gate` |
+| stage the EdgeOne deploy bundle | `pnpm edgeone:bundle:stage` |
+| correct the generated routing | `pnpm edgeone:bundle:correct` |
+| verify the deploy bundle routing | `pnpm edgeone:bundle:check` |
 | lint + typecheck | `pnpm lint` |
 | native TypeScript 7 web typecheck | `pnpm tsc` |
 | native TypeScript 7 Electron typecheck | `pnpm tsc:electron` |
