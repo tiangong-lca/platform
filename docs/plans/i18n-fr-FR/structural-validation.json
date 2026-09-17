@@ -3,7 +3,7 @@
   "locale": "fr-FR",
   "validationClosure": {
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "a1703072ab617f7c3aba33b3563d65503025f155184cca9a7563cb0324771857",
+    "auditedInputDigest": "6153b49df29f7c8c2b7bd99aab93461d1a78e5aa2247252ee21cde40edefac65",
     "validatedMessageCount": 3367,
     "validatedModules": [
       "$entry",
@@ -42,9 +42,9 @@
     "highRiskMessageCount": 1527,
     "highRiskMessageDigest": "dcbff776e258d68d5bb433c586b2a5314544ed8ee3bdb0eb7ee2301ef06b909f",
     "catalogDigest": "850117541657fc306e697cbf14d48975d45a360b37da185335b505f6303a4a02",
-    "dossierDigest": "cda8143c5ab3b7587ff10ba92a8b89d254770c0f2f526fd3cb3c5f6702f888f4",
+    "dossierDigest": "08627cb57cd3fac47ebc000fc178aa085f3f488d66f52274dac9f6f61e9c0306",
     "typedContentDossierDigest": "b17812f17c66806d74ac991e03c9a719de58ae79adf6eed26e8b0852c98d0680",
-    "routeEvidenceDigest": "6147573cf06e9956a87fca9107abf14fef76035fe0e8a7ccead5791462ebb366",
+    "routeEvidenceDigest": "0294cae7f9776544b41134fc64b22b37ec70a2463d361d01c8fbfbd7f08c4967",
     "scope": "deterministic structure only; semantic translation and rendered route review are separate production blockers owned by #635"
   },
   "validationLanes": [
@@ -98,7 +98,7 @@
         "messageDigest": "2b2a0add5d77cc325de62a08dd9f7900f6795383399b8947114d10435e619ca1",
         "highRiskMessageCount": 1527,
         "highRiskMessageDigest": "dcbff776e258d68d5bb433c586b2a5314544ed8ee3bdb0eb7ee2301ef06b909f",
-        "dossierDigest": "cda8143c5ab3b7587ff10ba92a8b89d254770c0f2f526fd3cb3c5f6702f888f4",
+        "dossierDigest": "08627cb57cd3fac47ebc000fc178aa085f3f488d66f52274dac9f6f61e9c0306",
         "checks": {
           "nonEmptyTargets": true,
           "icuArgumentSignatureParity": true,
@@ -113,5 +113,5 @@
     }
   ],
   "blockedItems": [],
-  "validationDigest": "6201083bc8f492b33dfd875a67d54bec281bb8c277814e704fba0facf8ce3688"
+  "validationDigest": "d19168944403bea0d0707187d3c7e7a1dcfbaf92fa3a3dc702088532fe6e23ac"
 }

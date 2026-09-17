@@ -407,6 +407,45 @@ describe('ProcessExchangeCreate', () => {
     );
   });
 
+  it('saves the latest flow reference even when the change snapshot has no name', async () => {
+    const onData = jest.fn();
+    render(<ProcessExchangeCreate {...defaultProps} onData={onData} />);
+    fireEvent.click(screen.getByRole('button', { name: /Create/i }));
+
+    const latestValues = {
+      ...proFormApi.getFieldsValue(),
+      meanAmount: 1,
+      resultingAmount: 1,
+      referenceToFlowDataSet: {
+        '@refObjectId': 'flow-selected-last',
+        '@version': '01.01.002',
+        'common:shortDescription': [
+          { '@xml:lang': 'zh', '#text': '测试流' },
+          { '@xml:lang': 'en', '#text': 'Test flow' },
+        ],
+      },
+    };
+    await act(async () => {
+      proFormApi.setFieldsValue(latestValues);
+      triggerValuesChange?.(
+        {},
+        {
+          ...latestValues,
+          referenceToFlowDataSet: {
+            ...latestValues.referenceToFlowDataSet,
+            'common:shortDescription': [],
+          },
+        },
+      );
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(onData).toHaveBeenCalledWith(expect.objectContaining(latestValues));
+    });
+  });
+
   it('shows unit convert dialog when amount field is clicked and applies conversion', async () => {
     render(<ProcessExchangeCreate {...defaultProps} />);
 
@@ -550,6 +589,7 @@ describe('ProcessExchangeCreate', () => {
 
     proFormApi.getFieldsValue = () => undefined;
     fireEvent.click(screen.getByRole('button', { name: 'trigger-flow-data' }));
+    proFormApi.getFieldsValue = () => undefined;
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {

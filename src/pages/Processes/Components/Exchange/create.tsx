@@ -25,7 +25,7 @@ import {
   Switch,
 } from 'antd';
 import type { FC } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { FormattedMessage } from 'umi';
 import schema from '../../processes_schema.json';
 import {
@@ -56,10 +56,16 @@ const ProcessExchangeCreate: FC<Props> = ({
   showRules = false,
   disabled = false,
 }) => {
+  const initialValues = useMemo(
+    () => ({
+      exchangeDirection: direction.charAt(0).toUpperCase() + direction.slice(1).toLowerCase(),
+    }),
+    [direction],
+  );
   const [drawerVisible, setDrawerVisible] = useState(false);
   const formRefCreate = useRef<ProFormInstance | undefined>(undefined);
   const [fromData, setFromData] = useState<ProcessExchangeData>({});
-  const [asInput, setAsInput] = useState(false);
+  const [asInput, setAsInput] = useState(initialValues.exchangeDirection === 'Input');
   const [functionalUnitOrOther, setFunctionalUnitOrOther] = useState(false);
   const [units, setUnits] = useState<{ name: string; meanValue: number }[]>([]);
   const [unitConvertVisible, setUnitConvertVisible] = useState(false);
@@ -72,18 +78,16 @@ const ProcessExchangeCreate: FC<Props> = ({
   }, [unitConvertVisible]);
 
   const handletFromData = () => {
-    setFromData(formRefCreate.current?.getFieldsValue() ?? {});
+    setFromData(formRefCreate.current?.getFieldsValue(true) ?? {});
   };
 
   useEffect(() => {
     if (!drawerVisible) return;
     formRefCreate.current?.resetFields();
-    const directionValue = direction.charAt(0).toUpperCase() + direction.slice(1).toLowerCase();
-    const initData = { exchangeDirection: directionValue };
-    setAsInput(directionValue.toLowerCase() === 'input');
-    formRefCreate.current?.setFieldsValue(initData);
-    setFromData(initData);
-  }, [drawerVisible]);
+    setAsInput(initialValues.exchangeDirection === 'Input');
+    setFunctionalUnitOrOther(false);
+    setFromData(initialValues);
+  }, [drawerVisible, initialValues]);
 
   return (
     <>
@@ -150,6 +154,7 @@ const ProcessExchangeCreate: FC<Props> = ({
       >
         <ProForm
           formRef={formRefCreate}
+          initialValues={initialValues}
           onValuesChange={(_, allValues) => {
             setFromData(allValues ?? {});
             setFunctionalUnitOrOther(allValues?.quantitativeReference ?? false);
@@ -160,7 +165,8 @@ const ProcessExchangeCreate: FC<Props> = ({
             },
           }}
           onFinish={async () => {
-            onData(normalizeExchangeFormData({ ...fromData }));
+            // Reference selectors can update Form.List before its fields finish registering.
+            onData(normalizeExchangeFormData(formRefCreate.current?.getFieldsValue(true) ?? {}));
             formRefCreate.current?.resetFields();
             setDrawerVisible(false);
             return true;

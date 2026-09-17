@@ -424,6 +424,48 @@ describe('ProcessExchangeEdit', () => {
     mockUnitConvertState.onOk = undefined;
   });
 
+  it('saves the latest flow reference even when the change snapshot has no name', async () => {
+    const onData = jest.fn();
+    render(<ProcessExchangeEdit {...defaultProps} onData={onData} />);
+    fireEvent.click(screen.getByRole('button'));
+
+    const latestValues = {
+      ...mockProFormApi.getFieldsValue(),
+      meanAmount: 1,
+      resultingAmount: 1,
+      referenceToFlowDataSet: {
+        '@refObjectId': 'flow-selected-last',
+        '@version': '01.01.002',
+        'common:shortDescription': [
+          { '@xml:lang': 'zh', '#text': '测试流' },
+          { '@xml:lang': 'en', '#text': 'Test flow' },
+        ],
+      },
+    };
+    await act(async () => {
+      mockProFormApi.setFieldsValue(latestValues);
+      triggerValuesChange?.(
+        {},
+        {
+          ...latestValues,
+          referenceToFlowDataSet: {
+            ...latestValues.referenceToFlowDataSet,
+            'common:shortDescription': [],
+          },
+        },
+      );
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(onData).toHaveBeenCalledWith([
+        expect.objectContaining(latestValues),
+        defaultProps.data[1],
+      ]);
+    });
+  });
+
   it('disables edit button when disabled', () => {
     render(<ProcessExchangeEdit {...defaultProps} disabled />);
 
@@ -700,6 +742,7 @@ describe('ProcessExchangeEdit', () => {
 
     mockProFormApi.getFieldsValue = () => undefined;
     fireEvent.click(screen.getByRole('button', { name: 'trigger-flow' }));
+    mockProFormApi.getFieldsValue = () => undefined;
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {

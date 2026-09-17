@@ -286,7 +286,7 @@ const ProcessExchangeEdit: FC<Props> = ({
   }, [autoOpen]);
 
   const handletFromData = () => {
-    setFromData(formRefEdit.current?.getFieldsValue() ?? {});
+    setFromData(formRefEdit.current?.getFieldsValue(true) ?? {});
   };
 
   const onEdit = useCallback(() => {
@@ -482,7 +482,10 @@ const ProcessExchangeEdit: FC<Props> = ({
             },
           }}
           onFinish={async () => {
-            const nextFormData = normalizeExchangeFormData({ ...fromData });
+            // Reference selectors can update Form.List before its fields finish registering.
+            const nextFormData = normalizeExchangeFormData(
+              formRefEdit.current?.getFieldsValue(true) ?? {},
+            );
             const nextExchangeData = normalizeQuantitativeReferenceSelection(
               data.map((item) => {
                 if (item['@dataSetInternalID'] === id) {

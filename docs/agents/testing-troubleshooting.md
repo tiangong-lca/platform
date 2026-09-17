@@ -39,9 +39,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-16
-lastReviewedCommit: 740173082e261a5dcd0b2bd53b42fc6f4742da51
-lastReviewedNote: 'Reviewed for Platform #1086 after independent root review: pinned CLI generates the complete deployment bundle and only its terminal file fallback changes to404. Staging checks bundle and .edgeone parents before invalidating old routes; rejected symlink targets retain external files. Verification checks every staged file without depth/count truncation and requires real root,404,robots and consent documents. All24artifact regressions pass, including repeated builds, actual compiled routes, high/deep inventories, absent boundary documents and symlink side effects. Provider404 behavior remains unverified until production deployment; no authentication, domain, region, CLI dependency or application routing change is claimed.'
+lastReviewedAt: 2026-09-17
+lastReviewedCommit: 4e88077060e4959b5ed04b75d3028a54c48f3041
+lastReviewedNote: 'Reviewed for Platform #1092: empty exchange names arise from pre-registration Form.List snapshots, while blank direction defaults arise from imperative initialization before ProForm readiness; regression proof retains real form lifecycle behavior.'
 ---
 
 # Testing Troubleshooting
