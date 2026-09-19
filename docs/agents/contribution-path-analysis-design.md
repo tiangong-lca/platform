@@ -20,9 +20,9 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-09-09
-lastReviewedCommit: 202e30656b62cad9ca1403b7d02880dff6bbe08c
-lastReviewedNote: 'Reviewed for Next #1044: the matrix calculation replaces the legacy pipeline; analysis design references remain unchanged.'
+lastReviewedAt: 2026-09-18
+lastReviewedCommit: d0f64424af98857967592f4281d8a4ed8c25bf99
+lastReviewedNote: 'Reviewed Platform #1046 refinement: imports reconcile from the shared list only; terminal outcomes use green/orange/red, orphan records prevent full success, and reports resolve signed links only on click. Owner isolation, reload recovery and once-only data refresh are tested. Export/LCA behavior, ownership and gate policy remain unchanged; validation evidence is recorded in the task.'
 ---
 
 # Contribution Path Analysis Design

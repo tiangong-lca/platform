@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "6153b49df29f7c8c2b7bd99aab93461d1a78e5aa2247252ee21cde40edefac65",
+    "auditedInputDigest": "a31ecb7b34a2209af6322c4c0c1f76ea86065593fbdf2d3d3086c62b7164af2f",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -69,13 +69,13 @@
   "summary": {
     "localeCount": 4,
     "localeLeafModuleCounts": { "en-US": 31, "zh-CN": 31, "de-DE": 31, "fr-FR": 31 },
-    "localeUniqueKeyCounts": { "en-US": 3367, "zh-CN": 3367, "de-DE": 3367, "fr-FR": 3367 },
-    "canonicalCandidateKeyCount": 3367,
-    "activeStaticKeyCount": 2241,
+    "localeUniqueKeyCounts": { "en-US": 3382, "zh-CN": 3382, "de-DE": 3382, "fr-FR": 3382 },
+    "canonicalCandidateKeyCount": 3382,
+    "activeStaticKeyCount": 2236,
     "activeDynamicKeyCount": 321,
-    "reservedKeyCount": 805,
-    "productionSourceFileCount": 465,
-    "literalReferenceCount": 4254,
+    "reservedKeyCount": 825,
+    "productionSourceFileCount": 466,
+    "literalReferenceCount": 4248,
     "dynamicCallsiteCount": 33,
     "dynamicCallsiteSummaryCount": 33,
     "registeredDynamicCallsiteCount": 33,
@@ -17921,7 +17921,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 292,
+          "line": 122,
           "column": 21,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Cancel",
@@ -17942,7 +17942,7 @@
             },
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 292,
+              "line": 122,
               "column": 21,
               "kind": "formatMessage"
             }
@@ -18176,7 +18176,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 696,
+          "line": 717,
           "column": 12,
           "symbol": "packageTaskErrorText",
           "defaultMessage": "Export package is too large for the current storage upload limit. Try exporting a smaller scope, or ask an administrator to enable large-file upload support.",
@@ -18191,7 +18191,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 696,
+              "line": 717,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -18597,7 +18597,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 325,
+          "line": 155,
           "column": 19,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Open English API import docs",
@@ -18612,7 +18612,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 325,
+              "line": 155,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -18680,7 +18680,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 319,
+          "line": 149,
           "column": 19,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "See the English API import documentation for the full request flow and integration details.",
@@ -18695,7 +18695,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 319,
+              "line": 149,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -18763,7 +18763,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 333,
+          "line": 163,
           "column": 15,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "API import",
@@ -18778,7 +18778,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 333,
+              "line": 163,
               "column": 15,
               "kind": "FormattedMessage"
             }
@@ -18846,7 +18846,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 288,
+          "line": 118,
           "column": 17,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Import",
@@ -18861,7 +18861,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 288,
+              "line": 118,
               "column": 17,
               "kind": "formatMessage"
             }
@@ -18930,7 +18930,7 @@
     },
     {
       "id": "component.tidasPackage.import.conflict.title",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -18984,32 +18984,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 216,
-          "column": 16,
-          "symbol": "handleImport",
-          "defaultMessage": "Import rejected because of conflicts",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Import rejected because of conflicts",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 216,
-              "column": 16,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.error",
@@ -19071,7 +19047,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 224,
+          "line": 54,
           "column": 9,
           "symbol": "handleImport",
           "defaultMessage": "Failed to import TIDAS package",
@@ -19086,7 +19062,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 224,
+              "line": 54,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -19154,7 +19130,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 242,
+          "line": 72,
           "column": 11,
           "symbol": "uploadProps",
           "defaultMessage": "Only ZIP packages are supported",
@@ -19169,7 +19145,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 242,
+              "line": 72,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -19238,7 +19214,7 @@
     },
     {
       "id": "component.tidasPackage.import.filtered.title",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -19292,32 +19268,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 185,
-          "column": 20,
-          "symbol": "handleImport",
-          "defaultMessage": "Some open datasets were skipped",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Some open datasets were skipped",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 185,
-              "column": 20,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.noFile",
@@ -19379,7 +19331,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 157,
+          "line": 33,
           "column": 9,
           "symbol": "handleImport",
           "defaultMessage": "Please select a ZIP package to import",
@@ -19394,7 +19346,90 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 157,
+              "line": 33,
+              "column": 9,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "component.tidasPackage.import.queued",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Import submitted. View progress and results in Task Center.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 81,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "导入任务已提交，请在任务中心查看进度和结果。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 81,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Import übermittelt. Fortschritt und Ergebnisse finden Sie im Aufgabenzentrum.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 81,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Importation soumise. Consultez la progression et les résultats dans le centre de tâches.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 81,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/components/ImportTidasPackage/index.tsx",
+          "line": 45,
+          "column": 9,
+          "symbol": "handleImport",
+          "defaultMessage": "Import submitted. View progress and results in Task Center.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Import submitted. View progress and results in Task Center.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/components/ImportTidasPackage/index.tsx",
+              "line": 45,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -19404,7 +19439,7 @@
     },
     {
       "id": "component.tidasPackage.import.report.download",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -19458,51 +19493,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 87,
-          "column": 12,
-          "symbol": "formatConflicts",
-          "defaultMessage": "Download full details",
-          "defaultMessageExpression": null
-        },
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 135,
-          "column": 12,
-          "symbol": "formatValidationIssues",
-          "defaultMessage": "Download full details",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Download full details",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 87,
-              "column": 12,
-              "kind": "formatMessage"
-            },
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 135,
-              "column": 12,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.report.hint.conflict",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -19556,36 +19552,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 79,
-          "column": 10,
-          "symbol": "formatConflicts",
-          "defaultMessage": "Download the full details to review skipped open-data records and conflicting user records.",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Download the full details to review skipped open-data records and conflicting user records.",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 79,
-              "column": 10,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.report.hint.validation",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -19639,26 +19611,479 @@
           }
         }
       },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.blocked",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Validation blocked this group",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 93,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "该分组未通过校验",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 93,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Validierung blockiert diese Gruppe",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 93,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "La validation bloque ce groupe",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 93,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.counts",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Imported: {imported}; already present: {existing}; successful groups: {groups}",
+          "argumentSignature": [
+            { "name": "existing", "type": "simple" },
+            { "name": "groups", "type": "simple" },
+            { "name": "imported", "type": "simple" }
+          ],
+          "placeholders": ["existing", "groups", "imported"],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 86,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "已新增：{imported}；已存在：{existing}；成功分组：{groups}",
+          "argumentSignature": [
+            { "name": "existing", "type": "simple" },
+            { "name": "groups", "type": "simple" },
+            { "name": "imported", "type": "simple" }
+          ],
+          "placeholders": ["existing", "groups", "imported"],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 86,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Importiert: {imported}; bereits vorhanden: {existing}; erfolgreiche Gruppen: {groups}",
+          "argumentSignature": [
+            { "name": "existing", "type": "simple" },
+            { "name": "groups", "type": "simple" },
+            { "name": "imported", "type": "simple" }
+          ],
+          "placeholders": ["existing", "groups", "imported"],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 86,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Importés : {imported} ; déjà présents : {existing} ; groupes réussis : {groups}",
+          "argumentSignature": [
+            { "name": "existing", "type": "simple" },
+            { "name": "groups", "type": "simple" },
+            { "name": "imported", "type": "simple" }
+          ],
+          "placeholders": ["existing", "groups", "imported"],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 86,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.details",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Download complete details",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 91,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "下载完整明细",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 91,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Vollständige Details herunterladen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 91,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Télécharger les détails complets",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 91,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
       "references": [
         {
           "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 127,
-          "column": 10,
-          "symbol": "formatValidationIssues",
-          "defaultMessage": "Download the full details to inspect file paths, issue locations, and validation context.",
+          "path": "src/components/ImportTidasPackage/ImportResult.tsx",
+          "line": 73,
+          "column": 17,
+          "symbol": "TidasImportResult",
+          "defaultMessage": "Download complete details",
           "defaultMessageExpression": null
         }
       ],
       "defaultMessages": [
         {
-          "value": "Download the full details to inspect file paths, issue locations, and validation context.",
+          "value": "Download complete details",
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
             {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 127,
+              "path": "src/components/ImportTidasPackage/ImportResult.tsx",
+              "line": 73,
+              "column": 17,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "component.tidasPackage.import.result.interrupted",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Import interrupted; committed data is retained",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 85,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "导入已中断，已提交的数据会保留",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 85,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Import unterbrochen; gespeicherte Daten bleiben erhalten",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 85,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Importation interrompue ; les données enregistrées sont conservées",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 85,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.none",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "No process or model group imported",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 84,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "没有过程或模型分组导入成功",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 84,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Keine Prozess- oder Modellgruppe importiert",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 84,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Aucun groupe de processus ou de modèles importé",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 84,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.notAttempted",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "This group was not attempted",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 95,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "该分组尚未尝试导入",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 95,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Diese Gruppe wurde noch nicht verarbeitet",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 95,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Ce groupe n’a pas encore été traité",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 95,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.partial",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Partially imported",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 83,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "部分导入",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 83,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Teilweise importiert",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 83,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Importation partielle",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 83,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/components/LcaTaskCenter/index.tsx",
+          "line": 121,
+          "column": 10,
+          "symbol": "statusTag",
+          "defaultMessage": "Partially imported",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Partially imported",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/components/LcaTaskCenter/index.tsx",
+              "line": 121,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -19667,8 +20092,469 @@
       ]
     },
     {
-      "id": "component.tidasPackage.import.success",
+      "id": "component.tidasPackage.import.result.receipts",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Counts reflect committed groups. The final report is not yet available.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 87,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "以上为已提交分组的数量，最终报告暂不可用。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 87,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Die Zahlen beziehen sich auf gespeicherte Gruppen. Der Abschlussbericht ist noch nicht verfügbar.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 87,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Ces nombres concernent les groupes enregistrés. Le rapport final est encore indisponible.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 87,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.refresh",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Refresh result",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 90,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "刷新结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 90,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Ergebnis aktualisieren",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 90,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Actualiser le résultat",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 90,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.report",
       "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Download report",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 92,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "下载报告",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 92,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Bericht herunterladen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 92,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Télécharger le rapport",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 92,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/components/ImportTidasPackage/ImportResult.tsx",
+          "line": 77,
+          "column": 17,
+          "symbol": "TidasImportResult",
+          "defaultMessage": "Download report",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Download report",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/components/ImportTidasPackage/ImportResult.tsx",
+              "line": 77,
+              "column": 17,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "component.tidasPackage.import.result.sample",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Only the first groups are shown. Download the complete details for every group and validation issue.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 89,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "当前仅展示前几个分组，请下载完整明细查看全部分组和校验问题。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 89,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Nur die ersten Gruppen werden angezeigt. Laden Sie die vollständigen Details für alle Gruppen und Validierungsprobleme herunter.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 89,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Seuls les premiers groupes sont affichés. Téléchargez les détails complets pour tous les groupes et problèmes de validation.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 89,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.success",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "All process and model groups imported",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 82,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "所有过程和模型分组已导入",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 82,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Alle Prozess- und Modellgruppen importiert",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 82,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Tous les groupes de processus et de modèles ont été importés",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 82,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.result.unavailable",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Unable to load the latest result. This does not mean the import failed.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 88,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "暂时无法获取最新结果，这不代表导入失败。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 88,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Das aktuelle Ergebnis kann nicht geladen werden. Dies bedeutet nicht, dass der Import fehlgeschlagen ist.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 88,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Impossible de charger le dernier résultat. Cela ne signifie pas que l’importation a échoué.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 88,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/components/ImportTidasPackage/ImportResult.tsx",
+          "line": 86,
+          "column": 12,
+          "symbol": "TidasImportResult",
+          "defaultMessage": "Unable to load the latest result. This does not mean the import failed.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Unable to load the latest result. This does not mean the import failed.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/components/ImportTidasPackage/ImportResult.tsx",
+              "line": 86,
+              "column": 12,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "component.tidasPackage.import.result.writeFailed",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["component_tidasPackage"],
+        "zh-CN": ["component_tidasPackage"],
+        "de-DE": ["component_tidasPackage"],
+        "fr-FR": ["component_tidasPackage"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "This group was rolled back after a write failure",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/component_tidasPackage.ts",
+            "line": 94,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "zh-CN": {
+          "value": "该分组写入失败，已回滚",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/component_tidasPackage.ts",
+            "line": 94,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "de-DE": {
+          "value": "Diese Gruppe wurde nach einem Schreibfehler zurückgesetzt",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/component_tidasPackage.ts",
+            "line": 94,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        },
+        "fr-FR": {
+          "value": "Ce groupe a été annulé après un échec d’écriture",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/component_tidasPackage.ts",
+            "line": 94,
+            "column": 3,
+            "module": "component_tidasPackage"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "component.tidasPackage.import.success",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -19722,36 +20608,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 177,
-          "column": 11,
-          "symbol": "handleImport",
-          "defaultMessage": "TIDAS package imported successfully",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "TIDAS package imported successfully",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 177,
-              "column": 11,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.summary",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -19825,37 +20687,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 64,
-          "column": 10,
-          "symbol": "formatConflicts",
-          "defaultMessage": "Total: {total}, filtered open data: {filtered}, user conflicts: {conflicts}, imported: {imported}",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Total: {total}, filtered open data: {filtered}, user conflicts: {conflicts}, imported: {imported}",
-          "argumentSignature": [
-            { "name": "conflicts", "type": "simple" },
-            { "name": "filtered", "type": "simple" },
-            { "name": "imported", "type": "simple" },
-            { "name": "total", "type": "simple" }
-          ],
-          "placeholders": ["conflicts", "filtered", "imported", "total"],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 64,
-              "column": 10,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.title",
@@ -19917,7 +20750,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 275,
+          "line": 105,
           "column": 16,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Import TIDAS ZIP Package",
@@ -19932,7 +20765,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 275,
+              "line": 105,
               "column": 16,
               "kind": "formatMessage"
             }
@@ -20000,7 +20833,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 261,
+          "line": 91,
           "column": 21,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Import TIDAS ZIP Package",
@@ -20009,7 +20842,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 266,
+          "line": 96,
           "column": 11,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Import TIDAS ZIP Package",
@@ -20024,13 +20857,13 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 261,
+              "line": 91,
               "column": 21,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 266,
+              "line": 96,
               "column": 11,
               "kind": "FormattedMessage"
             }
@@ -20098,7 +20931,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 309,
+          "line": 139,
           "column": 15,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "The package will be validated before any data is imported",
@@ -20113,7 +20946,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 309,
+              "line": 139,
               "column": 15,
               "kind": "FormattedMessage"
             }
@@ -20181,7 +21014,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 303,
+          "line": 133,
           "column": 15,
           "symbol": "ImportTidasPackage",
           "defaultMessage": "Click or drag a ZIP package to this area to upload",
@@ -20196,7 +21029,7 @@
           "locations": [
             {
               "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 303,
+              "line": 133,
               "column": 15,
               "kind": "FormattedMessage"
             }
@@ -20560,7 +21393,7 @@
     },
     {
       "id": "component.tidasPackage.import.validation.summary",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -20630,40 +21463,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 113,
-          "column": 10,
-          "symbol": "formatValidationIssues",
-          "defaultMessage": "Validation blocked import. Errors: {errors}, warnings: {warnings}, total issues: {issues}.",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Validation blocked import. Errors: {errors}, warnings: {warnings}, total issues: {issues}.",
-          "argumentSignature": [
-            { "name": "errors", "type": "simple" },
-            { "name": "issues", "type": "simple" },
-            { "name": "warnings", "type": "simple" }
-          ],
-          "placeholders": ["errors", "issues", "warnings"],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 113,
-              "column": 10,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.import.validation.title",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["component_tidasPackage"],
@@ -20717,32 +21522,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/ImportTidasPackage/index.tsx",
-          "line": 206,
-          "column": 18,
-          "symbol": "handleImport",
-          "defaultMessage": "Import blocked by validation issues",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Import blocked by validation issues",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/ImportTidasPackage/index.tsx",
-              "line": 206,
-              "column": 18,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "component.tidasPackage.scope.currentUser",
@@ -20813,7 +21594,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 752,
+          "line": 773,
           "column": 12,
           "symbol": "tidasScopeLabel",
           "defaultMessage": "Current user data",
@@ -20834,7 +21615,7 @@
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 752,
+              "line": 773,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -20911,7 +21692,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 764,
+          "line": 785,
           "column": 12,
           "symbol": "tidasScopeLabel",
           "defaultMessage": "Current user data + open data",
@@ -20932,7 +21713,7 @@
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 764,
+              "line": 785,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -21009,7 +21790,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 758,
+          "line": 779,
           "column": 12,
           "symbol": "tidasScopeLabel",
           "defaultMessage": "Open data",
@@ -21030,7 +21811,7 @@
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 758,
+              "line": 779,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -21216,7 +21997,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1199,
+          "line": 1230,
           "column": 20,
           "symbol": "packageBusinessDetail",
           "defaultMessage": "File name",
@@ -21231,7 +22012,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1199,
+              "line": 1230,
               "column": 20,
               "kind": "formatMessage"
             }
@@ -21299,7 +22080,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1188,
+          "line": 1219,
           "column": 9,
           "symbol": "filename",
           "defaultMessage": "Uploaded ZIP package",
@@ -21314,7 +22095,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1188,
+              "line": 1219,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -21500,7 +22281,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1067,
+          "line": 1098,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Job ID",
@@ -21515,7 +22296,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1067,
+              "line": 1098,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -21583,7 +22364,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1213,
+          "line": 1244,
           "column": 20,
           "symbol": "packageBusinessDetail",
           "defaultMessage": "Root records",
@@ -21598,7 +22379,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1213,
+              "line": 1244,
               "column": 20,
               "kind": "formatMessage"
             }
@@ -21666,7 +22447,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1223,
+          "line": 1261,
           "column": 18,
           "symbol": "packageBusinessDetail",
           "defaultMessage": "Root data",
@@ -21681,7 +22462,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1223,
+              "line": 1261,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -21749,7 +22530,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1206,
+          "line": 1237,
           "column": 20,
           "symbol": "packageBusinessDetail",
           "defaultMessage": "Data scope",
@@ -21764,7 +22545,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1206,
+              "line": 1237,
               "column": 20,
               "kind": "formatMessage"
             }
@@ -21832,7 +22613,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1872,
+          "line": 1918,
           "column": 38,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Download",
@@ -21841,7 +22622,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1878,
+          "line": 1924,
           "column": 45,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Download",
@@ -21856,13 +22637,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1872,
+              "line": 1918,
               "column": 38,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1878,
+              "line": 1924,
               "column": 45,
               "kind": "formatMessage"
             }
@@ -21930,7 +22711,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1435,
+          "line": 1477,
           "column": 11,
           "symbol": "handleDownload",
           "defaultMessage": "Failed to download TIDAS package",
@@ -21945,7 +22726,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1435,
+              "line": 1477,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -22013,7 +22794,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1424,
+          "line": 1466,
           "column": 9,
           "symbol": "handleDownload",
           "defaultMessage": "Downloaded {filename}",
@@ -22028,7 +22809,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1424,
+              "line": 1466,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -22155,7 +22936,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 783,
+          "line": 804,
           "column": 12,
           "symbol": "taskTypeLabel",
           "defaultMessage": "TIDAS Export",
@@ -22170,7 +22951,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 783,
+              "line": 804,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22238,7 +23019,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 789,
+          "line": 810,
           "column": 12,
           "symbol": "taskTypeLabel",
           "defaultMessage": "TIDAS Import",
@@ -22253,7 +23034,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 789,
+              "line": 810,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22321,7 +23102,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 187,
+          "line": 203,
           "column": 12,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Collecting related data",
@@ -22336,7 +23117,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 187,
+              "line": 203,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22404,7 +23185,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 199,
+          "line": 215,
           "column": 12,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Building ZIP",
@@ -22419,7 +23200,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 199,
+              "line": 215,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22487,7 +23268,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 193,
+          "line": 209,
           "column": 12,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Importing data",
@@ -22502,7 +23283,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 193,
+              "line": 209,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22570,7 +23351,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 181,
+          "line": 197,
           "column": 12,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Queued",
@@ -22585,7 +23366,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 181,
+              "line": 197,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22653,7 +23434,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 175,
+          "line": 191,
           "column": 12,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Submitting",
@@ -22668,7 +23449,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 175,
+              "line": 191,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22736,7 +23517,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 624,
+          "line": 645,
           "column": 12,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Build ZIP",
@@ -22751,7 +23532,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 624,
+              "line": 645,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22819,7 +23600,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 618,
+          "line": 639,
           "column": 12,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Collect related data",
@@ -22834,7 +23615,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 618,
+              "line": 639,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22902,7 +23683,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 612,
+          "line": 633,
           "column": 12,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Queued",
@@ -22917,7 +23698,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 612,
+              "line": 633,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -22985,7 +23766,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 629,
+          "line": 650,
           "column": 10,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Export ready",
@@ -23000,7 +23781,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 629,
+              "line": 650,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -23068,7 +23849,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 606,
+          "line": 627,
           "column": 12,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Submit task",
@@ -23083,7 +23864,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 606,
+              "line": 627,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -23151,7 +23932,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 599,
+          "line": 620,
           "column": 12,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Build report",
@@ -23166,7 +23947,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 599,
+              "line": 620,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -23234,7 +24015,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 594,
+          "line": 615,
           "column": 14,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Import data",
@@ -23249,7 +24030,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 594,
+              "line": 615,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -23317,7 +24098,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 582,
+          "line": 603,
           "column": 14,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Prepare upload",
@@ -23332,7 +24113,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 582,
+              "line": 603,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -23400,7 +24181,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 588,
+          "line": 609,
           "column": 14,
           "symbol": "packageProcessStageLabel",
           "defaultMessage": "Validate package",
@@ -23415,7 +24196,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 588,
+              "line": 609,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -23837,7 +24618,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 822,
+          "line": 843,
           "column": 9,
           "symbol": "taskTitle",
           "defaultMessage": "Export TIDAS package",
@@ -23852,7 +24633,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 822,
+              "line": 843,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -23920,7 +24701,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 815,
+          "line": 836,
           "column": 9,
           "symbol": "taskTitle",
           "defaultMessage": "Export package: {filename}",
@@ -23935,7 +24716,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 815,
+              "line": 836,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -24003,7 +24784,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 835,
+          "line": 856,
           "column": 7,
           "symbol": "taskTitle",
           "defaultMessage": "Import TIDAS package",
@@ -24018,7 +24799,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 835,
+              "line": 856,
               "column": 7,
               "kind": "formatMessage"
             }
@@ -24086,7 +24867,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 828,
+          "line": 849,
           "column": 7,
           "symbol": "taskTitle",
           "defaultMessage": "Import package: {filename}",
@@ -24101,7 +24882,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 828,
+              "line": 849,
               "column": 7,
               "kind": "formatMessage"
             }
@@ -66245,7 +67026,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1724,
+          "line": 1766,
           "column": 38,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Task details are currently unavailable.",
@@ -66266,7 +67047,7 @@
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1724,
+              "line": 1766,
               "column": 38,
               "kind": "formatMessage"
             }
@@ -80036,7 +80817,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 795,
+          "line": 816,
           "column": 12,
           "symbol": "taskTypeLabel",
           "defaultMessage": "Data Product",
@@ -80051,7 +80832,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 795,
+              "line": 816,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -157084,7 +157865,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 737,
+          "line": 758,
           "column": 7,
           "symbol": "lcaModeLabel",
           "defaultMessage": "All Processes (Reference Flow = 1)",
@@ -157108,7 +157889,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 737,
+              "line": 758,
               "column": 7,
               "kind": "formatMessage"
             },
@@ -157182,7 +157963,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 741,
+          "line": 762,
           "column": 7,
           "symbol": "lcaModeLabel",
           "defaultMessage": "Single-Process Calculation",
@@ -157197,7 +157978,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 741,
+              "line": 762,
               "column": 7,
               "kind": "formatMessage"
             }
@@ -167712,7 +168493,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1497,
+          "line": 1539,
           "column": 12,
           "symbol": "modalTitle",
           "defaultMessage": "Clear finished",
@@ -167727,7 +168508,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1497,
+              "line": 1539,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -167795,7 +168576,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1689,
+          "line": 1731,
           "column": 32,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Continue",
@@ -167810,7 +168591,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1689,
+              "line": 1731,
               "column": 32,
               "kind": "formatMessage"
             }
@@ -167937,7 +168718,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 984,
+          "line": 1015,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Build job ID",
@@ -167952,7 +168733,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 984,
+              "line": 1015,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -168138,7 +168919,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1322,
+          "line": 1360,
           "column": 16,
           "symbol": "TaskDiagnosticsPopoverContent",
           "defaultMessage": "Debug information",
@@ -168153,7 +168934,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1322,
+              "line": 1360,
               "column": 16,
               "kind": "formatMessage"
             }
@@ -168221,7 +169002,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1166,
+          "line": 1197,
           "column": 18,
           "symbol": "lcaBusinessDetail",
           "defaultMessage": "Failure reason",
@@ -168230,7 +169011,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1235,
+          "line": 1273,
           "column": 18,
           "symbol": "packageBusinessDetail",
           "defaultMessage": "Failure reason",
@@ -168245,13 +169026,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1166,
+              "line": 1197,
               "column": 18,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1235,
+              "line": 1273,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -168319,7 +169100,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1293,
+          "line": 1331,
           "column": 16,
           "symbol": "TaskDetailPopoverContent",
           "defaultMessage": "Detail information",
@@ -168334,7 +169115,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1293,
+              "line": 1331,
               "column": 16,
               "kind": "formatMessage"
             }
@@ -168402,7 +169183,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1141,
+          "line": 1172,
           "column": 20,
           "symbol": "lcaBusinessDetail",
           "defaultMessage": "Demand type",
@@ -168417,7 +169198,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1141,
+              "line": 1172,
               "column": 20,
               "kind": "formatMessage"
             }
@@ -168485,7 +169266,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1158,
+          "line": 1189,
           "column": 12,
           "symbol": "lcaBusinessDetail",
           "defaultMessage": "The task completed without a returned result.",
@@ -168500,7 +169281,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1158,
+              "line": 1189,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -168627,7 +169408,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1005,
+          "line": 1036,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Result ID",
@@ -168669,7 +169450,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1005,
+              "line": 1036,
               "column": 18,
               "kind": "formatMessage"
             },
@@ -168814,7 +169595,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1148,
+          "line": 1179,
           "column": 20,
           "symbol": "lcaBusinessDetail",
           "defaultMessage": "Data scope",
@@ -168829,7 +169610,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1148,
+              "line": 1179,
               "column": 20,
               "kind": "formatMessage"
             }
@@ -168897,7 +169678,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 998,
+          "line": 1029,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Snapshot ID",
@@ -168939,7 +169720,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 998,
+              "line": 1029,
               "column": 18,
               "kind": "formatMessage"
             },
@@ -169025,7 +169806,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 991,
+          "line": 1022,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Calculation job ID",
@@ -169040,7 +169821,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 991,
+              "line": 1022,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -169285,7 +170066,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1778,
+          "line": 1824,
           "column": 38,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Diagnostics",
@@ -169294,7 +170075,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1784,
+          "line": 1830,
           "column": 45,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Diagnostics",
@@ -169309,13 +170090,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1778,
+              "line": 1824,
               "column": 38,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1784,
+              "line": 1830,
               "column": 45,
               "kind": "formatMessage"
             }
@@ -169383,7 +170164,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 909,
+          "line": 940,
           "column": 10,
           "symbol": "DiagnosticRows",
           "defaultMessage": "No diagnostics available",
@@ -169398,7 +170179,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 909,
+              "line": 940,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -169466,7 +170247,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 977,
+          "line": 1008,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Worker job kind",
@@ -169475,7 +170256,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1060,
+          "line": 1091,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Worker job kind",
@@ -169490,13 +170271,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 977,
+              "line": 1008,
               "column": 18,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1060,
+              "line": 1091,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -169564,7 +170345,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1012,
+          "line": 1043,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Request",
@@ -169573,7 +170354,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1074,
+          "line": 1105,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Request",
@@ -169588,13 +170369,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1012,
+              "line": 1043,
               "column": 18,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1074,
+              "line": 1105,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -169662,7 +170443,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 970,
+          "line": 1001,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Root job ID",
@@ -169677,7 +170458,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 970,
+              "line": 1001,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -169745,7 +170526,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 956,
+          "line": 987,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Sequence",
@@ -169754,7 +170535,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1039,
+          "line": 1070,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Sequence",
@@ -169769,13 +170550,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 956,
+              "line": 987,
               "column": 18,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1039,
+              "line": 1070,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -169843,7 +170624,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 949,
+          "line": 980,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Task ID",
@@ -169852,7 +170633,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1032,
+          "line": 1063,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Task ID",
@@ -169867,13 +170648,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 949,
+              "line": 980,
               "column": 18,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1032,
+              "line": 1063,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -169941,7 +170722,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1046,
+          "line": 1077,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Task kind",
@@ -169956,7 +170737,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1046,
+              "line": 1077,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -170024,7 +170805,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 963,
+          "line": 994,
           "column": 18,
           "symbol": "lcaDiagnosticContent",
           "defaultMessage": "Worker job ID",
@@ -170033,7 +170814,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1053,
+          "line": 1084,
           "column": 18,
           "symbol": "packageDiagnosticContent",
           "defaultMessage": "Worker job ID",
@@ -170048,13 +170829,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 963,
+              "line": 994,
               "column": 18,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1053,
+              "line": 1084,
               "column": 18,
               "kind": "formatMessage"
             }
@@ -170181,7 +170962,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1811,
+          "line": 1857,
           "column": 26,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Elapsed",
@@ -170196,7 +170977,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1811,
+              "line": 1857,
               "column": 26,
               "kind": "formatMessage"
             }
@@ -170264,7 +171045,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1560,
+          "line": 1602,
           "column": 32,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "No tasks",
@@ -170279,7 +171060,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1560,
+              "line": 1602,
               "column": 32,
               "kind": "formatMessage"
             }
@@ -170347,7 +171128,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 800,
+          "line": 821,
           "column": 10,
           "symbol": "taskTypeLabel",
           "defaultMessage": "All",
@@ -170362,7 +171143,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 800,
+              "line": 821,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -170513,7 +171294,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 769,
+          "line": 790,
           "column": 10,
           "symbol": "tidasScopeLabel",
           "defaultMessage": "Not specified",
@@ -170528,7 +171309,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 769,
+              "line": 790,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -170596,7 +171377,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1697,
+          "line": 1739,
           "column": 30,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Open",
@@ -170611,7 +171392,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1697,
+              "line": 1739,
               "column": 30,
               "kind": "formatMessage"
             }
@@ -170738,7 +171519,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 150,
+          "line": 166,
           "column": 12,
           "symbol": "lcaPhaseLabel",
           "defaultMessage": "Building snapshot",
@@ -170753,7 +171534,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 150,
+              "line": 166,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -170821,7 +171602,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 162,
+          "line": 178,
           "column": 12,
           "symbol": "lcaPhaseLabel",
           "defaultMessage": "Completed",
@@ -170830,7 +171611,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 205,
+          "line": 221,
           "column": 12,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Completed",
@@ -170845,13 +171626,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 162,
+              "line": 178,
               "column": 12,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 205,
+              "line": 221,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -170919,7 +171700,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 167,
+          "line": 183,
           "column": 10,
           "symbol": "lcaPhaseLabel",
           "defaultMessage": "Failed",
@@ -170928,7 +171709,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 210,
+          "line": 226,
           "column": 10,
           "symbol": "packagePhaseLabel",
           "defaultMessage": "Failed",
@@ -170943,13 +171724,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 167,
+              "line": 183,
               "column": 10,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 210,
+              "line": 226,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -171017,7 +171798,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 156,
+          "line": 172,
           "column": 12,
           "symbol": "lcaPhaseLabel",
           "defaultMessage": "Solving",
@@ -171032,7 +171813,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 156,
+              "line": 172,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171159,7 +171940,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 144,
+          "line": 160,
           "column": 12,
           "symbol": "lcaPhaseLabel",
           "defaultMessage": "Submitting",
@@ -171174,7 +171955,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 144,
+              "line": 160,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171251,7 +172032,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1820,
+          "line": 1866,
           "column": 30,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Phase:",
@@ -171272,7 +172053,7 @@
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1820,
+              "line": 1866,
               "column": 30,
               "kind": "formatMessage"
             }
@@ -171340,7 +172121,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 483,
+          "line": 504,
           "column": 12,
           "symbol": "processStepMeta",
           "defaultMessage": "Took {duration}",
@@ -171355,7 +172136,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 483,
+              "line": 504,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171423,7 +172204,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 474,
+          "line": 495,
           "column": 12,
           "symbol": "processStepMeta",
           "defaultMessage": "Running · {duration}",
@@ -171438,7 +172219,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 474,
+              "line": 495,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171506,7 +172287,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 274,
+          "line": 295,
           "column": 12,
           "symbol": "processStateLabel",
           "defaultMessage": "Completed",
@@ -171521,7 +172302,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 274,
+              "line": 295,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171589,7 +172370,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 286,
+          "line": 307,
           "column": 12,
           "symbol": "processStateLabel",
           "defaultMessage": "Stopped",
@@ -171604,7 +172385,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 286,
+              "line": 307,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171672,7 +172453,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 280,
+          "line": 301,
           "column": 12,
           "symbol": "processStateLabel",
           "defaultMessage": "In progress",
@@ -171687,7 +172468,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 280,
+              "line": 301,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171755,7 +172536,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 291,
+          "line": 312,
           "column": 10,
           "symbol": "processStateLabel",
           "defaultMessage": "Waiting",
@@ -171770,7 +172551,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 291,
+              "line": 312,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -171838,7 +172619,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 505,
+          "line": 526,
           "column": 12,
           "symbol": "lcaProcessStageLabel",
           "defaultMessage": "Build snapshot",
@@ -171853,7 +172634,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 505,
+              "line": 526,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -171921,7 +172702,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 516,
+          "line": 537,
           "column": 10,
           "symbol": "lcaProcessStageLabel",
           "defaultMessage": "Organize result",
@@ -171936,7 +172717,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 516,
+              "line": 537,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -172004,7 +172785,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 511,
+          "line": 532,
           "column": 12,
           "symbol": "lcaProcessStageLabel",
           "defaultMessage": "Solve",
@@ -172019,7 +172800,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 511,
+              "line": 532,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -172087,7 +172868,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 499,
+          "line": 520,
           "column": 12,
           "symbol": "lcaProcessStageLabel",
           "defaultMessage": "Submit task",
@@ -172102,7 +172883,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 499,
+              "line": 520,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -172170,7 +172951,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1265,
+          "line": 1303,
           "column": 16,
           "symbol": "taskProcessDetailContent",
           "defaultMessage": "Execution stages",
@@ -172179,7 +172960,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1276,
+          "line": 1314,
           "column": 14,
           "symbol": "taskProcessDetailContent",
           "defaultMessage": "Execution stages",
@@ -172194,13 +172975,13 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1265,
+              "line": 1303,
               "column": 16,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1276,
+              "line": 1314,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -172277,7 +173058,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1486,
+          "line": 1528,
           "column": 12,
           "symbol": "modalTitle",
           "defaultMessage": "Refresh",
@@ -172298,7 +173079,7 @@
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1486,
+              "line": 1528,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -172366,7 +173147,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1452,
+          "line": 1494,
           "column": 11,
           "symbol": "handleRefreshTasks",
           "defaultMessage": "Failed to refresh tasks",
@@ -172381,7 +173162,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1452,
+              "line": 1494,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -172567,7 +173348,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 115,
+          "line": 131,
           "column": 10,
           "symbol": "statusTag",
           "defaultMessage": "Completed",
@@ -172582,7 +173363,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 115,
+              "line": 131,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -172650,7 +173431,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 125,
+          "line": 141,
           "column": 10,
           "symbol": "statusTag",
           "defaultMessage": "Failed",
@@ -172665,7 +173446,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 125,
+              "line": 141,
               "column": 10,
               "kind": "formatMessage"
             }
@@ -172733,7 +173514,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 134,
+          "line": 150,
           "column": 8,
           "symbol": "statusTag",
           "defaultMessage": "Running",
@@ -172748,7 +173529,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 134,
+              "line": 150,
               "column": 8,
               "kind": "formatMessage"
             }
@@ -173229,7 +174010,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1473,
+          "line": 1515,
           "column": 10,
           "symbol": "modalTitle",
           "defaultMessage": "Task Center",
@@ -173238,7 +174019,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1509,
+          "line": 1551,
           "column": 21,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Task Center",
@@ -173247,7 +174028,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1513,
+          "line": 1555,
           "column": 16,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Task Center",
@@ -173262,19 +174043,19 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1473,
+              "line": 1515,
               "column": 10,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1509,
+              "line": 1551,
               "column": 21,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1513,
+              "line": 1555,
               "column": 16,
               "kind": "formatMessage"
             }
@@ -173342,7 +174123,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 808,
+          "line": 829,
           "column": 12,
           "symbol": "taskTitle",
           "defaultMessage": "LCA calculation",
@@ -173357,7 +174138,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 808,
+              "line": 829,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -173484,7 +174265,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 777,
+          "line": 798,
           "column": 12,
           "symbol": "taskTypeLabel",
           "defaultMessage": "LCA Calculation",
@@ -173499,7 +174280,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 777,
+              "line": 798,
               "column": 12,
               "kind": "formatMessage"
             }
@@ -173567,7 +174348,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1803,
+          "line": 1849,
           "column": 28,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "Updated",
@@ -173582,7 +174363,7 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1803,
+              "line": 1849,
               "column": 28,
               "kind": "formatMessage"
             }
@@ -173650,7 +174431,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1665,
+          "line": 1707,
           "column": 38,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "View",
@@ -173659,7 +174440,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1671,
+          "line": 1713,
           "column": 45,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "View",
@@ -173668,7 +174449,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1845,
+          "line": 1891,
           "column": 34,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "View",
@@ -173677,7 +174458,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/LcaTaskCenter/index.tsx",
-          "line": 1851,
+          "line": 1897,
           "column": 41,
           "symbol": "LcaTaskCenter",
           "defaultMessage": "View",
@@ -173692,25 +174473,25 @@
           "locations": [
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1665,
+              "line": 1707,
               "column": 38,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1671,
+              "line": 1713,
               "column": 45,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1845,
+              "line": 1891,
               "column": 34,
               "kind": "formatMessage"
             },
             {
               "path": "src/components/LcaTaskCenter/index.tsx",
-              "line": 1851,
+              "line": 1897,
               "column": 41,
               "kind": "formatMessage"
             }
@@ -190002,7 +190783,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 667,
+          "line": 660,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input approval of overall compliance",
@@ -190017,7 +190798,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 667,
+              "line": 660,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -190364,7 +191145,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 952,
+          "line": 945,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please input copyright",
@@ -190379,7 +191160,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 952,
+              "line": 945,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -190530,7 +191311,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 1068,
+          "line": 1061,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input data derivation type/status",
@@ -190545,7 +191326,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 1068,
+              "line": 1061,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -190613,7 +191394,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 995,
+          "line": 988,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input data set internal ID",
@@ -190628,7 +191409,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 995,
+              "line": 988,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -190696,7 +191477,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 869,
+          "line": 862,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please input data set version",
@@ -190711,7 +191492,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 869,
+              "line": 862,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -190779,7 +191560,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 707,
+          "line": 700,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input documentation compliance",
@@ -190794,7 +191575,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 707,
+              "line": 700,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -190862,7 +191643,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 1026,
+          "line": 1019,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input exchange direction",
@@ -190877,7 +191658,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 1026,
+              "line": 1019,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -191194,7 +191975,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 764,
+          "line": 757,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please input intended applications",
@@ -191209,7 +191990,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 764,
+              "line": 757,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -191277,7 +192058,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 974,
+          "line": 967,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please input license type",
@@ -191292,7 +192073,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 974,
+              "line": 967,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -191443,7 +192224,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 1037,
+          "line": 1030,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input mean amount",
@@ -191452,7 +192233,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 1114,
+          "line": 1107,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please input mean amount",
@@ -191467,13 +192248,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 1037,
+              "line": 1030,
               "column": 17,
               "kind": "schema-messageKey"
             },
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 1114,
+              "line": 1107,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -191624,7 +192405,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 687,
+          "line": 680,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input methodological compliance",
@@ -191639,7 +192420,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 687,
+              "line": 680,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -191790,7 +192571,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 677,
+          "line": 670,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input nomenclature compliance",
@@ -191805,7 +192586,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 677,
+              "line": 670,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -191873,7 +192654,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 896,
+          "line": 889,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please input permanent data set URI",
@@ -191888,7 +192669,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 896,
+              "line": 889,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -191956,7 +192737,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 717,
+          "line": 710,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input quality compliance",
@@ -191971,7 +192752,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 717,
+              "line": 710,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -192122,7 +192903,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 733,
+          "line": 726,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input commissioner of data set",
@@ -192137,7 +192918,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 733,
+              "line": 726,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -192147,7 +192928,7 @@
     },
     {
       "id": "pages.process.validator.referenceToCompleteReviewReport.required",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_process"],
@@ -192201,32 +192982,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "schema-messageKey",
-          "path": "src/pages/Processes/processes_schema.json",
-          "line": 625,
-          "column": 19,
-          "symbol": "<module>",
-          "defaultMessage": "Please input complete review report",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Please input complete review report",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/pages/Processes/processes_schema.json",
-              "line": 625,
-              "column": 19,
-              "kind": "schema-messageKey"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.process.validator.referenceToComplianceSystem.required",
@@ -192288,7 +193045,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 650,
+          "line": 643,
           "column": 19,
           "symbol": "<module>",
           "defaultMessage": "Please input compliance system name",
@@ -192303,7 +193060,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 650,
+              "line": 643,
               "column": 19,
               "kind": "schema-messageKey"
             }
@@ -192371,7 +193128,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 801,
+          "line": 794,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input data set format(s)",
@@ -192386,7 +193143,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 801,
+              "line": 794,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -192537,7 +193294,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 1007,
+          "line": 1000,
           "column": 19,
           "symbol": "<module>",
           "defaultMessage": "Please input flow",
@@ -192552,7 +193309,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 1007,
+              "line": 1000,
               "column": 19,
               "kind": "schema-messageKey"
             }
@@ -192703,7 +193460,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 933,
+          "line": 926,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input owner of data set",
@@ -192718,7 +193475,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 933,
+              "line": 926,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -192786,7 +193543,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 834,
+          "line": 827,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please select the person or entity entering the data.",
@@ -192801,7 +193558,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 834,
+              "line": 827,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -193035,7 +193792,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 1047,
+          "line": 1040,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input resulting amount",
@@ -193050,7 +193807,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 1047,
+              "line": 1040,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -193118,7 +193875,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 697,
+          "line": 690,
           "column": 17,
           "symbol": "<module>",
           "defaultMessage": "Please input review compliance",
@@ -193133,7 +193890,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 697,
+              "line": 690,
               "column": 17,
               "kind": "schema-messageKey"
             }
@@ -193533,7 +194290,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 790,
+          "line": 783,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Please enter the time stamp.",
@@ -193548,7 +194305,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 790,
+              "line": 783,
               "column": 15,
               "kind": "schema-messageKey"
             }
@@ -276645,7 +277402,7 @@
         {
           "kind": "schema-messageKey",
           "path": "src/pages/Processes/processes_schema.json",
-          "line": 874,
+          "line": 867,
           "column": 15,
           "symbol": "<module>",
           "defaultMessage": "Version format must be XX.XX.XXX, where X is a digit!",
@@ -276708,7 +277465,7 @@
             },
             {
               "path": "src/pages/Processes/processes_schema.json",
-              "line": 874,
+              "line": 867,
               "column": 15,
               "kind": "schema-messageKey"
             },

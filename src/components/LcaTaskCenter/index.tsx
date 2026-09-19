@@ -1,3 +1,4 @@
+import TidasImportResult from '@/components/ImportTidasPackage/ImportResult';
 import ClosureTaskDetail from '@/components/ClosureTaskDetail';
 import { useAntdAppApi } from '@/contexts/AntdAppContext';
 import HeaderActionIcon, { getHeaderBadgeStyle } from '@/components/HeaderActionIcon';
@@ -108,8 +109,23 @@ function useDataProductTaskSummaries(): TaskSummaryV2[] {
 function statusTag(
   state: 'running' | 'completed' | 'failed',
   intl: IntlShapeLike,
+  importOutcome?: TidasPackageBackgroundTask['importOutcome'],
 ): React.ReactNode {
-  if (state === 'completed') {
+  const resultState =
+    state === 'completed' && (importOutcome === 'none' || importOutcome === 'interrupted')
+      ? 'failed'
+      : state;
+  if (resultState === 'completed' && importOutcome === 'partial') {
+    return (
+      <Tag color='warning'>
+        {intl.formatMessage({
+          id: 'component.tidasPackage.import.result.partial',
+          defaultMessage: 'Partially imported',
+        })}
+      </Tag>
+    );
+  }
+  if (resultState === 'completed') {
     return (
       <Tag color='success' icon={<CheckCircleOutlined />}>
         {intl.formatMessage({
@@ -119,7 +135,7 @@ function statusTag(
       </Tag>
     );
   }
-  if (state === 'failed') {
+  if (resultState === 'failed') {
     return (
       <Tag color='error' icon={<CloseCircleOutlined />}>
         {intl.formatMessage({
@@ -242,11 +258,16 @@ function formatDateTime(value: string, intl: IntlShapeLike): string {
 }
 
 function getTaskElapsedMs(item: TaskCenterItem): number {
-  const created = Date.parse(item.task.createdAt);
+  const created = Date.parse(
+    (item.kind === 'package' && item.task.startedAt) || item.task.createdAt,
+  );
   if (!Number.isFinite(created)) {
     return 0;
   }
-  const end = item.task.state === 'running' ? Date.now() : Date.parse(item.task.updatedAt);
+  const end =
+    item.task.state === 'running'
+      ? Date.now()
+      : Date.parse((item.kind === 'package' && item.task.finishedAt) || item.task.updatedAt);
   if (!Number.isFinite(end)) {
     return 0;
   }
@@ -870,6 +891,16 @@ function taskProgressStrokeColor(
   item: TaskCenterItem,
   token: ReturnType<typeof theme.useToken>['token'],
 ): string {
+  if (item.kind === 'package' && item.task.kind === 'tidas_package_import') {
+    if (
+      item.task.state === 'failed' ||
+      item.task.importOutcome === 'none' ||
+      item.task.importOutcome === 'interrupted'
+    )
+      return token.colorError;
+    if (item.task.state === 'completed' && item.task.importOutcome === 'partial')
+      return token.colorWarning;
+  }
   if (item.task.state === 'completed') {
     return token.colorSuccess;
   }
@@ -1218,6 +1249,13 @@ function packageBusinessDetail(
           },
         ]}
       />
+      {isImport && task.jobId && (
+        <TidasImportResult
+          jobId={task.jobId}
+          reportAvailable={task.importReportAvailable}
+          detailsAvailable={task.importDetailsAvailable}
+        />
+      )}
       {singleRoot && (
         <DetailSection
           title={intl.formatMessage({
@@ -1230,7 +1268,7 @@ function packageBusinessDetail(
           </Typography.Text>
         </DetailSection>
       )}
-      {task.state === 'failed' && errorText && (
+      {!isImport && task.state === 'failed' && errorText && (
         <DetailSection
           title={intl.formatMessage({
             id: 'pages.process.lca.taskCenter.detail.failureReason',
@@ -1375,7 +1413,11 @@ const LcaTaskCenter: React.FC = () => {
       [
         ...lcaTasks.map((task) => ({ kind: 'lca' as const, task })),
         ...packageTasks.map((task) => ({ kind: 'package' as const, task })),
-      ].sort((left, right) => Date.parse(right.task.updatedAt) - Date.parse(left.task.updatedAt)),
+      ].sort(
+        (left, right) =>
+          Date.parse(right.task.createdAt) - Date.parse(left.task.createdAt) ||
+          left.task.id.localeCompare(right.task.id),
+      ),
     [lcaTasks, packageTasks],
   );
 
@@ -1758,7 +1800,11 @@ const LcaTaskCenter: React.FC = () => {
                           <Typography.Text strong style={{ fontSize: 14 }}>
                             {taskTitle(item, intl)}
                           </Typography.Text>
-                          {statusTag(item.task.state, intl)}
+                          {statusTag(
+                            item.task.state,
+                            intl,
+                            item.kind === 'package' ? item.task.importOutcome : undefined,
+                          )}
                           <Popover
                             trigger='click'
                             placement='bottomLeft'

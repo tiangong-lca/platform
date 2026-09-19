@@ -21,9 +21,9 @@ checkPaths:
   - src/services/lciaMethods/**
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
-lastReviewedAt: 2026-09-09
-lastReviewedCommit: 202e30656b62cad9ca1403b7d02880dff6bbe08c
-lastReviewedNote: 'Reviewed for Next #1044 third-review fixes: boundary aggregation keys on the exact Flow revision (no cross-revision merging), inventory assembly drops only exact-zero amounts and validates the primary group quantitative-reference exchange against the requested target (input-pivot treatment references exempt).'
+lastReviewedAt: 2026-09-18
+lastReviewedCommit: d0f64424af98857967592f4281d8a4ed8c25bf99
+lastReviewedNote: 'Reviewed Platform #1046 refinement: imports reconcile from the shared list only; terminal outcomes use green/orange/red, orphan records prevent full success, and reports resolve signed links only on click. Owner isolation, reload recovery and once-only data refresh are tested. Export/LCA behavior, ownership and gate policy remain unchanged; validation evidence is recorded in the task.'
 ---
 
 # Lifecycle Model Calculation Reference

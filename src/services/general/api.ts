@@ -251,7 +251,7 @@ export type TidasPackageValidationIssue = {
 export type TidasPackageJobMode = 'queued' | 'in_progress' | 'cache_hit' | 'completed';
 
 export type TidasPackageArtifactKind =
-  'import_source' | 'export_zip' | 'export_report' | 'import_report';
+  'import_source' | 'export_zip' | 'export_report' | 'import_report' | 'import_details';
 
 export type TidasPackageJobStatus =
   'queued' | 'running' | 'ready' | 'completed' | 'failed' | 'stale';
@@ -328,7 +328,24 @@ export type TidasPackageArtifact = {
   updated_at: string | null;
 };
 
+export type TidasPartialImportProgress = {
+  imported_count: number;
+  existing_count: number;
+  successful_root_count: number;
+  source: 'committed_receipts';
+};
+
+export type TidasPartialImportReport = {
+  report_version: 2;
+  outcome: 'success' | 'partial' | 'none' | 'interrupted';
+  execution_complete: boolean;
+  summary: Record<string, number>;
+  roots: { root: TidasPackageRoot; status: string; blocking_path: TidasPackageRoot[] }[];
+  roots_truncated: boolean;
+};
+
 export type TidasPackageJobResponse = {
+  import_progress?: TidasPartialImportProgress | null;
   ok: boolean;
   job_id: string;
   job_type: 'export_package' | 'import_package';
@@ -452,6 +469,7 @@ export async function enqueueImportTidasPackageApi(request: {
     {
       action: 'enqueue',
       ...request,
+      import_policy: 'root_closure_v2',
     },
   );
 }
@@ -501,7 +519,7 @@ function parseUrlOrNull(value: string) {
   }
 }
 
-function normalizeBrowserAccessiblePackageUrl(signedUrl: string) {
+export function normalizeBrowserAccessiblePackageUrl(signedUrl: string) {
   const configuredSupabaseUrl = process.env.SUPABASE_URL?.trim() || '';
   if (!configuredSupabaseUrl) {
     return signedUrl;
@@ -555,7 +573,10 @@ function resolveExportArtifactFilename(job: TidasPackageJobResponse, fallbackFil
   return fallbackFilename;
 }
 
-async function fetchPackageReport<T>(artifact: TidasPackageArtifact): Promise<T> {
+export async function fetchPackageReport<T>(
+  artifact: TidasPackageArtifact,
+  signal?: AbortSignal,
+): Promise<T> {
   if (!artifact.signed_download_url) {
     throw new Error('Package report is not available');
   }
@@ -565,6 +586,7 @@ async function fetchPackageReport<T>(artifact: TidasPackageArtifact): Promise<T>
     headers: {
       Accept: 'application/json',
     },
+    signal,
   });
 
   if (!response.ok) {
@@ -717,7 +739,7 @@ export async function downloadReadyTidasPackageExportApi(
   }
 }
 
-export async function importTidasPackageApi(file: File) {
+export async function queueImportTidasPackageApi(file: File) {
   const contentType = file.type || 'application/zip';
   const prepared = await prepareImportTidasPackageUploadApi({
     filename: file.name,
@@ -734,6 +756,7 @@ export async function importTidasPackageApi(file: File) {
 
   try {
     const artifactSha256 = await computeSha256Hex(file);
+    if (!artifactSha256) throw new Error('Import requires a verified SHA-256 checksum');
     await uploadTidasPackageToSignedUrl(prepared.data.upload, file);
 
     const queued = await enqueueImportTidasPackageApi({
@@ -749,6 +772,16 @@ export async function importTidasPackageApi(file: File) {
       throw queued.error ?? new Error((queued.data as any)?.message ?? 'Import failed');
     }
 
+    return queued;
+  } catch (error: any) {
+    return { data: null, error };
+  }
+}
+
+export async function importTidasPackageApi(file: File) {
+  const queued = await queueImportTidasPackageApi(file);
+  if (queued.error || !queued.data?.ok) return { data: null, error: queued.error };
+  try {
     const job = await waitForTidasPackageJob(
       queued.data.job_id,
       (candidate) => candidate.status === 'completed',
@@ -763,7 +796,9 @@ export async function importTidasPackageApi(file: File) {
       throw new Error('Import report is not available');
     }
 
-    const report = await fetchPackageReport<ImportTidasPackageResponse>(reportArtifact);
+    const report = await fetchPackageReport<ImportTidasPackageResponse | TidasPartialImportReport>(
+      reportArtifact,
+    );
     return {
       data: report,
       error: null,

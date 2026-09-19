@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-17
-lastReviewedCommit: d6345a46d3a5705e62991bf111259edd5f587c99
-lastReviewedNote: 'Reviewed for Platform #1092: exchange create initializes direction through ProForm initialValues, and create/edit submit the current complete form store to retain programmatically selected multilingual references.'
+lastReviewedAt: 2026-09-19
+lastReviewedCommit: ec64e2142f67874171bbd5ddb32f8aed581d9824
+lastReviewedNote: 'Reviewed Platform #1046 refinement: imports reconcile from the shared list only; terminal outcomes use green/orange/red, orphan records prevent full success, and reports resolve signed links only on click. Owner isolation, reload recovery and once-only data refresh are tested. Export/LCA behavior, ownership and gate policy remain unchanged; validation evidence is recorded in the task.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -215,3 +215,9 @@ The self-hosted snapshot tools keep the generated Edge tree and Database initial
 ## Example data catalog
 
 `/exampledata` is an authenticated sibling of `/tgdata` and redirects to its Models page. Its parent route sets `hideInMenu: true` to hide the entire Example Data menu group while retaining direct access to every route and all existing functionality. Remove that flag to show the menu again. Both sections reuse the same seven dataset pages, columns, search, detail, version, copy, and export controls. `getDataSource` maps the new section to `ex`; version lists enforce `state_code=-1`, while database queries own list/search scope before pagination and latest-version selection. Switching scope remounts list tables so rows from the previous section cannot remain visible. Example originals expose the same read-only actions as open data; copies use the existing personal draft creation path. Portal and anonymous routes keep their existing boundaries.
+
+All new TIDAS ZIP import helpers submit `root_closure_v2` asynchronously after signed upload. Import tasks use only the Task Center's five-second `app_worker_jobs` list refresh and its bounded `result.importResult` projection; no per-import polling or package-detail fan-out runs on refresh or hydration. Full success is green, partial import is orange, and no-success/interrupted/runtime failure is red. Worker owns completeness: when every record passes after exact review-field result filtering, whole-package import includes orphan records and allows zero roots; otherwise root-group fallback leaves isolated records unimported. Reused records count as covered, including all-existing packages. List errors retain the last backend state, and queued/running tasks remain in progress until a terminal result exists. Historical rows without the additive outcome projection retain their existing worker state; their reports remain downloadable.
+
+`ImportTidasPackage/ImportResult.tsx` presents report actions only. A user click calls `tidas_package_jobs` to obtain a fresh signed URL, and the browser streams the report download directly; the Task Center retains file name, data scope, root count, phase/progress, diagnostics and the four execution stages. Record-level results, reference paths and failure reasons live in the report. Publication-time availability flags disable known absent reports but downloads revalidate live expiry/access. Unknown availability for historical tasks remains requestable.
+
+TIDAS Task Center retains backend start, finish and update timestamps through list refresh and local recovery. Finished package duration uses start-to-finish time (legacy records fall back to created/update time); readback never stamps a new business update time. The combined LCA/package list orders by creation time and task ID. Overlapping list requests for one authenticated owner share a refresh. Running-to-terminal reconciliation persists the terminal state before dispatching `tidas-package-imported` and an optional enqueue callback once when newly inserted data exists, including data retained after interruption. Restored running imports use the same reconciliation; owner changes discard pending callbacks and late responses. Export polling remains unchanged.

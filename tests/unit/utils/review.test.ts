@@ -167,6 +167,66 @@ describe('review utilities', () => {
     jest.useRealTimers();
   });
 
+  it('allows an omitted Process report while retaining SDK rejection of a supplied malformed report', () => {
+    const reportPath = [
+      'processDataSet',
+      'modellingAndValidation',
+      'validation',
+      'review',
+      'common:referenceToCompleteReviewReport',
+    ];
+    mockCreateProcess.mockImplementation(() => ({
+      validateEnhanced: () => ({
+        success: false,
+        error: {
+          issues: [
+            { code: 'invalid_type', path: reportPath, message: 'Invalid report reference' },
+            {
+              code: 'invalid_type',
+              path: [
+                'processDataSet',
+                'modellingAndValidation',
+                'validation',
+                'review',
+                'common:reviewDetails',
+              ],
+              message: 'Other existing review issue',
+            },
+          ],
+        },
+      }),
+    }));
+
+    const review = { '@type': 'Independent external review' };
+    const omitted = { processDataSet: { modellingAndValidation: { validation: { review } } } };
+    expect(validateDatasetWithSdk('process data set', omitted)).toEqual({
+      success: true,
+      issues: [],
+    });
+    expect(omitted.processDataSet.modellingAndValidation.validation.review).toEqual(review);
+    expect(validateDatasetWithSdk('process data set', {})).toEqual({
+      success: true,
+      issues: [],
+    });
+
+    const supplied = {
+      processDataSet: {
+        modellingAndValidation: {
+          validation: {
+            review: {
+              ...review,
+              'common:referenceToCompleteReviewReport': { '@type': 'source data set' },
+            },
+          },
+        },
+      },
+    };
+    const result = validateDatasetWithSdk('process data set', supplied);
+    expect(result.success).toBe(false);
+    expect(result.issues).toHaveLength(1);
+    expect(result.issues[0].path).toEqual(reportPath);
+  });
+
   it('limits concurrency and resolves tasks in order', async () => {
     const controller = new ConcurrencyController(2);
     const starts: number[] = [];

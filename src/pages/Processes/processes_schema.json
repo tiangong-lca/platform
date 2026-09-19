@@ -618,14 +618,7 @@
           ],
           "common:referenceToCompleteReviewReport": {
             "@refObjectId": {
-              "value": "str",
-              "rules": [
-                {
-                  "required": true,
-                  "messageKey": "pages.process.validator.referenceToCompleteReviewReport.required",
-                  "defaultMessage": "Please input complete review report"
-                }
-              ]
+              "value": "str"
             },
             "@type": "str",
             "@uri": "str",

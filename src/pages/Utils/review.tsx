@@ -826,6 +826,28 @@ const filterValidationOrComplianceSdkIssues = (
   return issues.filter((issue) => !isValidationOrComplianceSdkIssue(issue));
 };
 
+const filterProcessValidationIssues = (
+  issues: SdkValidationIssue[],
+  orderedJson: unknown,
+): SdkValidationIssue[] => {
+  return issues.filter((issue) => {
+    if (!isValidationOrComplianceSdkIssue(issue)) return true;
+
+    const reportIndex = issue.path.indexOf('common:referenceToCompleteReviewReport');
+    if (reportIndex < 0) return false;
+
+    // Published SDK 0.2.0 still requires this field. Suppress only its
+    // missing-field issue; a supplied (even malformed) reference stays strict.
+    const reportPath = issue.path.slice(0, reportIndex + 1);
+    return (
+      reportPath.reduce<unknown>((value, segment) => {
+        if (value === null || value === undefined || typeof value !== 'object') return undefined;
+        return (value as Record<PropertyKey, unknown>)[segment];
+      }, orderedJson) !== undefined
+    );
+  });
+};
+
 export const validateDatasetWithSdk = (
   datasetType: refDataType['@type'],
   orderedJson: any,
@@ -864,7 +886,7 @@ export const validateDatasetWithSdk = (
         return result;
       }
 
-      const filteredIssues = filterValidationOrComplianceSdkIssues(result.issues);
+      const filteredIssues = filterProcessValidationIssues(result.issues, sdkValidationInput);
       return {
         success: filteredIssues.length === 0,
         issues: filteredIssues,

@@ -57,6 +57,16 @@ const getExchangeLocationField = (value: unknown) => {
 const normalizeAllocationPercentageValue = (value: unknown) =>
   normalizeOptionalTidasPercentage(typeof value === 'string' ? value.replace('%', '') : value);
 
+const hasReviewReportReference = (value: unknown): boolean => {
+  if (value === undefined) return false;
+  if (value === null) return true;
+  if (Array.isArray(value) || typeof value !== 'object') return true;
+
+  // Ant Design can register untouched nested fields with undefined values. A cleared
+  // selector is absence; any actual value, including a partial reference, is not.
+  return Object.values(value).some((field) => field !== undefined);
+};
+
 export function genProcessJsonOrdered(id: string, data: any) {
   let quantitativeReference = {};
   const exchangeList = jsonToList(data?.exchanges?.exchange);
@@ -525,17 +535,25 @@ export function genProcessJsonOrdered(id: string, data: any) {
                   ),
                 },
                 'common:otherReviewDetails': getLangJson(review?.['common:otherReviewDetails']),
-                'common:referenceToCompleteReviewReport': {
-                  '@refObjectId':
-                    review?.['common:referenceToCompleteReviewReport']?.['@refObjectId'] ?? {},
-                  '@type': review?.['common:referenceToCompleteReviewReport']?.['@type'] ?? {},
-                  '@uri': review?.['common:referenceToCompleteReviewReport']?.['@uri'] ?? {},
-                  '@version':
-                    review?.['common:referenceToCompleteReviewReport']?.['@version'] ?? {},
-                  'common:shortDescription': getLangJson(
-                    review?.['common:referenceToCompleteReviewReport']?.['common:shortDescription'],
-                  ),
-                },
+                ...(hasReviewReportReference(review?.['common:referenceToCompleteReviewReport'])
+                  ? {
+                      'common:referenceToCompleteReviewReport': {
+                        '@refObjectId':
+                          review?.['common:referenceToCompleteReviewReport']?.['@refObjectId'] ??
+                          {},
+                        '@type':
+                          review?.['common:referenceToCompleteReviewReport']?.['@type'] ?? {},
+                        '@uri': review?.['common:referenceToCompleteReviewReport']?.['@uri'] ?? {},
+                        '@version':
+                          review?.['common:referenceToCompleteReviewReport']?.['@version'] ?? {},
+                        'common:shortDescription': getLangJson(
+                          review?.['common:referenceToCompleteReviewReport']?.[
+                            'common:shortDescription'
+                          ],
+                        ),
+                      },
+                    }
+                  : {}),
               };
             }),
           ),
@@ -1213,16 +1231,23 @@ export function genProcessFromData(data: any): FormProcess {
                   ),
                 },
                 'common:otherReviewDetails': getLangList(review?.['common:otherReviewDetails']),
-                'common:referenceToCompleteReviewReport': {
-                  '@refObjectId':
-                    review?.['common:referenceToCompleteReviewReport']?.['@refObjectId'],
-                  '@type': review?.['common:referenceToCompleteReviewReport']?.['@type'],
-                  '@uri': review?.['common:referenceToCompleteReviewReport']?.['@uri'],
-                  '@version': review?.['common:referenceToCompleteReviewReport']?.['@version'],
-                  'common:shortDescription': getLangList(
-                    review?.['common:referenceToCompleteReviewReport']?.['common:shortDescription'],
-                  ),
-                },
+                ...(hasReviewReportReference(review?.['common:referenceToCompleteReviewReport'])
+                  ? {
+                      'common:referenceToCompleteReviewReport': {
+                        '@refObjectId':
+                          review?.['common:referenceToCompleteReviewReport']?.['@refObjectId'],
+                        '@type': review?.['common:referenceToCompleteReviewReport']?.['@type'],
+                        '@uri': review?.['common:referenceToCompleteReviewReport']?.['@uri'],
+                        '@version':
+                          review?.['common:referenceToCompleteReviewReport']?.['@version'],
+                        'common:shortDescription': getLangList(
+                          review?.['common:referenceToCompleteReviewReport']?.[
+                            'common:shortDescription'
+                          ],
+                        ),
+                      },
+                    }
+                  : {}),
               };
             },
           ) as any,

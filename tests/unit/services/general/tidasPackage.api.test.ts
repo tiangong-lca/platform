@@ -5,6 +5,7 @@ import {
   exportTidasPackageApi,
   getTidasPackageJobApi,
   importTidasPackageApi,
+  queueImportTidasPackageApi,
   prepareImportTidasPackageUploadApi,
   queueExportTidasPackageApi,
   resolveFunctionInvokeError,
@@ -1058,6 +1059,7 @@ describe('general/api TIDAS package helpers', () => {
     expect(mockFunctionsInvoke).toHaveBeenNthCalledWith(2, 'import_tidas_package', {
       body: {
         action: 'enqueue',
+        import_policy: 'root_closure_v2',
         artifact_byte_size: 7,
         artifact_sha256: '0a1bff',
         content_type: 'application/zip',
@@ -1072,7 +1074,7 @@ describe('general/api TIDAS package helpers', () => {
     });
   });
 
-  it('falls back to a null artifact hash when Web Crypto digest is unavailable', async () => {
+  it('rejects new imports before upload when Web Crypto digest is unavailable', async () => {
     const file = createZipFile();
     Object.defineProperty(global, 'crypto', {
       configurable: true,
@@ -1111,22 +1113,12 @@ describe('general/api TIDAS package helpers', () => {
 
     const result = await importTidasPackageApi(file);
 
-    expect(result.error).toEqual(new Error('enqueue failed'));
-    expect(mockFunctionsInvoke).toHaveBeenNthCalledWith(2, 'import_tidas_package', {
-      body: expect.objectContaining({
-        action: 'enqueue',
-        artifact_sha256: null,
-        job_id: 'job-null-hash',
-        source_artifact_id: 'artifact-null-hash',
-      }),
-      headers: {
-        Authorization: 'Bearer token-123',
-      },
-      region: FunctionRegion.UsEast1,
-    });
+    expect(result.error).toEqual(new Error('Import requires a verified SHA-256 checksum'));
+    expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
+    expect(mockUploadToSignedUrl).not.toHaveBeenCalled();
   });
 
-  it('falls back to a null artifact hash when digest computation throws', async () => {
+  it('rejects new imports before upload when digest computation throws', async () => {
     const file = createZipFile();
     mockDigest.mockRejectedValueOnce(new Error('digest failed'));
 
@@ -1159,19 +1151,9 @@ describe('general/api TIDAS package helpers', () => {
 
     const result = await importTidasPackageApi(file);
 
-    expect(result.error).toEqual(new Error('enqueue failed'));
-    expect(mockFunctionsInvoke).toHaveBeenNthCalledWith(2, 'import_tidas_package', {
-      body: expect.objectContaining({
-        action: 'enqueue',
-        artifact_sha256: null,
-        job_id: 'job-digest-error',
-        source_artifact_id: 'artifact-digest-error',
-      }),
-      headers: {
-        Authorization: 'Bearer token-123',
-      },
-      region: FunctionRegion.UsEast1,
-    });
+    expect(result.error).toEqual(new Error('Import requires a verified SHA-256 checksum'));
+    expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
+    expect(mockUploadToSignedUrl).not.toHaveBeenCalled();
   });
 
   it('rewrites docker-internal import report URLs to the browser-accessible Supabase origin', async () => {
@@ -1915,4 +1897,33 @@ describe('general/api TIDAS package helpers', () => {
       status: 504,
     });
   });
+  it.each([true, false])(
+    'requires and forwards a v2 checksum (available: %s)',
+    async (available) => {
+      mockDigest.mockResolvedValue(new Uint8Array([10, 27, 255]).buffer);
+      if (!available)
+        Object.defineProperty(global, 'crypto', { configurable: true, value: {}, writable: true });
+      mockFunctionsInvoke
+        .mockResolvedValueOnce({
+          data: {
+            ok: true,
+            job_id: 'job-import',
+            source_artifact_id: 'source',
+            upload: { bucket: 'tidas', object_path: 'package.zip', token: 'token' },
+          },
+          error: null,
+        })
+        .mockResolvedValueOnce({ data: { ok: true, job_id: 'job-import' }, error: null });
+      const result = await queueImportTidasPackageApi(createZipFile());
+      expect(result.error?.message ?? null).toBe(
+        available ? null : 'Import requires a verified SHA-256 checksum',
+      );
+      expect(mockUploadToSignedUrl).toHaveBeenCalledTimes(available ? 1 : 0);
+      expect(mockFunctionsInvoke).toHaveBeenCalledTimes(available ? 2 : 1);
+      const lastBody =
+        mockFunctionsInvoke.mock.calls[mockFunctionsInvoke.mock.calls.length - 1]?.[1]?.body;
+      expect(lastBody?.import_policy).toBe(available ? 'root_closure_v2' : undefined);
+      expect(lastBody?.artifact_sha256).toBe(available ? '0a1bff' : undefined);
+    },
+  );
 });

@@ -486,6 +486,56 @@ describe('Process Utility Functions', () => {
       expect(result.processDataSet.processInformation.dataSetInformation['common:UUID']).toBe(id);
     });
 
+    it('omits an unselected review report but preserves a supplied reference', () => {
+      const review = { '@type': 'Independent external review' };
+      const withReview = {
+        ...mockProcessData,
+        modellingAndValidation: {
+          ...mockProcessData.modellingAndValidation,
+          validation: { review: [review] },
+        },
+      };
+      const omitted = genProcessJsonOrdered('test-id', withReview);
+      expect(omitted.processDataSet.modellingAndValidation.validation.review).not.toHaveProperty(
+        'common:referenceToCompleteReviewReport',
+      );
+
+      const report = {
+        '@type': 'source data set',
+        '@refObjectId': 'a97a0155-0234-4b87-b4ce-a45da52f2a40',
+        '@uri': '../sources/a97a0155-0234-4b87-b4ce-a45da52f2a40.xml',
+        '@version': '01.00.000',
+        'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Review report' }],
+      };
+      const supplied = genProcessJsonOrdered('test-id', {
+        ...withReview,
+        modellingAndValidation: {
+          ...withReview.modellingAndValidation,
+          validation: { review: [{ ...review, 'common:referenceToCompleteReviewReport': report }] },
+        },
+      });
+      expect(
+        supplied.processDataSet.modellingAndValidation.validation.review[
+          'common:referenceToCompleteReviewReport'
+        ]['@refObjectId'],
+      ).toBe(report['@refObjectId']);
+
+      for (const incomplete of [{ '@uri': {} }, { '@refObjectId': null }, null, [], 'invalid']) {
+        const result = genProcessJsonOrdered('test-id', {
+          ...withReview,
+          modellingAndValidation: {
+            ...withReview.modellingAndValidation,
+            validation: {
+              review: [{ ...review, 'common:referenceToCompleteReviewReport': incomplete }],
+            },
+          },
+        });
+        expect(result.processDataSet.modellingAndValidation.validation.review).toHaveProperty(
+          'common:referenceToCompleteReviewReport',
+        );
+      }
+    });
+
     it('should extract quantitative reference from exchanges', () => {
       const id = 'test-process-id';
       const result = genProcessJsonOrdered(id, mockProcessData);
@@ -1207,6 +1257,45 @@ describe('Process Utility Functions', () => {
       expect(result).toBeDefined();
       expect(result.processInformation).toBeDefined();
       expect(result.exchanges).toBeDefined();
+    });
+
+    it('keeps an absent review report absent in the editable form', () => {
+      const result = genProcessFromData({
+        ...mockRawData,
+        modellingAndValidation: {
+          ...mockRawData.modellingAndValidation,
+          validation: { review: { '@type': 'Independent external review' } },
+        },
+      });
+      const review = result.modellingAndValidation?.validation?.review;
+      const firstReview = Array.isArray(review) ? review[0] : review;
+      expect(firstReview).not.toHaveProperty('common:referenceToCompleteReviewReport');
+    });
+
+    it('keeps a supplied review report in the editable form', () => {
+      const report = {
+        '@type': 'source data set',
+        '@refObjectId': 'a97a0155-0234-4b87-b4ce-a45da52f2a40',
+        '@uri': '../sources/a97a0155-0234-4b87-b4ce-a45da52f2a40.xml',
+        '@version': '01.00.000',
+      };
+      const result = genProcessFromData({
+        ...mockRawData,
+        modellingAndValidation: {
+          ...mockRawData.modellingAndValidation,
+          validation: {
+            review: {
+              '@type': 'Independent external review',
+              'common:referenceToCompleteReviewReport': report,
+            },
+          },
+        },
+      });
+      const review = result.modellingAndValidation?.validation?.review;
+      const firstReview = Array.isArray(review) ? review[0] : review;
+      expect(firstReview?.['common:referenceToCompleteReviewReport']?.['@refObjectId']).toBe(
+        report['@refObjectId'],
+      );
     });
 
     it('should handle single exchange object', () => {

@@ -184,11 +184,6 @@ const ReviewItemForm: FC<Props> = ({ name, lang, formRef, onData, disabled }) =>
                       lang={lang}
                       formRef={formRef}
                       onData={onData}
-                      rules={getRules(
-                        schema['processDataSet']['modellingAndValidation']['validation']['review'][
-                          'common:referenceToCompleteReviewReport'
-                        ]['@refObjectId']['rules'],
-                      )}
                     />
                   </Card>
                 </Space>

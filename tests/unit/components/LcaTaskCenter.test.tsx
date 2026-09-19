@@ -16,6 +16,12 @@ const mockSubscribeLcaTaskCenterOpenRequests = jest.fn(() => jest.fn());
 const mockRefreshDataProductTasks = jest.fn();
 const mockSubscribeDataProductTasks = jest.fn(() => jest.fn());
 
+jest.mock('@/components/ImportTidasPackage/ImportResult', () => ({
+  __esModule: true,
+  default: ({ jobId }: { jobId: string }) => <div data-testid='import-result'>{jobId}</div>,
+  importOutcomeLabel: (value: string) => value,
+}));
+
 jest.mock('@/components/ClosureTaskDetail', () => ({
   __esModule: true,
   default: ({ canDownloadReport, closureCheckId, refreshSignal }: any) => (
@@ -151,7 +157,11 @@ jest.mock('antd', () => {
     );
   };
 
-  const Progress = ({ percent }: any) => <div role='progressbar'>{percent}%</div>;
+  const Progress = ({ percent, strokeColor }: any) => (
+    <div role='progressbar' data-color={strokeColor}>
+      {percent}%
+    </div>
+  );
   const Space = ({ children, style, ...props }: any) => {
     const domProps = { ...props };
     delete domProps.align;
@@ -165,7 +175,7 @@ jest.mock('antd', () => {
       </div>
     );
   };
-  const Tag = ({ children }: any) => <span>{children}</span>;
+  const Tag = ({ children, color }: any) => <span data-color={color}>{children}</span>;
   const Tabs = ({ activeKey, items = [], onChange }: any) => (
     <div role='tablist'>
       {items.map((item: any) => (
@@ -197,6 +207,7 @@ jest.mock('antd', () => {
         colorFillSecondary: '#fafafa',
         colorPrimary: '#1677ff',
         colorSuccess: '#52c41a',
+        colorWarning: '#faad14',
         colorTextTertiary: '#595959',
         colorWhite: '#fff',
       },
@@ -246,6 +257,91 @@ describe('LcaTaskCenter', () => {
     mockRefreshLcaTasksFromWorkerJobs.mockResolvedValue([]);
     mockRefreshTidasPackageTasksFromWorkerJobs.mockResolvedValue([]);
     mockRefreshDataProductTasks.mockResolvedValue([]);
+  });
+
+  it.each([
+    ['success', 'completed', 'Completed', 'success'],
+    ['partial', 'completed', 'Partially imported', 'warning'],
+    ['none', 'completed', 'Failed', 'error'],
+    ['interrupted', 'completed', 'Failed', 'error'],
+    ['partial', 'failed', 'Failed', 'error'],
+    ['success', 'running', 'Running', 'processing'],
+  ])('uses the correct import result label and color (%s/%s)', (outcome, state, label, color) => {
+    mockPackageTasks = [
+      {
+        id: 'colors',
+        kind: 'tidas_package_import',
+        state,
+        phase: state,
+        importOutcome: outcome,
+        jobId: 'job',
+        rootCount: 0,
+        createdAt: '2026-09-18T00:00:00Z',
+        updatedAt: '2026-09-18T00:01:00Z',
+      },
+    ];
+    render(<LcaTaskCenter />);
+    fireEvent.click(screen.getByRole('button', { name: 'Task Center' }));
+    expect(
+      screen.getAllByText(label).find((node) => node.hasAttribute('data-color')),
+    ).toHaveAttribute('data-color', color);
+    expect(screen.getByRole('progressbar')).toHaveAttribute(
+      'data-color',
+      { success: '#52c41a', warning: '#faad14', error: '#ff4d4f', processing: '#1677ff' }[color],
+    );
+    expect(screen.getByRole('button', { name: 'Diagnostics' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'View' }));
+    expect(screen.getByTestId('import-result')).toBeInTheDocument();
+    expect(screen.getByText('Uploaded ZIP package')).toBeInTheDocument();
+    expect(screen.getByText('Data scope')).toBeInTheDocument();
+    expect(screen.getByText('Root records')).toBeInTheDocument();
+    expect(screen.getAllByText('Execution stages').length).toBeGreaterThan(0);
+  });
+
+  it('does not offer report actions for an import without a job id', () => {
+    mockPackageTasks = [
+      {
+        id: 'missing-job',
+        kind: 'tidas_package_import',
+        state: 'running',
+        phase: 'queued',
+        rootCount: 0,
+        createdAt: '2026-09-18T00:00:00Z',
+        updatedAt: '2026-09-18T00:01:00Z',
+      },
+    ];
+    render(<LcaTaskCenter />);
+    fireEvent.click(screen.getByRole('button', { name: 'Task Center' }));
+    fireEvent.click(screen.getByRole('button', { name: 'View' }));
+    expect(screen.queryByTestId('import-result')).not.toBeInTheDocument();
+  });
+
+  it('keeps completed package duration and order fixed after later metadata refreshes', () => {
+    mockPackageTasks = ['b', 'a'].map((id) => ({
+      id,
+      sequence: 1,
+      kind: 'tidas_package_import',
+      state: id === 'a' ? 'completed' : 'failed',
+      phase: id === 'a' ? 'completed' : 'failed',
+      filename: `${id}.zip`,
+      createdAt: '2026-09-09T10:31:50.000Z',
+      startedAt: '2026-09-09T10:31:52.000Z',
+      finishedAt: '2026-09-09T10:31:55.170Z',
+      updatedAt: '2026-09-10T01:33:38.000Z',
+    }));
+    const view = render(<LcaTaskCenter />);
+    fireEvent.click(screen.getByRole('button', { name: 'open-lca-task-center' }));
+    expect(screen.getAllByText('Elapsed 3.17 s')).toHaveLength(2);
+    const names = () =>
+      screen.getAllByText(/Import package: [ab]\.zip/).map((el) => el.textContent);
+    expect(names()).toEqual(['Import package: a.zip', 'Import package: b.zip']);
+    mockPackageTasks = mockPackageTasks
+      .map((task) => ({ ...task, updatedAt: '2026-09-11T01:33:38.000Z' }))
+      .reverse();
+    act(() => mockSubscribeTidasPackageTasks.mock.calls[0][0]());
+    view.rerender(<LcaTaskCenter />);
+    expect(screen.getAllByText('Elapsed 3.17 s')).toHaveLength(2);
+    expect(names()).toEqual(['Import package: a.zip', 'Import package: b.zip']);
   });
 
   it('shows the empty state when there are no tracked tasks', () => {
@@ -699,6 +795,7 @@ describe('LcaTaskCenter', () => {
       {
         id: 'pkg-import-filter',
         kind: 'tidas_package_import',
+        importOutcome: 'partial',
         state: 'running',
         phase: 'queued',
         filename: 'package.zip',
@@ -864,6 +961,7 @@ describe('LcaTaskCenter', () => {
         id: 'pkg-import-running',
         sequence: 5.7,
         kind: 'tidas_package_import',
+        importOutcome: 'success',
         state: 'running',
         phase: 'import_package',
         message: 'importing package data',
@@ -940,7 +1038,7 @@ describe('LcaTaskCenter', () => {
     expect(screen.getAllByText('Queued').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Submitting').length).toBeGreaterThan(0);
     expect(screen.getByText('Collecting related data')).toBeInTheDocument();
-    expect(screen.getByText('Importing data')).toBeInTheDocument();
+    expect(screen.getAllByText('Importing data').length).toBeGreaterThan(0);
     expect(screen.getByText('Building ZIP')).toBeInTheDocument();
     expect(screen.getAllByText('Completed').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Failed').length).toBeGreaterThan(0);
@@ -979,7 +1077,7 @@ describe('LcaTaskCenter', () => {
     expect(screen.getAllByText('Build report').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Collect related data').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Build ZIP').length).toBeGreaterThan(0);
-    expect(screen.getByText('import validation failed')).toBeInTheDocument();
+    expect(screen.queryByText('import validation failed')).not.toBeInTheDocument();
     expect(screen.getByText('package failed')).toBeInTheDocument();
     expect(
       screen.getByText(
@@ -1011,10 +1109,7 @@ describe('LcaTaskCenter', () => {
     expect(downloadButtons).toHaveLength(2);
     fireEvent.click(downloadButtons[0]);
     await waitFor(() => {
-      expect(mockDownloadTidasPackageExportTask).toHaveBeenNthCalledWith(
-        1,
-        'pkg-completed-default-name',
-      );
+      expect(mockDownloadTidasPackageExportTask).toHaveBeenNthCalledWith(1, 'pkg-completed');
     });
     await waitFor(() => {
       expect(message.success).toHaveBeenCalledWith('Downloaded downloaded.zip');
@@ -1022,7 +1117,10 @@ describe('LcaTaskCenter', () => {
 
     fireEvent.click(downloadButtons[1]);
     await waitFor(() => {
-      expect(mockDownloadTidasPackageExportTask).toHaveBeenNthCalledWith(2, 'pkg-completed');
+      expect(mockDownloadTidasPackageExportTask).toHaveBeenNthCalledWith(
+        2,
+        'pkg-completed-default-name',
+      );
     });
     await waitFor(() => {
       expect(message.error).toHaveBeenCalledWith('Failed to download TIDAS package');
@@ -1030,10 +1128,7 @@ describe('LcaTaskCenter', () => {
 
     fireEvent.click(downloadButtons[0]);
     await waitFor(() => {
-      expect(mockDownloadTidasPackageExportTask).toHaveBeenNthCalledWith(
-        3,
-        'pkg-completed-default-name',
-      );
+      expect(mockDownloadTidasPackageExportTask).toHaveBeenNthCalledWith(3, 'pkg-completed');
     });
     await waitFor(() => {
       expect(message.error).toHaveBeenCalledWith('download broken');

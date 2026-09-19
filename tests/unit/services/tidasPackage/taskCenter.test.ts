@@ -7,11 +7,13 @@ const storageKeyForOwner = (ownerId: string) =>
 const STORAGE_KEY = storageKeyForOwner(DEFAULT_OWNER_ID);
 
 const mockQueueExportTidasPackageApi = jest.fn();
+const mockQueueImportTidasPackageApi = jest.fn();
 const mockGetTidasPackageJobApi = jest.fn();
 const mockDownloadReadyTidasPackageExportApi = jest.fn();
 const mockRequestWorkerJobsApi = jest.fn();
 
 jest.mock('@/services/general/api', () => ({
+  queueImportTidasPackageApi: (...args: any[]) => mockQueueImportTidasPackageApi(...args),
   queueExportTidasPackageApi: (...args: any[]) => mockQueueExportTidasPackageApi(...args),
   getTidasPackageJobApi: (...args: any[]) => mockGetTidasPackageJobApi(...args),
   downloadReadyTidasPackageExportApi: (...args: any[]) =>
@@ -56,12 +58,73 @@ describe('tidasPackage/taskCenter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockQueueExportTidasPackageApi.mockReset();
+    mockQueueImportTidasPackageApi.mockReset();
     mockGetTidasPackageJobApi.mockReset();
     mockDownloadReadyTidasPackageExportApi.mockReset();
     mockRequestWorkerJobsApi.mockReset();
     mockRequestWorkerJobsApi.mockResolvedValue({ data: [], error: null });
     jest.useRealTimers();
     localStorage.clear();
+  });
+
+  it('refreshes terminal imports atomically with stable order and backend execution timestamps', async () => {
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    const createdAt = '2026-09-09T10:31:50.000Z';
+    const startedAt = '2026-09-09T10:31:52.000Z';
+    const finishedAt = '2026-09-09T10:31:55.170Z';
+    const rows = ['a', 'b'].map((id) => ({
+      id,
+      jobKind: 'tidas.import_package',
+      subjectId: `package-${id}`,
+      status: id === 'a' ? 'completed' : 'failed',
+      createdAt,
+      startedAt,
+      finishedAt,
+      updatedAt: finishedAt,
+    }));
+    const details = createDeferred<any>();
+    mockRequestWorkerJobsApi.mockReturnValue(details.promise);
+    const changes: string[][] = [];
+    center.subscribeTidasPackageTasks(() =>
+      changes.push(center.listTidasPackageTasks().map((t) => t.id)),
+    );
+    mockRequestWorkerJobsApi.mockClear();
+    const first = center.refreshTidasPackageTasksFromWorkerJobs();
+    const overlapping = center.refreshTidasPackageTasksFromWorkerJobs();
+    await flushPromises();
+    expect(mockRequestWorkerJobsApi).toHaveBeenCalledTimes(1);
+    expect(changes).toEqual([]);
+    details.resolve({ data: rows, error: null });
+    await Promise.all([first, overlapping]);
+    expect(changes).toEqual([['a', 'b']]);
+
+    const snapshot = center.listTidasPackageTasks();
+    jest.useFakeTimers().setSystemTime(new Date('2026-09-10T01:33:38.000Z'));
+    mockRequestWorkerJobsApi.mockResolvedValue({ data: [...rows].reverse(), error: null });
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    expect(center.listTidasPackageTasks()).toEqual(snapshot);
+    expect(changes).toEqual([
+      ['a', 'b'],
+      ['a', 'b'],
+    ]);
+    expect(snapshot[0]).toMatchObject({ createdAt, updatedAt: finishedAt, startedAt, finishedAt });
+    expect(snapshot[1].state).toBe('failed');
+    mockRequestWorkerJobsApi.mockResolvedValue({
+      data: rows.map((row) => ({ ...row, startedAt: null, finishedAt: 'invalid' })),
+      error: null,
+    });
+    mockGetTidasPackageJobApi.mockResolvedValue({ data: { ok: false } });
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    expect(center.listTidasPackageTasks()[0]).toMatchObject({ startedAt, finishedAt });
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+    expect(saved.tasks[0]).toMatchObject({ startedAt, finishedAt });
+    center.bindTidasPackageTaskCenterOwner(null);
+    mockRequestWorkerJobsApi.mockResolvedValue({ data: [], error: null });
+    const restored = loadTaskCenterModule();
+    expect(restored.listTidasPackageTasks()[0]).toMatchObject({ startedAt, finishedAt });
+    restored.bindTidasPackageTaskCenterOwner(null);
+    jest.useRealTimers();
   });
 
   it('stays inert until an authenticated owner is bound and discards legacy global storage', async () => {
@@ -492,23 +555,25 @@ describe('tidasPackage/taskCenter', () => {
     );
 
     const normalizedModule = loadTaskCenterModule();
-    expect(normalizedModule.listTidasPackageTasks()).toEqual([
-      expect.objectContaining({
-        id: 'normalized-task',
-        sequence: 1,
-        kind: 'tidas_package_export',
-        workerJobId: 'worker-normalized-task',
-        jobKind: 'tidas.export_package',
-        scope: null,
-        createdAt: '2026-03-21T10:00:00.000Z',
-        updatedAt: '2026-03-21T11:00:00.000Z',
-      }),
-      expect.objectContaining({
-        id: 'normalized-import-task',
-        kind: 'tidas_package_import',
-        sequence: 2,
-      }),
-    ]);
+    expect(normalizedModule.listTidasPackageTasks()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: 'normalized-task',
+          sequence: 1,
+          kind: 'tidas_package_export',
+          workerJobId: 'worker-normalized-task',
+          jobKind: 'tidas.export_package',
+          scope: null,
+          createdAt: '2026-03-21T10:00:00.000Z',
+          updatedAt: '2026-03-21T11:00:00.000Z',
+        }),
+        expect.objectContaining({
+          id: 'normalized-import-task',
+          kind: 'tidas_package_import',
+          sequence: 2,
+        }),
+      ]),
+    );
   });
 
   it('restores string scopes when savedAt is missing from storage', () => {
@@ -1046,6 +1111,7 @@ describe('tidasPackage/taskCenter', () => {
 
   it('surfaces worker_jobs refresh API errors with explicit and fallback messages', async () => {
     const explicitModule = loadTaskCenterModule();
+    await explicitModule.refreshTidasPackageTasksFromWorkerJobs();
     mockRequestWorkerJobsApi.mockResolvedValueOnce({
       data: null,
       error: { message: 'package api down' },
@@ -1055,6 +1121,7 @@ describe('tidasPackage/taskCenter', () => {
     );
 
     const fallbackModule = loadTaskCenterModule();
+    await fallbackModule.refreshTidasPackageTasksFromWorkerJobs();
     mockRequestWorkerJobsApi.mockResolvedValueOnce({ data: null, error: {} });
     await expect(fallbackModule.refreshTidasPackageTasksFromWorkerJobs()).rejects.toThrow(
       'Failed to refresh TIDAS package worker jobs',
@@ -1828,4 +1895,296 @@ describe('tidasPackage/taskCenter', () => {
       'tidas-package.zip',
     );
   });
+  it('rejects import without an owner and propagates admission failure', async () => {
+    const center = loadUnboundTaskCenterModule();
+    await expect(center.submitTidasPackageImportTask(new File(['zip'], 'a.zip'))).rejects.toThrow(
+      'authenticated',
+    );
+    center.bindTidasPackageTaskCenterOwner('user-a');
+    for (const response of [
+      { data: null, error: new Error('upload failed') },
+      { data: null, error: null },
+      { data: { ok: false }, error: null },
+    ]) {
+      mockQueueImportTidasPackageApi.mockResolvedValueOnce(response);
+      await expect(
+        center.submitTidasPackageImportTask(new File(['zip'], 'a.zip')),
+      ).rejects.toThrow();
+    }
+    expect(center.listTidasPackageTasks()).toEqual([]);
+  });
+
+  it('drops an admission response after the user switches accounts', async () => {
+    const center = loadTaskCenterModule();
+    const pending = createDeferred<any>();
+    mockQueueImportTidasPackageApi.mockReturnValueOnce(pending.promise);
+    const submit = center.submitTidasPackageImportTask(new File(['zip'], 'a.zip'));
+    center.bindTidasPackageTaskCenterOwner('user-b');
+    pending.resolve({ data: { ok: true, job_id: 'old' }, error: null });
+    await submit;
+    expect(center.listTidasPackageTasks()).toEqual([]);
+  });
+
+  it('restores validated partial outcome and rejects invalid persisted counts', () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        savedAt: new Date().toISOString(),
+        tasks: [
+          {
+            id: 'restore-import',
+            sequence: 1,
+            kind: 'tidas_package_import',
+            state: 'completed',
+            phase: 'completed',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            importOutcome: 'partial',
+            importSummary: {
+              imported_count: 2,
+              existing_count: -1,
+              invalid: '3',
+              null_count: null,
+            },
+          },
+        ],
+      }),
+    );
+    const center = loadTaskCenterModule();
+    expect(center.listTidasPackageTasks()[0].importSummary).toEqual({ imported_count: 2 });
+    expect(center.listTidasPackageTasks()[0].importOutcome).toBe('partial');
+  });
+
+  const importRow = (result: any = {}, status = 'completed') => ({
+    id: 'import-worker',
+    jobKind: 'tidas.import_package',
+    subjectId: 'import-job',
+    createdAt: '2026-09-18T00:00:00Z',
+    updatedAt: '2026-09-18T00:01:00Z',
+    status,
+    result: { importResult: result },
+  });
+  const enqueueImport = async (
+    center: ReturnType<typeof loadTaskCenterModule>,
+    callback?: () => void,
+  ) => {
+    mockQueueImportTidasPackageApi.mockResolvedValue({
+      data: { ok: true, job_id: 'import-job' },
+      error: null,
+    });
+    await center.submitTidasPackageImportTask(new File(['zip'], 'a.zip'), callback);
+  };
+
+  it.each([
+    ['success', 0, 'completed', 'success'],
+    ['success', 1, 'completed', 'partial'],
+    ['partial', 1, 'completed', 'partial'],
+    ['none', 2, 'failed', 'none'],
+    ['interrupted', 1, 'failed', 'interrupted'],
+  ])(
+    'maps list outcome %s with %s unimported records',
+    async (outcome, notImported, state, projected) => {
+      const center = loadTaskCenterModule();
+      await center.refreshTidasPackageTasksFromWorkerJobs();
+      await enqueueImport(center);
+      mockRequestWorkerJobsApi.mockResolvedValue({
+        data: [
+          importRow({
+            outcome,
+            executionComplete: outcome !== 'interrupted',
+            reportAvailable: true,
+            detailsAvailable: false,
+            summary: {
+              root_count: 2,
+              imported_count: 1,
+              not_imported_count: notImported,
+              invalid: -1,
+              text: '2',
+            },
+          }),
+        ],
+        error: null,
+      });
+      await center.refreshTidasPackageTasksFromWorkerJobs();
+      expect(center.listTidasPackageTasks()[0]).toMatchObject({
+        state,
+        importOutcome: projected,
+        importReportAvailable: true,
+        importDetailsAvailable: false,
+        rootCount: 2,
+        filename: 'a.zip',
+        importSummary: { root_count: 2, imported_count: 1, not_imported_count: notImported },
+      });
+      expect(center.listTidasPackageTasks()[0].importSummary).not.toHaveProperty('invalid');
+      expect(mockGetTidasPackageJobApi).not.toHaveBeenCalled();
+      center.bindTidasPackageTaskCenterOwner(null);
+      mockRequestWorkerJobsApi.mockResolvedValue({ data: [], error: null });
+      const restored = loadTaskCenterModule();
+      expect(restored.listTidasPackageTasks()[0]).toMatchObject({
+        importReportAvailable: true,
+        importDetailsAvailable: false,
+      });
+    },
+  );
+
+  it.each([0, 2])(
+    'completes rootless whole-package imports with %s inserted records',
+    async (inserted) => {
+      const center = loadTaskCenterModule();
+      await center.refreshTidasPackageTasksFromWorkerJobs();
+      await enqueueImport(center);
+      mockRequestWorkerJobsApi.mockResolvedValue({
+        data: [
+          importRow({
+            outcome: 'success',
+            executionComplete: true,
+            summary: {
+              total_entries: 2,
+              root_count: 0,
+              imported_count: inserted,
+              existing_count: 2 - inserted,
+              not_imported_count: 0,
+            },
+          }),
+        ],
+        error: null,
+      });
+      await center.refreshTidasPackageTasksFromWorkerJobs();
+      expect(center.listTidasPackageTasks()[0]).toMatchObject({
+        state: 'completed',
+        importOutcome: 'success',
+        rootCount: 0,
+        importSummary: { existing_count: 2 - inserted },
+      });
+      expect(mockGetTidasPackageJobApi).not.toHaveBeenCalled();
+    },
+  );
+
+  it('has no import polling or timeout and retains state across list errors and reload', async () => {
+    jest.useFakeTimers();
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    await enqueueImport(center);
+    await jest.advanceTimersByTimeAsync(3 * 60 * 60 * 1000);
+    expect(mockGetTidasPackageJobApi).not.toHaveBeenCalled();
+    mockRequestWorkerJobsApi.mockResolvedValue({ data: null, error: new Error('offline') });
+    await expect(center.refreshTidasPackageTasksFromWorkerJobs()).rejects.toThrow('offline');
+    expect(center.listTidasPackageTasks()[0].state).toBe('running');
+    center.bindTidasPackageTaskCenterOwner(null);
+    mockRequestWorkerJobsApi.mockResolvedValue({
+      data: [importRow({ outcome: 'success', summary: { imported_count: 2 } })],
+      error: null,
+    });
+    const event = jest.fn();
+    window.addEventListener('tidas-package-imported', event);
+    const restored = loadTaskCenterModule();
+    await restored.refreshTidasPackageTasksFromWorkerJobs();
+    await restored.refreshTidasPackageTasksFromWorkerJobs();
+    expect(event).toHaveBeenCalledTimes(1);
+    expect(mockGetTidasPackageJobApi).not.toHaveBeenCalled();
+    window.removeEventListener('tidas-package-imported', event);
+    jest.useRealTimers();
+  });
+
+  it.each([0, 2])('notifies exactly once for newly inserted records (%s)', async (count) => {
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    const callback = jest.fn();
+    await enqueueImport(center, callback);
+    mockRequestWorkerJobsApi.mockResolvedValue({
+      data: [importRow({ outcome: 'success', summary: { imported_count: count } })],
+      error: null,
+    });
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    expect(callback).toHaveBeenCalledTimes(count ? 1 : 0);
+  });
+
+  it('ignores in-flight results and callbacks after changing owners', async () => {
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    const callback = jest.fn();
+    await enqueueImport(center, callback);
+    const pending = createDeferred<any>();
+    mockRequestWorkerJobsApi.mockReturnValueOnce(pending.promise);
+    const refresh = center.refreshTidasPackageTasksFromWorkerJobs();
+    center.bindTidasPackageTaskCenterOwner('user-b');
+    pending.resolve({
+      data: [importRow({ outcome: 'success', summary: { imported_count: 1 } })],
+      error: null,
+    });
+    await refresh;
+    expect(callback).not.toHaveBeenCalled();
+    expect(center.listTidasPackageTasks()).toEqual([]);
+  });
+
+  it('contains consumer callback errors and refreshes records retained after interruption', async () => {
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    await enqueueImport(center, () => {
+      throw new Error('consumer failed');
+    });
+    mockRequestWorkerJobsApi.mockResolvedValue({
+      data: [importRow({ outcome: 'interrupted', summary: { imported_count: 1 } })],
+      error: null,
+    });
+    await expect(center.refreshTidasPackageTasksFromWorkerJobs()).resolves.toHaveLength(1);
+    expect(center.listTidasPackageTasks()[0].state).toBe('failed');
+  });
+  it('accepts incomplete legacy list summaries without requesting individual jobs', async () => {
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    await enqueueImport(center);
+    mockRequestWorkerJobsApi.mockResolvedValue({
+      data: [importRow({ outcome: 'future', summary: 'invalid' })],
+      error: null,
+    });
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    expect(center.listTidasPackageTasks()[0].importSummary).toEqual({});
+    expect(mockGetTidasPackageJobApi).not.toHaveBeenCalled();
+  });
+
+  it('handles recovered imports with no domain job id and no inserted count', async () => {
+    const center = loadTaskCenterModule();
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    const row = { ...importRow({}, 'running'), subjectId: undefined };
+    mockRequestWorkerJobsApi.mockResolvedValue({ data: [row], error: null });
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    mockRequestWorkerJobsApi.mockResolvedValue({
+      data: [{ ...row, status: 'completed' }],
+      error: null,
+    });
+    await center.refreshTidasPackageTasksFromWorkerJobs();
+    expect(center.listTidasPackageTasks()).toHaveLength(1);
+  });
+
+  it.each(['subscriber', 'event'])(
+    'stops old-owner notifications after %s changes the owner',
+    async (mode) => {
+      const center = loadTaskCenterModule();
+      await center.refreshTidasPackageTasksFromWorkerJobs();
+      const callback = jest.fn();
+      await enqueueImport(center, callback);
+      const switchOwner = () => {
+        mockRequestWorkerJobsApi.mockResolvedValue({ data: [], error: null });
+        center.bindTidasPackageTaskCenterOwner('user-b');
+      };
+      const unsubscribe =
+        mode === 'subscriber'
+          ? center.subscribeTidasPackageTasks(() => {
+              if (center.listTidasPackageTasks()[0]?.state === 'completed') switchOwner();
+            })
+          : () => {};
+      if (mode === 'event') window.addEventListener('tidas-package-imported', switchOwner);
+      mockRequestWorkerJobsApi.mockResolvedValue({
+        data: [importRow({ outcome: 'success', summary: { imported_count: 2 } })],
+        error: null,
+      });
+      await center.refreshTidasPackageTasksFromWorkerJobs();
+      expect(callback).not.toHaveBeenCalled();
+      unsubscribe();
+      window.removeEventListener('tidas-package-imported', switchOwner);
+    },
+  );
 });

@@ -46,13 +46,14 @@ jest.mock('@/pages/Contacts/Components/select/form', () => ({
 
 jest.mock('@/pages/Sources/Components/select/form', () => ({
   __esModule: true,
-  default: ({ parentName, name, label, type }: any) => (
+  default: ({ parentName, name, label, type, rules }: any) => (
     <div data-testid='source-select'>
       {JSON.stringify({
         parentName,
         name,
         label: label?.props?.defaultMessage ?? label,
         type,
+        rules,
       })}
     </div>
   ),
@@ -175,6 +176,7 @@ describe('ReviewFormForm', () => {
     expect(screen.getByTestId('contact-select')).toHaveTextContent('"parentName":["review"]');
     expect(screen.getByTestId('contact-select')).toHaveTextContent('"disabled":true');
     expect(screen.getByTestId('source-select')).toHaveTextContent('"type":"reviewReport"');
+    expect(screen.getByTestId('source-select')).not.toHaveTextContent('"rules"');
     expect(screen.getAllByTestId('lang-text-form')).toHaveLength(2);
     expect(screen.getByTestId('required-mark')).toHaveTextContent('Review details:false');
   });

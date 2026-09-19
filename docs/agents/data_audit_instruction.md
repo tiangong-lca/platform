@@ -18,8 +18,8 @@ checkPaths:
   - docs/agents/data_audit_instruction.md
   - src/pages/Review/**
   - src/pages/ManageSystem/**
-lastReviewedAt: 2026-09-09
-lastReviewedCommit: 5fe90293372adb1ba25fbf2d7dda06ba99bd94e9
+lastReviewedAt: 2026-09-19
+lastReviewedCommit: ec64e2142f67874171bbd5ddb32f8aed581d9824
 lastReviewedNote: 'Reviewed for Next #1042: six review task tabs consume Database v4 lexical search; request scope resets and stale-response handling preserve role boundaries. Read-only browser RPC allowlist advances to v4; existing testing, language and delivery gates remain in force.'
 ---
 
