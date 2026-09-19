@@ -232,13 +232,7 @@
       "LCIMethod": {
         "typeOfDataSet": {
           "value": "str",
-          "rules": [
-            {
-              "required": true,
-              "messageKey": "pages.flow.validator.typeOfDataSet.required",
-              "defaultMessage": "Please input type of flow"
-            }
-          ]
+          "rules": []
         }
       },
       "complianceDeclarations": {

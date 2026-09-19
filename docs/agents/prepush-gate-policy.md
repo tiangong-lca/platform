@@ -42,9 +42,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-09-19
-lastReviewedCommit: 814d6c29b70a5d7e4a3da04aed6fe97e9a09dd2d
-lastReviewedNote: 'Reviewed Platform #1046 whole-package result fixtures: valid rootless and all-existing packages remain completed from list results; partial/failed colors, metadata, four stages and report-on-click remain covered. Existing bootstrap, ownership, test strategy and gate policy are unchanged.'
+lastReviewedAt: 2026-09-20
+lastReviewedCommit: 46c2b72d7b68926dde4a486cb3e16667289baad4
+lastReviewedNote: 'Reviewed Platform #1097 W10 form-rule deduplication against the installed TIDAS SDK. Required field paths remain SDK-addressable, the two-component Process version is accepted, and Flow-property field prompts remain an evidenced UI projection. Documentation ownership, bootstrap, test strategy, and gate policy are unchanged.'
 ---
 
 # Pre-Push Gate Policy
@@ -108,7 +108,7 @@ It does not own:
 | non-mutating or deletion-only push | skip the checkpoint and both gates because no candidate content is being delivered; a checked push remains branch-update-only and rejects deletion before any gate |
 | same-push transport retry | permit the repo-owned retry helper only when a managed original push failed after its hook completed and the ignored bounded receipt proves the exact clean HEAD, branch, ref update, remote, toolchain, dependency tree, gate inputs, and Docpact base are unchanged |
 | ordinary GitHub branch pushes | do not run broad duplicate remote test jobs or the Playwright browser matrix |
-| PRs into `dev` | ordinary PRs rely on local test-gate evidence, focused proof, and Docpact governance; a marker-bound deterministic Release PR runs the reusable non-browser Release Gate and emits a 30-day proof bound to the main baseline, dev base/head/tree, version, PR, workflow run, attempt, and artifact |
+| PRs into `dev` | ordinary PRs rely on local full test-gate evidence and focused proof, while the lightweight `ai-doc-lint` PR job supplies executed, exact-head Docpact CI for workspace merge verification; do not duplicate the full suite remotely. A marker-bound deterministic Release PR also runs the reusable non-browser Release Gate and emits a 30-day proof bound to the main baseline, dev base/head/tree, version, PR, workflow run, attempt, and artifact |
 | PRs into `main` | keep the required compatibility check name `Main Candidate / Release Gate`, but verify only that the head is the exact tree-identical merge of the proved dev candidate, the main baseline has not drifted, and the bound dev release proof remains valid; do not rerun candidate tests or browsers |
 | `dev -> main` promotion candidate | use `release:to-dev` so the version PR preflights the complete current-`main` to candidate path set and owns the non-browser release gate; after it merges, the immutable promotion rechecks identity and reuses that proof |
 | semantic E2E `workflow_dispatch` | remains an optional credential-free/read-only hermetic qualification for an operator-selected open business PR or exact SHA; it never receives production credentials, authorizes production writes, or becomes a release prerequisite |

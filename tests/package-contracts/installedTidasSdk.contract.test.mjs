@@ -73,3 +73,125 @@ test('all seven dataset factories expose validateEnhanced and its stable error e
     assertStableErrorEnvelope(entity.validateEnhanced(), factoryName);
   }
 });
+
+test('Platform form projections defer covered public rules to the installed SDK', () => {
+  const flowFormSchema = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, 'src/pages/Flows/flows_schema.json'), 'utf8'),
+  );
+  const processFormSchema = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, 'src/pages/Processes/processes_schema.json'), 'utf8'),
+  );
+  const flowTypeRules =
+    flowFormSchema.flowDataSet.modellingAndValidation.LCIMethod.typeOfDataSet.rules;
+  const processVersionRules =
+    processFormSchema.processDataSet.administrativeInformation.publicationAndOwnership[
+      'common:dataSetVersion'
+    ].rules;
+  const processExchange = processFormSchema.processDataSet.exchanges.exchange[0];
+
+  assert.deepEqual(flowTypeRules, []);
+  assert.equal(processVersionRules.some((rule) => rule.pattern === 'dataSetVersion'), false);
+  assert.deepEqual(processExchange.meanAmount.rules, []);
+  assert.deepEqual(processExchange.resultingAmount.rules, []);
+
+  const flowIssues = installedCore
+    .createFlow({ flowDataSet: {} }, { mode: 'strict' })
+    .validateEnhanced().validationIssues;
+  assert.ok(
+    flowIssues.some(
+      (issue) =>
+        issue.code === 'required_missing' &&
+        issue.path.join('.') === 'flowDataSet.modellingAndValidation.LCIMethod.typeOfDataSet',
+    ),
+  );
+  const invalidFlowTypeIssues = installedCore
+    .createFlow(
+      {
+        flowDataSet: {
+          modellingAndValidation: { LCIMethod: { typeOfDataSet: 'Unknown flow' } },
+        },
+      },
+      { mode: 'strict' },
+    )
+    .validateEnhanced().validationIssues;
+  assert.ok(
+    invalidFlowTypeIssues.some(
+      (issue) =>
+        issue.path.join('.') === 'flowDataSet.modellingAndValidation.LCIMethod.typeOfDataSet',
+    ),
+  );
+
+  const processVersionIssues = (version) =>
+    installedCore
+      .createProcess(
+        {
+          processDataSet: {
+            administrativeInformation: {
+              publicationAndOwnership: { 'common:dataSetVersion': version },
+            },
+          },
+        },
+        { mode: 'strict' },
+      )
+      .validateEnhanced()
+      .validationIssues.filter((issue) => issue.path.at(-1) === 'common:dataSetVersion');
+  assert.deepEqual(processVersionIssues('01.02'), []);
+  assert.deepEqual(processVersionIssues('01.02.003'), []);
+  assert.ok(processVersionIssues('01.02.03').some((issue) => issue.code === 'invalid_format'));
+
+  const processIssues = installedCore
+    .createProcess(
+      {
+        processDataSet: {
+          exchanges: {
+            exchange: [{ '@dataSetInternalID': '1', referenceToFlowDataSet: {} }],
+          },
+        },
+      },
+      { mode: 'strict' },
+    )
+    .validateEnhanced().validationIssues;
+  for (const field of ['meanAmount', 'resultingAmount']) {
+    assert.ok(
+      processIssues.some(
+        (issue) =>
+          issue.code === 'required_missing' &&
+          issue.path.join('.') === `processDataSet.exchanges.exchange.0.${field}`,
+      ),
+      `${field} must retain a field-addressable SDK failure`,
+    );
+  }
+});
+
+test('Flow property entry retains local field prompts for the SDK union-path gap', () => {
+  const flowFormSchema = JSON.parse(
+    fs.readFileSync(path.join(repositoryRoot, 'src/pages/Flows/flows_schema.json'), 'utf8'),
+  );
+  const flowProperty = flowFormSchema.flowDataSet.flowProperties.flowProperty;
+  assert.equal(flowProperty.referenceToFlowPropertyDataSet['@refObjectId'].rules[0].required, true);
+  assert.equal(flowProperty.meanValue.rules[0].required, true);
+
+  const issues = installedCore
+    .createFlow(
+      {
+        flowDataSet: {
+          flowProperties: { flowProperty: { '@dataSetInternalID': '1' } },
+        },
+      },
+      { mode: 'strict' },
+    )
+    .validateEnhanced().validationIssues;
+  assert.ok(
+    issues.some(
+      (issue) =>
+        issue.code === 'invalid_union' &&
+        issue.path.join('.') === 'flowDataSet.flowProperties.flowProperty',
+    ),
+  );
+  assert.equal(
+    issues.some((issue) =>
+      ['meanValue', 'referenceToFlowPropertyDataSet'].includes(issue.path.at(-1)),
+    ),
+    false,
+  );
+});

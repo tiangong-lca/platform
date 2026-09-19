@@ -861,11 +861,6 @@
               "required": true,
               "messageKey": "pages.process.validator.dataSetVersion.required",
               "defaultMessage": "Please input data set version"
-            },
-            {
-              "pattern": "dataSetVersion",
-              "messageKey": "validator.dataSetVersion.pattern",
-              "defaultMessage": "Version format must be XX.XX.XXX, where X is a digit!"
             }
           ]
         },
@@ -1024,23 +1019,11 @@
           "referenceToVariable": "str",
           "meanAmount": {
             "value": "str",
-            "rules": [
-              {
-                "required": true,
-                "messageKey": "pages.process.validator.meanAmount.required",
-                "defaultMessage": "Please input mean amount"
-              }
-            ]
+            "rules": []
           },
           "resultingAmount": {
             "value": "str",
-            "rules": [
-              {
-                "required": true,
-                "messageKey": "pages.process.validator.resultingAmount.required",
-                "defaultMessage": "Please input resulting amount"
-              }
-            ]
+            "rules": []
           },
           "minimumAmount": "str",
           "maximumAmount": "str",

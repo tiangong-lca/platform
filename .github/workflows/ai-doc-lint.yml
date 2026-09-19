@@ -1,6 +1,14 @@
 name: ai-doc-lint
 
 on:
+  pull_request:
+    branches:
+      - dev
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
   workflow_dispatch:
     inputs:
       base_ref:
@@ -43,5 +51,5 @@ jobs:
 
       - name: Run local docpact gate
         env:
-          BASE_REF: ${{ inputs.base_ref }}
+          BASE_REF: ${{ github.event.pull_request.base.sha || inputs.base_ref || 'origin/dev' }}
         run: pnpm docpact:gate --base "$BASE_REF"

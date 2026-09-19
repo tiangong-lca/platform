@@ -775,8 +775,8 @@ describe('ProcessExchangeEdit', () => {
       expect(screen.getByRole('dialog', { name: 'Edit Exchange' })).toBeInTheDocument();
     });
 
-    expect(screen.getByText('Please input mean amount')).toBeInTheDocument();
-    expect(screen.queryByText('Fill in this field')).not.toBeInTheDocument();
+    expect(screen.getByText('Fill in this field')).toBeInTheDocument();
+    expect(screen.queryByText('Please input mean amount')).not.toBeInTheDocument();
     expect(screen.queryByText(/Expected string but found undefined/)).not.toBeInTheDocument();
     expect(screen.queryByTestId('sdk-highlight-meanAmount')).not.toBeInTheDocument();
 
