@@ -11,6 +11,7 @@ jest.mock('umi', () => ({
 jest.mock('@ant-design/icons', () => ({
   __esModule: true,
   CloseOutlined: () => <span>close</span>,
+  CaretRightOutlined: () => <span>expand</span>,
   ProfileOutlined: () => <span>view-icon</span>,
 }));
 
@@ -57,6 +58,13 @@ jest.mock('antd', () => {
   );
 
   const Tooltip = ({ children }: any) => <>{children}</>;
+  const Collapse = ({ items = [] }: any) => (
+    <div>
+      {items.map((item: any) => (
+        <section key={item.key}>{item.children}</section>
+      ))}
+    </div>
+  );
 
   const Drawer = ({ open, title, extra, children, onClose, getContainer }: any) =>
     open ? (
@@ -99,6 +107,7 @@ jest.mock('antd', () => {
     __esModule: true,
     Button,
     Card,
+    Collapse,
     Descriptions,
     Divider,
     Drawer,
@@ -161,6 +170,8 @@ describe('ReviewExchangeView', () => {
     expect(screen.getByText('Status One')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('20')).toBeInTheDocument();
+    expect(screen.getByText('co-product-1')).toBeInTheDocument();
+    expect(screen.getByText('0.5')).toBeInTheDocument();
     expect(screen.getByTestId('flow-description')).toHaveTextContent('en:flow-1:Flow');
     expect(screen.getByTestId('source-description')).toHaveTextContent(
       'en:source-1:Data source(s)',
@@ -175,6 +186,7 @@ describe('ReviewExchangeView', () => {
         data={[
           {
             ...baseExchange,
+            referenceToFlowDataSet: [{ '@refObjectId': 'flow-1' }],
             uncertaintyDistributionType: 'normal',
             relativeStandardDeviation95In: 0.95,
           },
@@ -187,6 +199,7 @@ describe('ReviewExchangeView', () => {
     await userEvent.click(screen.getByRole('button', { name: /view-icon/i }));
 
     expect(screen.getByText('0.95')).toBeInTheDocument();
+    expect(screen.getByTestId('flow-description')).toHaveTextContent('en:flow-1:Flow');
     expect(screen.queryByText('20')).not.toBeInTheDocument();
     expect(
       screen

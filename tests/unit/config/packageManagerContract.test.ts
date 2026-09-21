@@ -74,9 +74,9 @@ describe('pnpm package-manager contract', () => {
     const packageJson = JSON.parse(read('package.json'));
     const lockfile = read('pnpm-lock.yaml');
 
-    expect(packageJson.dependencies['@tiangong-lca/tidas-sdk']).toBe('0.2.0');
+    expect(packageJson.dependencies['@tiangong-lca/tidas-sdk']).toBe('0.3.1');
     expect(packageJson.devDependencies.typescript).toBe('7.0.2');
-    expect(lockfile).toMatch(/^\s{2}'?@tiangong-lca\/tidas-sdk@0\.2\.0'?\s*:/mu);
+    expect(lockfile).toMatch(/^\s{2}'?@tiangong-lca\/tidas-sdk@0\.3\.1'?\s*:/mu);
     expect(lockfile).toMatch(/^\s{2}typescript@7\.0\.2\s*:/mu);
     expect(lockfile).not.toMatch(/^\s{2}typescript@[0-6]\./mu);
     expect(lockfile).not.toMatch(/^\s{2}(?:'@typescript\/vfs|ts-to-zod)@/mu);

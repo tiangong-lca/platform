@@ -1427,7 +1427,14 @@ function validateTypedContentSources(locale) {
     throw new Error('TIDAS import-report canonical locale topology is incomplete.');
   }
   for (const entry of descriptor.entries) {
-    if (!entry.humanSummaryTemplate.trim() || !entry.readmeMarkdown.trim()) {
+    const contentFields = [
+      entry.humanSummaryTemplate,
+      entry.readmeMarkdown,
+      entry.v2HumanSummaryTemplate,
+      entry.v2ReadingGuide,
+      entry.v2ReadmeMarkdown,
+    ];
+    if (contentFields.some((field) => !field.trim())) {
       throw new Error(`TIDAS import-report content is empty for ${entry.canonicalLocale}.`);
     }
     for (const token of descriptor.humanSummaryTokens) {
@@ -1435,32 +1442,49 @@ function validateTypedContentSources(locale) {
         throw new Error(`TIDAS import-report ${entry.canonicalLocale} is missing {${token}}.`);
       }
     }
+    for (const token of descriptor.v2HumanSummaryTokens) {
+      if (!entry.v2HumanSummaryTemplate.includes(`{${token}}`)) {
+        throw new Error(`TIDAS import-report v2 ${entry.canonicalLocale} is missing {${token}}.`);
+      }
+    }
   }
   const target = descriptor.entries.find(({ canonicalLocale }) => canonicalLocale === locale);
   const source = descriptor.entries.find(
     ({ canonicalLocale }) => canonicalLocale === CANONICAL_SOURCE_APP_LOCALE,
   );
+  const fieldForKind = {
+    human_summary: 'humanSummaryTemplate',
+    readme_markdown: 'readmeMarkdown',
+    v2_human_summary: 'v2HumanSummaryTemplate',
+    v2_reading_guide: 'v2ReadingGuide',
+    v2_readme_markdown: 'v2ReadmeMarkdown',
+  };
   const dossiers = descriptor.contentKinds.map((kind) => ({
     contentId: `${descriptor.sourceId}.${kind}`,
     translations: Object.fromEntries(
-      descriptor.entries.map((entry) => [
-        entry.canonicalLocale,
-        kind === 'human_summary' ? entry.humanSummaryTemplate : entry.readmeMarkdown,
-      ]),
+      descriptor.entries.map((entry) => [entry.canonicalLocale, entry[fieldForKind[kind]]]),
     ),
-    callsite: 'src/components/ImportTidasPackage/index.tsx report download action',
-    route: 'authenticated TIDAS package import modal',
-    uiRole: kind === 'human_summary' ? 'downloaded report summary' : 'downloaded report guide',
+    callsite: 'src/components/ImportTidasPackage/ImportResult.tsx report download action',
+    route: 'authenticated TIDAS package import task center',
+    uiRole: kind.includes('human_summary')
+      ? 'downloaded report summary'
+      : 'downloaded report guide',
     stateTransition: 'import result -> report download -> offline diagnosis',
-    userConsequence: 'explains validation failures, conflicts, and skipped open data',
+    userConsequence: kind.startsWith('v2_')
+      ? 'explains actual imported, existing, not-imported and bounded validation results'
+      : 'explains historical validation failures, conflicts, and skipped open data',
     terminologyEvidence: 'locale glossary, TIDAS schema tokens, and canonical report contract',
-    syntax:
-      kind === 'human_summary'
-        ? { placeholders: descriptor.humanSummaryTokens, markdown: false }
-        : { placeholders: [], markdown: true },
-    targetCandidate: kind === 'human_summary' ? target.humanSummaryTemplate : target.readmeMarkdown,
-    canonicalEnglish:
-      kind === 'human_summary' ? source.humanSummaryTemplate : source.readmeMarkdown,
+    syntax: {
+      placeholders:
+        kind === 'human_summary'
+          ? descriptor.humanSummaryTokens
+          : kind === 'v2_human_summary'
+            ? descriptor.v2HumanSummaryTokens
+            : [],
+      markdown: kind.endsWith('readme_markdown') || kind === 'readme_markdown',
+    },
+    targetCandidate: target[fieldForKind[kind]],
+    canonicalEnglish: source[fieldForKind[kind]],
     rationale: 'registry-complete cross-locale content with report-schema tokens preserved',
     risk: 'high',
     validation: ['exact registry topology', 'token parity', 'pure descriptor unit test'],

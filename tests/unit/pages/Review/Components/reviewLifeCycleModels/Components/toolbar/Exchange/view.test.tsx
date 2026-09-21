@@ -147,9 +147,7 @@ describe('ReviewLifeCycleModelEdgeExchangeView', () => {
           exchange: [
             {
               exchangeDirection: 'output',
-              referenceToFlowDataSet: {
-                '@refObjectId': 'flow-output',
-              },
+              referenceToFlowDataSet: [{ '@refObjectId': 'flow-output' }],
               meanAmount: 10,
               resultingAmount: 12,
               dataDerivationTypeStatus: 'measured',
@@ -165,9 +163,7 @@ describe('ReviewLifeCycleModelEdgeExchangeView', () => {
           exchange: [
             {
               exchangeDirection: 'input',
-              referenceToFlowDataSet: {
-                '@refObjectId': 'flow-input',
-              },
+              referenceToFlowDataSet: [{ '@refObjectId': 'flow-input' }],
               meanAmount: 3,
               resultingAmount: 4,
               dataDerivationTypeStatus: 'estimated',

@@ -1249,13 +1249,6 @@ function packageBusinessDetail(
           },
         ]}
       />
-      {isImport && task.jobId && (
-        <TidasImportResult
-          jobId={task.jobId}
-          reportAvailable={task.importReportAvailable}
-          detailsAvailable={task.importDetailsAvailable}
-        />
-      )}
       {singleRoot && (
         <DetailSection
           title={intl.formatMessage({
@@ -1911,6 +1904,14 @@ const LcaTaskCenter: React.FC = () => {
                             }}
                           />
                         </Tooltip>
+                        {item.kind === 'package' &&
+                          item.task.kind === 'tidas_package_import' &&
+                          item.task.jobId && (
+                            <TidasImportResult
+                              jobId={item.task.jobId}
+                              reportAvailable={item.task.importReportAvailable}
+                            />
+                          )}
                         {item.kind === 'package' &&
                           item.task.kind === 'tidas_package_export' &&
                           item.task.state === 'completed' && (

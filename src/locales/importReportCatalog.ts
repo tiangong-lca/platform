@@ -3,10 +3,23 @@ import type { SupportedAppLocale } from '@/services/general/localeRegistry';
 export type ImportReportLocaleContent = Readonly<{
   humanSummaryTemplate: string;
   readmeMarkdown: string;
+  v2HumanSummaryTemplate: string;
+  v2ReadingGuide: string;
+  v2ReadmeMarkdown: string;
 }>;
 
 export const IMPORT_REPORT_CONTENT_BY_APP_LOCALE = {
   'zh-CN': {
+    v2HumanSummaryTemplate: '导入结果：{outcome}。总记录 {total_entries} 条，新增 {imported_count} 条，因数据类型、ID 和版本相同而跳过 {existing_count} 条，未导入 {not_imported_count} 条，校验问题 {validation_issue_count} 条。',
+    v2ReadingGuide: '先查看 report.outcome 和 report.summary。issues_by_file 按文件归类 report.validation_issues 中的样本；issues_by_file_truncated 为 true 时还有未展示的问题。report.skipped_records 和 report.roots 也可能只含样本，请查看各自的 truncated 标记。',
+    v2ReadmeMarkdown: `# 如何查看 TIDAS 导入报告
+
+\`report\` 保留任务生成的原始结果。\`report.outcome\` 表示导入结果：\`success\` 为全部记录已导入或复用，\`partial\` 为部分导入，\`none\` 为没有根分组成功，\`interrupted\` 为执行中断。
+
+\`report.summary\` 分别统计新增、已存在而跳过及未导入记录。已存在指数据类型、ID、版本相同，不代表数据冲突。\`issues_by_file\` 仅整理 \`report.validation_issues\` 中提供的问题样本；若 \`issues_by_file_truncated\` 为 true，不能将其视为全部问题。\`report.validation_issues_truncated\`、\`report.roots_truncated\` 和 \`report.skipped_records_truncated\` 保留原始截断信息。
+
+每条校验问题可通过文件路径、字段位置、严重级别和原始说明定位；\`ignored_for_import\` 表示该问题被导入结果过滤规则忽略，并未从原始证据中删除。
+`,
     humanSummaryTemplate: '导入结果：{code}。总记录 {total_entries} 条，开放数据跳过 {filtered_open_data_count} 条，用户数据冲突 {user_conflict_count} 条，成功导入 {imported_count} 条，校验问题 {validation_issue_count} 条。',
     readmeMarkdown: `# 如何查看这个导入报告
 
@@ -65,6 +78,16 @@ export const IMPORT_REPORT_CONTENT_BY_APP_LOCALE = {
 `,
   },
   'en-US': {
+    v2HumanSummaryTemplate: 'Import outcome: {outcome}. Total records: {total_entries}; inserted: {imported_count}; skipped because type, ID and version already exist: {existing_count}; not imported: {not_imported_count}; validation issues: {validation_issue_count}.',
+    v2ReadingGuide: 'Start with report.outcome and report.summary. issues_by_file groups only the samples in report.validation_issues. If issues_by_file_truncated is true, more issues exist. report.skipped_records and report.roots may also be samples; inspect their truncated flags.',
+    v2ReadmeMarkdown: `# How to read this TIDAS import report
+
+\`report\` preserves the original task result. \`report.outcome\` is \`success\` when every record was inserted or reused, \`partial\` when only some records were imported, \`none\` when no root group succeeded, and \`interrupted\` when execution stopped.
+
+\`report.summary\` separates inserted records, existing records skipped by exact type/ID/version, and records not imported. An existing record is a skip, not a conflict. \`issues_by_file\` groups only the issue samples provided in \`report.validation_issues\`; when \`issues_by_file_truncated\` is true, it is not a complete issue list. The original \`report.validation_issues_truncated\`, \`report.roots_truncated\`, and \`report.skipped_records_truncated\` flags remain available.
+
+Use an issue's file path, field location, severity and original message to find the problem. \`ignored_for_import\` means the import-result filter ignored that issue; the original evidence remains in the report.
+`,
     humanSummaryTemplate: 'Import result: {code}. Total records: {total_entries}, skipped open-data records: {filtered_open_data_count}, user conflicts: {user_conflict_count}, imported: {imported_count}, validation issues: {validation_issue_count}.',
     readmeMarkdown: `# How to read this import report
 
@@ -123,6 +146,16 @@ This is usually expected behavior unless you intended those records to be import
 `,
   },
   'de-DE': {
+    v2HumanSummaryTemplate: 'Importergebnis: {outcome}. Datensätze insgesamt: {total_entries}; neu eingefügt: {imported_count}; wegen gleicher Art, ID und Version übersprungen: {existing_count}; nicht importiert: {not_imported_count}; Validierungsprobleme: {validation_issue_count}.',
+    v2ReadingGuide: 'Prüfen Sie zuerst report.outcome und report.summary. issues_by_file gruppiert nur die Beispiele aus report.validation_issues. Bei issues_by_file_truncated=true gibt es weitere Probleme. Auch report.skipped_records und report.roots können gekürzt sein; prüfen Sie die truncated-Markierungen.',
+    v2ReadmeMarkdown: `# So lesen Sie diesen TIDAS-Importbericht
+
+\`report\` enthält das ursprüngliche Aufgabenergebnis. \`report.outcome\` unterscheidet \`success\` (alle Datensätze eingefügt oder wiederverwendet), \`partial\` (teilweise importiert), \`none\` (keine erfolgreiche Wurzelgruppe) und \`interrupted\` (Ausführung unterbrochen).
+
+\`report.summary\` trennt neu eingefügte, anhand von Art/ID/Version übersprungene und nicht importierte Datensätze. Ein bereits vorhandener Datensatz ist kein Konflikt. \`issues_by_file\` gruppiert nur die Beispiele aus \`report.validation_issues\`; \`issues_by_file_truncated=true\` zeigt weitere Probleme an. Die ursprünglichen Kürzungsmarkierungen bleiben in \`report\` erhalten.
+
+Dateipfad, Feldposition, Schweregrad und Originalmeldung helfen bei der Fehlersuche. \`ignored_for_import\` bezeichnet ein für die Importentscheidung ignoriertes Problem; der ursprüngliche Nachweis bleibt erhalten.
+`,
     humanSummaryTemplate: 'Importergebnis: {code}. Datensätze insgesamt: {total_entries}, übersprungene Open-Data-Datensätze: {filtered_open_data_count}, Konflikte mit benutzereigenen Daten: {user_conflict_count}, importiert: {imported_count}, Validierungsprobleme: {validation_issue_count}.',
     readmeMarkdown: `# So lesen Sie diesen Importbericht
 
@@ -181,6 +214,16 @@ Dieses Verhalten ist normalerweise beabsichtigt. Prüfen Sie es nur dann genauer
 `,
   },
   'fr-FR': {
+    v2HumanSummaryTemplate: "Résultat de l'importation : {outcome}. Enregistrements au total : {total_entries} ; ajoutés : {imported_count} ; ignorés car le type, l'ID et la version existent déjà : {existing_count} ; non importés : {not_imported_count} ; problèmes de validation : {validation_issue_count}.",
+    v2ReadingGuide: "Commencez par report.outcome et report.summary. issues_by_file regroupe seulement les exemples de report.validation_issues. Si issues_by_file_truncated vaut true, d'autres problèmes existent. report.skipped_records et report.roots peuvent aussi être limités : vérifiez leurs indicateurs truncated.",
+    v2ReadmeMarkdown: `# Comment lire ce rapport d'importation TIDAS
+
+\`report\` conserve le résultat original de la tâche. \`report.outcome\` indique \`success\` si tous les enregistrements sont ajoutés ou réutilisés, \`partial\` pour une importation partielle, \`none\` si aucun groupe racine n'a réussi et \`interrupted\` si l'exécution a été interrompue.
+
+\`report.summary\` distingue les ajouts, les enregistrements déjà présents ignorés selon leur type/ID/version et les enregistrements non importés. Un enregistrement existant n'est pas un conflit. \`issues_by_file\` regroupe seulement les exemples de \`report.validation_issues\` ; \`issues_by_file_truncated=true\` signale des problèmes supplémentaires. Les indicateurs de limitation originaux restent dans \`report\`.
+
+Le chemin du fichier, l'emplacement du champ, la gravité et le message d'origine aident à trouver le problème. \`ignored_for_import\` indique qu'un problème a été ignoré pour la décision d'importation, sans supprimer la preuve d'origine.
+`,
     humanSummaryTemplate: "Résultat de l'importation : {code}. Nombre total d'enregistrements : {total_entries}, enregistrements de données ouvertes ignorés : {filtered_open_data_count}, conflits avec les données utilisateur : {user_conflict_count}, importés : {imported_count}, problèmes de validation : {validation_issue_count}.",
     readmeMarkdown: `# Comment lire ce rapport d'importation
 

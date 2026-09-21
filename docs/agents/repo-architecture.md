@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-20
-lastReviewedCommit: 946947e382e67d975a96f27acec727ac419f437c
-lastReviewedNote: 'Reviewed Platform #1097 W10 form-rule deduplication against the installed TIDAS SDK. Required field paths remain SDK-addressable, the two-component Process version is accepted, and Flow-property field prompts remain an evidenced UI projection. Documentation ownership, bootstrap, test strategy, and gate policy are unchanged.'
+lastReviewedAt: 2026-09-21
+lastReviewedCommit: 25d57284565efb719c471df2bfdceb05dfc65717
+lastReviewedNote: 'Reviewed Platform #1109 after merging current dev: review action and input/output display parity use shared data-page views; the #1107 import-report behavior, repository contracts, validation, and testing policies remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -218,6 +218,6 @@ The self-hosted snapshot tools keep the generated Edge tree and Database initial
 
 All new TIDAS ZIP import helpers submit `root_closure_v2` asynchronously after signed upload. Import tasks use only the Task Center's five-second `app_worker_jobs` list refresh and its bounded `result.importResult` projection; no per-import polling or package-detail fan-out runs on refresh or hydration. Full success is green, partial import is orange, and no-success/interrupted/runtime failure is red. Worker owns completeness: when every record passes after exact review-field result filtering, whole-package import includes orphan records and allows zero roots; otherwise root-group fallback leaves isolated records unimported. Reused records count as covered, including all-existing packages. List errors retain the last backend state, and queued/running tasks remain in progress until a terminal result exists. Historical rows without the additive outcome projection retain their existing worker state; their reports remain downloadable.
 
-`ImportTidasPackage/ImportResult.tsx` presents report actions only. A user click calls `tidas_package_jobs` to obtain a fresh signed URL, and the browser streams the report download directly; the Task Center retains file name, data scope, root count, phase/progress, diagnostics and the four execution stages. Record-level results, reference paths and failure reasons live in the report. Publication-time availability flags disable known absent reports but downloads revalidate live expiry/access. Unknown availability for historical tasks remains requestable.
+`ImportTidasPackage/ImportResult.tsx` presents one report-download icon beside the Task Center row's View icon, matching the export download action. A user click calls `tidas_package_jobs` to obtain a fresh signed URL, fetches the JSON import report, and downloads a browser-generated JSON with multilingual guidance, a file-grouped issue sample, truncation flags, and the untouched backend report. V1 and v2 reports retain their distinct import semantics; v2 issue, root, and skipped-record arrays may be bounded samples. The expanded Task Center detail retains file name, data scope, root count and the four execution stages; the row retains phase/progress and diagnostics. Publication-time availability flags disable known absent reports but downloads revalidate live expiry/access. Unknown availability for historical tasks remains requestable.
 
 TIDAS Task Center retains backend start, finish and update timestamps through list refresh and local recovery. Finished package duration uses start-to-finish time (legacy records fall back to created/update time); readback never stamps a new business update time. The combined LCA/package list orders by creation time and task ID. Overlapping list requests for one authenticated owner share a refresh. Running-to-terminal reconciliation persists the terminal state before dispatching `tidas-package-imported` and an optional enqueue callback once when newly inserted data exists, including data retained after interruption. Restored running imports use the same reconciliation; owner changes discard pending callbacks and late responses. Export polling remains unchanged.

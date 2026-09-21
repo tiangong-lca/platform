@@ -106,4 +106,10 @@ describe('ReviewLifeCycleModelEdgeExchangeButton', () => {
     await userEvent.click(screen.getByRole('button', { name: 'close-view' }));
     expect(screen.getByTestId('edge-exchange-view')).toHaveTextContent('false|process-source');
   });
+
+  it('passes empty identifiers when the review edge payload is incomplete', () => {
+    render(<EdgeExchange lang='en' disabled={false} edge={{} as any} />);
+
+    expect(screen.getByTestId('edge-exchange-view')).toHaveTextContent('false||||||');
+  });
 });

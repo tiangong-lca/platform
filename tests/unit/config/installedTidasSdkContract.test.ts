@@ -35,7 +35,7 @@ describe('installed TIDAS SDK package contract', () => {
       signal: null,
       status: 0,
       stderr: '',
-      stdout: expect.stringMatching(/(?:#|ℹ) pass 4/u),
+      stdout: expect.stringMatching(/(?:#|ℹ) pass 5/u),
     });
   });
 });

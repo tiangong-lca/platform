@@ -450,7 +450,7 @@ describe('shared locale delivery contracts', () => {
       expect(context.typedContentDossiers).toEqual(
         expect.objectContaining({
           registryLocaleCount: SUPPORTED_APP_LOCALES.length,
-          targetContentUnitCount: 2,
+          targetContentUnitCount: 5,
           blockedContextCount: 0,
         }),
       );

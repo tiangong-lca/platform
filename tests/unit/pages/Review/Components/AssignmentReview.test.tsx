@@ -1411,12 +1411,10 @@ describe('AssignmentReview', () => {
 
     await waitFor(() => expect(screen.getByTestId('row-review-2')).toBeInTheDocument());
     expect(screen.queryByTestId('search-input')).not.toBeInTheDocument();
-    expect(screen.getAllByTestId('review-process-detail')[0]).toHaveTextContent(
+    expect(screen.getByTestId('review-process-detail')).toHaveTextContent(
       'edit:review:review-2:show',
     );
-    expect(screen.getAllByTestId('review-process-detail')[1]).toHaveTextContent(
-      'view:review:review-2:hide',
-    );
+    expect(screen.queryByText('view:review:review-2:hide')).not.toBeInTheDocument();
 
     await userEvent.selectOptions(screen.getByRole('combobox', { name: 'Display mode' }), 'other');
     await waitFor(() =>
@@ -1999,7 +1997,40 @@ describe('AssignmentReview', () => {
     expect(screen.queryByText('edit:review:review-8')).not.toBeInTheDocument();
   });
 
-  it('renders reviewed lifecycle rows with edit and view actions when review buttons are enabled', async () => {
+  it('renders reviewed process rows in view mode when hideReviewButton is true', async () => {
+    mockGetReviewsTableDataOfReviewMember.mockResolvedValueOnce({
+      success: true,
+      data: [
+        {
+          id: 'review-8-process',
+          name: 'Reviewed Process',
+          userName: 'Reviewer',
+          isFromLifeCycle: false,
+          json: {
+            data: { id: 'process-8', version: '8.0.0' },
+            user: { id: 'user-8' },
+          },
+        },
+      ],
+      total: 1,
+    });
+
+    render(
+      <AssignmentReview
+        userData={{ user_id: 'member-1', role: 'review-member' }}
+        tableType='reviewed'
+        actionRef={{ current: { reload: jest.fn() } }}
+        hideReviewButton={true}
+      />,
+    );
+
+    await waitFor(() => expect(screen.getByTestId('row-review-8-process')).toBeInTheDocument());
+    expect(screen.getByTestId('review-process-detail')).toHaveTextContent(
+      'view:review:review-8-process:hide',
+    );
+  });
+
+  it('renders reviewed lifecycle rows with only the review action when review buttons are enabled', async () => {
     const actionRef = { current: { reload: jest.fn() } };
     mockGetReviewsTableDataOfReviewMember.mockResolvedValueOnce({
       success: true,
@@ -2027,9 +2058,10 @@ describe('AssignmentReview', () => {
     );
 
     await waitFor(() => expect(screen.getByTestId('row-review-8b')).toBeInTheDocument());
-    const details = screen.getAllByTestId('review-lifecycle-detail');
-    expect(details[0]).toHaveTextContent('edit:review:review-8b');
-    expect(details[1]).toHaveTextContent('view:review:review-8b');
+    expect(screen.getByTestId('review-lifecycle-detail')).toHaveTextContent(
+      'edit:review:review-8b',
+    );
+    expect(screen.queryByText('view:review:review-8b')).not.toBeInTheDocument();
   });
 
   it('logs reference query failures, shows loading, and supports collapsing root rows', async () => {
@@ -2351,6 +2383,35 @@ describe('AssignmentReview', () => {
       resolveOld({ success: true, data: [{ id: 'stale-review' }], total: 1 });
     });
     expect(screen.queryByTestId('row-stale-review')).not.toBeInTheDocument();
+    expect(screen.getByTestId('row-review-1')).toBeInTheDocument();
+  });
+
+  it('ignores an older request failure after a newer search has completed', async () => {
+    let rejectOld!: (reason: Error) => void;
+    mockGetReviewsTableDataOfReviewAdmin.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectOld = reject;
+        }),
+    );
+
+    render(
+      <AssignmentReview
+        userData={{ user_id: 'admin', role: 'review-admin' }}
+        tableType='unassigned'
+        actionRef={{ current: {} }}
+      />,
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'trigger-search' }));
+    await waitFor(() => expect(screen.getByTestId('row-review-1')).toBeInTheDocument());
+
+    await act(async () => {
+      rejectOld(new Error('stale request failed'));
+      await Promise.resolve();
+    });
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.getByTestId('row-review-1')).toBeInTheDocument();
   });
   it('preserves the searched scope for paging and sorting and rejects an obsolete scheduled request', async () => {

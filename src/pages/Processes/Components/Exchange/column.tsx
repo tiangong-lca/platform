@@ -1,5 +1,5 @@
-import { QuantitativeReferenceIcon } from '@/components';
 import AlignedNumber from '@/components/AlignedNumber';
+import QuantitativeReferenceIcon from '@/components/QuantitativeReferenceIcon';
 import { getFolwypeOfDataSetOptions } from '@/pages/LifeCycleModels/Components/toolbar/Exchange/ioPortSelect';
 import { getLangText } from '@/services/general/util';
 import { ProcessExchangeTable } from '@/services/processes/data';

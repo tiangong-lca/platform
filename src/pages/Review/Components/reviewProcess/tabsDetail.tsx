@@ -1,22 +1,24 @@
-import AlignedNumber from '@/components/AlignedNumber';
 import LangTextItemDescription from '@/components/LangTextItem/description';
 import LevelTextItemDescription from '@/components/LevelTextItem/description';
 import LocationTextItemDescription from '@/components/LocationTextItem/description';
-import QuantitativeReferenceIcon from '@/components/QuantitativeReferenceIcon';
 import ContactSelectDescription from '@/pages/Contacts/Components/select/description';
+import {
+  getExchangeColumns,
+  PROCESS_EXCHANGE_TABLE_SCROLL,
+} from '@/pages/Processes/Components/Exchange/column';
 import SourceSelectDescription from '@/pages/Sources/Components/select/description';
 import { getFlowStateCodeByIdsAndVersions } from '@/services/flows/api';
 import {
   ContentLanguageAwareTableParams,
   getContentLanguageAwareTableParams,
 } from '@/services/general/data';
-import { getLangText, getUnitData } from '@/services/general/util';
+import { getUnitData } from '@/services/general/util';
 import { getProcessExchange } from '@/services/processes/api';
-import { ProcessExchangeTable } from '@/services/processes/data';
+import { ProcessExchangeData, ProcessExchangeTable } from '@/services/processes/data';
 import { genProcessExchangeTableData } from '@/services/processes/util';
 import { getUserDetail } from '@/services/users/api';
 import { ActionType, ProColumns, ProFormInstance, ProTable } from '@ant-design/pro-components';
-import { Card, Collapse, Descriptions, Divider, Space, Tooltip } from 'antd';
+import { Card, Collapse, Descriptions, Divider, Space } from 'antd';
 import { useEffect, useMemo, useRef, type FC } from 'react';
 import { FormattedMessage } from 'umi';
 import ComplianceItemForm from '../Compliance/form';
@@ -44,7 +46,7 @@ type Props = {
   onData: () => void;
   onExchangeData: (data: any) => void;
   onTabChange: (key: string) => void;
-  exchangeDataSource: ProcessExchangeTable[];
+  exchangeDataSource: ProcessExchangeData[];
   formType?: string;
   initData: any;
   type: 'edit' | 'view';
@@ -92,6 +94,9 @@ const getCompletenessElementaryFlowsValueOptions = (value: string) => {
   const option = completenessElementaryFlowsValueOptions.find((opt) => opt.value === value);
   return option ? option.label : '-';
 };
+
+const toReferenceValue = (reference?: ProcessExchangeData['referenceToFlowDataSet']) =>
+  Array.isArray(reference) ? reference[0] : reference;
 
 export const TabsDetail: FC<Props> = ({
   lang,
@@ -186,133 +191,7 @@ export const TabsDetail: FC<Props> = ({
     },
   ];
   const processExchangeColumns: ProColumns<ProcessExchangeTable>[] = [
-    {
-      title: <FormattedMessage id='pages.table.title.index' defaultMessage='Index' />,
-      dataIndex: 'index',
-      valueType: 'index',
-      search: false,
-    },
-    {
-      title: <FormattedMessage id='processExchange.referenceToFlowDataSet' defaultMessage='Flow' />,
-      dataIndex: 'referenceToFlowDataSet',
-      sorter: false,
-      search: false,
-      render: (_, row) => [
-        <Tooltip key={0} placement='topLeft' title={row.generalComment}>
-          {row.referenceToFlowDataSet}
-        </Tooltip>,
-      ],
-    },
-    {
-      title: <FormattedMessage id='pages.table.title.version' defaultMessage='Version' />,
-      dataIndex: 'referenceToFlowDataSetVersion',
-      sorter: false,
-      search: false,
-    },
-    {
-      title: (
-        <FormattedMessage id='pages.process.exchange.meanAmount' defaultMessage='Mean amount' />
-      ),
-      dataIndex: 'meanAmount',
-      sorter: false,
-      search: false,
-      render: (_, row) => {
-        return [<AlignedNumber key={0} value={row.meanAmount} />];
-      },
-    },
-    {
-      title: (
-        <FormattedMessage
-          id='pages.process.exchange.resultingAmount'
-          defaultMessage='Resulting amount'
-        />
-      ),
-      dataIndex: 'resultingAmount',
-      sorter: false,
-      search: false,
-      render: (_, row) => {
-        return [<AlignedNumber key={0} value={row.resultingAmount} />];
-      },
-    },
-    {
-      title: (
-        <FormattedMessage
-          id='pages.flowproperty.referenceToReferenceUnitGroup'
-          defaultMessage='Reference unit'
-        />
-      ),
-      dataIndex: 'refUnitGroup',
-      sorter: false,
-      search: false,
-      render: (_, row) => {
-        return [
-          <span key={1}>
-            {getLangText(row.refUnitRes?.name, lang)} (
-            <Tooltip
-              placement='topLeft'
-              title={getLangText(row.refUnitRes?.refUnitGeneralComment, lang)}
-            >
-              {row.refUnitRes?.refUnitName}
-            </Tooltip>
-            )
-          </span>,
-        ];
-      },
-    },
-
-    {
-      title: (
-        <FormattedMessage
-          id='pages.process.exchange.dataDerivationTypeStatus'
-          defaultMessage='Data derivation type / status'
-        />
-      ),
-      dataIndex: 'dataDerivationTypeStatus',
-      sorter: false,
-      search: false,
-    },
-    {
-      title: (
-        <FormattedMessage
-          id='pages.process.exchange.quantitativeReference'
-          defaultMessage='Quantitative reference'
-        />
-      ),
-      dataIndex: 'quantitativeReference',
-      sorter: false,
-      search: false,
-      render: (_, row) => {
-        return <QuantitativeReferenceIcon value={row.quantitativeReference} />;
-      },
-    },
-    {
-      title: (
-        <FormattedMessage id='pages.process.exchange.reviewType' defaultMessage='Review type' />
-      ),
-      dataIndex: 'reviewType',
-      sorter: false,
-      search: false,
-      width: 80,
-      render: (_, row) => {
-        return (
-          <>
-            {row?.stateCode === 100 || row?.stateCode === 200 ? (
-              <FormattedMessage
-                id='pages.process.exchange.reviewType.reviewed'
-                defaultMessage='Reviewed'
-              />
-            ) : typeof row?.stateCode === 'number' ? (
-              <FormattedMessage
-                id='pages.process.exchange.reviewType.unreviewed'
-                defaultMessage='Unreviewed'
-              />
-            ) : (
-              '-'
-            )}
-          </>
-        );
-      },
-    },
+    ...getExchangeColumns(lang),
     {
       title: <FormattedMessage id='pages.table.title.option' defaultMessage='Actions' />,
       dataIndex: 'option',
@@ -1679,6 +1558,7 @@ export const TabsDetail: FC<Props> = ({
                   actionRef={actionRefExchangeTableInput}
                   params={exchangeTableParams}
                   search={false}
+                  scroll={PROCESS_EXCHANGE_TABLE_SCROLL}
                   pagination={{
                     showSizeChanger: false,
                     pageSize: 10,
@@ -1693,16 +1573,18 @@ export const TabsDetail: FC<Props> = ({
                       genProcessExchangeTableData(exchangeDataSource, contentLanguage),
                       'Input',
                       params,
-                    ).then((res: any) => {
-                      return getUnitData('flow', res?.data).then((unitRes: any) => {
-                        const flows = exchangeDataSource.map((item: any) => {
+                    ).then((res) => {
+                      return getUnitData('flow', res?.data).then((unitRes) => {
+                        const normalizedUnitRes = (unitRes ?? []) as ProcessExchangeTable[];
+                        const flows = exchangeDataSource.map((item) => {
+                          const ref = toReferenceValue(item?.referenceToFlowDataSet);
                           return {
-                            id: item?.referenceToFlowDataSet?.['@refObjectId'],
-                            version: item?.referenceToFlowDataSet?.['@version'],
+                            id: ref?.['@refObjectId'] ?? '',
+                            version: ref?.['@version'] ?? '',
                           };
                         });
                         return getFlowStateCodeByIdsAndVersions(flows, contentLanguage).then(
-                          ({ error, data: flowsResp }: any) => {
+                          ({ error, data: flowsResp }) => {
                             if (
                               inputExchangeRequestEpochRef.current !== requestEpoch ||
                               currentExchangeContentLanguageRef.current !== contentLanguage
@@ -1715,21 +1597,21 @@ export const TabsDetail: FC<Props> = ({
                             }
 
                             if (!error) {
-                              unitRes.forEach((item: any) => {
+                              normalizedUnitRes.forEach((item) => {
                                 const flow = flowsResp.find(
-                                  (flow: any) =>
+                                  (flow) =>
                                     flow.id === item?.referenceToFlowDataSetId &&
                                     flow.version === item?.referenceToFlowDataSetVersion,
                                 );
                                 if (flow) {
                                   item.stateCode = flow.stateCode;
-                                  item['classification'] = flow.classification;
+                                  item['classification'] = flow.classification ?? '';
                                 }
                               });
                             }
                             return {
                               ...res,
-                              data: unitRes,
+                              data: normalizedUnitRes,
                               success: true,
                             };
                           },
@@ -1756,6 +1638,7 @@ export const TabsDetail: FC<Props> = ({
                   actionRef={actionRefExchangeTableOutput}
                   params={exchangeTableParams}
                   search={false}
+                  scroll={PROCESS_EXCHANGE_TABLE_SCROLL}
                   pagination={{
                     showSizeChanger: false,
                     pageSize: 10,
@@ -1770,16 +1653,18 @@ export const TabsDetail: FC<Props> = ({
                       genProcessExchangeTableData(exchangeDataSource, contentLanguage),
                       'Output',
                       params,
-                    ).then((res: any) => {
-                      return getUnitData('flow', res?.data).then((unitRes: any) => {
-                        const flows = exchangeDataSource.map((item: any) => {
+                    ).then((res) => {
+                      return getUnitData('flow', res?.data).then((unitRes) => {
+                        const normalizedUnitRes = (unitRes ?? []) as ProcessExchangeTable[];
+                        const flows = exchangeDataSource.map((item) => {
+                          const ref = toReferenceValue(item?.referenceToFlowDataSet);
                           return {
-                            id: item?.referenceToFlowDataSet?.['@refObjectId'],
-                            version: item?.referenceToFlowDataSet?.['@version'],
+                            id: ref?.['@refObjectId'] ?? '',
+                            version: ref?.['@version'] ?? '',
                           };
                         });
                         return getFlowStateCodeByIdsAndVersions(flows, contentLanguage).then(
-                          ({ error, data: flowsResp }: any) => {
+                          ({ error, data: flowsResp }) => {
                             if (
                               outputExchangeRequestEpochRef.current !== requestEpoch ||
                               currentExchangeContentLanguageRef.current !== contentLanguage
@@ -1792,21 +1677,21 @@ export const TabsDetail: FC<Props> = ({
                             }
 
                             if (!error) {
-                              unitRes.forEach((item: any) => {
+                              normalizedUnitRes.forEach((item) => {
                                 const flow = flowsResp.find(
-                                  (flow: any) =>
+                                  (flow) =>
                                     flow.id === item?.referenceToFlowDataSetId &&
                                     flow.version === item?.referenceToFlowDataSetVersion,
                                 );
                                 if (flow) {
                                   item.stateCode = flow.stateCode;
-                                  item['classification'] = flow.classification;
+                                  item['classification'] = flow.classification ?? '';
                                 }
                               });
                             }
                             return {
                               ...res,
-                              data: unitRes,
+                              data: normalizedUnitRes,
                               success: true,
                             };
                           },

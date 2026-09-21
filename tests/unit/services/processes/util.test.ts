@@ -1293,9 +1293,9 @@ describe('Process Utility Functions', () => {
       });
       const review = result.modellingAndValidation?.validation?.review;
       const firstReview = Array.isArray(review) ? review[0] : review;
-      expect(firstReview?.['common:referenceToCompleteReviewReport']?.['@refObjectId']).toBe(
-        report['@refObjectId'],
-      );
+      const reviewReport = firstReview?.['common:referenceToCompleteReviewReport'];
+      const firstReviewReport = Array.isArray(reviewReport) ? reviewReport[0] : reviewReport;
+      expect(firstReviewReport?.['@refObjectId']).toBe(report['@refObjectId']);
     });
 
     it('should handle single exchange object', () => {

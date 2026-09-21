@@ -49,8 +49,54 @@ function assertStableErrorEnvelope(result, factoryName) {
 
 test('loads the exact released SDK from the installed package graph', () => {
   assert.equal(installedManifest.name, '@tiangong-lca/tidas-sdk');
-  assert.equal(installedManifest.version, '0.2.0');
+  assert.equal(installedManifest.version, '0.3.1');
   assert.match(resolvedCoreEntry, /node_modules/u);
+});
+
+test('the installed SDK accepts singleton and ordered Process reviews', () => {
+  const localizedText = (text) => ({ '@xml:lang': 'en', '#text': text });
+  const reviewer = {
+    '@type': 'contact data set',
+    '@refObjectId': '11111111-1111-1111-1111-111111111111',
+    '@version': '01.00.000',
+    '@uri': '../contacts/11111111-1111-1111-1111-111111111111.xml',
+    'common:shortDescription': localizedText('Review institution'),
+  };
+  const review = (type, details) => ({
+    '@type': type,
+    'common:scope': {
+      '@name': 'Documentation',
+      'common:method': { '@name': 'Documentation' },
+    },
+    'common:reviewDetails': localizedText(details),
+    'common:referenceToNameOfReviewerAndInstitution': reviewer,
+  });
+  const first = review('Independent external review', 'Reviewed documentation');
+  const second = review('Independent internal review', 'Reviewed calculations');
+  const validateReviews = (reviews) => {
+    const entity = installedCore.createProcess(
+      {
+        processDataSet: {
+          modellingAndValidation: { validation: { review: reviews } },
+        },
+      },
+      { mode: 'strict' },
+    );
+    const reviewIssues = entity
+      .validateEnhanced()
+      .validationIssues.filter((issue) =>
+        issue.path.join('.').startsWith('processDataSet.modellingAndValidation.validation.review'),
+      );
+
+    assert.deepEqual(reviewIssues, []);
+    return entity.toJSON().processDataSet.modellingAndValidation.validation.review;
+  };
+
+  assert.equal(validateReviews(first)['@type'], 'Independent external review');
+  assert.deepEqual(
+    validateReviews([first, second]).map((item) => item['@type']),
+    ['Independent external review', 'Independent internal review'],
+  );
 });
 
 test('all seven dataset factories expose validateEnhanced and its stable error envelope', () => {

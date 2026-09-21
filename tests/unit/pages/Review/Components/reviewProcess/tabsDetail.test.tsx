@@ -28,7 +28,7 @@ jest.mock('@ant-design/pro-components', () => {
   const React = require('react');
   return {
     __esModule: true,
-    ProTable: ({ request, actionRef, columns }: any) => {
+    ProTable: ({ request, actionRef, columns, scroll }: any) => {
       const [rows, setRows] = React.useState<any[]>([]);
       const title = toText(columns?.[0]?.title) || 'table';
 
@@ -46,7 +46,10 @@ jest.mock('@ant-design/pro-components', () => {
       }, [actionRef, runRequest]);
 
       return (
-        <div data-testid={`table-${title}`}>
+        <div data-testid={`table-${title}`} data-scroll={scroll?.x ?? ''}>
+          <div data-testid={`table-columns-${title}`}>
+            {(columns ?? []).map((column: any) => toText(column.title)).join('|')}
+          </div>
           {rows.map((row, index) => (
             <div key={`${title}-${index}`}>
               <div>{`${row.referenceToFlowDataSetId}:${row.stateCode ?? 'na'}:${row.classification ?? '-'}`}</div>
@@ -233,7 +236,7 @@ describe('Review process TabsDetail', () => {
     dataSetInternalID: 'ex-1',
     referenceToFlowDataSetId: 'flow-1',
     referenceToFlowDataSetVersion: '1.0.0',
-    referenceToFlowDataSet: { '@refObjectId': 'flow-1', '@version': '1.0.0' },
+    referenceToFlowDataSet: [{ '@refObjectId': 'flow-1', '@version': '1.0.0' }],
     stateCode: undefined,
     classification: undefined,
   };
@@ -335,6 +338,32 @@ describe('Review process TabsDetail', () => {
     );
   });
 
+  it('keeps the default review row when the current user has no contact reference', async () => {
+    const setFieldValue = jest.fn();
+    mockGetUserDetail.mockResolvedValueOnce({ data: {} });
+
+    await renderTabsDetail({
+      lang: 'en',
+      activeTabKey: 'validation',
+      formRef: {
+        current: { getFieldValue: jest.fn(() => undefined), setFieldValue },
+      } as any,
+      onData: jest.fn(),
+      onExchangeData: jest.fn(),
+      onTabChange: jest.fn(),
+      exchangeDataSource: [exchangeRow],
+      initData: { modellingAndValidation: {} },
+      type: 'edit',
+    });
+
+    await waitFor(() => expect(mockGetUserDetail).toHaveBeenCalled());
+    expect(setFieldValue).toHaveBeenCalledTimes(1);
+    expect(setFieldValue).toHaveBeenCalledWith(
+      ['modellingAndValidation', 'validation', 'review'],
+      [{ 'common:scope': [{}] }],
+    );
+  });
+
   it('flattens rejected validation and compliance comments in edit mode', async () => {
     await renderTabsDetail({
       lang: 'en',
@@ -410,6 +439,55 @@ describe('Review process TabsDetail', () => {
       'en',
     );
     expect(await screen.findAllByText('flow-1:30:class-a')).toHaveLength(2);
+    expect(screen.getAllByTestId('table-Index')).toHaveLength(2);
+    expect(screen.getAllByTestId('table-Index')[0]).toHaveAttribute('data-scroll', 'max-content');
+    expect(screen.getAllByTestId('table-columns-Index')[0]).toHaveTextContent('Flow type');
+    expect(screen.getAllByTestId('table-columns-Index')[0]).toHaveTextContent('Classification');
+  });
+
+  it('uses empty exchange rows when unit enrichment and flow state lookup fail', async () => {
+    mockGetUnitData.mockResolvedValue(undefined);
+    mockGetFlowStateCodeByIdsAndVersions.mockResolvedValue({
+      error: new Error('flow state unavailable'),
+      data: [],
+    });
+
+    await renderTabsDetail({
+      lang: 'en',
+      activeTabKey: 'exchanges',
+      formRef: { current: { getFieldValue: jest.fn(), setFieldValue: jest.fn() } } as any,
+      onData: jest.fn(),
+      onExchangeData: jest.fn(),
+      onTabChange: jest.fn(),
+      exchangeDataSource: [exchangeRow],
+      initData: { modellingAndValidation: {} },
+      type: 'view',
+    });
+
+    await waitFor(() => expect(mockGetProcessExchange).toHaveBeenCalledTimes(4));
+    expect(proTableRequests).toHaveLength(4);
+    expect(proTableRequests.every(({ data }) => data.length === 0)).toBe(true);
+  });
+
+  it('falls back to an empty classification when flow state metadata omits it', async () => {
+    mockGetFlowStateCodeByIdsAndVersions.mockResolvedValue({
+      error: null,
+      data: [{ id: 'flow-1', version: '1.0.0', stateCode: 30 }],
+    });
+
+    await renderTabsDetail({
+      lang: 'en',
+      activeTabKey: 'exchanges',
+      formRef: { current: { getFieldValue: jest.fn(), setFieldValue: jest.fn() } } as any,
+      onData: jest.fn(),
+      onExchangeData: jest.fn(),
+      onTabChange: jest.fn(),
+      exchangeDataSource: [exchangeRow],
+      initData: { modellingAndValidation: {} },
+      type: 'view',
+    });
+
+    expect(await screen.findAllByText('flow-1:30:')).toHaveLength(2);
   });
 
   it('renders mapped option labels across process, modelling, and administrative tabs', async () => {

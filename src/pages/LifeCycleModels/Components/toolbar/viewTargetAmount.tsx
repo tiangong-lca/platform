@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { FormattedMessage } from 'umi';
 
 type Props = {
-  refNode: LifeCycleModelGraphNode;
+  refNode: LifeCycleModelGraphNode | null | undefined;
   drawerVisible: boolean;
   lang: string;
   setDrawerVisible: (value: boolean) => void;

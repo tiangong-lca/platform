@@ -86,7 +86,6 @@ export const PRO_COMPONENT_SURFACE_FAMILIES = [
       'src/pages/LifeCycleModels/Components/toolbar/add.tsx',
       'src/pages/LifeCycleModels/Components/toolbar/addThroughFlow.tsx',
       'src/pages/Review/Components/reviewLifeCycleModels/Components/toolbar/Exchange/ioPortSelect.tsx',
-      'src/pages/Review/Components/reviewLifeCycleModels/Components/toolbar/Exchange/ioPortView.tsx',
     ],
     evidencePaths: ['tests/e2e/i18n/responsive-surfaces.spec.ts'],
     visualStates: ['desktop', 'narrow', 'overlay', 'read-only'],
@@ -244,7 +243,7 @@ export const EXPECTED_PRO_COMPONENT_RUNTIME_COUNTS = {
   PageContainer: 15,
   ProForm: 27,
   ProLayout: 3,
-  ProTable: 67,
+  ProTable: 66,
   SettingDrawer: 1,
   TableDropdown: 3,
 } as const satisfies Record<ProComponentRuntimeTag, number>;

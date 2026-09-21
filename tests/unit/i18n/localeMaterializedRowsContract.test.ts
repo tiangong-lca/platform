@@ -31,10 +31,6 @@ const ASYNC_EXCHANGE_TABLE_SURFACES = [
     file: 'src/pages/Review/Components/reviewLifeCycleModels/Components/toolbar/Exchange/ioPortSelect.tsx',
     tableCount: 1,
   },
-  {
-    file: 'src/pages/Review/Components/reviewLifeCycleModels/Components/toolbar/Exchange/ioPortView.tsx',
-    tableCount: 1,
-  },
 ] as const;
 
 const ASYNC_LOCALE_MATERIALIZED_TABLE_SURFACES = [

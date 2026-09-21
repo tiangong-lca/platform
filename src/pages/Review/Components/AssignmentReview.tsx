@@ -937,53 +937,26 @@ const AssignmentReview = ({
             return [
               <Space key={0}>
                 {record.isFromLifeCycle ? (
-                  <>
-                    {!hideReviewButton && (
-                      <ReviewLifeCycleModelsDetail
-                        type='edit'
-                        id={record.json?.data?.id}
-                        version={record.json?.data?.version}
-                        lang={lang}
-                        reviewId={record.id}
-                        tabType='review'
-                        actionRef={actionRef}
-                      />
-                    )}
-
-                    <ReviewLifeCycleModelsDetail
-                      reviewId={record.id}
-                      tabType='review'
-                      type='view'
-                      id={record.json?.data?.id}
-                      version={record.json?.data?.version}
-                      lang={lang}
-                      actionRef={actionRef}
-                    />
-                  </>
+                  <ReviewLifeCycleModelsDetail
+                    type={hideReviewButton ? 'view' : 'edit'}
+                    id={record.json?.data?.id}
+                    version={record.json?.data?.version}
+                    lang={lang}
+                    reviewId={record.id}
+                    tabType='review'
+                    actionRef={actionRef}
+                  />
                 ) : (
-                  <>
-                    {!hideReviewButton && (
-                      <ReviewProcessDetail
-                        tabType='review'
-                        type='edit'
-                        actionRef={actionRef}
-                        id={record.json?.data?.id}
-                        version={record.json?.data?.version}
-                        lang={lang}
-                        reviewId={record.id}
-                      />
-                    )}
-                    <ReviewProcessDetail
-                      hideButton={true}
-                      tabType='review'
-                      type='view'
-                      actionRef={actionRef}
-                      id={record.json?.data?.id}
-                      version={record.json?.data?.version}
-                      lang={lang}
-                      reviewId={record.id}
-                    />
-                  </>
+                  <ReviewProcessDetail
+                    tabType='review'
+                    type={hideReviewButton ? 'view' : 'edit'}
+                    hideButton={hideReviewButton}
+                    actionRef={actionRef}
+                    id={record.json?.data?.id}
+                    version={record.json?.data?.version}
+                    lang={lang}
+                    reviewId={record.id}
+                  />
                 )}
               </Space>,
             ];

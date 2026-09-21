@@ -69,6 +69,7 @@ jest.mock('@/services/general/util', () => ({
 
 jest.mock('@ant-design/pro-components', () => {
   const React = require('react');
+  const { toText } = require('../../../../../../../../helpers/nodeToText');
 
   const ProTable = ({ actionRef, request, columns, rowSelection }: any) => {
     const [rows, setRows] = React.useState<any[]>([]);
@@ -92,6 +93,9 @@ jest.mock('@ant-design/pro-components', () => {
     return (
       <div>
         <div data-testid='selected-keys'>{JSON.stringify(rowSelection?.selectedRowKeys ?? [])}</div>
+        <div data-testid='port-columns'>
+          {columns.map((column: any) => toText(column.title)).join('|')}
+        </div>
         {rows.map((row, rowIndex) => (
           <div key={row.dataSetInternalID ?? rowIndex}>
             {columns.map((column: any, columnIndex: number) => (
@@ -229,6 +233,7 @@ describe('ReviewLifeCycleModelIoPortView', () => {
       ]),
     );
     expect(screen.getByTestId('selected-keys')).toHaveTextContent('["port-1","port-2"]');
+    expect(screen.getByTestId('port-columns')).toHaveTextContent('Flow type');
     expect(screen.getByTestId('drawer-container')).toHaveTextContent('has-container');
     expect(screen.getByText('10')).toBeInTheDocument();
     expect(screen.getByText('12')).toBeInTheDocument();
@@ -352,7 +357,7 @@ describe('ReviewLifeCycleModelIoPortView', () => {
     await waitFor(() => expect(mockGetProcessDetail).toHaveBeenCalledWith('', ''));
     await waitFor(() => expect(mockGetProcessExchange).toHaveBeenCalled());
 
-    expect(screen.getByTestId('selected-keys')).toHaveTextContent('[[]]');
+    expect(screen.getByTestId('selected-keys')).toHaveTextContent('[""]');
     expect(screen.getByText('quantitative-no')).toBeInTheDocument();
   });
 

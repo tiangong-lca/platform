@@ -31,7 +31,7 @@ allowBuilds:
   unrs-resolver: false
 
 minimumReleaseAgeExclude:
-  - '@tiangong-lca/tidas-sdk@0.2.0'
+  - '@tiangong-lca/tidas-sdk@0.3.1'
   - '@umijs/ast@4.7.9'
   - '@umijs/babel-preset-umi@4.7.9'
   - '@umijs/bundler-esbuild@4.7.9'

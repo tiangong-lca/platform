@@ -158,13 +158,15 @@ describe('ReviewLifeCycleModelViewTargetAmount', () => {
         exchange: [
           {
             '@dataSetInternalID': 'ex-1',
-            referenceToFlowDataSet: {
-              '@refObjectId': 'flow-1',
-              '@version': '2.0.0',
-              '@type': 'flow data set',
-              '@uri': '../flows/flow-1.xml',
-              'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Reference flow' }],
-            },
+            referenceToFlowDataSet: [
+              {
+                '@refObjectId': 'flow-1',
+                '@version': '2.0.0',
+                '@type': 'flow data set',
+                '@uri': '../flows/flow-1.xml',
+                'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Reference flow' }],
+              },
+            ],
           },
         ],
       },

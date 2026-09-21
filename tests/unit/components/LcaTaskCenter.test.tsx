@@ -18,7 +18,11 @@ const mockSubscribeDataProductTasks = jest.fn(() => jest.fn());
 
 jest.mock('@/components/ImportTidasPackage/ImportResult', () => ({
   __esModule: true,
-  default: ({ jobId }: { jobId: string }) => <div data-testid='import-result'>{jobId}</div>,
+  default: ({ jobId }: { jobId: string }) => (
+    <button type='button' aria-label='Download report' data-testid='import-result'>
+      {jobId}
+    </button>
+  ),
   importOutcomeLabel: (value: string) => value,
 }));
 
@@ -290,6 +294,7 @@ describe('LcaTaskCenter', () => {
       { success: '#52c41a', warning: '#faad14', error: '#ff4d4f', processing: '#1677ff' }[color],
     );
     expect(screen.getByRole('button', { name: 'Diagnostics' })).toBeInTheDocument();
+    expect(screen.getByTestId('import-result')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'View' }));
     expect(screen.getByTestId('import-result')).toBeInTheDocument();
     expect(screen.getByText('Uploaded ZIP package')).toBeInTheDocument();
@@ -312,6 +317,7 @@ describe('LcaTaskCenter', () => {
     ];
     render(<LcaTaskCenter />);
     fireEvent.click(screen.getByRole('button', { name: 'Task Center' }));
+    expect(screen.queryByTestId('import-result')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'View' }));
     expect(screen.queryByTestId('import-result')).not.toBeInTheDocument();
   });
