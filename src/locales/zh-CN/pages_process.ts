@@ -898,4 +898,6 @@ export default {
   'pages.process.lca.evidence.reason.conflicting_parallel_method_coverage_source': '系统收到了互相冲突的方法覆盖证据。',
   'pages.process.lca.evidence.reason.method_level_coverage_missing_or_source_mismatch': '方法级覆盖缺失，或与已审核来源不一致。',
   'pages.process.lca.evidence.reason.unknown': '该证据未通过校验。',
+  'pages.process.site.verified': '站点 {code}',
+  'pages.process.site.needsReview': '站点待核',
 };

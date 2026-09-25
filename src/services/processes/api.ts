@@ -57,6 +57,7 @@ import {
   type ProcessTable,
 } from './data';
 import { genProcessJsonOrdered, genProcessName } from './util';
+import { processSiteFromRow } from './siteLabel';
 
 const selectStr4Table = `
     id,
@@ -66,6 +67,11 @@ const selectStr4Table = `
     json->processDataSet->processInformation->time->>"common:referenceYear",
     json->processDataSet->modellingAndValidation->LCIMethodAndAllocation->typeOfDataSet,
     json->processDataSet->processInformation->geography->locationOfOperationSupplyOrProduction->>"@location",
+    json->processDataSet->processInformation->geography->locationOfOperationSupplyOrProduction->descriptionOfRestrictions,
+    json->processDataSet->processInformation->quantitativeReference->>referenceToReferenceFlow,
+    json->processDataSet->processInformation->technology->technologyDescriptionAndIncludedProcesses,
+    json->processDataSet->processInformation->technology->technologicalApplicability,
+    json->processDataSet->exchanges->exchange,
     version,
     modified_at,
     team_id,
@@ -201,6 +207,7 @@ function mapProcessSearchResultRows(
         ),
         referenceYear: dataInfo?.time?.['common:referenceYear'] ?? '-',
         location: localizedLocation ?? locationCode ?? '-',
+        site: processSiteFromRow(i),
         version: i.version,
         typeOfDataSet:
           i?.json?.processDataSet?.modellingAndValidation?.LCIMethodAndAllocation?.typeOfDataSet ??
@@ -252,6 +259,18 @@ function toProcessTableSelectRow(row: ProcessListRpcRow): any {
     '@location':
       dataInfo?.geography?.locationOfOperationSupplyOrProduction?.['@location'] ??
       (row as any)['@location'],
+    descriptionOfRestrictions:
+      dataInfo?.geography?.locationOfOperationSupplyOrProduction?.descriptionOfRestrictions ??
+      (row as any).descriptionOfRestrictions,
+    referenceToReferenceFlow:
+      dataInfo?.quantitativeReference?.referenceToReferenceFlow ??
+      (row as any).referenceToReferenceFlow,
+    technologyDescriptionAndIncludedProcesses:
+      dataInfo?.technology?.technologyDescriptionAndIncludedProcesses ??
+      (row as any).technologyDescriptionAndIncludedProcesses,
+    technologicalApplicability:
+      dataInfo?.technology?.technologicalApplicability ?? (row as any).technologicalApplicability,
+    exchange: row.json?.processDataSet?.exchanges?.exchange ?? (row as any).exchange,
     version: row.version,
     modified_at: row.modified_at,
     team_id: row.team_id,
@@ -291,6 +310,7 @@ async function mapProcessTableRows(rawRows: any[], lang: string): Promise<Proces
         typeOfDataSet: item.typeOfDataSet ?? '-',
         referenceYear: item['common:referenceYear'] ?? '-',
         location: location ?? '-',
+        site: processSiteFromRow(item),
         modifiedAt: new Date(item.modified_at),
         teamId: item.team_id,
         modelId: item.model_id,
@@ -1030,6 +1050,7 @@ async function mapProcessListRows(
         classification,
         referenceYear: dataInfo?.time?.['common:referenceYear'] ?? '-',
         location: location ?? '-',
+        site: processSiteFromRow(i),
         version: i.version,
         typeOfDataSet:
           i?.json?.processDataSet?.modellingAndValidation?.LCIMethodAndAllocation?.typeOfDataSet ??
@@ -1545,6 +1566,7 @@ export async function getProcessesByIdAndVersion(
           // classification,
           typeOfDataSet: i.typeOfDataSet ?? '-',
           referenceYear: i['common:referenceYear'] ?? '-',
+          site: processSiteFromRow(i),
           // location: location ?? '-',
           modifiedAt: new Date(i.modified_at),
           teamId: i.team_id,
@@ -1563,6 +1585,7 @@ export async function getProcessesByIdAndVersion(
           name: i.name,
           typeOfDataSet: i.typeOfDataSet ?? '-',
           referenceYear: i['common:referenceYear'] ?? '-',
+          site: processSiteFromRow(i),
           modifiedAt: new Date(i.modified_at),
           teamId: i.team_id,
           modelId: i.model_id,

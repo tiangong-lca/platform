@@ -819,6 +819,56 @@ describe('getProcessDetail', () => {
 });
 
 describe('getProcessTableAll', () => {
+  it('projects confirmed site evidence without changing the canonical name', async () => {
+    mockAuthGetSession.mockResolvedValue({ data: { session: { user: { id: 'owner-1' } } } });
+    mockRpc.mockResolvedValue({
+      data: [
+        {
+          id: sampleId,
+          version: sampleVersion,
+          modified_at: '2024-03-01T12:00:00Z',
+          total_count: 1,
+          json: {
+            processDataSet: {
+              processInformation: {
+                dataSetInformation: { name: { en: 'Canonical name' } },
+                geography: {
+                  locationOfOperationSupplyOrProduction: {
+                    '@location': 'CN',
+                    descriptionOfRestrictions: [{ '@xml:lang': 'en', '#text': 'Factory Z03' }],
+                  },
+                },
+                quantitativeReference: { referenceToReferenceFlow: '6' },
+              },
+              exchanges: {
+                exchange: [
+                  {
+                    '@dataSetInternalID': '6',
+                    exchangeDirection: 'Output',
+                    generalComment: [{ '@xml:lang': 'en', '#text': 'Coke z3' }],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      ],
+      error: null,
+    });
+
+    const result = await processesApi.getProcessTableAll(
+      { current: 1, pageSize: 10 },
+      {},
+      'en',
+      'my',
+      [],
+    );
+
+    expect(mockGenProcessName).toHaveBeenCalledWith({ en: 'Canonical name' }, 'en');
+    expect(result.data[0].name).toBe('Process Name');
+    expect(result.data[0].site).toEqual({ status: 'verified', code: 'Z03' });
+  });
+
   it('transforms records with location and classification mapping', async () => {
     const queryResult = {
       data: [
@@ -3987,6 +4037,53 @@ describe('getConnectableProcessesTable', () => {
 });
 
 describe('getProcessTablePgroongaSearch', () => {
+  it('keeps a conflicting factory code pending in keyword results', async () => {
+    mockAuthGetSession.mockResolvedValue({ data: { session: { user: { id: 'owner-1' } } } });
+    mockRpc.mockResolvedValue({
+      data: [
+        {
+          id: sampleId,
+          version: sampleVersion,
+          modified_at: '2024-03-01T12:00:00Z',
+          total_count: 1,
+          json: {
+            processDataSet: {
+              processInformation: {
+                geography: {
+                  locationOfOperationSupplyOrProduction: {
+                    '@location': 'CN',
+                    descriptionOfRestrictions: [{ '@xml:lang': 'en', '#text': 'Factory Z13' }],
+                  },
+                },
+                quantitativeReference: { referenceToReferenceFlow: '6' },
+              },
+              exchanges: {
+                exchange: [
+                  {
+                    '@dataSetInternalID': '6',
+                    exchangeDirection: 'Output',
+                    generalComment: [{ '@xml:lang': 'en', '#text': 'Coke z12' }],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      ],
+      error: null,
+    });
+
+    const result = await processesApi.getProcessTablePgroongaSearch(
+      { current: 1, pageSize: 10 },
+      'en',
+      'my',
+      'Z13',
+      {},
+    );
+
+    expect(result?.data?.[0].site).toEqual({ status: 'needs_review' });
+  });
+
   it('should search processes using pgroonga successfully', async () => {
     const mockResponse = {
       data: [{ id: sampleId, name: 'Search Result', version: sampleVersion }],

@@ -8,7 +8,7 @@ import {
 } from '@/services/processes/api';
 import { BarChartOutlined } from '@ant-design/icons';
 
-import { App, Button, Card, Checkbox, Col, Input, Row, Select, Space } from 'antd';
+import { App, Button, Card, Checkbox, Col, Input, Row, Select, Space, Tag } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, history, useIntl, useLocation } from 'umi';
 import * as Umi from 'umi';
@@ -203,7 +203,36 @@ const TableList: FC = () => {
       sorter: true,
       search: false,
       render: (_, row) => {
-        return dataListText(row.name, row.generalComment);
+        const name = dataListText(row.name, row.generalComment);
+        const shortId = String(row.id ?? '').slice(0, 8);
+        return (
+          <div>
+            {name}
+            <div>
+              {row.site && (
+                <Tag color={row.site.status === 'verified' ? 'blue' : 'gold'}>
+                  {row.site.status === 'verified'
+                    ? intl.formatMessage(
+                        {
+                          id: 'pages.process.site.verified',
+                          defaultMessage: 'Site {code}',
+                        },
+                        { code: row.site.code },
+                      )
+                    : intl.formatMessage({
+                        id: 'pages.process.site.needsReview',
+                        defaultMessage: 'Site to verify',
+                      })}
+                </Tag>
+              )}
+              {shortId && (
+                <span title={row.id} style={{ fontSize: 12, opacity: 0.65 }}>
+                  ID {shortId}
+                </span>
+              )}
+            </div>
+          </div>
+        );
       },
     },
     {
@@ -298,6 +327,11 @@ const TableList: FC = () => {
                 json->processDataSet->processInformation->time->>"common:referenceYear",
                 json->processDataSet->modellingAndValidation->LCIMethodAndAllocation->typeOfDataSet,
                 json->processDataSet->processInformation->geography->locationOfOperationSupplyOrProduction->>"@location",
+                json->processDataSet->processInformation->geography->locationOfOperationSupplyOrProduction->descriptionOfRestrictions,
+                json->processDataSet->processInformation->quantitativeReference->>referenceToReferenceFlow,
+                json->processDataSet->processInformation->technology->technologyDescriptionAndIncludedProcesses,
+                json->processDataSet->processInformation->technology->technologicalApplicability,
+                json->processDataSet->exchanges->exchange,
                 version,
                 modified_at,
                 state_code,

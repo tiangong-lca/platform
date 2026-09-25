@@ -900,4 +900,6 @@ export default {
   'pages.process.lca.evidence.reason.conflicting_parallel_method_coverage_source': 'Des preuves de couverture de méthode contradictoires ont été fournies.',
   'pages.process.lca.evidence.reason.method_level_coverage_missing_or_source_mismatch': 'La couverture au niveau des méthodes est manquante ou ne correspond pas à la source vérifiée.',
   'pages.process.lca.evidence.reason.unknown': 'Les preuves n’ont pas passé la validation.',
+  'pages.process.site.verified': 'Site {code}',
+  'pages.process.site.needsReview': 'Site à vérifier',
 };

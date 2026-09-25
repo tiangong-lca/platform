@@ -1410,6 +1410,44 @@ describe('publishDatasetApi', () => {
 });
 
 describe('getAllVersions', () => {
+  it('projects a reviewed site in process version rows', async () => {
+    const builder = createQueryBuilder({
+      data: [
+        {
+          id: sampleId,
+          version: sampleVersion,
+          modified_at: '2024-01-01T00:00:00Z',
+          name: { baseName: [] },
+          '@location': 'CN',
+          descriptionOfRestrictions: [{ '@xml:lang': 'en', '#text': 'Factory Z17' }],
+          referenceToReferenceFlow: '6',
+          exchange: [
+            {
+              '@dataSetInternalID': '6',
+              exchangeDirection: 'Output',
+              generalComment: [{ '@xml:lang': 'en', '#text': 'Coke Z17' }],
+            },
+          ],
+        },
+      ],
+      count: 1,
+      error: null,
+    });
+    mockFrom.mockReturnValueOnce(builder);
+
+    const result = await generalApi.getAllVersions(
+      'name,descriptionOfRestrictions,referenceToReferenceFlow,exchange',
+      'processes',
+      sampleId,
+      { pageSize: 10, current: 1 },
+      {},
+      'en',
+      'tg',
+    );
+
+    expect(result.data[0].site).toEqual({ status: 'verified', code: 'Z17' });
+  });
+
   it.each([undefined, -1, 100])(
     'keeps example versions at -1 despite state override %s',
     async (stateCode) => {

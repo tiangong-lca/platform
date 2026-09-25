@@ -901,4 +901,6 @@ export default {
   'pages.process.lca.evidence.reason.conflicting_parallel_method_coverage_source': 'Conflicting method coverage evidence was supplied.',
   'pages.process.lca.evidence.reason.method_level_coverage_missing_or_source_mismatch': 'Method-level coverage is missing or does not match the reviewed source.',
   'pages.process.lca.evidence.reason.unknown': 'The evidence did not pass validation.',
+  'pages.process.site.verified': 'Site {code}',
+  'pages.process.site.needsReview': 'Site to verify',
 };

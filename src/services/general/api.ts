@@ -19,6 +19,7 @@ import {
 } from '../general/util';
 import { getILCDLocationByValues } from '../locations/api';
 import { toProcessModelVersionField } from '../processes/data';
+import { processSiteFromRow } from '../processes/siteLabel';
 import { genProcessName } from '../processes/util';
 import {
   CANONICAL_CONTENT_LANGUAGE,
@@ -1549,6 +1550,7 @@ export async function getAllVersions(
                 typeOfDataSet: i.typeOfDataSet ?? '-',
                 referenceYear: i['common:referenceYear'] ?? '-',
                 location: location ?? '-',
+                site: processSiteFromRow(i),
                 modifiedAt: new Date(i.modified_at),
                 teamId: i?.team_id,
                 modelId: i?.model_id,

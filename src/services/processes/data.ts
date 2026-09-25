@@ -1,5 +1,6 @@
 import type { LangTextValue, ReferenceItem, VersionedDataRow } from '@/services/general/data';
 import type { CommonOther, Process } from '@tiangong-lca/tidas-sdk/types';
+import type { ProcessSite } from './siteLabel';
 
 export type ProcessTable = VersionedDataRow & {
   key: string;
@@ -9,6 +10,7 @@ export type ProcessTable = VersionedDataRow & {
   classification: string;
   referenceYear: string;
   location: string;
+  site?: ProcessSite;
   modelId: string;
   modelVersion?: string | null;
   typeOfDataSet: string;

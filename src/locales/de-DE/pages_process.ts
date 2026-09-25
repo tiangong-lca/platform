@@ -901,4 +901,6 @@ export default {
   'pages.process.lca.evidence.reason.conflicting_parallel_method_coverage_source': 'Es wurden widersprüchliche Nachweise zur Methodenabdeckung bereitgestellt.',
   'pages.process.lca.evidence.reason.method_level_coverage_missing_or_source_mismatch': 'Die Abdeckung auf Methodenebene fehlt oder stimmt nicht mit der geprüften Quelle überein.',
   'pages.process.lca.evidence.reason.unknown': 'Der Berechnungsnachweis wurde nicht erfolgreich validiert.',
+  'pages.process.site.verified': 'Standort {code}',
+  'pages.process.site.needsReview': 'Standort prüfen',
 };

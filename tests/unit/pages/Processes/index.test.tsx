@@ -24,6 +24,10 @@ let mockLocation = {
   search: '?tid=team-1',
 };
 let mockIntlLocale = 'en-US';
+let mockFormatMessage: (message: any, values?: Record<string, string>) => string = ({
+  defaultMessage,
+  id,
+}) => defaultMessage ?? id;
 let mockBreakpointScreens: Record<string, boolean | undefined> = {};
 let mockCurrentUserAccess: string | undefined;
 
@@ -50,7 +54,7 @@ jest.mock('umi', () => ({
   },
   useIntl: () => ({
     locale: mockIntlLocale,
-    formatMessage: ({ defaultMessage, id }: any) => defaultMessage ?? id,
+    formatMessage: (...args: any[]) => mockFormatMessage(...args),
   }),
   useLocation: () => mockLocation,
   useModel: () => ({ initialState: { currentUser: { access: mockCurrentUserAccess } } }),
@@ -318,6 +322,7 @@ jest.mock('antd', () => {
       {ariaLabel ?? 'dataset-filter'}
     </button>
   );
+  const Tag = ({ children, color }: any) => <span data-color={color}>{children}</span>;
   const message = {
     success: jest.fn(),
     error: jest.fn(),
@@ -345,6 +350,7 @@ jest.mock('antd', () => {
       },
       Input,
       Select,
+      Tag,
       Row,
       Space,
       Tooltip,
@@ -490,6 +496,7 @@ describe('ProcessesPage', () => {
       search: '?tid=team-1',
     };
     mockIntlLocale = 'en-US';
+    mockFormatMessage = ({ defaultMessage, id }: any) => defaultMessage ?? id;
     mockBreakpointScreens = {};
     mockCurrentUserAccess = undefined;
     mockGetDataSource.mockReturnValue('my');
@@ -585,6 +592,51 @@ describe('ProcessesPage', () => {
       within(createAction!).getByRole('button', { name: /process-create-close/i }),
     );
     await waitFor(() => expect(createAction).toHaveTextContent('"importCount":0'));
+  });
+
+  it('shows confirmed and unresolved sites beside unchanged process names', async () => {
+    mockFormatMessage = ({ defaultMessage, id }: any, values?: Record<string, string>) =>
+      String(defaultMessage ?? id).replace(/\{(\w+)\}/g, (match, key) => values?.[key] ?? match);
+    mockGetProcessTableAll.mockResolvedValue({
+      data: [
+        {
+          id: 'proc-verified',
+          version: '1.0.0',
+          name: 'Coke production',
+          generalComment: 'Reference comment',
+          site: { status: 'verified', code: 'Z17' },
+        },
+        {
+          id: 'proc-unresolved',
+          version: '1.0.0',
+          name: 'Coke production',
+          generalComment: 'Reference comment',
+          site: { status: 'needs_review' },
+        },
+        {
+          id: 'proc-no-site',
+          version: '1.0.0',
+          name: 'Water supply',
+          generalComment: 'No factory code',
+        },
+      ],
+      success: true,
+    });
+
+    renderWithProviders(<ProcessesPage />);
+
+    expect(await screen.findByText('Site Z17')).toBeInTheDocument();
+    expect(screen.getByText('Site to verify')).toBeInTheDocument();
+    expect(screen.getByText('ID proc-ver')).toHaveAttribute('title', 'proc-verified');
+    expect(screen.getByText('ID proc-unr')).toHaveAttribute('title', 'proc-unresolved');
+    expect(screen.getByText('ID proc-no-')).toHaveAttribute('title', 'proc-no-site');
+    expect(screen.getAllByText('Coke production')).toHaveLength(2);
+    expect(screen.getByText('Site Z17').parentElement?.parentElement).toHaveTextContent(
+      'Coke production',
+    );
+    expect(screen.getByText('Site to verify').parentElement?.parentElement).toHaveTextContent(
+      'Coke production',
+    );
   });
 
   it('uses compact mobile controls for my data rows', async () => {
