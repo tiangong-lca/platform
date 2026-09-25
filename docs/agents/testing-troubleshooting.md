@@ -39,9 +39,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: focused Open Data Jest tests use the existing no-watchman recovery path; supported troubleshooting commands are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed the Process round-trip gate findings: locale artifacts were regenerated and source-mapped branch coverage restored through the existing diagnostic commands.'
 ---
 
 # Testing Troubleshooting

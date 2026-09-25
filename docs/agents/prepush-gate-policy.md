@@ -42,9 +42,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: focused Open Data service and component tests use the existing Jest path; pre-push ownership and trigger policy are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed the Process round-trip regression tests and generated locale artifacts; the existing full-coverage pre-push trigger and threshold remain unchanged.'
 ---
 
 # Pre-Push Gate Policy

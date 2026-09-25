@@ -43,9 +43,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: Open Data filters and Process publication are covered by focused Jest tests plus the existing lint and production-build gates; command and gate policy are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed the Process draft round-trip proof: focused serializer, API, form, review, and locale tests plus build and the existing full pre-push gate cover the fix.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -72,6 +72,8 @@ pnpm lint
 pnpm test
 pnpm build
 ```
+
+For Process edit/review round trips, use synthetic bilingual draft fixtures to assert the ordinary save payload, the persisted draft used for review validation, unsaved-change blocking, and no pre-save write on review failure. Keep the existing full-coverage gate for the committed candidate.
 
 The authoritative protected-branch gate is:
 

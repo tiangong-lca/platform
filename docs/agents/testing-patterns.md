@@ -42,9 +42,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: the Open Data tests use existing mocked-service and semantic component interaction patterns; reusable guidance is unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed synthetic Process round-trip, dirty-form, and readback tests; they follow the existing component and service patterns without changing reusable guidance.'
 ---
 
 # Testing Patterns Reference

@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 25d57284565efb719c471df2bfdceb05dfc65717
-lastReviewedNote: 'Reviewed Platform #1120 after integrating current dev: the Open Data catalog adds shared filter and RPC service modules within the existing page/service architecture; stable ownership boundaries are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed the Process edit and review-submission path: it reads the persisted draft for review and keeps authoring transformations within existing page and service modules.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -83,6 +83,7 @@ Rules:
 - Account Basic Information reads current profile metadata through `supabase.auth.getUser()` and writes `display_name` plus the optional, trimmed, 200-character `organization` string through `supabase.auth.updateUser()`. The page may refresh the session after a successful write, but organization remains descriptive profile data and must never control frontend access or backend authorization
 - Account Connected Applications lists and revokes Supabase OAuth grants only. It contains no API-key history, password reauthentication form, Cognito provisioning action, or Cognito password/email synchronization helper; Supabase Auth is the sole account identity and credential owner
 - Process and Flow ordered-dataset serializers normalize TIDAS year values to bounded integers and percentage values to canonical strings. Their create, update, and create-version service paths reject non-empty affected scalars that cannot be represented canonically before invoking persistence; unrelated invalid-draft behavior remains unchanged
+- Process review submission validates the persisted exact-version draft without a pre-save. The editor asks the author to save explicit changes first; ordinary Process saves retain authored annual-volume explanation and use advice, while reference descriptions refresh only through the explicit reference action
 - the startup system-status service treats `APP_RUNTIME_CONFIG_ENABLED` as a build-time emergency bypass: loading remains enabled by default, and only an explicit case-insensitive `false` returns the normal status without starting the Supabase RPC or its timeout
 - UI copy changes must update every supported locale and the deterministic canonical-message audit; one message key owns one concept and one UI role
 - a new locale may land reviewed leaf modules before activation, but it must not gain a top-level `src/locales/<locale>.ts` entry until manifest parity and the locale-specific review gate are complete

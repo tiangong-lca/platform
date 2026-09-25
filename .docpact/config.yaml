@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: '2026-09-23'
-lastReviewedCommit: '79f0f66d83067983120072e8acd62616ad89eff2'
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: Open Data source and publication filters stay in the existing page/service ownership boundary; routing, coverage, and rule semantics are unchanged.'
+lastReviewedAt: '2026-09-25'
+lastReviewedCommit: 'c60e9eb2ca1a4053207fb680f73887f761f736ea'
+lastReviewedNote: 'Reviewed the Process review round-trip repair against the existing page, service, locale, and test routes; ownership and rule semantics are unchanged.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.

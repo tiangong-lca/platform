@@ -45,9 +45,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: Open Data catalog filtering, Process selection, and publication UI follow the existing frontend ownership and delivery contracts; repository rules are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed the Process draft save and review-submission fix: it stays within frontend page/service ownership and does not change branch, release, or data-authority contracts.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

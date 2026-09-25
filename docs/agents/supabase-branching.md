@@ -22,9 +22,9 @@ checkPaths:
   - scripts/e2e/**
   - playwright.config.ts
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: ec64e2142f67874171bbd5ddb32f8aed581d9824
-lastReviewedNote: 'Reviewed Platform #1120 after integrating current dev: frontend Open Data queries and publication commands preserve the database/Edge ownership boundary and existing environment-selection policy.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: c60e9eb2ca1a4053207fb680f73887f761f736ea
+lastReviewedNote: 'Reviewed Process draft review submission: frontend readback and validation retain the existing Supabase command, RLS, and environment ownership boundaries.'
 ---
 
 # Supabase Environment And Database Workflow
