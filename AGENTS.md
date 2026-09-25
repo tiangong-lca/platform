@@ -45,9 +45,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: Open Data catalog filtering, Process selection, and publication UI follow the existing frontend ownership and delivery contracts; repository rules are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: 4aa4e7c91c261a3b9bead1572c8b1d326abe4332
+lastReviewedNote: 'Reviewed Process site-label delivery: the page displays evidence-derived site identity and row ID while the canonical Process name and frontend ownership contract remain unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

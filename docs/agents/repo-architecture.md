@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 25d57284565efb719c471df2bfdceb05dfc65717
-lastReviewedNote: 'Reviewed Platform #1120 after integrating current dev: the Open Data catalog adds shared filter and RPC service modules within the existing page/service architecture; stable ownership boundaries are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: 4aa4e7c91c261a3b9bead1572c8b1d326abe4332
+lastReviewedNote: 'Reviewed Process site-label delivery: the Process service derives display-only site evidence from existing row JSON and the page renders it within the established page/service boundary.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

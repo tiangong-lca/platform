@@ -39,9 +39,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: focused Open Data Jest tests use the existing no-watchman recovery path; supported troubleshooting commands are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: 4aa4e7c91c261a3b9bead1572c8b1d326abe4332
+lastReviewedNote: 'Reviewed Process site-label delivery: focused Jest diagnosis uses existing commands; no recovery step or common failure mode changed.'
 ---
 
 # Testing Troubleshooting
