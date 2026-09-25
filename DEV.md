@@ -42,9 +42,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: Open Data catalog filters and Process publication use the existing local bootstrap and validation workflow; commands and prerequisites are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: 4aa4e7c91c261a3b9bead1572c8b1d326abe4332
+lastReviewedNote: 'Reviewed Process site-label changes to the Process list, service mapping, locale artifacts, and focused tests; local bootstrap commands and prerequisites remain unchanged.'
 ---
 
 # Development Bootstrap
