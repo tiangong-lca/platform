@@ -619,6 +619,11 @@ describe('ProcessesPage', () => {
           name: 'Water supply',
           generalComment: 'No factory code',
         },
+        {
+          version: '1.0.0',
+          name: 'Process awaiting an identifier',
+          generalComment: 'Incomplete search result',
+        },
       ],
       success: true,
     });
@@ -630,6 +635,8 @@ describe('ProcessesPage', () => {
     expect(screen.getByText('ID proc-ver')).toHaveAttribute('title', 'proc-verified');
     expect(screen.getByText('ID proc-unr')).toHaveAttribute('title', 'proc-unresolved');
     expect(screen.getByText('ID proc-no-')).toHaveAttribute('title', 'proc-no-site');
+    expect(screen.getByText('Process awaiting an identifier')).toBeInTheDocument();
+    expect(screen.queryByText('ID undefine')).not.toBeInTheDocument();
     expect(screen.getAllByText('Coke production')).toHaveLength(2);
     expect(screen.getByText('Site Z17').parentElement?.parentElement).toHaveTextContent(
       'Coke production',

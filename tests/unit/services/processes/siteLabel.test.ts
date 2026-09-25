@@ -121,6 +121,41 @@ describe('Process site labels', () => {
     ).toEqual({ status: 'needs_review' });
   });
 
+  it('treats leading-zero and unpadded mentions of the same factory as one site', () => {
+    expect(deriveProcessSite(evidence(text('Factory Z03; Factory Z3'), text('Z3 output')))).toEqual(
+      { status: 'verified', code: 'Z03' },
+    );
+  });
+
+  it('accepts a numeric reference ID and a single exchange object, but flags malformed evidence', () => {
+    const siteEvidence = evidence(text('Factory Z17'), text('Z17 output'));
+    expect(
+      deriveProcessSite({
+        ...siteEvidence,
+        referenceToReferenceFlow: 6,
+        exchanges: siteEvidence.exchanges[1],
+      }),
+    ).toEqual({ status: 'verified', code: 'Z17' });
+    expect(
+      deriveProcessSite({ ...siteEvidence, referenceToReferenceFlow: { '#text': '6' } }),
+    ).toEqual({ status: 'needs_review' });
+    expect(deriveProcessSite({ ...siteEvidence, exchanges: null })).toEqual({
+      status: 'needs_review',
+    });
+    expect(
+      deriveProcessSite({
+        ...siteEvidence,
+        exchanges: [{ exchangeDirection: 'Output', generalComment: text('Z17 output') }],
+      }),
+    ).toEqual({ status: 'needs_review' });
+    expect(
+      deriveProcessSite({
+        ...siteEvidence,
+        exchanges: [{ '@dataSetInternalID': '6', generalComment: text('Z17 output') }],
+      }),
+    ).toEqual({ status: 'needs_review' });
+  });
+
   it('supports both complete RPC rows and projected list rows', () => {
     const siteEvidence = evidence(text('Factory Z17'), text('Z17 output'));
     const fullRow: any = {
