@@ -1703,6 +1703,97 @@ describe('Process Utility Functions', () => {
   });
 
   describe('Data Consistency', () => {
+    it('keeps a synthetic bilingual annual rationale and reference descriptions through form hydration', () => {
+      const originalData = {
+        processInformation: {
+          dataSetInformation: {
+            name: {
+              baseName: [
+                { '@xml:lang': 'en', '#text': 'Synthetic filter disposal' },
+                { '@xml:lang': 'zh', '#text': '合成滤芯处置' },
+              ],
+            },
+          },
+        },
+        modellingAndValidation: {
+          dataSourcesTreatmentAndRepresentativeness: {
+            annualSupplyOrProductionVolume: [
+              {
+                '@xml:lang': 'en',
+                '#text': '200 items/year; fixed illustrative fleet, actual supply unknown',
+              },
+              { '@xml:lang': 'zh', '#text': '200 件/年；固定示例机群，实际供应量未知' },
+            ],
+            useAdviceForDataSet: [
+              { '@xml:lang': 'en', '#text': 'Screening only; omit no missing emissions silently.' },
+              { '@xml:lang': 'zh', '#text': '仅限筛查；缺失排放不得默认为零。' },
+            ],
+            referenceToDataSource: [
+              {
+                '@type': 'source data set',
+                '@refObjectId': 'synthetic-source',
+                '@version': '01.00.000',
+                'common:shortDescription': [
+                  { '@xml:lang': 'en', '#text': 'Illustrative source' },
+                  { '@xml:lang': 'zh', '#text': '示例来源' },
+                ],
+              },
+            ],
+          },
+        },
+        exchanges: {
+          exchange: [
+            {
+              '@dataSetInternalID': '1',
+              referenceToFlowDataSet: {
+                '@type': 'flow data set',
+                '@refObjectId': 'synthetic-flow',
+                '@version': '01.00.000',
+                'common:shortDescription': [
+                  { '@xml:lang': 'en', '#text': 'One spent filter item' },
+                  { '@xml:lang': 'zh', '#text': '一件废滤芯' },
+                ],
+              },
+              exchangeDirection: 'Output',
+              meanAmount: '1',
+              quantitativeReference: true,
+            },
+          ],
+        },
+      };
+
+      const first = genProcessJsonOrdered('synthetic-process', originalData, {
+        preserveAnnualSupplyVolumeText: true,
+      }).processDataSet;
+      const hydrated = genProcessFromData(first);
+      const second = genProcessJsonOrdered('synthetic-process', hydrated, {
+        preserveAnnualSupplyVolumeText: true,
+      }).processDataSet;
+
+      expect(
+        second.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      ).toEqual(
+        first.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      );
+      expect(
+        second.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet,
+      ).toEqual(
+        first.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet,
+      );
+      expect(
+        second.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .referenceToDataSource['common:shortDescription'],
+      ).toEqual(
+        first.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .referenceToDataSource['common:shortDescription'],
+      );
+      expect(
+        second.exchanges.exchange[0].referenceToFlowDataSet['common:shortDescription'],
+      ).toEqual(first.exchanges.exchange[0].referenceToFlowDataSet['common:shortDescription']);
+    });
+
     it('should maintain data consistency through genProcessJsonOrdered and genProcessFromData', () => {
       const originalData = {
         processInformation: {

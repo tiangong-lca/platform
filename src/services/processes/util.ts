@@ -67,7 +67,11 @@ const hasReviewReportReference = (value: unknown): boolean => {
   return Object.values(value).some((field) => field !== undefined);
 };
 
-export function genProcessJsonOrdered(id: string, data: any) {
+export function genProcessJsonOrdered(
+  id: string,
+  data: any,
+  options?: { preserveAnnualSupplyVolumeText?: boolean },
+) {
   let quantitativeReference = {};
   const exchangeList = jsonToList(data?.exchanges?.exchange);
   const normalizeAnnualSupplyOrProductionVolume = (value: unknown) =>
@@ -444,10 +448,13 @@ export function genProcessJsonOrdered(id: string, data: any) {
             data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
               ?.percentageSupplyOrProductionCovered ?? {},
           annualSupplyOrProductionVolume: getLangJson(
-            normalizeAnnualSupplyOrProductionVolume(
-              data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
-                ?.annualSupplyOrProductionVolume,
-            ),
+            options?.preserveAnnualSupplyVolumeText
+              ? data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+                  ?.annualSupplyOrProductionVolume
+              : normalizeAnnualSupplyOrProductionVolume(
+                  data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+                    ?.annualSupplyOrProductionVolume,
+                ),
           ),
           samplingProcedure: getLangJson(
             data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
@@ -462,7 +469,8 @@ export function genProcessJsonOrdered(id: string, data: any) {
               ?.uncertaintyAdjustments,
           ),
           useAdviceForDataSet: getLangJson(
-            data?.modellingAndValidation?.LCIMethodAndAllocation?.useAdviceForDataSet,
+            data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+              ?.useAdviceForDataSet,
           ),
         },
         completeness: {

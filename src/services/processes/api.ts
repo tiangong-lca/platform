@@ -470,7 +470,7 @@ export async function updateProcess(
   modelId?: string,
   options?: NormalizeLangPayloadForSaveOptions,
 ): Promise<UpdateProcessResult | undefined> {
-  const rawData = genProcessJsonOrdered(id, data);
+  const rawData = genProcessJsonOrdered(id, data, { preserveAnnualSupplyVolumeText: true });
   const normalizedResult = await normalizeLangPayloadForSave(rawData, options);
   const newData = normalizedResult?.payload ?? rawData;
   const validationError = normalizedResult?.validationError;

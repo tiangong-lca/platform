@@ -730,6 +730,7 @@ export default {
 
   'pages.process.review.submitSuccess': 'Erfolgreich zur Prüfung eingereicht',
   'pages.process.review.submitFailed': 'Einreichung zur Prüfung fehlgeschlagen',
+  'pages.process.review.saveChangesFirst': 'Speichern Sie Ihre Änderungen vor der Einreichung zur Prüfung.',
   'pages.process.review.submitError': 'Einreichung zur Prüfung fehlgeschlagen',
   'pages.process.reviewSubmitGate.title': 'Validierung der numerischen Stabilität',
   'pages.process.reviewSubmitGate.queued': 'Die Einreichung zur Prüfung wurde eingereiht. Das System validiert zuerst die numerische Stabilität.',

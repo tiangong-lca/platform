@@ -413,6 +413,8 @@ describe('ProcessEdit component', () => {
 
   const createProcessDetailResponse = () => ({
     data: {
+      id: 'process-1',
+      version: '1.0.0',
       json: { processDataSet: processDataset },
       teamId: 'team-1',
       stateCode: 10,
@@ -421,6 +423,70 @@ describe('ProcessEdit component', () => {
       rule_verification: false,
     },
   });
+
+  const createSyntheticReviewDraft = () => {
+    const realUtil = jest.requireActual('@/services/processes/util');
+    const formData = {
+      processInformation: {
+        dataSetInformation: {
+          name: {
+            baseName: [
+              { '@xml:lang': 'en', '#text': 'Synthetic filter treatment' },
+              { '@xml:lang': 'zh', '#text': '合成滤芯处理' },
+            ],
+          },
+        },
+      },
+      modellingAndValidation: {
+        dataSourcesTreatmentAndRepresentativeness: {
+          annualSupplyOrProductionVolume: [
+            { '@xml:lang': 'en', '#text': '200 items/year; fixed example, actual supply unknown' },
+            { '@xml:lang': 'zh', '#text': '200 件/年；固定示例，实际供应量未知' },
+          ],
+          useAdviceForDataSet: [
+            { '@xml:lang': 'en', '#text': 'Screening only; missing emissions remain unknown.' },
+            { '@xml:lang': 'zh', '#text': '仅限筛查；缺失排放仍为未知。' },
+          ],
+        },
+      },
+      exchanges: {
+        exchange: [
+          {
+            '@dataSetInternalID': '1',
+            exchangeDirection: 'Output',
+            quantitativeReference: true,
+            meanAmount: '1',
+            referenceToFlowDataSet: {
+              '@type': 'flow data set',
+              '@refObjectId': 'synthetic-flow',
+              '@version': '01.00.000',
+              'common:shortDescription': [
+                { '@xml:lang': 'en', '#text': 'Used filter' },
+                { '@xml:lang': 'zh', '#text': '废滤芯' },
+              ],
+            },
+          },
+        ],
+      },
+    };
+    const processDataSet = realUtil.genProcessJsonOrdered('process-1', formData, {
+      preserveAnnualSupplyVolumeText: true,
+    }).processDataSet;
+
+    mockGenProcessFromData.mockReturnValue(formData);
+    mockGenProcessJsonOrdered.mockImplementation(realUtil.genProcessJsonOrdered);
+    mockGetProcessDetail.mockResolvedValue({
+      data: {
+        id: 'process-1',
+        version: '1.0.0',
+        json: { processDataSet },
+        stateCode: 10,
+        ruleVerification: true,
+        teamId: 'team-1',
+      },
+    });
+    return processDataSet;
+  };
 
   afterEach(() => {
     jest.useRealTimers();
@@ -455,6 +521,8 @@ describe('ProcessEdit component', () => {
     });
     mockGetProcessDetail.mockResolvedValue({
       data: {
+        id: 'process-1',
+        version: '1.0.0',
         json: { processDataSet: processDataset },
         teamId: 'team-1',
         stateCode: 10,
@@ -1267,7 +1335,7 @@ describe('ProcessEdit component', () => {
     proFormApi.getFieldsValue = originalGetFieldsValue;
   });
 
-  it('falls back to an empty exchange list when save-time reference updates return no exchanges', async () => {
+  it('does not refresh or remove exchange references during an ordinary save', async () => {
     mockUpdateRefsData.mockReturnValue(undefined);
 
     render(<ProcessEdit {...baseProps} />);
@@ -1285,11 +1353,15 @@ describe('ProcessEdit component', () => {
         '1.0.0',
         expect.objectContaining({
           exchanges: {
-            exchange: [],
+            exchange: [
+              expect.objectContaining({ '@dataSetInternalID': '0', quantitativeReference: true }),
+            ],
           },
         }),
       ),
     );
+    expect(mockGetRefsOfCurrentVersion).not.toHaveBeenCalled();
+    expect(mockUpdateRefsData).not.toHaveBeenCalled();
   });
 
   it('blocks data check when the updated process is already under review', async () => {
@@ -1319,7 +1391,7 @@ describe('ProcessEdit component', () => {
     );
   });
 
-  it('continues review validation when the background save fails', async () => {
+  it('reviews the persisted draft without invoking a background save', async () => {
     mockUpdateProcess.mockResolvedValue({
       error: { message: 'save failed before review' },
     });
@@ -1331,10 +1403,131 @@ describe('ProcessEdit component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
 
-    await waitFor(() =>
-      expect(mockAntdMessage.error).toHaveBeenCalledWith('save failed before review'),
-    );
+    await waitFor(() => expect(mockSubmitDatasetReview).toHaveBeenCalled());
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
     expect(mockValidateDatasetWithSdk).toHaveBeenCalled();
+  });
+
+  it('sends unchanged authored annual text and reference descriptions in a synthetic save payload', async () => {
+    const processDataSet = createSyntheticReviewDraft();
+    render(<ProcessEdit {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByRole('dialog', { name: 'Edit process' });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(mockUpdateProcess).toHaveBeenCalled());
+    const savedFormData = mockUpdateProcess.mock.calls[0][2];
+    expect(
+      savedFormData.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .annualSupplyOrProductionVolume,
+    ).toEqual(
+      processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .annualSupplyOrProductionVolume,
+    );
+    expect(
+      savedFormData.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .useAdviceForDataSet,
+    ).toEqual(
+      processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .useAdviceForDataSet,
+    );
+    expect(
+      savedFormData.exchanges.exchange[0].referenceToFlowDataSet['common:shortDescription'],
+    ).toEqual(
+      processDataSet.exchanges.exchange[0].referenceToFlowDataSet['common:shortDescription'],
+    );
+    expect(mockGetRefsOfCurrentVersion).not.toHaveBeenCalled();
+    expect(mockGetFlowDetail).not.toHaveBeenCalled();
+  });
+
+  it('validates a fresh synthetic saved draft without posting a save payload before review', async () => {
+    const processDataSet = createSyntheticReviewDraft();
+    const originalJson = JSON.stringify(processDataSet);
+    render(<ProcessEdit {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByRole('dialog', { name: 'Edit process' });
+    fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
+
+    await waitFor(() => expect(mockSubmitDatasetReview).toHaveBeenCalled());
+    const checkedJson = mockValidateDatasetWithSdk.mock.calls.at(-1)?.[1]?.processDataSet;
+    expect(
+      checkedJson.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .annualSupplyOrProductionVolume,
+    ).toEqual(
+      processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .annualSupplyOrProductionVolume,
+    );
+    expect(
+      checkedJson.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .useAdviceForDataSet,
+    ).toEqual(
+      processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .useAdviceForDataSet,
+    );
+    expect(
+      checkedJson.exchanges.exchange[0].referenceToFlowDataSet['common:shortDescription'],
+    ).toEqual(
+      processDataSet.exchanges.exchange[0].referenceToFlowDataSet['common:shortDescription'],
+    );
+    expect(JSON.stringify(processDataSet)).toBe(originalJson);
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
+  });
+
+  it('blocks review when the form has unsaved changes instead of submitting the old draft', async () => {
+    render(<ProcessEdit {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByRole('dialog', { name: 'Edit process' });
+    await act(async () => {
+      triggerValuesChange?.(
+        { processInformation: { dataSetInformation: { name: 'Changed process' } } },
+        { processInformation: { dataSetInformation: { name: 'Changed process' } } },
+      );
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
+
+    await waitFor(() =>
+      expect(mockAntdMessage.warning).toHaveBeenCalledWith(
+        'Save your changes before submitting for review.',
+      ),
+    );
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
+    expect(mockSubmitDatasetReview).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog', { name: 'Edit process' })).toBeInTheDocument();
+  });
+
+  it('blocks review when the form changes while saved-draft validation is pending', async () => {
+    let resolveReferences!: (value: unknown) => void;
+    const pendingReferences = new Promise((resolve) => {
+      resolveReferences = resolve;
+    });
+    mockCheckReferences.mockReturnValueOnce(pendingReferences);
+
+    render(<ProcessEdit {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByRole('dialog', { name: 'Edit process' });
+    fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
+    await waitFor(() => expect(mockCheckReferences).toHaveBeenCalled());
+
+    await act(async () => {
+      triggerValuesChange?.(
+        { processInformation: { dataSetInformation: { name: 'Changed process' } } },
+        { processInformation: { dataSetInformation: { name: 'Changed process' } } },
+      );
+      resolveReferences({ findProblemNodes: () => [] });
+      await pendingReferences;
+    });
+
+    await waitFor(() =>
+      expect(mockAntdMessage.warning).toHaveBeenCalledWith(
+        'Save your changes before submitting for review.',
+      ),
+    );
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
     expect(mockSubmitDatasetReview).not.toHaveBeenCalled();
   });
 
@@ -1510,6 +1703,26 @@ describe('ProcessEdit component', () => {
     expect(screen.getByRole('dialog', { name: 'Edit process' })).toBeInTheDocument();
     expect(mockAntdMessage.success).not.toHaveBeenCalledWith('Review submitted successfully');
     expect(setViewDrawerVisible).not.toHaveBeenCalledWith(false);
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
+  });
+
+  it('does not submit a saved process that entered review after the editor opened', async () => {
+    mockGetProcessDetail
+      .mockResolvedValueOnce(createProcessDetailResponse())
+      .mockResolvedValueOnce({
+        data: { ...createProcessDetailResponse().data, stateCode: 20 },
+      });
+
+    render(<ProcessEdit {...baseProps} />);
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByRole('dialog', { name: 'Edit process' });
+    fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
+
+    await waitFor(() =>
+      expect(mockAntdMessage.error).toHaveBeenCalledWith('Review submission failed'),
+    );
+    expect(mockSubmitDatasetReview).not.toHaveBeenCalled();
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
   });
 
   it('uses the direct-submit fallback when the server omits an error message', async () => {
@@ -1531,16 +1744,9 @@ describe('ProcessEdit component', () => {
     expect(mockAntdMessage.success).not.toHaveBeenCalledWith('Review submitted successfully');
   });
   it('stops review submission when the saved process shape is incomplete', async () => {
-    mockUpdateProcess.mockResolvedValue({
-      data: [
-        {
-          id: 'process-1',
-          version: '1.0.0',
-          json: { processDataSet: processDataset },
-          rule_verification: true,
-        },
-      ],
-    });
+    mockGetProcessDetail
+      .mockResolvedValueOnce(createProcessDetailResponse())
+      .mockResolvedValueOnce({ data: { id: 'process-1', version: '1.0.0', stateCode: 10 } });
 
     render(<ProcessEdit {...baseProps} />);
 
@@ -1549,7 +1755,10 @@ describe('ProcessEdit component', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
 
-    await waitFor(() => expect(mockUpdateProcess).toHaveBeenCalled());
+    await waitFor(() =>
+      expect(mockAntdMessage.error).toHaveBeenCalledWith('Review submission failed'),
+    );
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
     expect(mockSubmitDatasetReview).not.toHaveBeenCalled();
     expect(mockAntdMessage.success).not.toHaveBeenCalledWith('Review submitted successfully');
   });
@@ -2121,10 +2330,10 @@ describe('ProcessEdit component', () => {
     );
   });
 
-  it('stops review submission when save does not return updated data', async () => {
-    mockUpdateProcess.mockResolvedValue({
-      error: { message: 'save failed before review' },
-    });
+  it('stops review submission when the saved draft cannot be read back', async () => {
+    mockGetProcessDetail
+      .mockResolvedValueOnce(createProcessDetailResponse())
+      .mockResolvedValueOnce({ data: null });
 
     render(<ProcessEdit {...baseProps} />);
 
@@ -2133,8 +2342,9 @@ describe('ProcessEdit component', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
 
     await waitFor(() =>
-      expect(mockAntdMessage.error).toHaveBeenCalledWith('save failed before review'),
+      expect(mockAntdMessage.error).toHaveBeenCalledWith('Review submission failed'),
     );
+    expect(mockUpdateProcess).not.toHaveBeenCalled();
     expect(mockSubmitDatasetReview).not.toHaveBeenCalled();
   });
 

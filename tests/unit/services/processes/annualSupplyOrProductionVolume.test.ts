@@ -12,6 +12,7 @@ import {
   normalizeAnnualSupplyVolumeMultiLang,
   normalizeAnnualSupplyVolumeText,
   parseAnnualSupplyVolumeText,
+  replaceAnnualSupplyVolumeNumericText,
   sanitizeAnnualSupplyVolumeNumericInput,
 } from '@/services/processes/annualSupplyOrProductionVolume';
 
@@ -77,6 +78,52 @@ describe('annualSupplyOrProductionVolume helpers', () => {
       ANNUAL_SUPPLY_VOLUME_TEXT_MAX_LENGTH,
     ]);
     expect(values.every((item) => item['#text'].endsWith('...'))).toBe(true);
+  });
+
+  it('changes only the numeric prefix while retaining bilingual expert assumptions', () => {
+    const original = [
+      { '@xml:lang': 'en', '#text': '200 items/year; illustrative fleet, actual supply unknown' },
+      { '@xml:lang': 'zh', '#text': '200 件/年；示例机群，实际年供应量未知' },
+    ];
+
+    expect(replaceAnnualSupplyVolumeNumericText(original, '300', 'item', ['en', 'zh'])).toEqual([
+      { '@xml:lang': 'en', '#text': '300 items/year; illustrative fleet, actual supply unknown' },
+      { '@xml:lang': 'zh', '#text': '300 件/年；示例机群，实际年供应量未知' },
+    ]);
+    expect(original[0]['#text']).toBe('200 items/year; illustrative fleet, actual supply unknown');
+  });
+
+  it('uses the required language and a shared suffix when no authored rationale exists', () => {
+    expect(replaceAnnualSupplyVolumeNumericText(undefined, '300', 'items/year')).toEqual([
+      { '@xml:lang': 'en', '#text': '300 items/year' },
+    ]);
+    expect(
+      replaceAnnualSupplyVolumeNumericText(
+        undefined,
+        '300',
+        (lang) => (lang === 'zh' ? '件/年' : 'items/year'),
+        ['en', 'zh'],
+      ),
+    ).toEqual([
+      { '@xml:lang': 'en', '#text': '300 items/year' },
+      { '@xml:lang': 'zh', '#text': '300 件/年' },
+    ]);
+  });
+
+  it('caps an explicitly edited value at 500 characters without changing the other language', () => {
+    const result = replaceAnnualSupplyVolumeNumericText(
+      [
+        { '@xml:lang': 'en', '#text': `1 ${'e'.repeat(600)}` },
+        { '@xml:lang': 'zh', '#text': '1 件/年；固定示例' },
+      ],
+      '2',
+      'item',
+      ['en', 'zh'],
+    );
+
+    expect(result[0]['#text']).toHaveLength(ANNUAL_SUPPLY_VOLUME_TEXT_MAX_LENGTH);
+    expect(result[0]['#text']).toMatch(/\.\.\.$/);
+    expect(result[1]['#text']).toBe('2 件/年；固定示例');
   });
 
   it('leaves a language within the limit unchanged when another language is truncated', () => {

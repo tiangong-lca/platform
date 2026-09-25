@@ -325,6 +325,35 @@ export const buildAnnualSupplyVolumeMultiLang = (
   });
 };
 
+export const replaceAnnualSupplyVolumeNumericText = (
+  existingValue: unknown,
+  numericValue: unknown,
+  suffixResolver: string | ((lang: string) => string),
+  languages: readonly string[] = ANNUAL_SUPPLY_VOLUME_DEFAULT_LANGS,
+) => {
+  const existingItems = (Array.isArray(existingValue) ? existingValue : [existingValue]).filter(
+    (item): item is Record<string, unknown> => !!item && typeof item === 'object',
+  );
+
+  return buildAnnualSupplyVolumeMultiLang(
+    numericValue,
+    (lang) => {
+      const existingItem = existingItems.find(
+        (item) =>
+          typeof item['@xml:lang'] === 'string' &&
+          resolveContentLanguage(item['@xml:lang']) === resolveContentLanguage(lang),
+      );
+      const existingSuffix = parseAnnualSupplyVolumeText(existingItem?.['#text']).suffixText;
+
+      return (
+        existingSuffix ||
+        (typeof suffixResolver === 'function' ? suffixResolver(lang) : suffixResolver)
+      );
+    },
+    languages,
+  );
+};
+
 export const getQuantitativeReferenceExchange = (exchangeDataSource: ProcessExchangeData[]) => {
   return exchangeDataSource.find((exchange) => exchange?.quantitativeReference === true);
 };

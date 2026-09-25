@@ -26,11 +26,7 @@ import {
 } from '@/pages/Utils/review';
 
 import RefsOfNewVersionDrawer, { RefVersionItem } from '@/components/RefsOfNewVersionDrawer';
-import {
-  getRefsOfCurrentVersion,
-  getRefsOfNewVersion,
-  updateRefsData,
-} from '@/pages/Utils/updateReference';
+import { getRefsOfNewVersion, updateRefsData } from '@/pages/Utils/updateReference';
 import { formatDataCheckErrorWithSections } from '@/pages/Utils/validation/feedbackMessages';
 import { validateVisibleFormFields } from '@/pages/Utils/validation/formSupport';
 import { formatDatasetTabLabel } from '@/pages/Utils/validation/tabMessages';
@@ -179,6 +175,7 @@ const ProcessEdit: FC<Props> = ({
   const { message } = App.useApp();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const formRefEdit = useRef<ProFormInstance | undefined>(undefined);
+  const unsavedChangesRef = useRef(false);
   const [activeTabKey, setActiveTabKey] = useState<TabKeysType>('processInformation');
   const [fromData, setFromData] = useState<FormProcessWithDatas>();
   const [initData, setInitData] = useState<FormProcessWithDatas>();
@@ -318,9 +315,11 @@ const ProcessEdit: FC<Props> = ({
   const handleAISuggestionClose = () => {
     const dataSet = genProcessFromData(aiSuggestionDataRef.current?.processDataSet ?? {});
     applyProcessData({ ...dataSet, id }, { resetFields: true });
+    unsavedChangesRef.current = true;
   };
   const handletFromData = async () => {
     if (fromData?.id) {
+      unsavedChangesRef.current = true;
       const fieldsValue = formRefEdit.current?.getFieldsValue();
       if (activeTabKey === 'validation') {
         await setFromData({
@@ -351,6 +350,7 @@ const ProcessEdit: FC<Props> = ({
 
   const handletExchangeDataCreate = (data: ProcessExchangeData) => {
     if (fromData?.id) {
+      unsavedChangesRef.current = true;
       const createdExchange = {
         ...data,
         '@dataSetInternalID': exchangeDataSource.length.toString(),
@@ -372,6 +372,7 @@ const ProcessEdit: FC<Props> = ({
 
   const handletExchangeData = (data: ProcessExchangeData[]) => {
     if (fromData?.id) {
+      unsavedChangesRef.current = true;
       const nextExchangeDataSource = [...data];
       setExchangeDataSource(nextExchangeDataSource);
       setFromData({
@@ -435,6 +436,7 @@ const ProcessEdit: FC<Props> = ({
       ...res,
       exchanges: toProcessExchanges(nextExchangeDataSource),
     });
+    unsavedChangesRef.current = true;
     setRefsDrawerVisible(false);
   };
 
@@ -451,6 +453,7 @@ const ProcessEdit: FC<Props> = ({
       ...res,
       exchanges: toProcessExchanges(nextExchangeDataSource),
     });
+    unsavedChangesRef.current = true;
     setRefsDrawerVisible(false);
   };
 
@@ -476,22 +479,8 @@ const ProcessEdit: FC<Props> = ({
         ...res,
         exchanges: toProcessExchanges(nextExchangeDataSource),
       });
+      unsavedChangesRef.current = true;
     }
-  };
-
-  const updateReferenceDescription = async (processData: FormProcessWithDatas) => {
-    const currentData = cloneProcessData(processData) as FormProcessWithDatas;
-    const { oldRefs } = await getRefsOfCurrentVersion(currentData);
-    const res = updateRefsData(currentData, oldRefs, false) as FormProcessWithDatas;
-    const nextExchangeDataSource = await updateExchangeDataSource(
-      (res?.exchanges?.exchange ?? []) as ProcessExchangeData[],
-    );
-    const nextData = {
-      ...res,
-      exchanges: toProcessExchanges(nextExchangeDataSource),
-    } as FormProcessWithDatas;
-    applyProcessData(nextData);
-    return nextData;
   };
 
   const handleSubmit = async (
@@ -507,7 +496,7 @@ const ProcessEdit: FC<Props> = ({
       }
       return;
     }
-    const processData = await updateReferenceDescription(currentData);
+    const processData = cloneProcessData(currentData) as FormProcessWithDatas;
     const output = (processData.exchanges.exchange as ProcessExchangeData[]).filter(
       (e) => e.exchangeDirection?.toUpperCase() === 'OUTPUT',
     );
@@ -557,6 +546,8 @@ const ProcessEdit: FC<Props> = ({
       ? await updateProcess(id, version, nextProcessData, undefined, langOptions)
       : await updateProcess(id, version, nextProcessData);
     if (updateResult?.data) {
+      unsavedChangesRef.current = false;
+      setOriginJson(updateResult.data[0]?.json ?? {});
       if (!closeDrawer) {
         const dataSet = genProcessFromData(updateResult.data[0]?.json?.processDataSet ?? {});
         const nextData = {
@@ -675,7 +666,7 @@ const ProcessEdit: FC<Props> = ({
       return undefined;
     }
 
-    const preparedProcessData = await updateReferenceDescription(currentData);
+    const preparedProcessData = cloneProcessData(currentData) as FormProcessWithDatas;
     const stateCode =
       typeof preparedProcessData?.stateCode === 'number'
         ? preparedProcessData.stateCode
@@ -692,7 +683,7 @@ const ProcessEdit: FC<Props> = ({
       ruleVerification: true,
       stateCode,
     } satisfies ProcessCheckTarget;
-  }, [fromData, getCurrentProcessData, id, initData, updateReferenceDescription, version]);
+  }, [fromData, getCurrentProcessData, id, initData, version]);
 
   const resolveProcessCheckTarget = useCallback(
     async (updateResult?: HandleSubmitResult) => {
@@ -754,7 +745,9 @@ const ProcessEdit: FC<Props> = ({
       '@version': processDetail.version,
       '@type': 'process data set',
     } satisfies refDataType;
-    const orderedJson = genProcessJsonOrdered(processDetail.id, processDetail);
+    const orderedJson = genProcessJsonOrdered(processDetail.id, processDetail, {
+      preserveAnnualSupplyVolumeText: true,
+    });
     const sdkValidation = validateDatasetWithSdk('process data set', orderedJson);
     const sdkIssues = sdkValidation.issues;
     const sdkIssueDetails = normalizeProcessSdkValidationDetails(sdkIssues, orderedJson);
@@ -954,22 +947,61 @@ const ProcessEdit: FC<Props> = ({
     setReviewSubmitting(true);
     setSpinning(true);
     try {
-      const updateResult = await handleSubmit(false, { langIntent: 'validation' });
-      const validationTarget = await resolveProcessCheckTarget(updateResult);
-      const updatedProcess = toSavedProcessCheckTarget(updateResult);
+      const blockUnsavedChanges = () => {
+        if (!unsavedChangesRef.current) {
+          return false;
+        }
+        message.warning(
+          intl.formatMessage({
+            id: 'pages.process.review.saveChangesFirst',
+            defaultMessage: 'Save your changes before submitting for review.',
+          }),
+        );
+        return true;
+      };
 
-      if (!validationTarget) {
+      if (blockUnsavedChanges()) {
         return;
       }
+
+      // Review the persisted draft itself. Saving the editor first can rewrite fields
+      // the author never touched and leave those changes behind if review fails.
+      const savedResult = await getProcessDetail(id, version);
+      if (blockUnsavedChanges()) {
+        return;
+      }
+      const savedProcess = savedResult.data;
+      if (
+        !savedProcess?.json?.processDataSet ||
+        savedProcess.id !== id ||
+        savedProcess.version !== version ||
+        typeof savedProcess.stateCode !== 'number' ||
+        savedProcess.stateCode >= 20
+      ) {
+        message.error(
+          intl.formatMessage({
+            id: 'pages.process.review.submitFailed',
+            defaultMessage: 'Review submission failed',
+          }),
+        );
+        return;
+      }
+
+      const validationTarget = {
+        ...genProcessFromData(savedProcess.json.processDataSet),
+        id,
+        version,
+        stateCode: savedProcess.stateCode,
+        ruleVerification: isRuleVerificationPassed(savedProcess.ruleVerification),
+      } satisfies ProcessCheckTarget;
       const { checkResult } = await handleCheckData('review', validationTarget);
 
-      if (checkResult && updatedProcess) {
+      if (checkResult) {
+        if (blockUnsavedChanges()) {
+          return;
+        }
         setSpinning(true);
-        const submitResult = await submitDatasetReview(
-          'processes',
-          updatedProcess.id,
-          updatedProcess.version,
-        );
+        const submitResult = await submitDatasetReview('processes', id, version);
         if (submitResult.error) {
           message.error(
             submitResult.error.message ||
@@ -991,6 +1023,15 @@ const ProcessEdit: FC<Props> = ({
         setDrawerVisible(false);
         setViewDrawerVisible(false);
       }
+    } catch (error) {
+      message.error(
+        error instanceof Error && error.message
+          ? error.message
+          : intl.formatMessage({
+              id: 'pages.process.review.submitFailed',
+              defaultMessage: 'Review submission failed',
+            }),
+      );
     } finally {
       setSpinning(false);
       setReviewSubmitting(false);
@@ -1034,6 +1075,7 @@ const ProcessEdit: FC<Props> = ({
       } as FormProcessWithDatas;
       setInitData(nextData);
       applyProcessData(nextData, { resetFields: true });
+      unsavedChangesRef.current = false;
       setSpinning(false);
     });
   };
@@ -1257,6 +1299,7 @@ const ProcessEdit: FC<Props> = ({
               formRef={formRefEdit}
               initialValues={initData}
               onValuesChange={async (changedValues, allValues) => {
+                unsavedChangesRef.current = true;
                 dismissChangedSdkValidationFields(changedValues);
                 if (activeTabKey === 'validation') {
                   await setFromData({

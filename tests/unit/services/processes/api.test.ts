@@ -557,7 +557,13 @@ describe('updateProcess', () => {
 
     const result = await processesApi.updateProcess(sampleId, sampleVersion, { some: 'data' });
 
-    expect(mockGenProcessJsonOrdered).toHaveBeenCalledWith(sampleId, { some: 'data' });
+    expect(mockGenProcessJsonOrdered).toHaveBeenCalledWith(
+      sampleId,
+      { some: 'data' },
+      {
+        preserveAnnualSupplyVolumeText: true,
+      },
+    );
     expect(mockInvokeDatasetCommand).toHaveBeenCalledWith(
       'app_dataset_save_draft',
       {
