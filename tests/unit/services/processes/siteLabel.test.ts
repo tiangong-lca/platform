@@ -103,6 +103,13 @@ describe('Process site labels', () => {
     ).toBeUndefined();
   });
 
+  it('ignores zero-number placeholders rather than showing or treating them as a second site', () => {
+    expect(deriveProcessSite(evidence(text('Factory Z0'), text('Z0 output')))).toBeUndefined();
+    expect(
+      deriveProcessSite(evidence(text('Factory Z0; Factory Z17'), text('Z17 output'))),
+    ).toEqual({ status: 'verified', code: 'Z17' });
+  });
+
   it('treats different geography codes as ambiguous even when one matches the reference', () => {
     expect(
       deriveProcessSite(
