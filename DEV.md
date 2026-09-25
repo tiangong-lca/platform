@@ -42,9 +42,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-09-23
-lastReviewedCommit: 79f0f66d83067983120072e8acd62616ad89eff2
-lastReviewedNote: 'Reviewed for Platform #1120 after integrating current dev: Open Data catalog filters and Process publication use the existing local bootstrap and validation workflow; commands and prerequisites are unchanged.'
+lastReviewedAt: 2026-09-25
+lastReviewedCommit: 0d08cba9b144c4feccf06af95cefdbb662189aea
+lastReviewedNote: 'Reviewed the Process round-trip repair against the local work loop; Node, pnpm, focused testing, build, and managed push commands remain unchanged.'
 ---
 
 # Development Bootstrap
