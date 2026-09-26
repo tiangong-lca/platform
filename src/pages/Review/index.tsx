@@ -24,10 +24,10 @@ const Review = () => {
   const [profileError, setProfileError] = useState<any>(null);
   const actionRef = useRef<any>(undefined);
   const unassignedTableRef = useRef<any>(undefined);
-  const assignedTableRef = useRef<any>(undefined);
-  const reviewedTableRef = useRef<any>(undefined);
+  const inProgressTableRef = useRef<any>(undefined);
+  const submittedTableRef = useRef<any>(undefined);
+  const completedTableRef = useRef<any>(undefined);
   const pendingTableRef = useRef<any>(undefined);
-  const rejectedTableRef = useRef<any>(undefined);
 
   const checkUserAuth = async () => {
     setLoading(true);
@@ -69,17 +69,17 @@ const Review = () => {
       case 'unassigned':
         unassignedTableRef?.current?.reload();
         break;
-      case 'assigned':
-        assignedTableRef?.current?.reload();
+      case 'in-progress':
+        inProgressTableRef?.current?.reload();
         break;
-      case 'reviewed':
-        reviewedTableRef?.current?.reload();
+      case 'submitted':
+        submittedTableRef?.current?.reload();
         break;
       case 'pending':
         pendingTableRef?.current?.reload();
         break;
-      case 'rejected':
-        rejectedTableRef?.current?.reload();
+      case 'completed':
+        completedTableRef?.current?.reload();
         break;
       case 'members':
         actionRef?.current?.reload();
@@ -107,24 +107,26 @@ const Review = () => {
           ),
         },
         {
-          key: 'assigned',
-          label: <FormattedMessage id='pages.review.tabs.assigned' />,
+          key: 'in-progress',
+          label: (
+            <FormattedMessage id='pages.review.tabs.inProgress' defaultMessage='In Progress' />
+          ),
           children: (
             <AssignmentReview
-              actionRef={assignedTableRef}
-              tableType='assigned'
+              actionRef={inProgressTableRef}
+              tableType='in-progress'
               userData={userData}
               onOpenQualityDiagnostic={() => setQualityDiagnosticOpen(true)}
             />
           ),
         },
         {
-          key: 'rejected',
-          label: <FormattedMessage id='pages.review.tabs.rejectedTask' />,
+          key: 'completed',
+          label: <FormattedMessage id='pages.review.tabs.completed' defaultMessage='Completed' />,
           children: (
             <AssignmentReview
-              actionRef={rejectedTableRef}
-              tableType='admin-rejected'
+              actionRef={completedTableRef}
+              tableType='completed'
               userData={userData}
             />
           ),
@@ -137,18 +139,6 @@ const Review = () => {
       ]
     : [
         {
-          key: 'reviewed',
-          label: <FormattedMessage id='pages.review.tabs.reviewed' />,
-          disabled: !profileReady,
-          children: (
-            <AssignmentReview
-              actionRef={reviewedTableRef}
-              tableType='reviewed'
-              userData={userData}
-            />
-          ),
-        },
-        {
           key: 'pending',
           label: <FormattedMessage id='pages.review.tabs.pending' />,
           disabled: !profileReady,
@@ -157,13 +147,30 @@ const Review = () => {
           ),
         },
         {
-          key: 'rejected',
-          label: <FormattedMessage id='pages.review.tabs.rejected' />,
+          key: 'submitted',
+          label: (
+            <FormattedMessage
+              id='pages.review.tabs.submitted'
+              defaultMessage='Submitted Opinions'
+            />
+          ),
           disabled: !profileReady,
           children: (
             <AssignmentReview
-              actionRef={rejectedTableRef}
-              tableType='reviewer-rejected'
+              actionRef={submittedTableRef}
+              tableType='submitted'
+              userData={userData}
+            />
+          ),
+        },
+        {
+          key: 'completed',
+          label: <FormattedMessage id='pages.review.tabs.completed' defaultMessage='Completed' />,
+          disabled: !profileReady,
+          children: (
+            <AssignmentReview
+              actionRef={completedTableRef}
+              tableType='completed'
               userData={userData}
             />
           ),
@@ -191,7 +198,7 @@ const Review = () => {
     if (isReviewAdmin) {
       setActiveTabKey('unassigned');
     } else if (!profileLoading) {
-      setActiveTabKey(profileReady ? 'reviewed' : 'reviewerProfile');
+      setActiveTabKey(profileReady ? 'pending' : 'reviewerProfile');
     }
   }, [isAuthorized, isReviewAdmin, profileLoading, profileReady]);
 
@@ -212,6 +219,10 @@ const Review = () => {
               activeKey={activeTabKey}
               onChange={onTabChange}
               tabPlacement='start'
+              styles={{
+                body: { minWidth: 0 },
+                content: { minWidth: 0 },
+              }}
               items={tabs}
             />
           </>

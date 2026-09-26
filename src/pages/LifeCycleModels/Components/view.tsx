@@ -16,6 +16,7 @@ type Props = {
   lang: string;
   actionRef?: React.RefObject<ActionType | undefined>;
   buttonTypeProp?: ButtonType;
+  tooltipTitle?: string;
   disabled?: boolean;
   autoOpen?: boolean;
   onDrawerClose?: () => void;
@@ -27,6 +28,7 @@ const LifeCycleModelView: FC<Props> = ({
   lang,
   actionRef,
   buttonTypeProp = 'default',
+  tooltipTitle,
   disabled = false,
   autoOpen = false,
   onDrawerClose,
@@ -91,7 +93,9 @@ const LifeCycleModelView: FC<Props> = ({
           />
         </Tooltip>
       ) : !autoOpen && buttonType === 'icon' ? (
-        <Tooltip title={<FormattedMessage id='pages.button.view' defaultMessage='View' />}>
+        <Tooltip
+          title={tooltipTitle ?? <FormattedMessage id='pages.button.view' defaultMessage='View' />}
+        >
           <Button
             shape='circle'
             type={buttonTypeProp}

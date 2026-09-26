@@ -21,11 +21,12 @@ type Props = {
   version: string;
   // dataSource: string;
   buttonType: string;
+  tooltipTitle?: string;
   actionRef?: React.RefObject<ActionType | undefined>;
   lang: string;
 };
 
-const SourceView: FC<Props> = ({ id, version, buttonType, lang }) => {
+const SourceView: FC<Props> = ({ id, version, buttonType, lang, tooltipTitle }) => {
   const [activeTabKey, setActiveTabKey] = useState<SourceDataSetObjectKeys>('sourceInformation');
   const [drawerVisible, setDrawerVisible] = useState(false);
   // const [footerButtons, setFooterButtons] = useState<JSX.Element>();
@@ -387,7 +388,9 @@ const SourceView: FC<Props> = ({ id, version, buttonType, lang }) => {
   return (
     <>
       {buttonType === 'icon' ? (
-        <Tooltip title={<FormattedMessage id='pages.button.view' defaultMessage='View' />}>
+        <Tooltip
+          title={tooltipTitle ?? <FormattedMessage id='pages.button.view' defaultMessage='View' />}
+        >
           <Button shape='circle' icon={<ProfileOutlined />} size='small' onClick={onView} />
         </Tooltip>
       ) : (

@@ -24,6 +24,7 @@ jest.mock('@umijs/max', () => ({
 jest.mock('@ant-design/icons', () => ({
   __esModule: true,
   CloseOutlined: () => <span data-testid='icon-close' />,
+  DeleteOutlined: () => <span data-testid='icon-delete' />,
   UsergroupAddOutlined: () => <span data-testid='icon-user' />,
 }));
 
@@ -35,15 +36,17 @@ jest.mock('dayjs', () => {
 jest.mock('antd', () => {
   const React = require('react');
 
-  const Button = ({ children, onClick, disabled, icon, ...rest }: any) => {
+  const Button = ({ children, onClick, disabled, icon, shape, size, ...rest }: any) => {
     const restProps = { ...rest } as Record<string, any>;
     delete restProps.danger;
     return (
       <button
+        {...restProps}
         type='button'
         onClick={disabled ? undefined : onClick}
         disabled={disabled}
-        {...restProps}
+        data-shape={shape}
+        data-size={size}
       >
         {icon}
         {toText(children)}
@@ -121,8 +124,8 @@ jest.mock('antd', () => {
   };
 });
 
-const ProTable = ({ rowSelection, actionRef, request, columns = [], toolbar }: any) => {
-  const [rows, setRows] = React.useState<any[]>([]);
+const ProTable = ({ rowSelection, actionRef, request, columns = [], toolbar, dataSource }: any) => {
+  const [rows, setRows] = React.useState<any[]>(dataSource ?? []);
 
   React.useEffect(() => {
     const reload = jest.fn(async () => {
@@ -134,17 +137,23 @@ const ProTable = ({ rowSelection, actionRef, request, columns = [], toolbar }: a
       actionRef.current = { reload };
     }
 
-    void reload();
-  }, [actionRef, request]);
+    if (request) void reload();
+    else setRows(dataSource ?? []);
+  }, [actionRef, dataSource, request]);
 
   return (
     <div data-testid='protable'>
       <div>{toolbar?.title}</div>
-      <button type='button' onClick={() => rowSelection?.onChange?.(['user-2'])}>
-        select-row
-      </button>
+      {rowSelection && (
+        <button type='button' onClick={() => rowSelection.onChange?.(['user-2'])}>
+          select-row
+        </button>
+      )}
       {rows.map((row) => (
-        <div key={row.user_id}>
+        <div
+          key={row.user_id ?? row.reviewer_id}
+          data-checkbox-disabled={String(!!rowSelection?.getCheckboxProps?.(row)?.disabled)}
+        >
           {columns.map((column: any, index: number) => {
             const value = column?.dataIndex ? row[column.dataIndex] : undefined;
             const rendered =
@@ -171,14 +180,20 @@ jest.mock('@/services/comments/api', () => ({
 const mockAssignReviewersApi = jest.fn();
 const mockGetReviewerIdsApi = jest.fn();
 const mockGetReviewsDetail = jest.fn();
-const mockSaveReviewAssignmentDraftApi = jest.fn();
+const mockRevokeReviewerApi = jest.fn();
 
 jest.mock('@/services/reviews/api', () => ({
   __esModule: true,
   assignReviewersApi: (...args: any[]) => mockAssignReviewersApi(...args),
   getReviewerIdsApi: (...args: any[]) => mockGetReviewerIdsApi(...args),
   getReviewsDetail: (...args: any[]) => mockGetReviewsDetail(...args),
-  saveReviewAssignmentDraftApi: (...args: any[]) => mockSaveReviewAssignmentDraftApi(...args),
+  revokeReviewerApi: (...args: any[]) => mockRevokeReviewerApi(...args),
+}));
+
+const mockGetUsersByIds = jest.fn();
+jest.mock('@/services/users/api', () => ({
+  __esModule: true,
+  getUsersByIds: (...args: any[]) => mockGetUsersByIds(...args),
 }));
 
 const mockGetReviewMembersApi = jest.fn();
@@ -195,7 +210,8 @@ describe('SelectReviewer component', () => {
     mockGetReviewerIdsByReviewId.mockResolvedValue([]);
     mockGetReviewerIdsApi.mockResolvedValue([]);
     mockGetReviewsDetail.mockResolvedValue(null);
-    mockSaveReviewAssignmentDraftApi.mockResolvedValue({ data: [{}], error: null });
+    mockGetUsersByIds.mockResolvedValue([]);
+    mockRevokeReviewerApi.mockResolvedValue({ data: [{}], error: null });
     mockAssignReviewersApi.mockResolvedValue({ data: [{}], error: null });
     mockGetReviewMembersApi.mockResolvedValue({
       data: [
@@ -211,6 +227,22 @@ describe('SelectReviewer component', () => {
     });
     message.success.mockReset();
     message.error.mockReset();
+  });
+
+  it('renders the assignment trigger as a small circular icon button', () => {
+    render(
+      <SelectReviewer
+        reviewIds={['review-1']}
+        tabType='unassigned'
+        actionRef={{ current: { reload: jest.fn() } }}
+      />,
+    );
+
+    const trigger = screen.getByTestId('icon-user').closest('button');
+
+    expect(trigger).toHaveAttribute('data-shape', 'circle');
+    expect(trigger).toHaveAttribute('data-size', 'small');
+    expect((trigger as HTMLButtonElement).style.width).toBe('');
   });
 
   it('does not open reviewer assignment while the selected review scope is loading', () => {
@@ -229,26 +261,20 @@ describe('SelectReviewer component', () => {
     expect(screen.queryByTestId('drawer')).not.toBeInTheDocument();
   });
 
-  it('temporarily saves reviewer selections for unassigned reviews', async () => {
-    const actionRef = { current: { reload: jest.fn() } };
-
-    render(<SelectReviewer reviewIds={['review-1']} tabType='unassigned' actionRef={actionRef} />);
+  it('does not expose a temporary-save action for unassigned reviews', async () => {
+    render(
+      <SelectReviewer
+        reviewIds={['review-1']}
+        tabType='unassigned'
+        actionRef={{ current: { reload: jest.fn() } }}
+      />,
+    );
 
     fireEvent.click(screen.getByTestId('icon-user').closest('button') as HTMLButtonElement);
 
     await waitFor(() => expect(mockGetReviewerIdsApi).toHaveBeenCalledWith(['review-1']));
-    await waitFor(() => expect(screen.getByText('user2@example.com')).toBeInTheDocument());
-
-    fireEvent.click(screen.getByText('select-row'));
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Temporary Save' }));
-    });
-
-    expect(mockSaveReviewAssignmentDraftApi).toHaveBeenCalledWith(['review-1'], ['user-2']);
-    expect(mockAssignReviewersApi).not.toHaveBeenCalled();
-    expect(message.success).toHaveBeenCalledWith('Temporarily saved successfully.');
-    expect(actionRef.current.reload).toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Temporary Save' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Confirm assignment' })).toBeInTheDocument();
   });
 
   it('assigns reviewers with the selected deadline', async () => {
@@ -263,7 +289,7 @@ describe('SelectReviewer component', () => {
     fireEvent.change(screen.getByTestId('date-picker'), { target: { value: '2026-04-01' } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm assignment' }));
     });
 
     expect(mockAssignReviewersApi).toHaveBeenCalledWith(
@@ -285,6 +311,10 @@ describe('SelectReviewer component', () => {
     mockGetReviewsDetail.mockResolvedValue({
       deadline: '2026-03-20T10:00:00.000Z',
     });
+    mockGetUsersByIds.mockResolvedValue([
+      { id: 'user-1', display_name: 'User One' },
+      { id: 'user-3', display_name: 'User Three' },
+    ]);
     mockGetReviewMembersApi.mockResolvedValue({
       data: [
         {
@@ -324,15 +354,17 @@ describe('SelectReviewer component', () => {
     await waitFor(() => expect(mockGetReviewsDetail).toHaveBeenCalledWith('review-1'));
     await waitFor(() => expect(screen.getByText('user2@example.com')).toBeInTheDocument());
 
-    expect(screen.queryByText('user1@example.com')).not.toBeInTheDocument();
-    expect(screen.queryByText('user3@example.com')).not.toBeInTheDocument();
+    expect(screen.getAllByText('User One')).toHaveLength(2);
+    expect(screen.getAllByText('User Three')).toHaveLength(2);
+    expect(screen.getByText('user1@example.com')).toBeInTheDocument();
+    expect(screen.getByText('user3@example.com')).toBeInTheDocument();
     expect(screen.getByText('user4@example.com')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Temporary Save' })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByText('select-row'));
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm assignment' }));
     });
 
     expect(mockAssignReviewersApi).toHaveBeenCalledWith(
@@ -343,26 +375,78 @@ describe('SelectReviewer component', () => {
     expect(message.success).toHaveBeenCalledWith('Reviewer assignments saved successfully.');
   });
 
-  it('shows an error toast when temporary save fails', async () => {
+  it('revokes a pending current reviewer immediately', async () => {
     const actionRef = { current: { reload: jest.fn() } };
-    mockSaveReviewAssignmentDraftApi.mockResolvedValueOnce({
-      data: [],
-      error: new Error('failed'),
-    });
+    mockGetReviewerIdsByReviewId.mockResolvedValue([{ reviewer_id: 'user-1', state_code: 0 }]);
+    mockGetUsersByIds.mockResolvedValue([{ id: 'user-1', display_name: 'User One' }]);
 
-    render(<SelectReviewer reviewIds={['review-1']} tabType='unassigned' actionRef={actionRef} />);
+    render(<SelectReviewer reviewIds={['review-1']} tabType='assigned' actionRef={actionRef} />);
 
     fireEvent.click(screen.getByTestId('icon-user').closest('button') as HTMLButtonElement);
+    await waitFor(() => expect(screen.getByText('User One')).toBeInTheDocument());
+    fireEvent.click(screen.getByTestId('icon-delete').closest('button') as HTMLButtonElement);
 
-    await waitFor(() => expect(screen.getByText('user2@example.com')).toBeInTheDocument());
-    fireEvent.click(screen.getByText('select-row'));
+    await waitFor(() => expect(mockRevokeReviewerApi).toHaveBeenCalledWith('review-1', 'user-1'));
+    expect(message.success).toHaveBeenCalledWith('Reviewer assignment revoked.');
+    expect(actionRef.current.reload).toHaveBeenCalled();
+    expect(screen.queryByText('Current reviewers')).not.toBeInTheDocument();
+  });
 
-    await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Temporary Save' }));
-    });
+  it('keeps the current reviewer when immediate revocation fails', async () => {
+    const actionRef = { current: { reload: jest.fn() } };
+    mockGetReviewerIdsByReviewId.mockResolvedValue([{ reviewer_id: 'user-1', state_code: 0 }]);
+    mockGetUsersByIds.mockResolvedValue([{ id: 'user-1', display_name: 'User One' }]);
+    mockRevokeReviewerApi.mockResolvedValueOnce({ data: [{}], error: new Error('revoke failed') });
 
-    expect(message.error).toHaveBeenCalledWith('Temporary save failed');
+    render(<SelectReviewer reviewIds={['review-1']} tabType='assigned' actionRef={actionRef} />);
+
+    fireEvent.click(screen.getByTestId('icon-user').closest('button') as HTMLButtonElement);
+    await waitFor(() => expect(screen.getByText('User One')).toBeInTheDocument());
+    fireEvent.click(screen.getByTestId('icon-delete').closest('button') as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(message.error).toHaveBeenCalledWith('Failed to revoke the reviewer assignment.'),
+    );
     expect(actionRef.current.reload).not.toHaveBeenCalled();
+    expect(screen.getByText('User One')).toBeInTheDocument();
+  });
+
+  it('keeps the current reviewer when revocation returns no changed row', async () => {
+    const actionRef = { current: { reload: jest.fn() } };
+    mockGetReviewerIdsByReviewId.mockResolvedValue([{ reviewer_id: 'user-1', state_code: 0 }]);
+    mockGetUsersByIds.mockResolvedValue([{ id: 'user-1', display_name: 'User One' }]);
+    mockRevokeReviewerApi.mockResolvedValueOnce({ data: [], error: null });
+
+    render(<SelectReviewer reviewIds={['review-1']} tabType='assigned' actionRef={actionRef} />);
+
+    fireEvent.click(screen.getByTestId('icon-user').closest('button') as HTMLButtonElement);
+    await waitFor(() => expect(screen.getByText('User One')).toBeInTheDocument());
+    fireEvent.click(screen.getByTestId('icon-delete').closest('button') as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(message.error).toHaveBeenCalledWith('Failed to revoke the reviewer assignment.'),
+    );
+    expect(actionRef.current.reload).not.toHaveBeenCalled();
+    expect(screen.getByText('User One')).toBeInTheDocument();
+  });
+
+  it('keeps the current reviewer when revocation returns no data payload', async () => {
+    const actionRef = { current: { reload: jest.fn() } };
+    mockGetReviewerIdsByReviewId.mockResolvedValue([{ reviewer_id: 'user-1', state_code: 0 }]);
+    mockGetUsersByIds.mockResolvedValue([{ id: 'user-1', display_name: 'User One' }]);
+    mockRevokeReviewerApi.mockResolvedValueOnce({ data: undefined, error: null });
+
+    render(<SelectReviewer reviewIds={['review-1']} tabType='assigned' actionRef={actionRef} />);
+
+    fireEvent.click(screen.getByTestId('icon-user').closest('button') as HTMLButtonElement);
+    await waitFor(() => expect(screen.getByText('User One')).toBeInTheDocument());
+    fireEvent.click(screen.getByTestId('icon-delete').closest('button') as HTMLButtonElement);
+
+    await waitFor(() =>
+      expect(message.error).toHaveBeenCalledWith('Failed to revoke the reviewer assignment.'),
+    );
+    expect(actionRef.current.reload).not.toHaveBeenCalled();
+    expect(screen.getByText('User One')).toBeInTheDocument();
   });
 
   it('renders deadline controls and supports both close actions', async () => {
@@ -404,7 +488,7 @@ describe('SelectReviewer component', () => {
     fireEvent.click(screen.getByText('select-row'));
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm assignment' }));
     });
 
     expect(message.error).toHaveBeenCalledWith('Save failed');
@@ -427,7 +511,7 @@ describe('SelectReviewer component', () => {
     fireEvent.change(screen.getByTestId('date-picker'), { target: { value: '' } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm assignment' }));
     });
 
     expect(mockAssignReviewersApi).toHaveBeenCalledWith(['review-1'], ['user-2'], null);
@@ -504,7 +588,7 @@ describe('SelectReviewer component', () => {
     fireEvent.change(screen.getByTestId('date-picker'), { target: { value: '' } });
 
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm assignment' }));
     });
 
     expect(mockAssignReviewersApi).toHaveBeenCalledWith(['review-1'], ['user-2'], null);

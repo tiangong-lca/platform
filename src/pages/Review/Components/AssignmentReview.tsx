@@ -20,7 +20,6 @@ import {
   type RootReviewReferenceProgress,
 } from '@/services/reviews/api';
 import { ReviewsTable } from '@/services/reviews/data';
-import { isCurrentAssignedReviewerCommentState } from '@/services/reviews/util';
 import { ExperimentOutlined } from '@ant-design/icons';
 import { ProColumns, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
@@ -47,6 +46,7 @@ import RejectReview from './RejectReview';
 import ReviewLifeCycleModelsDetail from './reviewLifeCycleModels';
 import ReviewProcessDetail from './reviewProcess';
 import ReviewProgress from './ReviewProgress';
+import ReviewTaskDetail from './ReviewTaskDetail';
 import SelectReviewer from './SelectReviewer';
 import SimpleReviewActions from './SimpleReviewActions';
 
@@ -83,7 +83,15 @@ const ReviewFilterLabel = ({ label }: { label: React.ReactNode }) => (
 type AssignmentReviewProps = {
   userData: { user_id: string; role: string } | null;
   tableType:
-    'unassigned' | 'assigned' | 'reviewed' | 'pending' | 'reviewer-rejected' | 'admin-rejected';
+    | 'unassigned'
+    | 'in-progress'
+    | 'completed'
+    | 'pending'
+    | 'submitted'
+    | 'assigned'
+    | 'reviewed'
+    | 'reviewer-rejected'
+    | 'admin-rejected';
   actionRef: any;
   actionFrom?: 'reviewMember';
   hideReviewButton?: boolean;
@@ -97,16 +105,17 @@ export const isReferenceMatchingReviewTab = (
   switch (tableType) {
     case 'unassigned':
       return record.state_code === 0;
+    case 'in-progress':
     case 'assigned':
       return record.state_code === 1;
+    case 'completed':
     case 'admin-rejected':
-      return record.state_code === -1;
+      return [-1, 2].includes(record.state_code);
     case 'pending':
       return record.state_code > 0 && record.actor_comment_state_code === 0;
+    case 'submitted':
     case 'reviewed':
-      return (
-        record.state_code > 0 && [1, 2, -3].includes(record.actor_comment_state_code as number)
-      );
+      return record.state_code === 1 && [1, -3].includes(record.actor_comment_state_code as number);
     case 'reviewer-rejected':
       return record.state_code === -1 && record.actor_comment_state_code === -1;
     default:
@@ -214,7 +223,9 @@ const AssignmentReview = ({
 
   const isReferenceMatchingCurrentTab = (record: RootReviewReferenceProgress) =>
     isReferenceMatchingReviewTab(record, tableType);
-  const supportsBatchSelection = ['unassigned', 'assigned', 'pending'].includes(tableType);
+  const supportsBatchSelection = ['unassigned', 'in-progress', 'assigned', 'pending'].includes(
+    tableType,
+  );
 
   const renderDatasetViewButton = (
     targetTable: ReviewSubmitDatasetTable | undefined,
@@ -222,18 +233,62 @@ const AssignmentReview = ({
     version: string | undefined,
   ) => {
     if (!targetTable || !id || !version) return null;
+    const tooltipTitle = intl.formatMessage({
+      id: 'pages.review.actions.viewData',
+      defaultMessage: 'View data',
+    });
 
     switch (targetTable) {
       case 'contacts':
-        return <ContactView id={id} version={version} lang={lang} buttonType='icon' />;
+        return (
+          <ContactView
+            id={id}
+            version={version}
+            lang={lang}
+            buttonType='icon'
+            tooltipTitle={tooltipTitle}
+          />
+        );
       case 'sources':
-        return <SourceView id={id} version={version} lang={lang} buttonType='icon' />;
+        return (
+          <SourceView
+            id={id}
+            version={version}
+            lang={lang}
+            buttonType='icon'
+            tooltipTitle={tooltipTitle}
+          />
+        );
       case 'unitgroups':
-        return <UnitGroupView id={id} version={version} lang={lang} buttonType='icon' />;
+        return (
+          <UnitGroupView
+            id={id}
+            version={version}
+            lang={lang}
+            buttonType='icon'
+            tooltipTitle={tooltipTitle}
+          />
+        );
       case 'flowproperties':
-        return <FlowpropertyView id={id} version={version} lang={lang} buttonType='icon' />;
+        return (
+          <FlowpropertyView
+            id={id}
+            version={version}
+            lang={lang}
+            buttonType='icon'
+            tooltipTitle={tooltipTitle}
+          />
+        );
       case 'flows':
-        return <FlowView id={id} version={version} lang={lang} buttonType='icon' />;
+        return (
+          <FlowView
+            id={id}
+            version={version}
+            lang={lang}
+            buttonType='icon'
+            tooltipTitle={tooltipTitle}
+          />
+        );
       case 'processes':
         return (
           <ProcessView
@@ -243,6 +298,7 @@ const AssignmentReview = ({
             buttonType='icon'
             disabled={false}
             buttonTypeProp='text'
+            tooltipTitle={tooltipTitle}
           />
         );
       case 'lifecyclemodels':
@@ -253,6 +309,7 @@ const AssignmentReview = ({
             lang={lang}
             buttonType='icon'
             buttonTypeProp='text'
+            tooltipTitle={tooltipTitle}
           />
         );
       default:
@@ -293,9 +350,28 @@ const AssignmentReview = ({
     subTableLoadErrorIdsRef.current = new Set();
   };
 
-  const reloadAfterChildAction = () => {
+  const reloadAfterChildAction = (failedReviewIds: string[] = []) => {
     requestEpochRef.current += 1;
-    resetReviewViewState();
+    if (failedReviewIds.length === 0) {
+      resetReviewViewState();
+    } else {
+      const failed = new Set(failedReviewIds);
+      const knownReferenceIds = new Set(
+        Object.values(subTableDataRef.current)
+          .flat()
+          .map((item) => item.reference_review_id),
+      );
+      const referenceIds = failedReviewIds.filter(
+        (id) =>
+          mainReviewRowsRef.current[id]?.reviewKind === 'reference' || knownReferenceIds.has(id),
+      );
+      const rootIds = failedReviewIds.filter((id) => !referenceIds.includes(id));
+      selectedRootReviewIdsRef.current = new Set(rootIds);
+      setSelectedRootReviewIds(rootIds);
+      setManualSelectedReferenceIds(referenceIds);
+      setExcludedAutoReferenceIds((current) => current.filter((id) => failed.has(id)));
+      setAutoReferenceIdsByRoot({});
+    }
     actionRef.current?.reload?.();
   };
   childActionRef.current.reload = reloadAfterChildAction;
@@ -606,8 +682,9 @@ const AssignmentReview = ({
       ),
       dataIndex: 'data_name',
       key: 'data_name',
+      width: 420,
       render: (dataName: any, record: RootReviewReferenceProgress) => (
-        <Space size='small'>
+        <Space size='small' wrap style={{ maxWidth: '100%', overflowWrap: 'anywhere' }}>
           {genProcessName(dataName ?? {}, lang)}
           {renderDatasetViewButton(record.target_table, record.data_id, record.data_version)}
         </Space>
@@ -617,16 +694,19 @@ const AssignmentReview = ({
       title: <FormattedMessage id='pages.review.reference.table' defaultMessage='Data type' />,
       dataIndex: 'target_table',
       key: 'target_table',
+      width: 140,
     },
     {
       title: <FormattedMessage id='pages.review.reference.version' defaultMessage='Data version' />,
       dataIndex: 'data_version',
       key: 'data_version',
+      width: 140,
     },
     {
       title: <FormattedMessage id='pages.review.table.status' defaultMessage='Status' />,
       dataIndex: 'state_code',
       key: 'state_code',
+      width: 140,
       render: (stateCode: number) => {
         const status =
           stateCode === 2
@@ -668,6 +748,7 @@ const AssignmentReview = ({
         <FormattedMessage id='pages.review.progress.button' defaultMessage='Review Progress' />
       ),
       key: 'progress',
+      width: 120,
       render: (_: unknown, record: RootReviewReferenceProgress) =>
         `${record.completed_reviewer_count}/${record.reviewer_count}`,
     },
@@ -678,6 +759,9 @@ const AssignmentReview = ({
       title: <FormattedMessage id='pages.review.actions' defaultMessage='Actions' />,
       key: 'actions',
       className: 'review-action-column',
+      align: 'center',
+      width: 168,
+      fixed: 'right',
       render: (_: unknown, record: RootReviewReferenceProgress) => {
         if (tableType === 'unassigned') {
           return [
@@ -699,7 +783,7 @@ const AssignmentReview = ({
           ];
         }
 
-        if (tableType === 'assigned') {
+        if (tableType === 'in-progress' || tableType === 'assigned') {
           return [
             <Space key={record.reference_review_id}>
               <SelectReviewer
@@ -712,6 +796,25 @@ const AssignmentReview = ({
                 targetTable={record.target_table}
                 role='admin'
                 actionRef={childActionRef}
+                approveDisabledReason={
+                  record.reviewer_count === 0
+                    ? intl.formatMessage({
+                        id: 'pages.review.approve.disabled.noReviewers',
+                        defaultMessage: 'Assign at least one reviewer before final approval.',
+                      })
+                    : record.completed_reviewer_count < record.reviewer_count
+                      ? intl.formatMessage(
+                          {
+                            id: 'pages.review.approve.disabled.pendingOpinions',
+                            defaultMessage: '{count} reviewer opinions are still pending.',
+                          },
+                          {
+                            count: record.reviewer_count - record.completed_reviewer_count,
+                          },
+                        )
+                      : undefined
+                }
+                dataVersion={record.data_version}
               />
             </Space>,
           ];
@@ -740,12 +843,34 @@ const AssignmentReview = ({
       Boolean(record.targetTable) &&
       !['processes', 'lifecyclemodels'].includes(record.targetTable as string));
 
+  const getApproveDisabledReason = (record: ReviewsTable) => {
+    const reviewerCount = record.reviewerCount ?? 0;
+    const completedReviewerCount = record.completedReviewerCount ?? 0;
+    if (reviewerCount === 0) {
+      return intl.formatMessage({
+        id: 'pages.review.approve.disabled.noReviewers',
+        defaultMessage: 'Assign at least one reviewer before final approval.',
+      });
+    }
+    if (completedReviewerCount < reviewerCount) {
+      return intl.formatMessage(
+        {
+          id: 'pages.review.approve.disabled.pendingOpinions',
+          defaultMessage: '{count} reviewer opinions are still pending.',
+        },
+        { count: reviewerCount - completedReviewerCount },
+      );
+    }
+    return undefined;
+  };
+
   const columns: ProColumns<ReviewsTable>[] = [
     {
       title: <FormattedMessage id='pages.table.title.index' defaultMessage='Index' />,
       dataIndex: 'index',
       valueType: 'index',
       search: false,
+      width: 72,
     },
     {
       title: (
@@ -754,15 +879,29 @@ const AssignmentReview = ({
       dataIndex: 'processName',
       sorter: false,
       search: false,
+      width: 420,
       render: (_, row) => {
         const targetTable = row.targetTable as ReviewSubmitDatasetTable | undefined;
         const canOpenRootData = row.rootCanRead !== false;
         return [
-          <Space key={0} size='small'>
-            {row.name}
-            {canOpenRootData
-              ? renderDatasetViewButton(targetTable, row.json?.data?.id, row.json?.data?.version)
-              : null}
+          <Space key={0} orientation='vertical' size={0} align='start'>
+            <ReviewTaskDetail
+              record={row}
+              dataView={
+                canOpenRootData
+                  ? renderDatasetViewButton(
+                      targetTable,
+                      row.json?.data?.id,
+                      row.json?.data?.version,
+                    )
+                  : undefined
+              }
+            />
+            <Space size={4} wrap>
+              <Tag>{targetTable ?? '-'}</Tag>
+              <Tag>{row.json?.data?.version ?? '-'}</Tag>
+              <Tag>{row.reviewKind ?? '-'}</Tag>
+            </Space>
           </Space>,
         ];
       },
@@ -774,9 +913,10 @@ const AssignmentReview = ({
       dataIndex: 'userName',
       sorter: false,
       search: false,
+      width: 220,
       render: (_, row) => {
         return [
-          <span key={0}>
+          <span key={0} style={{ overflowWrap: 'anywhere' }}>
             {row.userName}
             <AccountView userId={row.json?.user?.id} buttonType='icon' buttonTypeProp='text' />
           </span>,
@@ -791,6 +931,70 @@ const AssignmentReview = ({
       sorter: false,
       search: false,
       valueType: 'dateTime',
+      width: 180,
+    },
+    {
+      title: <FormattedMessage id='pages.review.table.column.deadline' defaultMessage='Deadline' />,
+      dataIndex: 'deadline',
+      sorter: false,
+      search: false,
+      valueType: 'dateTime',
+      width: 180,
+    },
+    {
+      title:
+        userData?.role === 'review-member' && tableType !== 'completed' ? (
+          <FormattedMessage id='pages.review.myOpinion' defaultMessage='My opinion' />
+        ) : (
+          <FormattedMessage id='pages.review.table.status' defaultMessage='Status' />
+        ),
+      dataIndex: 'stateCode',
+      sorter: false,
+      search: false,
+      width: 140,
+      render: (_: unknown, record: ReviewsTable) => {
+        if (tableType === 'completed') {
+          return record.stateCode === 2 ? (
+            <Tag color='success'>
+              <FormattedMessage id='pages.review.result.approved' defaultMessage='Approved' />
+            </Tag>
+          ) : (
+            <Tag color='error'>
+              <FormattedMessage id='pages.review.result.returned' defaultMessage='Returned' />
+            </Tag>
+          );
+        }
+        if (userData?.role === 'review-member') {
+          if (record.actorCommentStateCode === 1) {
+            return (
+              <Tag color='success'>
+                <FormattedMessage id='pages.review.opinion.approve' defaultMessage='Approve' />
+              </Tag>
+            );
+          }
+          if (record.actorCommentStateCode === -3) {
+            return (
+              <Tag color='error'>
+                <FormattedMessage id='pages.review.opinion.reject' defaultMessage='Reject' />
+              </Tag>
+            );
+          }
+          return (
+            <Tag color='processing'>
+              <FormattedMessage id='pages.review.opinion.pending' defaultMessage='Pending' />
+            </Tag>
+          );
+        }
+        return tableType === 'unassigned' ? (
+          <Tag>
+            <FormattedMessage id='pages.review.tabs.unassigned' defaultMessage='Unassigned Task' />
+          </Tag>
+        ) : (
+          <Tag color='processing'>
+            <FormattedMessage id='pages.review.tabs.inProgress' defaultMessage='In Progress' />
+          </Tag>
+        );
+      },
     },
   ];
 
@@ -800,34 +1004,30 @@ const AssignmentReview = ({
       dataIndex: 'actions',
       className: 'review-action-column',
       search: false,
+      align: 'center',
+      width: 168,
+      fixed: 'right',
       render: (_, record) => {
         if (record.rootMatchesStatus === false) return [];
         return [
-          <RejectReview
-            isModel={record.isFromLifeCycle}
-            dataId={record.json?.data?.id}
-            dataVersion={record.json?.data?.version}
-            reviewId={record.id}
-            targetTable={record.targetTable as ReviewSubmitDatasetTable | undefined}
-            key={0}
-            actionRef={actionRef}
-          />,
+          <Space key={0}>
+            <SelectReviewer tabType='unassigned' actionRef={actionRef} reviewIds={[record.id]} />
+            <RejectReview
+              isModel={record.isFromLifeCycle}
+              dataId={record.json?.data?.id}
+              dataVersion={record.json?.data?.version}
+              reviewId={record.id}
+              targetTable={record.targetTable as ReviewSubmitDatasetTable | undefined}
+              actionRef={actionRef}
+            />
+          </Space>,
         ];
       },
     });
   }
-  if (tableType === 'assigned') {
+  if (tableType === 'in-progress' || tableType === 'assigned') {
     columns.push(
       ...[
-        {
-          title: (
-            <FormattedMessage id='pages.review.table.column.deadline' defaultMessage='Deadline' />
-          ),
-          dataIndex: 'deadline',
-          sorter: false,
-          search: false,
-          valueType: 'dateTime' as const,
-        },
         {
           title: (
             <FormattedMessage id='pages.review.progress.button' defaultMessage='Review Progress' />
@@ -835,14 +1035,44 @@ const AssignmentReview = ({
           dataIndex: 'progress',
           sorter: false,
           search: false,
+          width: 120,
           render: (_: any, record: ReviewsTable) => {
-            const total =
-              record.comments?.filter((item: any) =>
-                isCurrentAssignedReviewerCommentState(item.state_code),
-              ).length ?? 0;
-            const reviewed =
-              record.comments?.filter((item: any) => [1, -3].includes(item.state_code)).length ?? 0;
-            return [<Space key={0}>{`${reviewed}/${total}`}</Space>];
+            const reviewerCount = record.reviewerCount ?? 0;
+            const completedReviewerCount = record.completedReviewerCount ?? 0;
+            const progress = `${completedReviewerCount}/${reviewerCount}`;
+            if (tableType !== 'in-progress' || userData?.role !== 'review-admin') {
+              return progress;
+            }
+
+            const opinionSummary =
+              reviewerCount === 0
+                ? intl.formatMessage({
+                    id: 'pages.review.progress.noReviewers',
+                    defaultMessage: 'No reviewers assigned yet.',
+                  })
+                : intl.formatMessage(
+                    {
+                      id: 'pages.review.detail.opinionSummary',
+                      defaultMessage: 'Approve: {approve}; reject: {reject}; pending: {pending}.',
+                    },
+                    {
+                      approve: record.approveOpinionCount ?? 0,
+                      reject: record.rejectOpinionCount ?? 0,
+                      pending: Math.max(0, reviewerCount - completedReviewerCount),
+                    },
+                  );
+            const tooltipText = `${intl.formatMessage({
+              id: 'pages.review.detail.opinions',
+              defaultMessage: 'Reviewer opinions',
+            })}: ${opinionSummary}`;
+
+            return (
+              <Tooltip title={tooltipText}>
+                <span tabIndex={0} aria-label={`${progress}; ${tooltipText}`}>
+                  {progress}
+                </span>
+              </Tooltip>
+            );
           },
         },
         {
@@ -850,50 +1080,34 @@ const AssignmentReview = ({
           dataIndex: 'actions',
           className: 'review-action-column',
           search: false,
+          align: 'center' as const,
+          width: 168,
+          fixed: 'right' as const,
           render: (_: any, record: ReviewsTable) => {
             if (record.rootMatchesStatus === false) return [];
-            if (isSimpleReview(record) && record.targetTable) {
-              return [
+            return [
+              <Space key={0}>
+                <SelectReviewer tabType='assigned' actionRef={actionRef} reviewIds={[record.id]} />
                 <SimpleReviewActions
-                  key={0}
                   reviewId={record.id}
                   targetTable={record.targetTable as ReviewSubmitDatasetTable}
                   role='admin'
                   actionRef={actionRef}
-                />,
-              ];
-            }
-            return [
-              <Space key={0}>
-                {record.isFromLifeCycle ? (
-                  <ReviewLifeCycleModelsDetail
-                    tabType='assigned'
-                    type='view'
+                  approveDisabledReason={getApproveDisabledReason(record)}
+                  dataVersion={record.json?.data?.version}
+                  approveOpinionCount={record.approveOpinionCount}
+                  rejectOpinionCount={record.rejectOpinionCount}
+                />
+                {!isSimpleReview(record) && (
+                  <ReviewProgress
                     actionRef={actionRef}
-                    id={record.json?.data?.id}
-                    version={record.json?.data?.version}
-                    lang={lang}
-                    reviewId={record.id}
-                  />
-                ) : (
-                  <ReviewProcessDetail
                     tabType='assigned'
-                    type='view'
-                    actionRef={actionRef}
-                    id={record.json?.data?.id}
-                    version={record.json?.data?.version}
-                    lang={lang}
                     reviewId={record.id}
+                    dataId={record.json?.data?.id}
+                    dataVersion={record.json?.data?.version}
+                    actionType={record.isFromLifeCycle ? 'model' : 'process'}
                   />
                 )}
-                <ReviewProgress
-                  actionRef={actionRef}
-                  tabType={tableType}
-                  reviewId={record.id}
-                  dataId={record.json?.data?.id}
-                  dataVersion={record.json?.data?.version}
-                  actionType={record.isFromLifeCycle ? 'model' : 'process'}
-                />
               </Space>,
             ];
           },
@@ -902,23 +1116,17 @@ const AssignmentReview = ({
     );
   }
 
-  if (tableType === 'reviewed' || tableType === 'pending') {
+  if (tableType === 'submitted' || tableType === 'reviewed' || tableType === 'pending') {
     columns.push(
       ...[
-        {
-          title: (
-            <FormattedMessage id='pages.review.table.column.deadline' defaultMessage='Deadline' />
-          ),
-          dataIndex: 'deadline',
-          sorter: false,
-          search: false,
-          valueType: 'dateTime' as const,
-        },
         {
           title: <FormattedMessage id='pages.review.actions' defaultMessage='Actions' />,
           dataIndex: 'actions',
           className: 'review-action-column',
           search: false,
+          align: 'center' as const,
+          width: 168,
+          fixed: 'right' as const,
           render: (_: any, record: ReviewsTable) => {
             if (record.rootMatchesStatus === false) return [];
             if (isSimpleReview(record)) {
@@ -966,23 +1174,21 @@ const AssignmentReview = ({
     );
   }
 
-  if (tableType === 'reviewer-rejected' || tableType === 'admin-rejected') {
+  if (
+    tableType === 'completed' ||
+    tableType === 'reviewer-rejected' ||
+    tableType === 'admin-rejected'
+  ) {
     columns.push(
       ...[
-        {
-          title: (
-            <FormattedMessage id='pages.review.table.column.deadline' defaultMessage='Deadline' />
-          ),
-          dataIndex: 'deadline',
-          sorter: false,
-          search: false,
-          valueType: 'dateTime' as const,
-        },
         {
           title: <FormattedMessage id='pages.review.actions' defaultMessage='Actions' />,
           dataIndex: 'actions',
           className: 'review-action-column',
           search: false,
+          align: 'center' as const,
+          width: 168,
+          fixed: 'right' as const,
           render: (_: any, record: ReviewsTable) => {
             if (record.rootMatchesStatus === false) return [];
             if (isSimpleReview(record)) return [];
@@ -991,7 +1197,9 @@ const AssignmentReview = ({
                 {record.isFromLifeCycle ? (
                   <ReviewLifeCycleModelsDetail
                     reviewId={record.id}
-                    tabType={tableType}
+                    tabType={
+                      userData?.role === 'review-admin' ? 'admin-rejected' : 'reviewer-rejected'
+                    }
                     type='view'
                     id={record.json?.data?.id}
                     version={record.json?.data?.version}
@@ -1001,7 +1209,9 @@ const AssignmentReview = ({
                 ) : (
                   <ReviewProcessDetail
                     hideButton={true}
-                    tabType={tableType}
+                    tabType={
+                      userData?.role === 'review-admin' ? 'admin-rejected' : 'reviewer-rejected'
+                    }
                     type='view'
                     actionRef={actionRef}
                     id={record.json?.data?.id}
@@ -1025,17 +1235,18 @@ const AssignmentReview = ({
           <FormattedMessage id='pages.review.tabs.unassigned' defaultMessage='Unassigned Task' />
         );
       case 'assigned':
+      case 'in-progress':
         return <FormattedMessage id='pages.review.tabs.assigned' defaultMessage='Assigned Task' />;
       case 'reviewed':
+      case 'submitted':
         return <FormattedMessage id='pages.review.tabs.reviewed' defaultMessage='Reviewed' />;
       case 'pending':
         return <FormattedMessage id='pages.review.tabs.pending' defaultMessage='Pending Review' />;
       case 'reviewer-rejected':
         return <FormattedMessage id='pages.review.tabs.rejected' defaultMessage='Rejected' />;
       case 'admin-rejected':
-        return (
-          <FormattedMessage id='pages.review.tabs.rejectedTask' defaultMessage='Rejected Task' />
-        );
+      case 'completed':
+        return <FormattedMessage id='pages.review.tabs.completed' defaultMessage='Completed' />;
       default:
     }
   };
@@ -1047,13 +1258,31 @@ const AssignmentReview = ({
     },
     sort: Record<string, SortOrder>,
   ) => {
-    if (tableType === 'unassigned' || tableType === 'assigned' || tableType === 'admin-rejected') {
-      return reviewQueueFilters
-        ? getReviewsTableDataOfReviewAdmin(params, sort, tableType, lang, reviewQueueFilters)
-        : getReviewsTableDataOfReviewAdmin(params, sort, tableType, lang);
+    if (
+      tableType === 'unassigned' ||
+      tableType === 'in-progress' ||
+      tableType === 'completed' ||
+      tableType === 'assigned' ||
+      tableType === 'admin-rejected'
+    ) {
+      const adminTableType =
+        tableType === 'completed' && userData?.role !== 'review-admin' ? undefined : tableType;
+      if (!adminTableType) {
+        // A reviewer completed tab is routed to the member queue below.
+      } else {
+        return reviewQueueFilters
+          ? getReviewsTableDataOfReviewAdmin(params, sort, adminTableType, lang, reviewQueueFilters)
+          : getReviewsTableDataOfReviewAdmin(params, sort, adminTableType, lang);
+      }
     }
 
-    if (tableType === 'pending' || tableType === 'reviewed' || tableType === 'reviewer-rejected') {
+    if (
+      tableType === 'pending' ||
+      tableType === 'submitted' ||
+      tableType === 'reviewed' ||
+      tableType === 'reviewer-rejected' ||
+      (tableType === 'completed' && userData?.role !== 'review-admin')
+    ) {
       const scopedUserData =
         actionFrom === 'reviewMember' ? { user_id: userData?.user_id } : undefined;
       return reviewQueueFilters
@@ -1108,6 +1337,9 @@ const AssignmentReview = ({
         rowKey='id'
         search={false}
         className='review-table-with-expand-icon'
+        style={{ maxWidth: '100%' }}
+        tableLayout='fixed'
+        scroll={{ x: 'max-content' }}
         pagination={{
           pageSize: 50,
           showSizeChanger: true,
@@ -1126,25 +1358,34 @@ const AssignmentReview = ({
               );
             }
             return (
-              <Table
-                columns={subColumns}
-                dataSource={subTableData[record.id]}
-                pagination={false}
-                rowKey='reference_review_id'
-                rowSelection={
-                  supportsBatchSelection
-                    ? {
-                        selectedRowKeys: (subTableData[record.id] ?? [])
-                          .map((item) => item.reference_review_id)
-                          .filter((id) => effectiveSelectedReferenceIdSet.has(id)),
-                        onChange: (keys) =>
-                          handleReferenceSelectionChange(subTableData[record.id] ?? [], keys),
-                      }
-                    : undefined
-                }
-                size='small'
-                style={{ margin: '0 48px' }}
-              />
+              <div
+                style={{
+                  boxSizing: 'border-box',
+                  minWidth: 0,
+                  paddingInline: 'clamp(12px, 3vw, 48px)',
+                }}
+              >
+                <Table
+                  columns={subColumns}
+                  dataSource={subTableData[record.id]}
+                  pagination={false}
+                  rowKey='reference_review_id'
+                  rowSelection={
+                    supportsBatchSelection
+                      ? {
+                          selectedRowKeys: (subTableData[record.id] ?? [])
+                            .map((item) => item.reference_review_id)
+                            .filter((id) => effectiveSelectedReferenceIdSet.has(id)),
+                          onChange: (keys) =>
+                            handleReferenceSelectionChange(subTableData[record.id] ?? [], keys),
+                        }
+                      : undefined
+                  }
+                  size='small'
+                  tableLayout='fixed'
+                  scroll={{ x: 'max-content' }}
+                />
+              </div>
             );
           },
         }}
@@ -1155,6 +1396,7 @@ const AssignmentReview = ({
           });
           const qualityDiagnosticAction =
             userData?.role === 'review-admin' &&
+            tableType !== 'completed' &&
             tableType !== 'admin-rejected' &&
             onOpenQualityDiagnostic ? (
               <Tooltip key='review-quality-diagnostic' title={qualityDiagnosticLabel}>
@@ -1217,7 +1459,11 @@ const AssignmentReview = ({
                 <BatchReviewActions
                   role={tableType === 'pending' ? 'reviewer' : 'admin'}
                   reviewIds={selectedReviewIds}
-                  allowApprove={tableType === 'assigned' || tableType === 'pending'}
+                  allowApprove={
+                    tableType === 'in-progress' ||
+                    tableType === 'assigned' ||
+                    tableType === 'pending'
+                  }
                   disabled={selectionLoadingRootIds.length > 0 || selectionFailedRootIds.length > 0}
                   onFinished={reloadAfterChildAction}
                 />
@@ -1260,7 +1506,6 @@ const AssignmentReview = ({
             }
             setTableLoading(true);
             setQueryFailed(false);
-            clearUnifiedSelection();
             const result = await getReviewsTableData(
               { current: params.current ?? 1, pageSize: params.pageSize ?? 50 },
               sort,

@@ -6,6 +6,7 @@ export type ReviewsTable = {
   modifiedAt?: string;
   userName: string;
   createAt?: string;
+  deadline?: string | null;
   isFromLifeCycle: boolean;
   reviewKind?: 'root' | 'reference';
   targetTable?: string;
@@ -13,6 +14,13 @@ export type ReviewsTable = {
   rootMatchesStatus?: boolean;
   rootCanRead?: boolean;
   comments?: { state_code: number }[];
+  reviewerCount?: number;
+  completedReviewerCount?: number;
+  approveOpinionCount?: number;
+  rejectOpinionCount?: number;
+  actorCommentStateCode?: number | null;
+  actorCommentJson?: any;
+  actorCommentModifiedAt?: string;
   json: {
     data: {
       id: string;

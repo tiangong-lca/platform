@@ -27,6 +27,7 @@ type Props = {
   version: string;
   actionRef?: React.RefObject<ActionType | undefined>;
   buttonType: string;
+  tooltipTitle?: string;
   lang: string;
   autoOpen?: boolean;
   onDrawerClose?: () => void;
@@ -41,6 +42,7 @@ const FlowpropertyView: FC<Props> = ({
   id,
   version,
   buttonType,
+  tooltipTitle,
   lang,
   autoOpen = false,
   onDrawerClose,
@@ -396,7 +398,11 @@ const FlowpropertyView: FC<Props> = ({
       {/* <Button shape="circle" icon={<ProfileOutlined />} size="small" onClick={onView} /> */}
       {!autoOpen &&
         (buttonType === 'icon' ? (
-          <Tooltip title={<FormattedMessage id='pages.button.view' defaultMessage='View' />}>
+          <Tooltip
+            title={
+              tooltipTitle ?? <FormattedMessage id='pages.button.view' defaultMessage='View' />
+            }
+          >
             <Button shape='circle' icon={<ProfileOutlined />} size='small' onClick={onView} />
           </Tooltip>
         ) : (

@@ -95,6 +95,23 @@ type ReviewWorkflowCommandFunctionName =
 
 export type ReviewBatchDecision = 'approve' | 'reject';
 
+export type ReviewBatchOperation =
+  'admin-assign' | 'admin-approve' | 'admin-reject' | 'reviewer-approve' | 'reviewer-reject';
+
+export type ReviewBatchEligibility = {
+  ordinal: number;
+  review_id: string;
+  eligible: boolean;
+  reason_code?: string | null;
+  state_code?: number | null;
+  target_table?: ReviewSubmitDatasetTable | null;
+  data_version?: string | null;
+  reviewer_count: number;
+  submitted_opinion_count: number;
+  approve_opinion_count: number;
+  reject_opinion_count: number;
+};
+
 export type ReviewBatchDecisionResult = {
   ok: boolean;
   command: 'admin_review_batch_decision' | 'reviewer_review_batch_decision';
@@ -136,6 +153,14 @@ type ReviewItemRpcRow = {
   modified_at?: string;
   root_matches_status?: boolean;
   root_can_read?: boolean;
+  comment_state_code?: number | null;
+  comment_json?: any;
+  comment_created_at?: string | null;
+  comment_modified_at?: string | null;
+  reviewer_count?: number | null;
+  completed_reviewer_count?: number | null;
+  approve_opinion_count?: number | null;
+  reject_opinion_count?: number | null;
 };
 
 export type RootReviewReferenceProgress = {
@@ -175,6 +200,10 @@ type ReviewMemberQueueRpcRow = {
   target_table?: ReviewSubmitDatasetTable;
   root_matches_status?: boolean;
   root_can_read?: boolean;
+  reviewer_count?: number | null;
+  completed_reviewer_count?: number | null;
+  approve_opinion_count?: number | null;
+  reject_opinion_count?: number | null;
   total_count?: number | string | null;
 };
 
@@ -330,6 +359,17 @@ function mapReviewRowToTableData(
       ? { rootMatchesStatus: row.root_matches_status }
       : {}),
     ...(row.root_can_read !== undefined ? { rootCanRead: row.root_can_read } : {}),
+    reviewerCount: Number(row.reviewer_count ?? 0),
+    completedReviewerCount: Number(row.completed_reviewer_count ?? 0),
+    approveOpinionCount: Number(row.approve_opinion_count ?? 0),
+    rejectOpinionCount: Number(row.reject_opinion_count ?? 0),
+    ...(row.comment_state_code !== undefined
+      ? { actorCommentStateCode: row.comment_state_code }
+      : {}),
+    ...(row.comment_json !== undefined ? { actorCommentJson: row.comment_json } : {}),
+    ...(row.comment_modified_at
+      ? { actorCommentModifiedAt: new Date(row.comment_modified_at).toISOString() }
+      : {}),
     name:
       (model
         ? genProcessName(modelName ?? {}, lang)
@@ -543,6 +583,21 @@ export async function submitReviewerBatchDecision(
   return submitReviewBatchDecision('app_review_batch_decision', reviewIds, decision, reason);
 }
 
+export async function getReviewBatchEligibility(
+  reviewIds: React.Key[],
+  operation: ReviewBatchOperation,
+) {
+  const { data, error } = await supabase.rpc('qry_review_batch_eligibility_v1', {
+    p_review_ids: Array.from(new Set(reviewIds.map(String))),
+    p_operation: operation,
+  });
+
+  return {
+    data: (data ?? []) as ReviewBatchEligibility[],
+    error,
+  };
+}
+
 export async function updateReviewApi(reviewIds: React.Key[], data: any) {
   void reviewIds;
   void data;
@@ -580,7 +635,7 @@ export async function getReviewsDetailByReviewIds(reviewIds: React.Key[]) {
 export async function getReviewsTableDataOfReviewMember(
   params: { pageSize: number; current: number },
   sort: any,
-  type: 'reviewed' | 'pending' | 'reviewer-rejected',
+  type: 'pending' | 'submitted' | 'completed' | 'reviewed' | 'reviewer-rejected',
   lang: string,
   userData?: { user_id: string | undefined },
   filters: ReviewQueueFilters = {},
@@ -596,8 +651,10 @@ export async function getReviewsTableDataOfReviewMember(
 
   const { field: sortBy, order: orderBy } = resolveTableSort(sort, 'modified_at');
 
-  const { data, error } = await supabase.rpc('qry_review_get_member_queue_items_v4', {
-    p_status: type,
+  const status =
+    type === 'reviewed' ? 'submitted' : type === 'reviewer-rejected' ? 'completed' : type;
+  const { data, error } = await supabase.rpc('qry_review_get_member_queue_items_v5', {
+    p_status: status,
     p_query: filters.query ?? null,
     p_page: params.current ?? 1,
     p_page_size: params.pageSize ?? 50,
@@ -649,14 +706,16 @@ export async function getReviewsTableDataOfReviewMember(
 export async function getReviewsTableDataOfReviewAdmin(
   params: { pageSize: number; current: number },
   sort: any,
-  type: 'unassigned' | 'assigned' | 'admin-rejected',
+  type: 'unassigned' | 'in-progress' | 'completed' | 'assigned' | 'admin-rejected',
   lang: string,
   filters: ReviewQueueFilters = {},
 ) {
   const { field: sortBy, order: orderBy } = resolveTableSort(sort, 'modified_at');
 
-  const { data, error } = await supabase.rpc('qry_review_get_admin_queue_items_v4', {
-    p_status: type,
+  const status =
+    type === 'assigned' ? 'in-progress' : type === 'admin-rejected' ? 'completed' : type;
+  const { data, error } = await supabase.rpc('qry_review_get_admin_queue_items_v5', {
+    p_status: status,
     p_query: filters.query ?? null,
     p_page: params.current ?? 1,
     p_page_size: params.pageSize ?? 50,

@@ -169,23 +169,23 @@ describe('Review page authentication workflow', () => {
     expect(screen.getByTestId('assignment-role-unassigned')).toHaveTextContent('review-admin');
     expect(screen.getByTestId('review-quality-diagnostic')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByTestId('tab-assigned'));
+    fireEvent.click(screen.getByTestId('tab-in-progress'));
 
-    await waitFor(() => expect(screen.getByTestId('assignment-assigned')).toBeInTheDocument());
-    expect(assignmentReloads.assigned).toBeDefined();
+    await waitFor(() => expect(screen.getByTestId('assignment-in-progress')).toBeInTheDocument());
+    expect(assignmentReloads['in-progress']).toBeDefined();
   });
 
-  it('defaults review members to the reviewed tab with drawer-ready action refs', async () => {
+  it('defaults review members to the pending tab with drawer-ready action refs', async () => {
     mockGetReviewUserRoleApi.mockResolvedValue({ user_id: 'member-1', role: 'review-member' });
 
     renderWithProviders(<Review />);
 
     await waitFor(() => expect(mockGetReviewUserRoleApi).toHaveBeenCalledTimes(1));
 
-    await waitFor(() => expect(screen.getByTestId('tab-panel-reviewed')).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByTestId('tab-panel-pending')).toBeInTheDocument());
     expect(screen.queryByTestId('tab-unassigned')).not.toBeInTheDocument();
     expect(screen.queryByTestId('review-quality-diagnostic')).not.toBeInTheDocument();
-    expect(assignmentReloads.reviewed).toBeDefined();
+    expect(assignmentReloads.pending).toBeDefined();
   });
 
   it('stops spinning and surfaces console errors when the role lookup fails', async () => {

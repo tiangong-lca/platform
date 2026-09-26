@@ -39,9 +39,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-09-25
-lastReviewedCommit: ae246ffe5d7d34e08a39cc3f423974cc267eed15
-lastReviewedNote: 'Reviewed the merged Open Data and Platform #1122 reviewer-profile tests; existing jsdom, no-watchman recovery, focused-test guidance, and supported commands remain authoritative.'
+lastReviewedAt: 2026-09-26
+lastReviewedCommit: 735da3b6957955f81e71f44d31389aa3cc6caa3f
+lastReviewedNote: 'Reviewed for Platform #1111: the installed SDK recovery path now targets 0.3.1 and includes ordered Process review-array qualification; the troubleshooting workflow is otherwise unchanged.'
 ---
 
 # Testing Troubleshooting

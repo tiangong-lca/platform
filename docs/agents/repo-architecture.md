@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-09-25
-lastReviewedCommit: ae246ffe5d7d34e08a39cc3f423974cc267eed15
-lastReviewedNote: 'Reviewed the merged Open Data page/service baseline and Platform #1122 reviewer-profile placement with Contact form reuse; frontend ownership and stable service boundaries remain unchanged.'
+lastReviewedAt: 2026-09-26
+lastReviewedCommit: 735da3b6957955f81e71f44d31389aa3cc6caa3f
+lastReviewedNote: 'Reviewed Platform #1109 after merging current dev: review action and input/output display parity use shared data-page views; the #1107 import-report behavior, repository contracts, validation, and testing policies remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

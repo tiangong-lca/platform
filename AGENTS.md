@@ -45,9 +45,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-09-25
-lastReviewedCommit: ae246ffe5d7d34e08a39cc3f423974cc267eed15
-lastReviewedNote: 'Reviewed the merged Platform #1120 Open Data UI baseline and Platform #1122 Review Management reviewer-profile workflow; repository ownership, bootstrap, branch, and delivery rules remain unchanged.'
+lastReviewedAt: 2026-09-26
+lastReviewedCommit: 735da3b6957955f81e71f44d31389aa3cc6caa3f
+lastReviewedNote: 'Reviewed for Platform #1111: the released TIDAS SDK 0.3.1 replaces 0.2.0 and adds mapper-independent Process review-array qualification; repository ownership, bootstrap, branch, and delivery rules are unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

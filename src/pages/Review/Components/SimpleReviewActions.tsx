@@ -14,6 +14,10 @@ type SimpleReviewActionsProps = {
   targetTable: ReviewSubmitDatasetTable;
   role: 'admin' | 'reviewer';
   actionRef: any;
+  approveDisabledReason?: string;
+  dataVersion?: string;
+  approveOpinionCount?: number;
+  rejectOpinionCount?: number;
 };
 
 const SimpleReviewActions = ({
@@ -21,6 +25,10 @@ const SimpleReviewActions = ({
   targetTable,
   role,
   actionRef,
+  approveDisabledReason,
+  dataVersion,
+  approveOpinionCount = 0,
+  rejectOpinionCount = 0,
 }: SimpleReviewActionsProps) => {
   const intl = useIntl();
   const [form] = Form.useForm<{ reason: string }>();
@@ -88,16 +96,20 @@ const SimpleReviewActions = ({
     <>
       <Space>
         <Tooltip
-          title={intl.formatMessage({
-            id: 'pages.review.simpleDecision.approve',
-            defaultMessage: 'Approve',
-          })}
+          title={
+            approveDisabledReason ||
+            intl.formatMessage({
+              id: 'pages.review.simpleDecision.approve',
+              defaultMessage: 'Approve',
+            })
+          }
         >
           <Button
             size='small'
             shape='circle'
             icon={<SafetyCertificateOutlined />}
             loading={loading}
+            disabled={Boolean(approveDisabledReason)}
             onClick={() =>
               modal.confirm({
                 title: intl.formatMessage({
@@ -107,6 +119,21 @@ const SimpleReviewActions = ({
                 okButtonProps: {
                   type: 'primary',
                 },
+                content:
+                  role === 'admin'
+                    ? intl.formatMessage(
+                        {
+                          id: 'pages.review.simpleDecision.approveSummary',
+                          defaultMessage:
+                            'Version {version}; approve opinions: {approve}; reject opinions: {reject}.',
+                        },
+                        {
+                          version: dataVersion ?? '-',
+                          approve: approveOpinionCount,
+                          reject: rejectOpinionCount,
+                        },
+                      )
+                    : undefined,
                 onOk: approve,
               })
             }

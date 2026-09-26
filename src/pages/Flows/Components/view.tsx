@@ -31,6 +31,7 @@ type Props = {
   version: string;
   lang: string;
   buttonType: string;
+  tooltipTitle?: string;
   actionRef?: React.RefObject<ActionType | undefined>;
 };
 
@@ -39,7 +40,7 @@ const getComplianceLabel = (value: string) => {
   return option ? option.label : '-';
 };
 
-const FlowsView: FC<Props> = ({ id, version, buttonType, lang }) => {
+const FlowsView: FC<Props> = ({ id, version, buttonType, lang, tooltipTitle }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTabKey, setActiveTabKey] = useState<FlowDataSetObjectKeys>('flowInformation');
   const [spinning, setSpinning] = useState(false);
@@ -749,7 +750,9 @@ const FlowsView: FC<Props> = ({ id, version, buttonType, lang }) => {
     <>
       {/* <Button shape="circle" icon={<ProfileOutlined />} size="small" onClick={onView} /> */}
       {buttonType === 'icon' ? (
-        <Tooltip title={<FormattedMessage id='pages.button.view' defaultMessage='View' />}>
+        <Tooltip
+          title={tooltipTitle ?? <FormattedMessage id='pages.button.view' defaultMessage='View' />}
+        >
           <Button shape='circle' icon={<ProfileOutlined />} size='small' onClick={onView} />
         </Tooltip>
       ) : (

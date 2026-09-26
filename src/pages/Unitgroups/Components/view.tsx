@@ -30,6 +30,7 @@ type Props = {
   version: string;
   lang: string;
   buttonType: string;
+  tooltipTitle?: string;
   actionRef?: React.RefObject<ActionType | undefined>;
   autoOpen?: boolean;
   onDrawerClose?: () => void;
@@ -45,6 +46,7 @@ const ContactView: FC<Props> = ({
   version,
   lang,
   buttonType,
+  tooltipTitle,
   autoOpen = false,
   onDrawerClose,
 }) => {
@@ -487,7 +489,9 @@ const ContactView: FC<Props> = ({
         (buttonType === 'icon' ? (
           <Tooltip
             title={
-              <FormattedMessage id='pages.button.view' defaultMessage='View'></FormattedMessage>
+              tooltipTitle ?? (
+                <FormattedMessage id='pages.button.view' defaultMessage='View'></FormattedMessage>
+              )
             }
           >
             <Button shape='circle' icon={<ProfileOutlined />} size='small' onClick={onView} />

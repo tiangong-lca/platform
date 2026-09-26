@@ -4,13 +4,14 @@ import {
   assignReviewersApi,
   getReviewerIdsApi,
   getReviewsDetail,
-  saveReviewAssignmentDraftApi,
+  revokeReviewerApi,
 } from '@/services/reviews/api';
 import { isCurrentAssignedReviewerCommentState } from '@/services/reviews/util';
 import { getReviewMembersApi } from '@/services/roles/api';
 import { TeamMemberTable } from '@/services/teams/data';
+import { getUsersByIds } from '@/services/users/api';
 import styles from '@/style/custom.less';
-import { CloseOutlined, UsergroupAddOutlined } from '@ant-design/icons';
+import { CloseOutlined, DeleteOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { FormattedMessage, useIntl } from '@umijs/max';
 import { App, Button, DatePicker, Drawer, Space, Spin, theme, Tooltip } from 'antd';
@@ -36,6 +37,9 @@ export default function SelectReviewer({
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const defaultSelectedRowKeys = useRef<React.Key[]>([]);
   const [spinning, setSpinning] = useState(false);
+  const [currentReviewers, setCurrentReviewers] = useState<
+    Array<{ reviewer_id: string; reviewer_name?: string; state_code: number }>
+  >([]);
   const [reviewDeadline, setReviewDeadline] = useState<Dayjs | null>(dayjs().add(15, 'day'));
   const { token } = theme.useToken();
   const tableRef = useRef<ActionType>(undefined);
@@ -50,6 +54,7 @@ export default function SelectReviewer({
     if (!drawerVisible) {
       setSelectedRowKeys([]);
       defaultSelectedRowKeys.current = [];
+      setCurrentReviewers([]);
       setReviewDeadline(dayjs().add(15, 'day'));
       return;
     }
@@ -64,9 +69,18 @@ export default function SelectReviewer({
         }
         case 'assigned': {
           const result = await getReviewerIdsByReviewId(reviewIds[0] as string);
-          const keys = (result ?? [])
-            .filter((item: any) => isCurrentAssignedReviewerCommentState(item.state_code))
-            .map((item: any) => item.reviewer_id);
+          const current = (result ?? []).filter((item: any) =>
+            isCurrentAssignedReviewerCommentState(item.state_code),
+          );
+          const keys = current.map((item: any) => item.reviewer_id);
+          const users = await getUsersByIds(keys);
+          setCurrentReviewers(
+            current.map((item: any) => ({
+              ...item,
+              reviewer_name: users?.find((user: any) => user.id === item.reviewer_id)?.display_name,
+            })),
+          );
+          setSelectedRowKeys(keys);
           const riviewDetail = await getReviewsDetail(reviewIds[0] as string);
           if (riviewDetail?.deadline) {
             setReviewDeadline(dayjs(riviewDetail.deadline));
@@ -110,29 +124,28 @@ export default function SelectReviewer({
     },
   ];
 
-  const handleTemporarySave = async () => {
+  const revokeReviewer = async (reviewerId: string) => {
     setSpinning(true);
     try {
-      const result = await saveReviewAssignmentDraftApi(reviewIds, selectedRowKeys.map(String));
-
-      if (!result.error) {
-        message.success(
-          intl.formatMessage({
-            id: 'pages.review.temporarySaveSuccess',
-            defaultMessage: 'Temporarily saved successfully.',
-          }),
-        );
-        setDrawerVisible(false);
-        actionRef.current?.reload();
-      } else {
-        throw result.error;
-      }
-    } catch (error) {
-      console.error('临时保存失败:', error);
+      const result = await revokeReviewerApi(String(reviewIds[0]), reviewerId);
+      if (result.error || (result.data?.length ?? 0) === 0) throw result.error;
+      setCurrentReviewers((current) => current.filter((item) => item.reviewer_id !== reviewerId));
+      setSelectedRowKeys((current) => current.filter((key) => key !== reviewerId));
+      defaultSelectedRowKeys.current = defaultSelectedRowKeys.current.filter(
+        (key) => key !== reviewerId,
+      );
+      message.success(
+        intl.formatMessage({
+          id: 'pages.review.progress.delete.success',
+          defaultMessage: 'Reviewer assignment revoked.',
+        }),
+      );
+      actionRef.current?.reload?.();
+    } catch {
       message.error(
         intl.formatMessage({
-          id: 'pages.review.temporarySaveError',
-          defaultMessage: 'Temporary save failed',
+          id: 'pages.review.progress.delete.error',
+          defaultMessage: 'Failed to revoke the reviewer assignment.',
         }),
       );
     } finally {
@@ -144,12 +157,10 @@ export default function SelectReviewer({
     setSpinning(true);
     try {
       const reviewerIds = Array.from(
-        new Set(
-          (tabType === 'unassigned'
-            ? selectedRowKeys
-            : [...defaultSelectedRowKeys.current, ...selectedRowKeys]
-          ).map(String),
-        ),
+        new Set([
+          ...currentReviewers.map((item) => item.reviewer_id),
+          ...selectedRowKeys.map(String),
+        ]),
       );
 
       const result = await assignReviewersApi(
@@ -194,12 +205,12 @@ export default function SelectReviewer({
         }
       >
         <Button
-          style={{ width: 'inherit' }}
+          shape='circle'
           onClick={() => setDrawerVisible(true)}
           disabled={disabled}
           type='text'
           icon={<UsergroupAddOutlined />}
-          size='large'
+          size='small'
         />
       </Tooltip>
       <Drawer
@@ -226,22 +237,91 @@ export default function SelectReviewer({
             <Button onClick={() => setDrawerVisible(false)}>
               <FormattedMessage id='pages.button.cancel' defaultMessage='Cancel' />
             </Button>
-            {tabType === 'unassigned' && (
-              <Button onClick={handleTemporarySave} disabled={selectedRowKeys.length === 0}>
-                <FormattedMessage id='pages.button.temporarySave' defaultMessage='Temporary Save' />
-              </Button>
-            )}
             <Button
               onClick={handleSave}
               type='primary'
               disabled={tabType === 'unassigned' ? selectedRowKeys.length === 0 : false}
             >
-              <FormattedMessage id='pages.button.save' defaultMessage='Save' />
+              <FormattedMessage
+                id='pages.review.assignment.confirm'
+                defaultMessage='Confirm assignment'
+              />
             </Button>
           </Space>
         }
       >
         <Spin spinning={spinning}>
+          {tabType === 'assigned' && currentReviewers.length > 0 && (
+            <ProTable
+              rowKey='reviewer_id'
+              search={false}
+              pagination={false}
+              options={false}
+              headerTitle={
+                <FormattedMessage
+                  id='pages.review.assignment.current'
+                  defaultMessage='Current reviewers'
+                />
+              }
+              dataSource={currentReviewers}
+              columns={[
+                {
+                  title: (
+                    <FormattedMessage
+                      id='pages.review.members.memberName'
+                      defaultMessage='Member Name'
+                    />
+                  ),
+                  dataIndex: 'reviewer_name',
+                },
+                {
+                  title: (
+                    <FormattedMessage
+                      id='pages.review.progress.table.status'
+                      defaultMessage='Review Status'
+                    />
+                  ),
+                  dataIndex: 'state_code',
+                  render: (_, record) =>
+                    record.state_code === 0
+                      ? intl.formatMessage({
+                          id: 'pages.review.progress.status.pending',
+                          defaultMessage: 'Pending Review',
+                        })
+                      : intl.formatMessage({
+                          id: 'pages.review.progress.status.reviewed',
+                          defaultMessage: 'Reviewed',
+                        }),
+                },
+                {
+                  title: <FormattedMessage id='pages.review.actions' defaultMessage='Actions' />,
+                  render: (_, record) => (
+                    <Tooltip
+                      title={
+                        record.state_code === 0
+                          ? intl.formatMessage({
+                              id: 'pages.review.progress.tooltip.revoke',
+                              defaultMessage: 'Revoke reviewer assignment',
+                            })
+                          : intl.formatMessage({
+                              id: 'pages.review.assignment.cannotRevokeSubmitted',
+                              defaultMessage: 'A submitted reviewer cannot be revoked.',
+                            })
+                      }
+                    >
+                      <Button
+                        danger
+                        type='text'
+                        icon={<DeleteOutlined />}
+                        disabled={record.state_code !== 0}
+                        onClick={() => revokeReviewer(record.reviewer_id)}
+                      />
+                    </Tooltip>
+                  ),
+                },
+              ]}
+            />
+          )}
           <ProTable<TeamMemberTable>
             rowKey='user_id'
             search={false}
@@ -274,14 +354,16 @@ export default function SelectReviewer({
             rowSelection={{
               selectedRowKeys,
               onChange: handleRowSelectionChange,
+              getCheckboxProps: (record) => ({
+                disabled: currentReviewers.some(
+                  (item) => item.reviewer_id === String(record.user_id),
+                ),
+              }),
             }}
             request={async (params, sort) => {
               const result = await getReviewMembersApi(params, sort, 'review-member');
-              const data = result.data.filter(
-                (item: any) => !defaultSelectedRowKeys.current.includes(item.user_id),
-              );
               return {
-                data,
+                data: result.data,
                 success: result.success,
                 total: result.total,
               };

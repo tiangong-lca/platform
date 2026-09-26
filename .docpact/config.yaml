@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-09-25"
-lastReviewedCommit: "ae246ffe5d7d34e08a39cc3f423974cc267eed15"
-lastReviewedNote: 'Reviewed the merged Platform #1120 Open Data baseline and Platform #1122 reviewer-profile workflow; routing, ownership, coverage, and pre-push policy remain unchanged.'
+lastReviewedAt: "2026-09-26"
+lastReviewedCommit: "735da3b6957955f81e71f44d31389aa3cc6caa3f"
+lastReviewedNote: 'Reviewed for Platform #1111: the exact installed TIDAS SDK advances to 0.3.1 with mapper-independent Process review-array qualification; routing, ownership, coverage, and rule semantics are unchanged.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.

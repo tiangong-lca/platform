@@ -74,6 +74,7 @@ type Props = {
   disabled: boolean;
   actionRef?: React.RefObject<ActionType | undefined>;
   buttonTypeProp?: ButtonType;
+  tooltipTitle?: string;
   triggerLabel?: ReactNode;
   autoOpen?: boolean;
   onDrawerClose?: () => void;
@@ -152,6 +153,7 @@ const ProcessView: FC<Props> = ({
   lang,
   disabled,
   buttonTypeProp = 'default',
+  tooltipTitle,
   triggerLabel,
   autoOpen = false,
   onDrawerClose,
@@ -1965,7 +1967,9 @@ const ProcessView: FC<Props> = ({
           />
         </Tooltip>
       ) : !autoOpen && buttonType === 'icon' ? (
-        <Tooltip title={<FormattedMessage id='pages.button.view' defaultMessage='View' />}>
+        <Tooltip
+          title={tooltipTitle ?? <FormattedMessage id='pages.button.view' defaultMessage='View' />}
+        >
           <Button
             shape='circle'
             type={buttonTypeProp}

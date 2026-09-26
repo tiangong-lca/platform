@@ -61,7 +61,12 @@ const ReviewLifeCycleModelsDetail: FC<Props> = ({
         </Tooltip>
       ) : (
         <Tooltip
-          title={<FormattedMessage id={'pages.review.actions.view'} defaultMessage={'View'} />}
+          title={
+            <FormattedMessage
+              id='pages.review.actions.viewDetails'
+              defaultMessage='View review details'
+            />
+          }
         >
           <Button shape='circle' icon={<ProfileOutlined />} size='small' onClick={onView} />
         </Tooltip>

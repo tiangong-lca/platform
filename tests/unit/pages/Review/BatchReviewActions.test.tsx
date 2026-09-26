@@ -1,5 +1,6 @@
 import BatchReviewActions from '@/pages/Review/Components/BatchReviewActions';
 import {
+  getReviewBatchEligibility,
   submitAdminReviewBatchDecision,
   submitReviewerBatchDecision,
 } from '@/services/reviews/api';
@@ -18,6 +19,7 @@ jest.mock('@ant-design/icons', () => ({
 }));
 
 jest.mock('@/services/reviews/api', () => ({
+  getReviewBatchEligibility: jest.fn(),
   submitAdminReviewBatchDecision: jest.fn(),
   submitReviewerBatchDecision: jest.fn(),
 }));
@@ -85,6 +87,11 @@ jest.mock('antd', () => {
   const App = { useApp: () => ({ message, modal }) };
 
   return {
+    Alert: ({ description, title }: { description?: string; title?: string }) => (
+      <div>
+        {title}: {description}
+      </div>
+    ),
     App,
     Button: ({
       children,
@@ -148,18 +155,39 @@ jest.mock('antd', () => {
 
 const adminDecisionMock = jest.mocked(submitAdminReviewBatchDecision);
 const reviewerDecisionMock = jest.mocked(submitReviewerBatchDecision);
+const eligibilityMock = jest.mocked(getReviewBatchEligibility);
+
+const successfulResult = (reviewIds: string[]) => ({
+  ok: true,
+  command: 'admin_review_batch_decision',
+  batchId: 'batch-1',
+  summary: { total: reviewIds.length, succeeded: reviewIds.length, failed: 0 },
+  results: reviewIds.map((reviewId) => ({ reviewId, ok: true })),
+});
 
 describe('BatchReviewActions', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockConfirm.mockImplementation(({ onOk }: { onOk?: () => void }) => onOk?.());
     mockValidateFields.mockResolvedValue({ reason: 'insufficient evidence' });
+    eligibilityMock.mockImplementation(async (reviewIds) => ({
+      data: reviewIds.map((reviewId, ordinal) => ({
+        ordinal,
+        review_id: String(reviewId),
+        eligible: true,
+        reviewer_count: 1,
+        submitted_opinion_count: 1,
+        approve_opinion_count: 1,
+        reject_opinion_count: 0,
+      })),
+      error: null,
+    }));
   });
 
   it('submits a successful admin batch approval and refreshes the table', async () => {
     const onFinished = jest.fn();
     adminDecisionMock.mockResolvedValue({
-      data: [{ summary: { succeeded: 2, failed: 0 }, items: [] }],
+      data: [successfulResult(['review-1', 'review-2'])],
       error: null,
     } as never);
 
@@ -193,13 +221,70 @@ describe('BatchReviewActions', () => {
     );
     expect(mockSuccess).toHaveBeenCalledWith('2 reviews processed successfully.');
     expect(mockResetFields).toHaveBeenCalled();
-    expect(onFinished).toHaveBeenCalled();
+    expect(onFinished).toHaveBeenCalledWith([]);
+  });
+
+  it('retains ineligible selections after processing the eligible batch scope', async () => {
+    const onFinished = jest.fn();
+    eligibilityMock.mockResolvedValueOnce({
+      data: [
+        {
+          ordinal: 0,
+          review_id: 'review-1',
+          eligible: true,
+          reviewer_count: 1,
+          submitted_opinion_count: 1,
+          approve_opinion_count: 1,
+          reject_opinion_count: 0,
+        },
+        {
+          ordinal: 1,
+          review_id: 'review-2',
+          eligible: false,
+          reason_code: 'OPINIONS_PENDING',
+          reviewer_count: 1,
+          submitted_opinion_count: 0,
+          approve_opinion_count: 0,
+          reject_opinion_count: 0,
+        },
+      ],
+      error: null,
+    });
+    adminDecisionMock.mockResolvedValue({
+      data: [successfulResult(['review-1'])],
+      error: null,
+    } as never);
+
+    render(
+      <BatchReviewActions
+        role='admin'
+        reviewIds={['review-1', 'review-2']}
+        allowApprove
+        onFinished={onFinished}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Batch approve' }));
+
+    await waitFor(() =>
+      expect(adminDecisionMock).toHaveBeenCalledWith(['review-1'], 'approve', undefined),
+    );
+    expect(onFinished).toHaveBeenCalledWith(['review-2']);
   });
 
   it('submits a reviewer rejection as an advisory opinion and reports partial results', async () => {
     const onFinished = jest.fn();
     reviewerDecisionMock.mockResolvedValue({
-      data: [{ summary: { succeeded: 1, failed: 1 }, items: [] }],
+      data: [
+        {
+          ...successfulResult(['review-1', 'review-2']),
+          command: 'reviewer_review_batch_decision',
+          summary: { total: 2, succeeded: 1, failed: 1 },
+          results: [
+            { reviewId: 'review-1', ok: true },
+            { reviewId: 'review-2', ok: false, code: 'NOT_APPLICABLE' },
+          ],
+        },
+      ],
       error: null,
     } as never);
 
@@ -221,12 +306,14 @@ describe('BatchReviewActions', () => {
     expect(rejectButton).toHaveAttribute('data-button-danger', 'false');
     expect(rejectButton).toHaveStyle({ width: '24px', height: '32px', paddingInline: 0 });
     fireEvent.click(rejectButton);
-    expect(screen.getByRole('region', { name: 'Reject 2 selected reviews' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('region', { name: 'Reject 2 selected reviews' }),
+    ).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'cancel' }));
     expect(screen.queryByRole('region')).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Batch reject' }));
-    fireEvent.click(screen.getByRole('button', { name: 'confirm reject' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'confirm reject' }));
 
     await waitFor(() =>
       expect(reviewerDecisionMock).toHaveBeenCalledWith(
@@ -236,7 +323,7 @@ describe('BatchReviewActions', () => {
       ),
     );
     expect(mockWarning).toHaveBeenCalledWith('1 succeeded and 1 failed.');
-    expect(onFinished).toHaveBeenCalled();
+    expect(onFinished).toHaveBeenCalledWith(['review-2']);
   });
 
   it('reports command and malformed-response failures without refreshing', async () => {
@@ -268,6 +355,90 @@ describe('BatchReviewActions', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Batch approve' }));
     await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2));
     expect(onFinished).not.toHaveBeenCalled();
+  });
+
+  it('reports eligibility failures before opening a confirmation', async () => {
+    eligibilityMock
+      .mockResolvedValueOnce({
+        data: [],
+        error: new Error('approve preflight failed'),
+      } as never)
+      .mockResolvedValueOnce({
+        data: [],
+        error: new Error('reject preflight failed'),
+      } as never);
+
+    render(
+      <BatchReviewActions
+        role='admin'
+        reviewIds={['review-1']}
+        allowApprove
+        onFinished={jest.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Batch approve' }));
+
+    await waitFor(() =>
+      expect(mockError).toHaveBeenCalledWith('Unable to check the selected review scope.'),
+    );
+    expect(mockConfirm).not.toHaveBeenCalled();
+    expect(adminDecisionMock).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Batch reject' }));
+
+    await waitFor(() => expect(mockError).toHaveBeenCalledTimes(2));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(adminDecisionMock).not.toHaveBeenCalled();
+  });
+
+  it('shows ineligible reason counts and does not submit an empty eligible scope', async () => {
+    eligibilityMock.mockResolvedValueOnce({
+      data: [
+        {
+          ordinal: 1,
+          review_id: 'review-1',
+          eligible: false,
+          reason_code: null,
+          reviewer_count: 0,
+          submitted_opinion_count: 0,
+          approve_opinion_count: 0,
+          reject_opinion_count: 0,
+        },
+        {
+          ordinal: 2,
+          review_id: 'review-2',
+          eligible: false,
+          reason_code: 'REVIEW_ALREADY_COMPLETED',
+          reviewer_count: 1,
+          submitted_opinion_count: 1,
+          approve_opinion_count: 1,
+          reject_opinion_count: 0,
+        },
+      ],
+      error: null,
+    });
+
+    render(
+      <BatchReviewActions
+        role='admin'
+        reviewIds={['review-1', 'review-2']}
+        allowApprove
+        onFinished={jest.fn()}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Batch reject' }));
+
+    expect(
+      await screen.findByRole('region', { name: 'Reject 2 selected reviews' }),
+    ).toHaveTextContent('NOT_APPLICABLE: 1; REVIEW_ALREADY_COMPLETED: 1');
+    fireEvent.click(screen.getByRole('button', { name: 'confirm reject' }));
+
+    await waitFor(() =>
+      expect(mockWarning).toHaveBeenCalledWith('None of the selected reviews can be processed.'),
+    );
+    expect(adminDecisionMock).not.toHaveBeenCalled();
   });
 
   it('disables actions for explicit disablement and empty selections', () => {

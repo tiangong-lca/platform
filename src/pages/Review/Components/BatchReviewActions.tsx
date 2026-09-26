@@ -1,12 +1,14 @@
 import {
+  getReviewBatchEligibility,
   submitAdminReviewBatchDecision,
   submitReviewerBatchDecision,
+  type ReviewBatchEligibility,
   type ReviewBatchDecision,
   type ReviewBatchDecisionResult,
 } from '@/services/reviews/api';
 import { FileExcelOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import { useIntl } from '@umijs/max';
-import { App, Button, Form, Input, Modal, Space, theme, Tooltip } from 'antd';
+import { Alert, App, Button, Form, Input, Modal, Space, theme, Tooltip } from 'antd';
 import { useState } from 'react';
 
 type BatchReviewActionsProps = {
@@ -14,7 +16,7 @@ type BatchReviewActionsProps = {
   reviewIds: React.Key[];
   allowApprove: boolean;
   disabled?: boolean;
-  onFinished: () => void;
+  onFinished: (failedReviewIds: string[]) => void;
 };
 
 const BatchReviewActions = ({
@@ -30,14 +32,92 @@ const BatchReviewActions = ({
   const { message, modal } = App.useApp();
   const [rejectOpen, setRejectOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState<ReviewBatchEligibility[]>([]);
 
-  const submit = async (decision: ReviewBatchDecision, reason?: string) => {
+  const operationFor = (decision: ReviewBatchDecision) =>
+    `${role === 'admin' ? 'admin' : 'reviewer'}-${decision}` as const;
+
+  const prepare = async (decision: ReviewBatchDecision) => {
+    setLoading(true);
+    try {
+      const result = await getReviewBatchEligibility(reviewIds, operationFor(decision));
+      if (result.error) throw result.error;
+      setPreview(result.data);
+      return result.data;
+    } catch {
+      message.error(
+        intl.formatMessage({
+          id: 'pages.review.batch.previewError',
+          defaultMessage: 'Unable to check the selected review scope.',
+        }),
+      );
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const previewSummary = (items: ReviewBatchEligibility[]) => {
+    const eligibleCount = items.filter((item) => item.eligible).length;
+    const reasons = items
+      .filter((item) => !item.eligible)
+      .reduce<Record<string, number>>((accumulator, item) => {
+        const reason = item.reason_code ?? 'NOT_APPLICABLE';
+        accumulator[reason] = (accumulator[reason] ?? 0) + 1;
+        return accumulator;
+      }, {});
+    return (
+      <Space orientation='vertical'>
+        <span>
+          {intl.formatMessage(
+            {
+              id: 'pages.review.batch.scopeSummary',
+              defaultMessage:
+                '{total} reviews selected (including references); {eligible} can be processed.',
+            },
+            { total: items.length, eligible: eligibleCount },
+          )}
+        </span>
+        {Object.keys(reasons).length > 0 && (
+          <Alert
+            type='warning'
+            showIcon
+            title={intl.formatMessage({
+              id: 'pages.review.batch.notApplicable',
+              defaultMessage: 'Items not processed',
+            })}
+            description={Object.entries(reasons)
+              .map(([reason, count]) => `${reason}: ${count}`)
+              .join('; ')}
+          />
+        )}
+      </Space>
+    );
+  };
+
+  const submit = async (
+    decision: ReviewBatchDecision,
+    reason?: string,
+    preparedPreview = preview,
+  ) => {
+    const eligibleReviewIds = preparedPreview
+      .filter((item) => item.eligible)
+      .map((item) => item.review_id);
+    if (eligibleReviewIds.length === 0) {
+      message.warning(
+        intl.formatMessage({
+          id: 'pages.review.batch.noneEligible',
+          defaultMessage: 'None of the selected reviews can be processed.',
+        }),
+      );
+      return;
+    }
     setLoading(true);
     try {
       const result =
         role === 'admin'
-          ? await submitAdminReviewBatchDecision(reviewIds, decision, reason)
-          : await submitReviewerBatchDecision(reviewIds, decision, reason);
+          ? await submitAdminReviewBatchDecision(eligibleReviewIds, decision, reason)
+          : await submitReviewerBatchDecision(eligibleReviewIds, decision, reason);
       if (result.error) throw result.error;
 
       const payload = result.data?.[0] as ReviewBatchDecisionResult | undefined;
@@ -67,7 +147,11 @@ const BatchReviewActions = ({
 
       setRejectOpen(false);
       form.resetFields();
-      onFinished();
+      const failedReviewIds = [
+        ...preparedPreview.filter((item) => !item.eligible).map((item) => item.review_id),
+        ...payload.results.filter((item) => !item.ok).map((item) => item.reviewId),
+      ];
+      onFinished(Array.from(new Set(failedReviewIds)));
     } catch {
       message.error(
         intl.formatMessage({
@@ -86,19 +170,30 @@ const BatchReviewActions = ({
   };
 
   const confirmApprove = () => {
-    modal.confirm({
-      title: intl.formatMessage(
-        {
-          id: 'pages.review.batch.approve.confirm',
-          defaultMessage: 'Approve {count} selected reviews?',
-        },
-        { count: reviewIds.length },
-      ),
-      okText: intl.formatMessage({
-        id: 'pages.review.batch.approve',
-        defaultMessage: 'Batch approve',
-      }),
-      onOk: () => submit('approve'),
+    void prepare('approve').then((items) => {
+      if (!items) return;
+      modal.confirm({
+        title: intl.formatMessage(
+          {
+            id: 'pages.review.batch.approve.confirm',
+            defaultMessage: 'Approve {count} selected reviews?',
+          },
+          { count: items.filter((item) => item.eligible).length },
+        ),
+        content: previewSummary(items),
+        okText: intl.formatMessage({
+          id: 'pages.review.batch.approve',
+          defaultMessage: 'Batch approve',
+        }),
+        onOk: () => submit('approve', undefined, items),
+      });
+    });
+  };
+
+  const openReject = () => {
+    void prepare('reject').then((items) => {
+      if (!items) return;
+      setRejectOpen(true);
     });
   };
 
@@ -152,7 +247,7 @@ const BatchReviewActions = ({
             icon={<FileExcelOutlined />}
             loading={loading}
             disabled={disabled || reviewIds.length === 0}
-            onClick={() => setRejectOpen(true)}
+            onClick={openReject}
           />
         </Tooltip>
       </Space>
@@ -174,6 +269,7 @@ const BatchReviewActions = ({
         onCancel={() => setRejectOpen(false)}
         onOk={submitReject}
       >
+        {previewSummary(preview)}
         <Form form={form} layout='vertical'>
           <Form.Item
             name='reason'
