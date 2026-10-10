@@ -101,15 +101,27 @@ describe('example data routes', () => {
     expect(routes.indexOf(example)).toBe(routes.indexOf(open) + 1);
   });
 
-  it('exposes the published-process page by URL without adding a menu entry', () => {
+  it('keeps displayed datasets outside Open Data and places the manager menu after Data Processing', () => {
     const open = routes.find((route) => route.path === '/tgdata')!;
-
-    expect(open.routes).toContainEqual(
+    expect(routes).toContainEqual(
       expect.objectContaining({
-        component: './PublishedProcesses',
-        hideInMenu: true,
-        path: '/tgdata/published-processes',
+        path: '/dataset-display-settings',
+        component: './DatasetDisplaySettings',
+        access: 'canDataProductManager',
+        name: 'datasetDisplaySettings',
       }),
     );
+    expect(JSON.stringify(routes)).not.toContain('/tgdata/published-processes');
+    expect(routes).toContainEqual(
+      expect.objectContaining({
+        component: './DisplayedDatasets',
+        path: '/displayed-datasets',
+        hideInMenu: true,
+      }),
+    );
+    expect(JSON.stringify(open.routes)).not.toContain('DisplayedDatasets');
+    expect(JSON.stringify(routes)).not.toContain('/tgdata/displayed-datasets');
+    const dataProcessingIndex = routes.findIndex((route) => route.path === '/data-processing');
+    expect(routes[dataProcessingIndex + 1].path).toBe('/dataset-display-settings');
   });
 });

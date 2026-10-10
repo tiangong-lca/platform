@@ -28,6 +28,8 @@ export const AUDITED_READ_ONLY_RPC_NAMES = [
   'get_latest_process_versions',
   'get_latest_source_versions',
   'get_latest_unitgroup_versions',
+  'list_dataset_display_candidates',
+  'list_displayed_datasets',
   'qry_identity_get_mine',
   'qry_identity_get_visible_users',
   'qry_membership_get_mine',

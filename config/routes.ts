@@ -55,12 +55,6 @@ export default [
         component: './Processes',
       },
       {
-        name: 'publishedProcesses',
-        path: '/tgdata/published-processes',
-        component: './PublishedProcesses',
-        hideInMenu: true,
-      },
-      {
         name: 'flows',
         icon: 'NodeExpandOutlined',
         path: '/tgdata/flows',
@@ -318,6 +312,19 @@ export default [
     access: 'canDataProductManager',
     icon: 'DatabaseOutlined',
     component: './DataProcessing',
+  },
+  {
+    path: '/dataset-display-settings',
+    name: 'datasetDisplaySettings',
+    icon: 'SettingOutlined',
+    access: 'canDataProductManager',
+    component: './DatasetDisplaySettings',
+  },
+  {
+    name: 'displayedDatasets',
+    path: '/displayed-datasets',
+    component: './DisplayedDatasets',
+    hideInMenu: true,
   },
   {
     path: '/account',

@@ -40,7 +40,6 @@ const mockGetTeamById = jest.fn();
 const mockDatasetUuidMentionSearch = jest.fn();
 const mockPublishOpenDataProcesses = jest.fn();
 let latestRequest: any = null;
-let latestPublishHandler: (() => Promise<void>) | undefined;
 
 jest.mock('umi', () => ({
   __esModule: true,
@@ -262,7 +261,6 @@ jest.mock('antd', () => {
   const ConfigProvider = ({ children }: any) => <div>{children}</div>;
   const Card = ({ children }: any) => <section>{children}</section>;
   const Button = ({ children, disabled, icon, loading, onClick }: any) => {
-    if (toText(children).includes('Publish selected')) latestPublishHandler = onClick;
     return (
       <button type='button' disabled={disabled || loading} onClick={onClick}>
         {icon}
@@ -484,7 +482,6 @@ describe('ProcessesPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     latestRequest = null;
-    latestPublishHandler = undefined;
     mockLocation = {
       pathname: '/mydata/processes',
       search: '?tid=team-1',
@@ -1101,62 +1098,21 @@ describe('ProcessesPage', () => {
     expect(screen.queryByRole('button', { name: /import-data/i })).not.toBeInTheDocument();
   });
 
-  it('allows the data product manager to select and publish open process versions', async () => {
+  it('keeps the Open Data Process page read-only for the manager after moving display configuration', async () => {
     mockGetDataSource.mockReturnValue('tg');
     mockCurrentUserAccess = 'data_product_manager';
-    mockGetProcessTableAll.mockResolvedValue({
-      data: [
-        {
-          id: 'proc-open',
-          version: '1.0.0',
-          name: 'Published process',
-          generalComment: '',
-          classification: 'Energy',
-          typeOfDataSet: 'gate to gate',
-          referenceYear: '2024',
-          location: 'CN',
-          modifiedAt: '2024-01-01T00:00:00Z',
-          isPublished: true,
-          modelId: '',
-          teamId: '',
-        },
-      ],
-      success: true,
-    });
-
     renderWithProviders(<ProcessesPage />);
-
-    await screen.findByRole('button', { name: 'select-proc-open' });
-    expect(screen.getAllByText('Published').length).toBeGreaterThan(0);
-    expect(mockGetProcessTableAll).toHaveBeenCalledWith(
-      { pageSize: 10, current: 1 },
-      {},
-      'en',
-      'tg',
-      'team-1',
-      'all',
-      'all',
-      { publicationFilter: 'all', sourceFilter: 'all' },
-    );
-
-    const publishButtons = screen.getAllByRole('button', { name: 'Publish selected ({count})' });
-    expect(publishButtons[0]).toBeDisabled();
-    await act(async () => latestPublishHandler?.());
+    await waitFor(() => expect(mockGetProcessTableAll).toHaveBeenCalled());
+    expect(screen.queryByRole('button', { name: /Publish selected/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /select-/ })).not.toBeInTheDocument();
     expect(mockPublishOpenDataProcesses).not.toHaveBeenCalled();
-    await userEvent.click(screen.getByRole('button', { name: 'select-proc-open' }));
-    await userEvent.click(screen.getAllByRole('button', { name: 'Publish selected ({count})' })[0]);
+  });
 
-    await waitFor(() =>
-      expect(mockPublishOpenDataProcesses).toHaveBeenCalledWith([
-        { id: 'proc-open', version: '1.0.0' },
-      ]),
-    );
-    expect(message.success).toHaveBeenCalledWith('Published {count} process versions.');
-    await waitFor(() =>
-      expect(
-        screen.getAllByRole('button', { name: 'Publish selected ({count})' })[0],
-      ).toBeDisabled(),
-    );
+  it('preserves Open Data keyword search and its original catalog filters after moving display configuration', async () => {
+    mockGetDataSource.mockReturnValue('tg');
+    mockLocation = { pathname: '/tgdata/processes', search: '?tid=team-1' };
+    renderWithProviders(<ProcessesPage />);
+    await waitFor(() => expect(mockGetProcessTableAll).toHaveBeenCalled());
 
     await userEvent.click(screen.getByRole('button', { name: /search/i }));
     await waitFor(() =>
@@ -1171,44 +1127,10 @@ describe('ProcessesPage', () => {
         undefined,
         'team-1',
         false,
-        { publicationFilter: 'all', sourceFilter: 'all' },
+        { sourceFilter: 'all', publicationFilter: 'all' },
       ),
     );
-  });
-
-  it('reports process publication command failures and keeps non-managers read-only', async () => {
-    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-    mockGetDataSource.mockReturnValue('tg');
-    mockCurrentUserAccess = 'data_product_manager';
-    mockPublishOpenDataProcesses.mockResolvedValue({
-      data: null,
-      error: new Error('publish failed'),
-    });
-
-    const { unmount } = renderWithProviders(<ProcessesPage />);
-    await screen.findByRole('button', { name: 'select-proc-1' });
-    await userEvent.click(screen.getByRole('button', { name: 'select-proc-1' }));
-    await userEvent.click(screen.getAllByRole('button', { name: 'Publish selected ({count})' })[0]);
-
-    await waitFor(() =>
-      expect(message.error).toHaveBeenCalledWith('Failed to publish selected processes.'),
-    );
-    expect(consoleErrorSpy).toHaveBeenCalledWith(expect.any(Error));
-
-    mockPublishOpenDataProcesses.mockResolvedValue({ data: null, error: null });
-    await userEvent.click(screen.getAllByRole('button', { name: 'Publish selected ({count})' })[0]);
-    await waitFor(() => expect(mockPublishOpenDataProcesses).toHaveBeenCalledTimes(2));
-    expect(message.error).toHaveBeenCalledTimes(2);
-    unmount();
-
-    jest.clearAllMocks();
-    mockCurrentUserAccess = 'member';
-    mockGetProcessTableAll.mockResolvedValue({ data: [], success: true });
-    renderWithProviders(<ProcessesPage />);
-    await waitFor(() => expect(mockGetProcessTableAll).toHaveBeenCalled());
-    expect(screen.queryByRole('button', { name: /Publish selected/ })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /select-/ })).not.toBeInTheDocument();
-    consoleErrorSpy.mockRestore();
+    expect(mockPublishOpenDataProcesses).not.toHaveBeenCalled();
   });
 
   it('falls back to empty tid and null team when the route has no team query or team data payload', async () => {

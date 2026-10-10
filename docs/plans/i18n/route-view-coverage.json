@@ -425,7 +425,7 @@
       "schemaVersion": "tiangong.i18n-semantic-e2e-evidence.v2",
       "schemaPath": "docs/plans/i18n/semantic-e2e-evidence.schema.json",
       "evidencePath": ".local/e2e-release/semantic-e2e-evidence.json",
-      "requiredAssertionCount": 59,
+      "requiredAssertionCount": 60,
       "requiredLocales": ["zh-CN", "en-US", "de-DE", "fr-FR"],
       "requiredBrowsers": ["chromium", "firefox", "webkit"],
       "browserCoverage": {
@@ -659,27 +659,6 @@
       "visible": {
         "kind": "locale-messages",
         "messageIds": ["pages.process.lca.page.title"]
-      }
-    },
-    "rv.published-processes.tgdata": {
-      "kind": "localized-view",
-      "session": "authenticated",
-      "navigate": {
-        "hashPath": "/tgdata/published-processes",
-        "hashQuery": {}
-      },
-      "expected": {
-        "hashPath": "/tgdata/published-processes",
-        "hashQuery": {}
-      },
-      "visible": {
-        "kind": "locale-messages",
-        "messageIds": [
-          "menu.tgdata",
-          "pages.process.published.title",
-          "pages.process.published.table.processName",
-          "pages.process.published.table.calculationResult"
-        ]
       }
     },
     "rv.process-lists.tgdata": {
@@ -1443,6 +1422,44 @@
         "messageIds": ["menu.exampledata", "menu.tgdata.contacts"],
         "separator": " / "
       }
+    },
+    "rv.displayed-datasets": {
+      "kind": "localized-view",
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/displayed-datasets",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/displayed-datasets",
+        "hashQuery": {}
+      },
+      "visible": {
+        "kind": "locale-messages",
+        "messageIds": [
+          "pages.datasetDisplay.title",
+          "pages.table.title.name",
+          "pages.table.title.version",
+          "pages.datasetUuidMention.entityKind",
+          "pages.process.published.table.calculationResult"
+        ]
+      }
+    },
+    "rv.dataset-display-settings": {
+      "kind": "role-boundary",
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/dataset-display-settings",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/dataset-display-settings",
+        "hashQuery": {}
+      },
+      "boundary": {
+        "selector": "[data-testid='access-denied']",
+        "messageIds": ["pages.accessDenied.message"]
+      }
     }
   },
   "routeFamilies": [
@@ -1726,24 +1743,30 @@
       "blockedContext": 0
     },
     {
-      "id": "published-processes",
-      "routes": ["/tgdata/published-processes"],
+      "id": "displayed-datasets",
+      "routes": ["/displayed-datasets"],
       "executableAssertionIds": {
-        "/tgdata/published-processes": "rv.published-processes.tgdata"
+        "/displayed-datasets": "rv.displayed-datasets"
       },
-      "viewState": "published-process-list",
+      "viewState": "displayed-dataset-list",
       "pageOwnedMessageIds": [
-        "pages.process.published.title",
-        "pages.process.published.table.processName",
+        "pages.datasetDisplay.title",
+        "pages.table.title.name",
+        "pages.table.title.version",
+        "pages.datasetUuidMention.entityKind",
         "pages.process.published.table.calculationResult",
         "pages.process.published.climate.error",
         "pages.process.published.climate.missing"
       ],
-      "trigger": "Open the published-process list directly and review list and result loading, exact-version climate values, missing results, errors, standard refresh, and pagination states.",
-      "component": "src/pages/PublishedProcesses/index.tsx",
-      "accessContext": "authenticated-session-required with open-data read permissions",
+      "trigger": "Open displayed datasets and filter the seven types; review exact-version Process results, missing/zero, failure, refresh and pagination.",
+      "component": "src/pages/DisplayedDatasets/index.tsx",
+      "accessContext": "authenticated-session-required with dedicated displayed-dataset metadata reads; independent of Open Data routes",
       "copySources": {
-        "sourcePaths": ["config/routes.ts", "src/pages/PublishedProcesses/index.tsx"],
+        "sourcePaths": [
+          "config/routes.ts",
+          "src/pages/DisplayedDatasets/index.tsx",
+          "src/components/DatasetKindFilter/index.tsx"
+        ],
         "localeMessageIds": [],
         "localeMessageIdPrefixes": [],
         "declaredFallbacks": []
@@ -1752,17 +1775,17 @@
       "targetCoverage": {
         "localeScope": "all-registry-locales",
         "ownership": "shared locale catalog",
-        "structureAudit": "exact topology, published-process table, pagination, and fixed Climate change unit in the calculation header, numeric-only exact-version result cells, availability and failure cells",
+        "structureAudit": "five-column mixed-type table, exact versions, type filtering and unchanged Process Climate change availability/zero/error semantics",
         "missingContent": 0
       },
       "proof": {
         "requiredEvidenceScope": "internal-localization",
         "focusedTests": [
-          "tests/unit/pages/PublishedProcesses/index.test.tsx",
+          "tests/unit/pages/DisplayedDatasets/index.test.tsx",
           "tests/unit/config/routes.test.ts"
         ],
         "plannedBrowserAssertions": [
-          "published process title and table headers render in every registry locale"
+          "displayed dataset title, five headers and seven-type dropdown render in every registry locale"
         ]
       },
       "unownedStaticContent": 0,
@@ -2280,6 +2303,52 @@
         ],
         "plannedBrowserAssertions": [
           "team names and actions follow every registry locale and its declared fallback chain"
+        ]
+      },
+      "unownedStaticContent": 0,
+      "blockedContext": 0
+    },
+    {
+      "id": "dataset-display-settings",
+      "routes": ["/dataset-display-settings"],
+      "executableAssertionIds": {
+        "/dataset-display-settings": "rv.dataset-display-settings"
+      },
+      "viewState": "display-settings",
+      "pageOwnedMessageIds": [
+        "pages.datasetDisplay.settings",
+        "pages.datasetDisplay.visibility",
+        "pages.datasetDisplay.showSelected",
+        "pages.datasetDisplay.hideSelected"
+      ],
+      "trigger": "Open the manager-only route as a standard actor and observe the localized denial boundary. Focused manager tests separately verify exact-version set/cancel and filters.",
+      "component": "src/pages/DatasetDisplaySettings/index.tsx",
+      "accessContext": "data_product_manager workflow; a standard authenticated actor observes the localized access boundary",
+      "copySources": {
+        "sourcePaths": [
+          "config/routes.ts",
+          "src/pages/DatasetDisplaySettings/index.tsx",
+          "src/components/DatasetKindFilter/index.tsx"
+        ],
+        "localeMessageIds": [],
+        "localeMessageIdPrefixes": [],
+        "declaredFallbacks": []
+      },
+      "visibleStates": ["default", "loading", "ready", "empty", "error", "pagination"],
+      "targetCoverage": {
+        "localeScope": "all-registry-locales",
+        "ownership": "shared locale catalog",
+        "structureAudit": "first-level manager menu, direct-route denial, type/visibility/search filters and reversible exact-version selection",
+        "missingContent": 0
+      },
+      "proof": {
+        "requiredEvidenceScope": "access-boundary-observed",
+        "focusedTests": [
+          "tests/unit/pages/DatasetDisplaySettings/index.test.tsx",
+          "tests/unit/config/routes.test.ts"
+        ],
+        "plannedBrowserAssertions": [
+          "standard authenticated actor receives the existing role-denied boundary"
         ]
       },
       "unownedStaticContent": 0,

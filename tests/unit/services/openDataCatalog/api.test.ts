@@ -1,5 +1,3 @@
-import { FunctionRegion } from '@supabase/supabase-js';
-
 const mockRpc = jest.fn();
 const mockGetSession = jest.fn();
 const mockInvoke = jest.fn();
@@ -14,7 +12,6 @@ jest.mock('@/services/supabase', () => ({
 
 import {
   addOpenDataHybridFilters,
-  publishOpenDataProcesses,
   queryMappedOpenDataCatalog,
   queryOpenDataCatalog,
 } from '@/services/openDataCatalog/api';
@@ -85,39 +82,6 @@ describe('Open Data catalog service', () => {
       query: 'steel',
       source_filter: 'enterprise',
       publication_filter: 'all',
-    });
-  });
-
-  it('publishes through the authenticated command and unwraps its result', async () => {
-    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'token' } }, error: null });
-    mockInvoke.mockResolvedValue({ data: { data: { publishedCount: 1 } }, error: null });
-    const items = [{ id: 'id', version: '01.00.000' }];
-    await expect(publishOpenDataProcesses(items)).resolves.toMatchObject({
-      data: { publishedCount: 1 },
-      error: null,
-    });
-    expect(mockInvoke).toHaveBeenCalledWith('app_open_data_process_publish_batch', {
-      headers: { Authorization: 'Bearer token' },
-      body: { items },
-      region: FunctionRegion.UsEast1,
-    });
-
-    mockInvoke.mockResolvedValue({ data: { publishedCount: 2 }, error: null });
-    await expect(publishOpenDataProcesses(items)).resolves.toMatchObject({
-      data: { publishedCount: 2 },
-    });
-  });
-
-  it('fails locally when no authenticated session exists', async () => {
-    const authError = new Error('signed out');
-    mockGetSession.mockResolvedValue({ data: { session: null }, error: authError });
-    await expect(publishOpenDataProcesses([])).resolves.toEqual({ data: null, error: authError });
-    expect(mockInvoke).not.toHaveBeenCalled();
-
-    mockGetSession.mockResolvedValue({ data: { session: null }, error: null });
-    await expect(publishOpenDataProcesses([])).resolves.toMatchObject({
-      data: null,
-      error: expect.any(Error),
     });
   });
 });

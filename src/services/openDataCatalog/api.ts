@@ -1,5 +1,4 @@
 import { supabase } from '@/services/supabase';
-import { FunctionRegion } from '@supabase/supabase-js';
 import { type OpenDataCatalogFilters, type OpenDataDatasetKind } from './types';
 
 export {
@@ -91,29 +90,4 @@ export function addOpenDataHybridFilters(
     source_filter: filters.sourceFilter,
     publication_filter: filters.publicationFilter ?? 'all',
   };
-}
-
-export type OpenDataProcessPublicationItem = { id: string; version: string };
-
-export type OpenDataProcessPublicationResult = {
-  inputCount: number;
-  requestedCount: number;
-  publishedCount: number;
-  alreadyPublishedCount: number;
-};
-
-export async function publishOpenDataProcesses(items: OpenDataProcessPublicationItem[]) {
-  const sessionResult = await supabase.auth.getSession();
-  const session = sessionResult.data.session;
-  if (!session) {
-    return { data: null, error: sessionResult.error ?? new Error('Authentication required') };
-  }
-
-  const result = await supabase.functions.invoke('app_open_data_process_publish_batch', {
-    headers: { Authorization: `Bearer ${session.access_token}` },
-    body: { items },
-    region: FunctionRegion.UsEast1,
-  });
-  const data = result.data?.data ?? result.data;
-  return { ...result, data: data as OpenDataProcessPublicationResult | null };
 }

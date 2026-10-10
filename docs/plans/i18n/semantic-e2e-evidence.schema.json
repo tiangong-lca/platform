@@ -209,8 +209,8 @@
     },
     "assertions": {
       "type": "array",
-      "minItems": 59,
-      "maxItems": 59,
+      "minItems": 60,
+      "maxItems": 60,
       "items": {
         "$ref": "#/$defs/assertion"
       }

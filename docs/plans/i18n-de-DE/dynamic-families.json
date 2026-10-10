@@ -512,6 +512,22 @@
         "pages.lifecyclemodel.calculation.error.SOURCE_UNAVAILABLE"
       ]
     },
+    "datasetDisplayKinds": {
+      "proof": "The candidate/display service validates all received kinds against the seven-type allowlist before rendering; the filter producer uses the same finite list.",
+      "unknownHandling": {
+        "kind": "closedWorld",
+        "proof": "Unsupported kinds fail the service decoder; only the seven validated kinds reach datasetKindMessage. LCIA and ILCD are excluded."
+      },
+      "keys": [
+        "pages.validationIssues.datasetType.contact",
+        "pages.validationIssues.datasetType.flow",
+        "pages.validationIssues.datasetType.flowproperty",
+        "pages.validationIssues.datasetType.lifecyclemodel",
+        "pages.validationIssues.datasetType.process",
+        "pages.validationIssues.datasetType.source",
+        "pages.validationIssues.datasetType.unitgroup"
+      ]
+    },
     "lifecycleModelAllocationRepair": {
       "proof": "The calculation modal renders repair guidance only for the two recognized allocation reasons returned by getAllocationRepairMessageId. Other issues retain the localized error title and result-not-updated status.",
       "unknownHandling": {
@@ -755,6 +771,27 @@
       "file": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
       "expression": "CALCULATION_ERROR_MESSAGE_IDS[result.code] ?? CALCULATION_ERROR_MESSAGE_IDS.CALCULATION_FAILED",
       "family": "lifecycleModelCalculationErrors"
+    },
+    {
+      "api": "formatMessage",
+      "count": 1,
+      "file": "src/components/DatasetKindFilter/index.tsx",
+      "expression": "datasetKindMessage(kind)",
+      "family": "datasetDisplayKinds"
+    },
+    {
+      "api": "formatMessage",
+      "count": 1,
+      "file": "src/pages/DisplayedDatasets/index.tsx",
+      "expression": "datasetKindMessage(record.datasetKind)",
+      "family": "datasetDisplayKinds"
+    },
+    {
+      "api": "formatMessage",
+      "count": 1,
+      "file": "src/pages/DatasetDisplaySettings/index.tsx",
+      "expression": "datasetKindMessage(row.datasetKind)",
+      "family": "datasetDisplayKinds"
     },
     {
       "api": "formatMessage",

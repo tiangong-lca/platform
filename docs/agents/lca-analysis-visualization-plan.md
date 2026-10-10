@@ -20,9 +20,9 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-10-09
-lastReviewedCommit: d10b0b1fb8fe4797deeb72681f926ec565837d99
-lastReviewedNote: 'Reviewed allocation repair reasons, localized node guidance, preservation of saved results, and paired deployment qualification boundaries.'
+lastReviewedAt: 2026-10-10
+lastReviewedCommit: 11e84182b58224da5ae59c16330fe33d02dd5192
+lastReviewedNote: 'Reviewed PR1195 conflict resolution against Dev26f19842: combined display and product-provider documentation, retained both finite translation families and regenerated four-locale artifacts. Eight display/shared-UI source files are byte-identical to prior head40aa65a9; seventeen incoming source files exactly match Dev and the lockfile is unchanged. Focused eleven suites/105 tests, four-locale checks, qualification build and two-generation artifact idempotence pass. Existing permission/result behavior and local/hosted qualification boundaries remain unchanged; final checked push and live mergeability readback remain required. No browser, server or container was started, and no hosted data was changed.'
 ---
 
 # LCA Analysis And Visualization Plan

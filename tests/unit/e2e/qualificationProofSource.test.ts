@@ -18,6 +18,20 @@ const observedReport = fs.readFileSync(
   path.join(__dirname, 'fixtures/qualification-ci-37189151648.fixture'),
 );
 const contract = loadQualificationClosureContract(process.cwd());
+// Unit-only synthetic report for the current route contract. Keep the original CI bytes
+// immutable and prove below that the old assertion set cannot qualify these new routes.
+const currentReport = Buffer.from(
+  JSON.stringify({
+    ...JSON.parse(observedReport.toString('utf8')),
+    assertionIds: [...contract.assertionIds],
+    assertionBrowsers: Object.fromEntries(
+      contract.assertionIds.map((id) => [
+        id,
+        JSON.parse(observedReport.toString('utf8')).assertionBrowsers[id] ?? [...contract.browsers],
+      ]),
+    ),
+  }),
+);
 let directory: string;
 
 beforeEach(() => {
@@ -25,7 +39,7 @@ beforeEach(() => {
 });
 afterEach(() => fs.rmSync(directory, { force: true, recursive: true }));
 
-function artifacts(raw: Buffer = observedReport) {
+function artifacts(raw: Buffer = currentReport) {
   const candidate = { commit: 'd'.repeat(40), tree: 'e'.repeat(40) };
   const preflightReport = path.join(directory, 'preflight-report.json');
   const containerResult = path.join(directory, 'run-result.json');
@@ -87,7 +101,7 @@ function refusal(result: ReturnType<typeof artifacts>) {
   return error;
 }
 
-it('replays the real report through producer receipt, private proof writing and CLI verification', () => {
+it('round-trips a synthetic current report through producer receipt, private proof writing and CLI verification', () => {
   const result = artifacts();
   const run = JSON.parse(fs.readFileSync(result.artifacts.containerResult, 'utf8'));
   expect(run.qualification.assertionBrowsers['rv.login.password-forgot']).toBe('[REDACTED]');
@@ -100,9 +114,9 @@ it('replays the real report through producer receipt, private proof writing and 
   const written = JSON.parse(fs.readFileSync(proof, 'utf8'));
   expect(written.assertionBrowsers['rv.login.password-forgot']).toEqual(['chromium']);
   expect(written.assertionBrowsers['rv.login.password-reset']).toEqual(['chromium']);
-  expect(written.assertionIds).toHaveLength(59);
+  expect(written.assertionIds).toHaveLength(60);
   expect(written.diagnostics.qualificationReportSha256).toBe(
-    createHash('sha256').update(observedReport).digest('hex'),
+    createHash('sha256').update(currentReport).digest('hex'),
   );
   expect(fs.statSync(proof).mode & 0o777).toBe(0o600);
   const verified = spawnSync(
@@ -116,6 +130,14 @@ it('replays the real report through producer receipt, private proof writing and 
     password: '[REDACTED]',
     token: '[REDACTED]',
   });
+});
+
+it('rejects the immutable historical CI assertion set for the new display routes', () => {
+  const result = artifacts(observedReport);
+  expect(refusal(result).details.closureFailures).toContain('assertion-id-set');
+  expect(
+    qualificationReportFailures(JSON.parse(observedReport.toString('utf8')), contract),
+  ).toContain('assertion-browser-id-set');
 });
 
 it('rejects a legacy receipt and a foreign report even when its closure data remains valid', () => {
@@ -145,7 +167,7 @@ it.each(['run-result', 'preflight'])(
 it.each(['secret-field', 'nested-secret', 'secret-value', 'unexpected-browser', 'partial'])(
   'rejects %s in a digest-bound report without exposing the payload',
   (kind) => {
-    const report = JSON.parse(observedReport.toString('utf8'));
+    const report = JSON.parse(currentReport.toString('utf8'));
     if (kind === 'secret-field') report.password = 'private-secret-sentinel';
     if (kind === 'nested-secret') report.browsers.chromium.password = 'private-secret-sentinel';
     if (kind === 'secret-value') {

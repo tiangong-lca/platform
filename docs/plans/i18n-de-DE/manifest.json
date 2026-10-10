@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "1d2990633e06c4a0e4fc9bcb65231e82008b9f6382d30f01e6318869add108a3",
+    "auditedInputDigest": "02a3e5ee524cd1e685d5eeb19d13ea4093ca895eb76308920693cd877e397e8c",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -69,19 +69,19 @@
   "summary": {
     "localeCount": 4,
     "localeLeafModuleCounts": { "en-US": 31, "zh-CN": 31, "de-DE": 31, "fr-FR": 31 },
-    "localeUniqueKeyCounts": { "en-US": 3532, "zh-CN": 3532, "de-DE": 3532, "fr-FR": 3532 },
-    "canonicalCandidateKeyCount": 3532,
-    "activeStaticKeyCount": 2351,
+    "localeUniqueKeyCounts": { "en-US": 3546, "zh-CN": 3546, "de-DE": 3546, "fr-FR": 3546 },
+    "canonicalCandidateKeyCount": 3546,
+    "activeStaticKeyCount": 2353,
     "activeDynamicKeyCount": 323,
-    "reservedKeyCount": 858,
-    "productionSourceFileCount": 495,
-    "literalReferenceCount": 4298,
-    "dynamicCallsiteCount": 34,
-    "dynamicCallsiteSummaryCount": 34,
-    "registeredDynamicCallsiteCount": 34,
-    "reviewedDynamicCallsiteCount": 34,
-    "dynamicFamilyCount": 17,
-    "unknownHandlingCounts": { "localizedRuntimeFallback:implemented": 8, "closedWorld": 9 },
+    "reservedKeyCount": 870,
+    "productionSourceFileCount": 498,
+    "literalReferenceCount": 4311,
+    "dynamicCallsiteCount": 37,
+    "dynamicCallsiteSummaryCount": 37,
+    "registeredDynamicCallsiteCount": 37,
+    "reviewedDynamicCallsiteCount": 37,
+    "dynamicFamilyCount": 18,
+    "unknownHandlingCounts": { "localizedRuntimeFallback:implemented": 8, "closedWorld": 10 },
     "violationCount": 0,
     "violationCounts": {
       "scanErrors": 0,
@@ -13143,7 +13143,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 406,
+          "line": 370,
           "column": 29,
           "symbol": "processColumns",
           "defaultMessage": "Data contributed to the team successfully.",
@@ -13185,7 +13185,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 406,
+              "line": 370,
               "column": 29,
               "kind": "formatMessage"
             },
@@ -27365,6 +27365,124 @@
       ]
     },
     {
+      "id": "menu.datasetDisplaySettings",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["menu"],
+        "zh-CN": ["menu"],
+        "de-DE": ["menu"],
+        "fr-FR": ["menu"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Display settings",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/menu.ts",
+            "line": 112,
+            "column": 3,
+            "module": "menu"
+          }
+        },
+        "zh-CN": {
+          "value": "展示配置",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/menu.ts",
+            "line": 112,
+            "column": 3,
+            "module": "menu"
+          }
+        },
+        "de-DE": {
+          "value": "Anzeigeeinstellungen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/menu.ts",
+            "line": 112,
+            "column": 3,
+            "module": "menu"
+          }
+        },
+        "fr-FR": {
+          "value": "Paramètres d’affichage",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/menu.ts",
+            "line": 112,
+            "column": 3,
+            "module": "menu"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "menu.displayedDatasets",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["menu"],
+        "zh-CN": ["menu"],
+        "de-DE": ["menu"],
+        "fr-FR": ["menu"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Displayed datasets",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/menu.ts",
+            "line": 113,
+            "column": 3,
+            "module": "menu"
+          }
+        },
+        "zh-CN": {
+          "value": "展示数据",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/menu.ts",
+            "line": 113,
+            "column": 3,
+            "module": "menu"
+          }
+        },
+        "de-DE": {
+          "value": "Angezeigte Datensätze",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/menu.ts",
+            "line": 113,
+            "column": 3,
+            "module": "menu"
+          }
+        },
+        "fr-FR": {
+          "value": "Jeux de données affichés",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/menu.ts",
+            "line": 113,
+            "column": 3,
+            "module": "menu"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "menu.editor",
       "category": "reserved",
       "dynamicFamilies": [],
@@ -32399,7 +32517,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 695,
+          "line": 620,
           "column": 13,
           "symbol": "TableList",
           "defaultMessage": "Processes",
@@ -32414,7 +32532,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 695,
+              "line": 620,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -82572,6 +82690,1080 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.datasetDisplay.allVisibility",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "All",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 228,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "全部",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 227,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Alle",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 228,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Tous",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 228,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 243,
+          "column": 24,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "All",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "All",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 243,
+              "column": 24,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.hidden",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Not displayed",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 230,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "未展示",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 229,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Nicht angezeigt",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 230,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Non affiché",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 230,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 130,
+          "column": 11,
+          "symbol": "columns",
+          "defaultMessage": null,
+          "defaultMessageExpression": "row.isVisible ? 'Displayed' : 'Not displayed'"
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 257,
+          "column": 24,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Not displayed",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Not displayed",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 257,
+              "column": 24,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.hideSelected",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Hide selected ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 227,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "取消展示（{count}）",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 226,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Auswahl ausblenden ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 227,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Masquer la sélection ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 227,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 287,
+          "column": 13,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Hide selected ({count})",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Hide selected ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 287,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.loadError",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Failed to load datasets. Please refresh.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 235,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "加载数据失败，请刷新重试。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 234,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Datensätze konnten nicht geladen werden. Bitte aktualisieren.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 235,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Échec du chargement des jeux de données. Veuillez actualiser.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 235,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 201,
+          "column": 20,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Failed to load datasets. Please refresh.",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 154,
+          "column": 13,
+          "symbol": "DisplayedDatasets",
+          "defaultMessage": "Failed to load datasets. Please refresh.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Failed to load datasets. Please refresh.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 201,
+              "column": 20,
+              "kind": "formatMessage"
+            },
+            {
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 154,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.search",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Search by name or UUID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 232,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "按名称或 UUID 搜索",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 231,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Nach Name oder UUID suchen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 232,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Rechercher par nom ou UUID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 232,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 149,
+          "column": 27,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Search by name or UUID",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 153,
+          "column": 28,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Search by name or UUID",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Search by name or UUID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 149,
+              "column": 27,
+              "kind": "formatMessage"
+            },
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 153,
+              "column": 28,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.settings",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Display settings",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 224,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "展示配置",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 223,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Anzeigeeinstellungen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 224,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Paramètres d’affichage",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 224,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 176,
+          "column": 11,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Display settings",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Display settings",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 176,
+              "column": 11,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.showSelected",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Show selected ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 226,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "设为展示（{count}）",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 225,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Auswahl anzeigen ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 226,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Afficher la sélection ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 226,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 276,
+          "column": 13,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Show selected ({count})",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Show selected ({count})",
+          "argumentSignature": [{ "name": "count", "type": "simple" }],
+          "placeholders": ["count"],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 276,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.success",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Updated {count} items; {unchanged} were already configured.",
+          "argumentSignature": [
+            { "name": "count", "type": "simple" },
+            { "name": "unchanged", "type": "simple" }
+          ],
+          "placeholders": ["count", "unchanged"],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 233,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "已更新 {count} 项，{unchanged} 项无需更改。",
+          "argumentSignature": [
+            { "name": "count", "type": "simple" },
+            { "name": "unchanged", "type": "simple" }
+          ],
+          "placeholders": ["count", "unchanged"],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 232,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "{count} Einträge aktualisiert; {unchanged} waren bereits eingestellt.",
+          "argumentSignature": [
+            { "name": "count", "type": "simple" },
+            { "name": "unchanged", "type": "simple" }
+          ],
+          "placeholders": ["count", "unchanged"],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 233,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "{count} éléments mis à jour ; {unchanged} étaient déjà configurés.",
+          "argumentSignature": [
+            { "name": "count", "type": "simple" },
+            { "name": "unchanged", "type": "simple" }
+          ],
+          "placeholders": ["count", "unchanged"],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 233,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 71,
+          "column": 11,
+          "symbol": "change",
+          "defaultMessage": "Updated {count} items; {unchanged} were already configured.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Updated {count} items; {unchanged} were already configured.",
+          "argumentSignature": [
+            { "name": "count", "type": "simple" },
+            { "name": "unchanged", "type": "simple" }
+          ],
+          "placeholders": ["count", "unchanged"],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 71,
+              "column": 11,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.title",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Displayed datasets",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 225,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "展示数据",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 224,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Angezeigte Datensätze",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 225,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Jeux de données affichés",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 225,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 165,
+          "column": 11,
+          "symbol": "DisplayedDatasets",
+          "defaultMessage": "Displayed datasets",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Displayed datasets",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 165,
+              "column": 11,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.updateError",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Failed to update display settings. Please retry.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 234,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "更新展示配置失败，请重试。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 233,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Anzeigeeinstellungen konnten nicht aktualisiert werden. Bitte erneut versuchen.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 234,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Échec de la mise à jour des paramètres d’affichage. Veuillez réessayer.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 234,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 85,
+          "column": 11,
+          "symbol": "change",
+          "defaultMessage": "Failed to update display settings. Please retry.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Failed to update display settings. Please retry.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 85,
+              "column": 11,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.visibility",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Visibility",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 231,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "展示状态",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 230,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Sichtbarkeit",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 231,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Visibilité",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 231,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 125,
+          "column": 14,
+          "symbol": "columns",
+          "defaultMessage": "Visibility",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 233,
+          "column": 25,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Visibility",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Visibility",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 125,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 233,
+              "column": 25,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.datasetDisplay.visible",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_general"],
+        "zh-CN": ["pages_general"],
+        "de-DE": ["pages_general"],
+        "fr-FR": ["pages_general"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Displayed",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_general.ts",
+            "line": 229,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "zh-CN": {
+          "value": "已展示",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_general.ts",
+            "line": 228,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "de-DE": {
+          "value": "Angezeigt",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_general.ts",
+            "line": 229,
+            "column": 3,
+            "module": "pages_general"
+          }
+        },
+        "fr-FR": {
+          "value": "Affiché",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_general.ts",
+            "line": 229,
+            "column": 3,
+            "module": "pages_general"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 130,
+          "column": 11,
+          "symbol": "columns",
+          "defaultMessage": null,
+          "defaultMessageExpression": "row.isVisible ? 'Displayed' : 'Not displayed'"
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 250,
+          "column": 24,
+          "symbol": "DatasetDisplaySettings",
+          "defaultMessage": "Displayed",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Displayed",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 250,
+              "column": 24,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "pages.datasetUuidMention.empty",
       "category": "active-static",
       "dynamicFamilies": [],
@@ -82705,9 +83897,47 @@
           "symbol": "columns",
           "defaultMessage": null,
           "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 117,
+          "column": 9,
+          "symbol": "columns",
+          "defaultMessage": "Data type",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 102,
+          "column": 9,
+          "symbol": "columns",
+          "defaultMessage": "Data type",
+          "defaultMessageExpression": null
         }
       ],
-      "defaultMessages": []
+      "defaultMessages": [
+        {
+          "value": "Data type",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 117,
+              "column": 9,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 102,
+              "column": 9,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "pages.datasetUuidMention.entityKind.unknown",
@@ -147776,7 +149006,7 @@
     },
     {
       "id": "pages.openData.publication.all",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -147830,36 +149060,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 60,
-          "column": 14,
-          "symbol": "publicationOptions",
-          "defaultMessage": "All publication states",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "All publication states",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 60,
-              "column": 14,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.error",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -147913,36 +149119,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/pages/Processes/index.tsx",
-          "line": 606,
-          "column": 9,
-          "symbol": "handlePublishSelected",
-          "defaultMessage": "Failed to publish selected processes.",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Failed to publish selected processes.",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/pages/Processes/index.tsx",
-              "line": 606,
-              "column": 9,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.filter",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -147996,36 +149178,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 91,
-          "column": 23,
-          "symbol": "OpenDataCatalogFilters",
-          "defaultMessage": "Publication filter",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Publication filter",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 91,
-              "column": 23,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.publishSelected",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -148079,36 +149237,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/pages/Processes/index.tsx",
-          "line": 833,
-          "column": 24,
-          "symbol": "TableList",
-          "defaultMessage": "Publish selected ({count})",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Publish selected ({count})",
-          "argumentSignature": [{ "name": "count", "type": "simple" }],
-          "placeholders": ["count"],
-          "locations": [
-            {
-              "path": "src/pages/Processes/index.tsx",
-              "line": 833,
-              "column": 24,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.published",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -148162,51 +149296,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 67,
-          "column": 14,
-          "symbol": "publicationOptions",
-          "defaultMessage": "Published",
-          "defaultMessageExpression": null
-        },
-        {
-          "kind": "formatMessage",
-          "path": "src/pages/Processes/index.tsx",
-          "line": 249,
-          "column": 20,
-          "symbol": "processColumns",
-          "defaultMessage": "Published",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Published",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 67,
-              "column": 14,
-              "kind": "formatMessage"
-            },
-            {
-              "path": "src/pages/Processes/index.tsx",
-              "line": 249,
-              "column": 20,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.status",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -148260,36 +149355,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/pages/Processes/index.tsx",
-          "line": 239,
-          "column": 20,
-          "symbol": "processColumns",
-          "defaultMessage": "Publication status",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Publication status",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/pages/Processes/index.tsx",
-              "line": 239,
-              "column": 20,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.success",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -148343,36 +149414,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/pages/Processes/index.tsx",
-          "line": 592,
-          "column": 9,
-          "symbol": "handlePublishSelected",
-          "defaultMessage": "Published {count} process versions.",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Published {count} process versions.",
-          "argumentSignature": [{ "name": "count", "type": "simple" }],
-          "placeholders": ["count"],
-          "locations": [
-            {
-              "path": "src/pages/Processes/index.tsx",
-              "line": 592,
-              "column": 9,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.publication.unpublished",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_general"],
@@ -148426,47 +149473,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "formatMessage",
-          "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 74,
-          "column": 14,
-          "symbol": "publicationOptions",
-          "defaultMessage": "Unpublished",
-          "defaultMessageExpression": null
-        },
-        {
-          "kind": "formatMessage",
-          "path": "src/pages/Processes/index.tsx",
-          "line": 256,
-          "column": 20,
-          "symbol": "processColumns",
-          "defaultMessage": "Unpublished",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Unpublished",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 74,
-              "column": 14,
-              "kind": "formatMessage"
-            },
-            {
-              "path": "src/pages/Processes/index.tsx",
-              "line": 256,
-              "column": 20,
-              "kind": "formatMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.openData.source.all",
@@ -148528,7 +149536,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 34,
+          "line": 28,
           "column": 14,
           "symbol": "sourceOptions",
           "defaultMessage": "All data",
@@ -148543,7 +149551,7 @@
           "locations": [
             {
               "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 34,
+              "line": 28,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -148611,7 +149619,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 42,
+          "line": 36,
           "column": 14,
           "symbol": "sourceOptions",
           "defaultMessage": "Enterprise data",
@@ -148626,7 +149634,7 @@
           "locations": [
             {
               "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 42,
+              "line": 36,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -148753,7 +149761,7 @@
         {
           "kind": "formatMessage",
           "path": "src/components/OpenDataCatalogFilters/index.tsx",
-          "line": 50,
+          "line": 44,
           "column": 14,
           "symbol": "sourceOptions",
           "defaultMessage": "Literature data",
@@ -148768,7 +149776,7 @@
           "locations": [
             {
               "path": "src/components/OpenDataCatalogFilters/index.tsx",
-              "line": 50,
+              "line": 44,
               "column": 14,
               "kind": "formatMessage"
             }
@@ -171945,7 +172953,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 741,
+          "line": 655,
           "column": 30,
           "symbol": "analysisPageOption",
           "defaultMessage": "LCA Analysis",
@@ -171954,7 +172962,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 793,
+          "line": 707,
           "column": 32,
           "symbol": "mobileActions",
           "defaultMessage": "LCA Analysis",
@@ -171975,13 +172983,13 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 741,
+              "line": 655,
               "column": 30,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 793,
+              "line": 707,
               "column": 32,
               "kind": "formatMessage"
             }
@@ -179133,7 +180141,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 1003,
+          "line": 897,
           "column": 21,
           "symbol": "TableList",
           "defaultMessage": "Failed to load process list.",
@@ -179148,7 +180156,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 1003,
+              "line": 897,
               "column": 21,
               "kind": "formatMessage"
             }
@@ -179234,7 +180242,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 274,
+          "line": 238,
           "column": 14,
           "symbol": "processColumns",
           "defaultMessage": "Location",
@@ -179261,7 +180269,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 274,
+              "line": 238,
               "column": 14,
               "kind": "FormattedMessage"
             }
@@ -184879,8 +185887,8 @@
       "references": [
         {
           "kind": "FormattedMessage",
-          "path": "src/pages/PublishedProcesses/index.tsx",
-          "line": 119,
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 122,
           "column": 13,
           "symbol": "columns",
           "defaultMessage": "Failed to load",
@@ -184894,8 +185902,8 @@
           "placeholders": [],
           "locations": [
             {
-              "path": "src/pages/PublishedProcesses/index.tsx",
-              "line": 119,
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 122,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -184962,8 +185970,8 @@
       "references": [
         {
           "kind": "FormattedMessage",
-          "path": "src/pages/PublishedProcesses/index.tsx",
-          "line": 129,
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 132,
           "column": 17,
           "symbol": "columns",
           "defaultMessage": "No result for this version in the current publication",
@@ -184977,8 +185985,8 @@
           "placeholders": [],
           "locations": [
             {
-              "path": "src/pages/PublishedProcesses/index.tsx",
-              "line": 129,
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 132,
               "column": 17,
               "kind": "FormattedMessage"
             }
@@ -185045,8 +186053,8 @@
       "references": [
         {
           "kind": "FormattedMessage",
-          "path": "src/pages/PublishedProcesses/index.tsx",
-          "line": 108,
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 110,
           "column": 9,
           "symbol": "columns",
           "defaultMessage": "Calculation result ({unit})",
@@ -185060,8 +186068,8 @@
           "placeholders": ["unit"],
           "locations": [
             {
-              "path": "src/pages/PublishedProcesses/index.tsx",
-              "line": 108,
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 110,
               "column": 9,
               "kind": "FormattedMessage"
             }
@@ -185071,7 +186079,7 @@
     },
     {
       "id": "pages.process.published.table.processName",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_process"],
@@ -185125,36 +186133,12 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "FormattedMessage",
-          "path": "src/pages/PublishedProcesses/index.tsx",
-          "line": 98,
-          "column": 9,
-          "symbol": "columns",
-          "defaultMessage": "Process name",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Process name",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/pages/PublishedProcesses/index.tsx",
-              "line": 98,
-              "column": 9,
-              "kind": "FormattedMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.process.published.title",
-      "category": "active-static",
+      "category": "reserved",
       "dynamicFamilies": [],
       "moduleOwnership": {
         "en-US": ["pages_process"],
@@ -185208,32 +186192,8 @@
           }
         }
       },
-      "references": [
-        {
-          "kind": "FormattedMessage",
-          "path": "src/pages/PublishedProcesses/index.tsx",
-          "line": 150,
-          "column": 11,
-          "symbol": "PublishedProcesses",
-          "defaultMessage": "Published processes",
-          "defaultMessageExpression": null
-        }
-      ],
-      "defaultMessages": [
-        {
-          "value": "Published processes",
-          "argumentSignature": [],
-          "placeholders": [],
-          "locations": [
-            {
-              "path": "src/pages/PublishedProcesses/index.tsx",
-              "line": 150,
-              "column": 11,
-              "kind": "FormattedMessage"
-            }
-          ]
-        }
-      ]
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.process.referenceYear",
@@ -185313,7 +186273,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 267,
+          "line": 231,
           "column": 14,
           "symbol": "processColumns",
           "defaultMessage": "Reference year",
@@ -185340,7 +186300,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 267,
+              "line": 231,
               "column": 14,
               "kind": "FormattedMessage"
             }
@@ -218353,7 +219313,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 224,
+          "line": 217,
           "column": 9,
           "symbol": "processColumns",
           "defaultMessage": "Dataset type",
@@ -218401,7 +219361,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 224,
+              "line": 217,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -247642,7 +248602,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 650,
+          "line": 575,
           "column": 23,
           "symbol": "TableList",
           "defaultMessage": null,
@@ -247909,7 +248869,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 666,
+          "line": 591,
           "column": 15,
           "symbol": "TableList",
           "defaultMessage": "AI Recommendation",
@@ -248008,7 +248968,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 666,
+              "line": 591,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -248169,7 +249129,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 649,
+          "line": 574,
           "column": 23,
           "symbol": "TableList",
           "defaultMessage": null,
@@ -248292,7 +249252,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 678,
+          "line": 603,
           "column": 17,
           "symbol": "TableList",
           "defaultMessage": "Reference Lookup",
@@ -248349,7 +249309,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 678,
+              "line": 603,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -248465,7 +249425,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 647,
+          "line": 572,
           "column": 21,
           "symbol": "TableList",
           "defaultMessage": null,
@@ -258691,16 +259651,39 @@
       },
       "references": [
         {
+          "kind": "formatMessage",
+          "path": "src/components/DatasetKindFilter/index.tsx",
+          "line": 31,
+          "column": 15,
+          "symbol": "all",
+          "defaultMessage": "Type of data set",
+          "defaultMessageExpression": null
+        },
+        {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 185,
+          "line": 178,
           "column": 20,
           "symbol": "typeOfDataSetFilter",
           "defaultMessage": null,
           "defaultMessageExpression": null
         }
       ],
-      "defaultMessages": []
+      "defaultMessages": [
+        {
+          "value": "Type of data set",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/components/DatasetKindFilter/index.tsx",
+              "line": 31,
+              "column": 15,
+              "kind": "formatMessage"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "pages.table.filter.all.workflowStatus",
@@ -259097,7 +260080,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 212,
+          "line": 205,
           "column": 9,
           "symbol": "processColumns",
           "defaultMessage": "Classification",
@@ -259214,7 +260197,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 212,
+              "line": 205,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -259539,6 +260522,24 @@
         },
         {
           "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 98,
+          "column": 14,
+          "symbol": "columns",
+          "defaultMessage": "Index",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 82,
+          "column": 14,
+          "symbol": "columns",
+          "defaultMessage": "Index",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
           "path": "src/pages/Flowproperties/Components/select/drawer.tsx",
           "line": 163,
           "column": 14,
@@ -259693,18 +260694,9 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 195,
+          "line": 188,
           "column": 14,
           "symbol": "processColumns",
-          "defaultMessage": "Index",
-          "defaultMessageExpression": null
-        },
-        {
-          "kind": "FormattedMessage",
-          "path": "src/pages/PublishedProcesses/index.tsx",
-          "line": 90,
-          "column": 14,
-          "symbol": "columns",
           "defaultMessage": "Index",
           "defaultMessageExpression": null
         },
@@ -259805,6 +260797,18 @@
             {
               "path": "src/pages/Contacts/index.tsx",
               "line": 247,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 98,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 82,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -259912,13 +260916,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 195,
-              "column": 14,
-              "kind": "FormattedMessage"
-            },
-            {
-              "path": "src/pages/PublishedProcesses/index.tsx",
-              "line": 90,
+              "line": 188,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -260164,6 +261162,24 @@
         },
         {
           "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 104,
+          "column": 14,
+          "symbol": "columns",
+          "defaultMessage": "Name",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 89,
+          "column": 14,
+          "symbol": "columns",
+          "defaultMessage": "Name",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
           "path": "src/pages/Flowproperties/Components/select/drawer.tsx",
           "line": 169,
           "column": 14,
@@ -260291,7 +261307,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 201,
+          "line": 194,
           "column": 14,
           "symbol": "processColumns",
           "defaultMessage": "Name",
@@ -260373,6 +261389,18 @@
             {
               "path": "src/pages/Contacts/index.tsx",
               "line": 253,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 104,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 89,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -260462,7 +261490,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 201,
+              "line": 194,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -260737,7 +261765,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 347,
+          "line": 311,
           "column": 14,
           "symbol": "processColumns",
           "defaultMessage": "Actions",
@@ -260938,7 +261966,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 347,
+              "line": 311,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -261117,7 +262145,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 337,
+          "line": 301,
           "column": 14,
           "symbol": "processColumns",
           "defaultMessage": "Updated at",
@@ -261201,7 +262229,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 337,
+              "line": 301,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -261308,6 +262336,24 @@
           "line": 280,
           "column": 14,
           "symbol": "contactColumns",
+          "defaultMessage": "Version",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DatasetDisplaySettings/index.tsx",
+          "line": 110,
+          "column": 14,
+          "symbol": "columns",
+          "defaultMessage": "Version",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/DisplayedDatasets/index.tsx",
+          "line": 95,
+          "column": 14,
+          "symbol": "columns",
           "defaultMessage": "Version",
           "defaultMessageExpression": null
         },
@@ -261449,7 +262495,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/index.tsx",
-          "line": 281,
+          "line": 245,
           "column": 14,
           "symbol": "processColumns",
           "defaultMessage": "Version",
@@ -261522,6 +262568,18 @@
             {
               "path": "src/pages/Contacts/index.tsx",
               "line": 280,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DatasetDisplaySettings/index.tsx",
+              "line": 110,
+              "column": 14,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/DisplayedDatasets/index.tsx",
+              "line": 95,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -261617,7 +262675,7 @@
             },
             {
               "path": "src/pages/Processes/index.tsx",
-              "line": 281,
+              "line": 245,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -271202,7 +272260,7 @@
     {
       "id": "pages.validationIssues.datasetType.contact",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -271300,7 +272358,7 @@
     {
       "id": "pages.validationIssues.datasetType.flow",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -271398,7 +272456,7 @@
     {
       "id": "pages.validationIssues.datasetType.flowproperty",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -271496,7 +272554,7 @@
     {
       "id": "pages.validationIssues.datasetType.lifecyclemodel",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -271594,7 +272652,7 @@
     {
       "id": "pages.validationIssues.datasetType.process",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -271692,7 +272750,7 @@
     {
       "id": "pages.validationIssues.datasetType.source",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -271790,7 +272848,7 @@
     {
       "id": "pages.validationIssues.datasetType.unitgroup",
       "category": "active-dynamic",
-      "dynamicFamilies": ["datasetEntityKinds"],
+      "dynamicFamilies": ["datasetDisplayKinds", "datasetEntityKinds"],
       "moduleOwnership": {
         "en-US": ["pages_general"],
         "zh-CN": ["pages_general"],
@@ -289456,6 +290514,13 @@
         },
         "proof": "The local translation helper receives literals or descriptors from the finite command action configuration."
       },
+      "datasetDisplayKinds": {
+        "unknownHandling": {
+          "kind": "closedWorld",
+          "proof": "Unsupported kinds fail the service decoder; only the seven validated kinds reach datasetKindMessage. LCIA and ILCD are excluded."
+        },
+        "proof": "The candidate/display service validates all received kinds against the seven-type allowlist before rendering; the filter producer uses the same finite list."
+      },
       "datasetEntityKinds": {
         "unknownHandling": {
           "kind": "localizedRuntimeFallback",
@@ -289588,6 +290653,16 @@
     {
       "api": "formatMessage",
       "count": 1,
+      "file": "src/components/DatasetKindFilter/index.tsx",
+      "expression": "datasetKindMessage(kind)",
+      "locations": ["45:18"],
+      "category": "active-dynamic",
+      "family": "datasetDisplayKinds",
+      "reviewStatus": "reviewed"
+    },
+    {
+      "api": "formatMessage",
+      "count": 1,
       "file": "src/components/DatasetUuidMentionSearch/index.tsx",
       "expression": "ENTITY_KIND_MESSAGES[value]",
       "locations": ["48:12"],
@@ -289653,6 +290728,26 @@
       "locations": ["1301:12"],
       "category": "active-dynamic",
       "family": "dataProcessing",
+      "reviewStatus": "reviewed"
+    },
+    {
+      "api": "formatMessage",
+      "count": 1,
+      "file": "src/pages/DatasetDisplaySettings/index.tsx",
+      "expression": "datasetKindMessage(row.datasetKind)",
+      "locations": ["121:27"],
+      "category": "active-dynamic",
+      "family": "datasetDisplayKinds",
+      "reviewStatus": "reviewed"
+    },
+    {
+      "api": "formatMessage",
+      "count": 1,
+      "file": "src/pages/DisplayedDatasets/index.tsx",
+      "expression": "datasetKindMessage(record.datasetKind)",
+      "locations": ["104:30"],
+      "category": "active-dynamic",
+      "family": "datasetDisplayKinds",
       "reviewStatus": "reviewed"
     },
     {

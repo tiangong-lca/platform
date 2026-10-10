@@ -221,4 +221,16 @@ export default {
   'pages.button.confirm': 'Confirm',
 
   'pages.pagination.showTotal': 'Items {start}-{end} of {total}',
+  'pages.datasetDisplay.settings': 'Display settings',
+  'pages.datasetDisplay.title': 'Displayed datasets',
+  'pages.datasetDisplay.showSelected': 'Show selected ({count})',
+  'pages.datasetDisplay.hideSelected': 'Hide selected ({count})',
+  'pages.datasetDisplay.allVisibility': 'All',
+  'pages.datasetDisplay.visible': 'Displayed',
+  'pages.datasetDisplay.hidden': 'Not displayed',
+  'pages.datasetDisplay.visibility': 'Visibility',
+  'pages.datasetDisplay.search': 'Search by name or UUID',
+  'pages.datasetDisplay.success': 'Updated {count} items; {unchanged} were already configured.',
+  'pages.datasetDisplay.updateError': 'Failed to update display settings. Please retry.',
+  'pages.datasetDisplay.loadError': 'Failed to load datasets. Please refresh.',
 };

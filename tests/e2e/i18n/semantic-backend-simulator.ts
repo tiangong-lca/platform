@@ -184,6 +184,13 @@ async function responseFor(
     return { data: [], success: true };
   }
   if (target.pathname.startsWith('/rest/v1/rpc/')) {
+    if (
+      [
+        '/rest/v1/rpc/list_dataset_display_candidates',
+        '/rest/v1/rpc/list_displayed_datasets',
+      ].includes(target.pathname)
+    )
+      return { data: [], total: 0 };
     return [];
   }
   if (route.request().method() === 'OPTIONS') {

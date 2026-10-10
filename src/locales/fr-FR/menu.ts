@@ -109,4 +109,6 @@ export default {
   'menu.codata.contacts': 'Contacts',
 
   'menu.password_forgot': 'Mot de passe oublié',
+  'menu.datasetDisplaySettings': 'Paramètres d’affichage',
+  'menu.displayedDatasets': 'Jeux de données affichés',
 };

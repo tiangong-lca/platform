@@ -8,27 +8,25 @@ import {
   getPublishedClimateResults,
   publishedProcessKey,
 } from '@/services/dataProducts/publishedClimate';
-import { getProcessTableAll } from '@/services/processes/api';
-import type { ProcessTable } from '@/services/processes/data';
+import {
+  listDatasetDisplay,
+  datasetDisplayKey,
+  type DatasetDisplayRow,
+  type DatasetKindFilter as Kind,
+} from '@/services/datasetDisplay/api';
+import DatasetKindFilter, { datasetKindMessage } from '@/components/DatasetKindFilter';
 import { dataListIndexColumn, responsiveDataListTableProps } from '@/components/ResponsiveDataList';
 import { PageContainer, ProTable, type ProColumns } from '@ant-design/pro-components';
-import { Spin, Tooltip } from 'antd';
+import { Alert, Spin, Tooltip } from 'antd';
 import { useCallback, useEffect, useRef, useState, type FC } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 
-type PublishedProcessTable = ProcessTable & {
-  calculationResult?: string;
-};
-
-const PUBLISHED_PROCESS_FILTERS = {
-  sourceFilter: 'all',
-  publicationFilter: 'published',
-} as const;
-
-const PublishedProcesses: FC = () => {
+const DisplayedDatasets: FC = () => {
   const intl = useIntl();
   const lang = getLang(intl.locale);
   const epoch = useRef(0);
+  const [datasetKind, setDatasetKind] = useState<Kind>('all');
+  const [listFailed, setListFailed] = useState(false);
   const mounted = useRef(true);
   const [resultState, setResultState] = useState<{
     status: 'idle' | 'loading' | 'ready' | 'error';
@@ -62,31 +60,25 @@ const PublishedProcesses: FC = () => {
     async (params: { current?: number; pageSize?: number }) => {
       const token = ++epoch.current;
       setResultState({ status: 'loading', values: new Map() });
-      const result = await getProcessTableAll(
-        params,
-        {},
-        lang,
-        'tg',
-        [],
-        undefined,
-        'all',
-        PUBLISHED_PROCESS_FILTERS,
-      );
+      const result = await listDatasetDisplay({ ...params, datasetKind }, lang);
       if (mounted.current && epoch.current === token) {
+        setListFailed(!result.success);
         const processes = result.success
-          ? result.data.map(({ id, version }) => ({ id, version }))
+          ? result.data
+              .filter((row) => row.datasetKind === 'process')
+              .map(({ id, version }) => ({ id, version }))
           : [];
         void loadResults(processes, token);
       }
       return result;
     },
-    [lang, loadResults],
+    [lang, datasetKind, loadResults],
   );
-  const columns: ProColumns<PublishedProcessTable>[] = [
+  const columns: ProColumns<DatasetDisplayRow>[] = [
     {
       align: 'center',
       search: false,
-      ...dataListIndexColumn<PublishedProcessTable>(),
+      ...dataListIndexColumn<DatasetDisplayRow>(),
       title: <FormattedMessage id='pages.table.title.index' defaultMessage='Index' />,
       valueType: 'index',
     },
@@ -94,12 +86,22 @@ const PublishedProcesses: FC = () => {
       dataIndex: 'name',
       ellipsis: true,
       search: false,
+      title: <FormattedMessage id='pages.table.title.name' defaultMessage='Name' />,
+    },
+    {
+      dataIndex: 'version',
+      search: false,
+      width: 120,
+      title: <FormattedMessage id='pages.table.title.version' defaultMessage='Version' />,
+    },
+    {
+      dataIndex: 'datasetKind',
+      search: false,
+      width: 150,
       title: (
-        <FormattedMessage
-          id='pages.process.published.table.processName'
-          defaultMessage='Process name'
-        />
+        <FormattedMessage id='pages.datasetUuidMention.entityKind' defaultMessage='Data type' />
       ),
+      render: (_, record) => intl.formatMessage(datasetKindMessage(record.datasetKind)),
     },
     {
       dataIndex: 'calculationResult',
@@ -111,8 +113,9 @@ const PublishedProcesses: FC = () => {
           values={{ unit: 'kg CO2 Equivalents' }}
         />
       ),
-      width: '40%',
+      width: 260,
       render: (_, record) => {
+        if (record.datasetKind !== 'process') return '—';
         if (resultState.status === 'loading') return <Spin size='small' />;
         if (resultState.status === 'error')
           return (
@@ -143,24 +146,44 @@ const PublishedProcesses: FC = () => {
 
   return (
     <PageContainer header={{ breadcrumb: {}, title: false }}>
-      <ProTable<PublishedProcessTable>
+      {listFailed && (
+        <Alert
+          type='error'
+          showIcon
+          title={
+            <FormattedMessage
+              id='pages.datasetDisplay.loadError'
+              defaultMessage='Failed to load datasets. Please refresh.'
+            />
+          }
+        />
+      )}
+      <ProTable<DatasetDisplayRow>
         {...responsiveDataListTableProps}
         columns={columns}
         headerTitle={
-          <FormattedMessage
-            id='pages.process.published.title'
-            defaultMessage='Published processes'
-          />
+          <FormattedMessage id='pages.datasetDisplay.title' defaultMessage='Displayed datasets' />
         }
         options={{ fullScreen: true }}
         pagination={{ pageSize: 10, showSizeChanger: false }}
-        params={{ locale: intl.locale }}
+        params={{ locale: intl.locale, datasetKind }}
+        toolBarRender={() => [
+          <DatasetKindFilter
+            key='dataset-kind'
+            value={datasetKind}
+            onChange={(kind) => {
+              epoch.current += 1;
+              setDatasetKind(kind);
+              setResultState({ status: 'idle', values: new Map() });
+            }}
+          />,
+        ]}
         request={requestProcesses}
-        rowKey={(record) => `${record.id}:${record.version}`}
+        rowKey={datasetDisplayKey}
         search={false}
       />
     </PageContainer>
   );
 };
 
-export default PublishedProcesses;
+export default DisplayedDatasets;

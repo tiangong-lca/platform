@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-10-08
-lastReviewedCommit: e428f3b0d8313df61c584e5c7921a82937db0e0b
-lastReviewedNote: 'Reviewed Platform #1189 browser preference order, English default, manual-only persistence, legacy compatibility and the denied-storage Umi bridge. Dependency, backend, authorization and full-gate boundaries remain unchanged.'
+lastReviewedAt: 2026-10-09
+lastReviewedCommit: bce938c009c8ec02236158ab18361c31f2b1af34
+lastReviewedNote: 'Platform #1194: seven-type manager display configuration, 60 assertions / 57 routes, explicit audited display read RPCs, and PageContainer17 / ProTable69 inventory are synchronized. Immutable historical route proof is rejected; 52 route-proof tests, 125 surface/request contract assertions and 30 service/search regressions pass. Original Open Data search filters and Process result lookup are preserved. Full checked-push remains required; Database800 / Edge470 precede rollout. No merge or deployment.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

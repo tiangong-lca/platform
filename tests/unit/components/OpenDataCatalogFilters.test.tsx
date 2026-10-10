@@ -39,7 +39,6 @@ describe('OpenDataCatalogFilters', () => {
     const onChange = jest.fn();
     const { rerender } = render(
       <OpenDataCatalogFilters
-        includePublication
         value={{ sourceFilter: 'all', publicationFilter: 'all' }}
         onChange={onChange}
       />,
@@ -55,7 +54,6 @@ describe('OpenDataCatalogFilters', () => {
 
     rerender(
       <OpenDataCatalogFilters
-        includePublication
         value={{ sourceFilter: 'enterprise', publicationFilter: 'all' }}
         onChange={onChange}
       />,
@@ -66,7 +64,6 @@ describe('OpenDataCatalogFilters', () => {
 
     rerender(
       <OpenDataCatalogFilters
-        includePublication
         value={{ sourceFilter: 'literature', publicationFilter: 'all' }}
         onChange={onChange}
       />,
@@ -75,27 +72,12 @@ describe('OpenDataCatalogFilters', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Literature data' }));
     expect(onChange).toHaveBeenCalledWith({ sourceFilter: 'all', publicationFilter: 'all' });
 
-    fireEvent.change(screen.getByRole('combobox'), { target: { value: 'published' } });
-    expect(onChange).toHaveBeenCalledWith({
-      sourceFilter: 'literature',
-      publicationFilter: 'published',
-    });
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
   });
 
   it('defaults to all sources and hides publication controls', () => {
     render(<OpenDataCatalogFilters onChange={jest.fn()} />);
     expect(screen.getByRole('button', { name: 'All data' })).toBeInTheDocument();
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
-  });
-
-  it('defaults a missing publication value to all states', () => {
-    render(
-      <OpenDataCatalogFilters
-        includePublication
-        value={{ sourceFilter: 'literature' }}
-        onChange={jest.fn()}
-      />,
-    );
-    expect(screen.getByRole('combobox')).toHaveValue('all');
   });
 });

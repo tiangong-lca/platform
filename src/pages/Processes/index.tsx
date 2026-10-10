@@ -8,10 +8,9 @@ import {
 } from '@/services/processes/api';
 import { BarChartOutlined } from '@ant-design/icons';
 
-import { App, Button, Card, Checkbox, Col, Input, Row, Select, Space } from 'antd';
+import { App, Card, Checkbox, Col, Input, Row, Select, Space } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, history, useIntl, useLocation } from 'umi';
-import * as Umi from 'umi';
 
 import AllVersionsList from '@/components/AllVersions';
 import OpenDataCatalogFilters from '@/components/OpenDataCatalogFilters';
@@ -64,7 +63,6 @@ import {
   getOpenDataCatalogFilterArgs,
   type OpenDataCatalogFilters as OpenDataCatalogFilterValue,
 } from '@/services/openDataCatalog/types';
-import { publishOpenDataProcesses } from '@/services/openDataCatalog/api';
 import {
   ProcessImportData,
   ProcessTable,
@@ -74,7 +72,7 @@ import { getTeamById } from '@/services/teams/api';
 import type { TeamTable } from '@/services/teams/data';
 import { ActionType, PageContainer, ProColumns, ProTable } from '@ant-design/pro-components';
 import { SearchProps } from 'antd/es/input/Search';
-import type { FC, Key, ReactElement } from 'react';
+import type { FC, ReactElement } from 'react';
 import { getAllVersionsColumns, getDataTitle } from '../Utils';
 import {
   getReferenceLookupEmptyResult,
@@ -120,9 +118,6 @@ const TableList: FC = () => {
   const [openDataFilters, setOpenDataFilters] = useState<OpenDataCatalogFilterValue>({
     ...DEFAULT_OPEN_DATA_FILTERS,
   });
-  const [selectedProcessKeys, setSelectedProcessKeys] = useState<Key[]>([]);
-  const [selectedProcesses, setSelectedProcesses] = useState<ProcessTable[]>([]);
-  const [isPublishing, setIsPublishing] = useState(false);
   const [team, setTeam] = useState<TeamTable | null>(null);
   const [importData, setImportData] = useState<ProcessImportData | null>(null);
   const [openAI, setOpenAI] = useState<boolean>(false);
@@ -134,8 +129,6 @@ const TableList: FC = () => {
   const isMobileDataList = useResponsiveDataListMobile();
   const location = useLocation();
   const dataSource = getDataSource(location.pathname);
-  const { initialState } = Umi.useModel?.('@@initialState') ?? {};
-  const canPublishOpenData = initialState?.currentUser?.access === 'data_product_manager';
 
   const searchParams = new URLSearchParams(location.search);
   const tid = searchParams.get('tid');
@@ -233,35 +226,6 @@ const TableList: FC = () => {
         return dataListText(getProcesstypeOfDataSetOptions(row.typeOfDataSet));
       },
     },
-    ...(dataSource === 'tg'
-      ? [
-          {
-            title: intl.formatMessage({
-              id: 'pages.openData.publication.status',
-              defaultMessage: 'Publication status',
-            }),
-            dataIndex: 'isPublished',
-            search: false,
-            width: 120,
-            render: (_: unknown, row: ProcessTable) =>
-              row.isPublished ? (
-                <span style={{ color: '#389e0d' }}>
-                  {intl.formatMessage({
-                    id: 'pages.openData.publication.published',
-                    defaultMessage: 'Published',
-                  })}
-                </span>
-              ) : (
-                <span>
-                  {intl.formatMessage({
-                    id: 'pages.openData.publication.unpublished',
-                    defaultMessage: 'Unpublished',
-                  })}
-                </span>
-              ),
-          } as ProColumns<ProcessTable>,
-        ]
-      : []),
     {
       ...dataListTextColumn<ProcessTable>(132, DATA_LIST_COLUMN_RESPONSIVE.wide),
       title: <FormattedMessage id='pages.process.referenceYear' defaultMessage='Reference year' />,
@@ -572,51 +536,12 @@ const TableList: FC = () => {
   };
 
   const onSearch: SearchProps['onSearch'] = (value) => {
-    setSelectedProcessKeys([]);
-    setSelectedProcesses([]);
     setKeyWord(value);
     setSearchRevision((revision) => revision + 1);
     if (referenceLookup && !getReferenceLookupUuid(value)) {
       showInvalidReferenceLookupUuidMessage(intl);
     }
   };
-  const handlePublishSelected = async () => {
-    if (!canPublishOpenData || selectedProcesses.length === 0) return;
-    setIsPublishing(true);
-    try {
-      const result = await publishOpenDataProcesses(
-        selectedProcesses.map(({ id, version }) => ({ id, version })),
-      );
-      if (result.error || !result.data) throw result.error ?? new Error('Invalid publish response');
-      message.success(
-        intl.formatMessage(
-          {
-            id: 'pages.openData.publication.success',
-            defaultMessage: 'Published {count} process versions.',
-          },
-          { count: result.data.publishedCount },
-        ),
-      );
-      setSelectedProcessKeys([]);
-      setSelectedProcesses([]);
-      actionRef.current?.reload();
-    } catch (error) {
-      console.error(error);
-      message.error(
-        intl.formatMessage({
-          id: 'pages.openData.publication.error',
-          defaultMessage: 'Failed to publish selected processes.',
-        }),
-      );
-    } finally {
-      setIsPublishing(false);
-    }
-  };
-
-  useEffect(() => {
-    setSelectedProcessKeys([]);
-    setSelectedProcesses([]);
-  }, [openDataFilters, openAI, referenceLookup, typeOfDataSet]);
   const handleImportData = (jsonData: ProcessImportData) => {
     setImportData(jsonData);
   };
@@ -711,17 +636,6 @@ const TableList: FC = () => {
             ? { openDataFilterRevision: JSON.stringify(openDataFilters) }
             : {}),
         }}
-        rowSelection={
-          dataSource === 'tg' && canPublishOpenData
-            ? {
-                selectedRowKeys: selectedProcessKeys,
-                onChange: (keys, rows) => {
-                  setSelectedProcessKeys(keys);
-                  setSelectedProcesses(rows);
-                },
-              }
-            : undefined
-        }
         search={false}
         options={isMobileDataList ? false : { fullScreen: true }}
         optionsRender={
@@ -821,28 +735,8 @@ const TableList: FC = () => {
               <span key='process-type-filter'>
                 {typeOfDataSetFilter(isMobileDataList ? 120 : 160)}
               </span>,
-              ...(canPublishOpenData
-                ? [
-                    <Button
-                      key='publish-selected-processes'
-                      type='primary'
-                      disabled={selectedProcesses.length === 0}
-                      loading={isPublishing}
-                      onClick={handlePublishSelected}
-                    >
-                      {intl.formatMessage(
-                        {
-                          id: 'pages.openData.publication.publishSelected',
-                          defaultMessage: 'Publish selected ({count})',
-                        },
-                        { count: selectedProcesses.length },
-                      )}
-                    </Button>,
-                  ]
-                : []),
               <OpenDataCatalogFilters
                 key='open-data-filters'
-                includePublication
                 value={openDataFilters}
                 onChange={setOpenDataFilters}
               />,

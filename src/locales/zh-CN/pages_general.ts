@@ -220,4 +220,16 @@ export default {
   'pages.button.confirm': '确认',
 
   'pages.pagination.showTotal': '第{start}-{end}条 / 总共{total}条',
+  'pages.datasetDisplay.settings': '展示配置',
+  'pages.datasetDisplay.title': '展示数据',
+  'pages.datasetDisplay.showSelected': '设为展示（{count}）',
+  'pages.datasetDisplay.hideSelected': '取消展示（{count}）',
+  'pages.datasetDisplay.allVisibility': '全部',
+  'pages.datasetDisplay.visible': '已展示',
+  'pages.datasetDisplay.hidden': '未展示',
+  'pages.datasetDisplay.visibility': '展示状态',
+  'pages.datasetDisplay.search': '按名称或 UUID 搜索',
+  'pages.datasetDisplay.success': '已更新 {count} 项，{unchanged} 项无需更改。',
+  'pages.datasetDisplay.updateError': '更新展示配置失败，请重试。',
+  'pages.datasetDisplay.loadError': '加载数据失败，请刷新重试。',
 };

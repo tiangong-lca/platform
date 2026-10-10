@@ -114,11 +114,13 @@ ol {
 }
 
 .ant-layout-sider-collapsed {
-  .ant-menu-item:has(a[href='#/data-processing']) {
+  .ant-menu-item:has(a[href='#/data-processing']),
+  .ant-menu-item:has(a[href='#/dataset-display-settings']) {
     padding-inline: 0 !important;
   }
 
-  a[href='#/data-processing'] {
+  a[href='#/data-processing'],
+  a[href='#/dataset-display-settings'] {
     display: flex;
     align-items: center;
     justify-content: center;

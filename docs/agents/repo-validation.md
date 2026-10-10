@@ -43,9 +43,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-10-09
-lastReviewedCommit: 238c664901139be2d897fc98ec31199a670633cc
-lastReviewedNote: 'Reviewed allocation repair reasons, localized node guidance, preservation of saved results, and paired deployment qualification boundaries.'
+lastReviewedAt: 2026-10-10
+lastReviewedCommit: 85d30783af33d3c5ff72cdb30fe0b2a1c7154bf8
+lastReviewedNote: 'Reviewed PR1195 conflict resolution against Dev26f19842: combined display and product-provider documentation, retained both finite translation families and regenerated four-locale artifacts. Eight display/shared-UI source files are byte-identical to prior head40aa65a9; seventeen incoming source files exactly match Dev and the lockfile is unchanged. Focused eleven suites/105 tests, four-locale checks, qualification build and two-generation artifact idempotence pass. Existing permission/result behavior and local/hosted qualification boundaries remain unchanged; final checked push and live mergeability readback remain required. No browser, server or container was started, and no hosted data was changed.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -218,6 +218,8 @@ All new package import helpers must enqueue `root_closure_v2` and reject unavail
 ### Process allocation qualification
 
 For Platform #1136, prove multi-target object/array round trips and zero shares in the Process utility suite, exact Flow-revision product checks in `allocationTargets.test.ts`, and real Ant Design Form/Select/Table interactions in `Exchange/allocation.test.tsx`. Matrix fixtures must verify independent electricity/raw/emission splits, preservation of an unconnected reference product's burden, equivalent-scale reuse, and existing cycles/treatment/legacy behavior. Process create/edit tests must reject new or changed invalid vectors without injecting untargeted default shares into generated results, preserve unchanged inherited problems only as unverified repair drafts, and block validation/review fallback. Protect stable exchange IDs, referenced-product deletion, located diagnostics and strict Model source validation. The hermetic `process-allocation.spec.ts` exercises the actual Process drawer against in-memory reserved-origin records; it is frontend workflow evidence, not deployed Worker import/export or production persistence evidence. Existing full gate and browser-proof boundaries are unchanged.
+
+Dataset-display configuration changes require focused service, manager-page, displayed-page, route, Process/catalog and type-filter tests, locale audits, type/lint checks and a production build before the final checked push. Cover manager-only menu and direct-route denial, exact multi-type identities, filters/page selection reset, successful/failed set and cancel, no legacy route/writer, missing versus zero, non-Process values, stale Process-result responses, candidate-load failure after populated results (error dialog, empty rows/total/selection), retry recovery and ignored stale/unmounted list completions. Backend read/write contract proof belongs to the paired Database and Edge tasks. Browser qualification uses loopback/synthetic interception only. Compare Display Settings and the Process catalog in the same built frontend for search-card bounds/radius, search-control height/position and list start; retain zero card gap at narrow widths and search/error/retry behavior without optional recommendation/reference controls. No production display configuration is changed by validation.
 
 ### Model product-provider persistence qualification
 

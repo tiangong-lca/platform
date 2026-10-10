@@ -32,13 +32,13 @@ const completeReport = () => ({
 
 describe('semantic qualification closure', () => {
   it('binds the current governed assertion IDs and reviewed complete browser discovery', () => {
-    expect(contract.assertionIds).toHaveLength(59);
+    expect(contract.assertionIds).toHaveLength(60);
     expect(contract.coverage).toEqual({
-      contractAssertionCount: 59,
+      contractAssertionCount: 60,
       discoveredCases: 84,
       executedCases: 54,
       harnessControlCases: 12,
-      liveAssertionCount: 59,
+      liveAssertionCount: 60,
       qualificationDiscoveredCases: 96,
       skippedCases: 30,
     });

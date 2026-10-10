@@ -25,9 +25,9 @@ checkPaths:
   - playwright.config.ts
   - config/docs-capture/**
   - tests/e2e/i18n/**
-lastReviewedAt: 2026-10-09
-lastReviewedCommit: d10b0b1fb8fe4797deeb72681f926ec565837d99
-lastReviewedNote: 'Reviewed allocation repair reasons, localized node guidance, preservation of saved results, and paired deployment qualification boundaries.'
+lastReviewedAt: 2026-10-10
+lastReviewedCommit: 11e84182b58224da5ae59c16330fe33d02dd5192
+lastReviewedNote: 'Reviewed PR1195 conflict resolution against Dev26f19842: combined display and product-provider documentation, retained both finite translation families and regenerated four-locale artifacts. Eight display/shared-UI source files are byte-identical to prior head40aa65a9; seventeen incoming source files exactly match Dev and the lockfile is unchanged. Focused eleven suites/105 tests, four-locale checks, qualification build and two-generation artifact idempotence pass. Existing permission/result behavior and local/hosted qualification boundaries remain unchanged; final checked push and live mergeability readback remain required. No browser, server or container was started, and no hosted data was changed.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -74,7 +74,9 @@ Use this default read path:
 
 `route -> page/component -> service -> backend or static resource`
 
-`/tgdata/published-processes` keeps the published Open Data catalog pagination and independently loads one Climate change batch for each visible page through `src/services/dataProducts/publishedClimate.ts`. The service uses the opt-in `data_product_results` mode `processes_one_impact_exact`, validates the current publication/package plus complete unique Process ID/version rows, and preserves true zero separately from missing/null. Calculation cells use the shared numeric renderer without per-row units; the localized calculation-column header carries the fixed Climate change unit `kg CO2 Equivalents`; localized missing and failure states never invoke Solver or fall back to stored Process JSON. The standard table refresh reloads the list and its result batch. Page/locale changes and unmount invalidate outstanding responses. The compatible Edge reader must deploy before the frontend release.
+`/dataset-display-settings` is a first-level menu restricted to `data_product_manager`, immediately after Data Processing. It lists every exact version of the seven business dataset types through a dedicated candidate RPC, with name/UUID search in the shared standalone search-card layout (direct PageContainer sibling cards and responsive Row/Col as on the Process catalog, large input, theme-based catalog search-row height, no AI recommendation or reference lookup, zero gap to the following list card at desktop and narrow widths), type/visibility filters and reversible batch show/hide. It never reads raw cross-owner tables. Failed commands retain selection for retry; filter, page and locale changes clear selection. The latest candidate-load failure opens a context-aware error dialog and clears table rows, total and selection; stale or unmounted completions do not notify or update the table. Search and filter values remain available for retry. The Process-only publisher and old `/tgdata/published-processes` route are removed without redirect.
+
+`/displayed-datasets` is a top-level route independent of the Open Data hierarchy, directly URL-accessible and hidden from the sidebar menu. Display Settings has no toolbar link to this page. The superseded `/tgdata/displayed-datasets` route is removed. It lists selected exact versions with index, name, version, dataset type and calculation result, plus a toolbar type selector. Only visible Process rows load one existing Climate change batch through `src/services/dataProducts/publishedClimate.ts`; the current publication/package and exact-version logic stays unchanged. Non-Process and missing values show “—”; true zero and negative values remain numeric, while errors/loading remain explicit. Calculation cells keep the existing renderer and header unit. Page/type/locale changes and unmount invalidate outstanding responses. Database #799 and Edge #469 must precede the frontend rollout; display configuration changes neither raw access nor calculation eligibility.
 
 Rules:
 

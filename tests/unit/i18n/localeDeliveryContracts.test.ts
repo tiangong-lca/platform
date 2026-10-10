@@ -64,7 +64,7 @@ describe('shared locale delivery contracts', () => {
           schemaVersion: 'tiangong.i18n-semantic-e2e-evidence.v2',
           schemaPath: 'docs/plans/i18n/semantic-e2e-evidence.schema.json',
           evidencePath: expectedEvidencePath,
-          requiredAssertionCount: 59,
+          requiredAssertionCount: 60,
           requiredLocales: SUPPORTED_APP_LOCALES,
           requiredBrowsers: ['chromium', 'firefox', 'webkit'],
           target: { frontend: 'candidate-local', backend: 'production' },
@@ -87,11 +87,15 @@ describe('shared locale delivery contracts', () => {
     expect(
       fs.existsSync(path.join(REPOSITORY_ROOT, 'docs/plans/i18n/semantic-e2e-evidence.json')),
     ).toBe(false);
-    expect(coverageRows).toHaveLength(59);
+    expect(coverageRows).toHaveLength(60);
+    expect(Object.keys(coverage.executableTargets)).toEqual(
+      expect.arrayContaining(['rv.dataset-display-settings', 'rv.displayed-datasets']),
+    );
+    expect(coverage.executableTargets['rv.published-processes.tgdata']).toBeUndefined();
     const executableAssertionIds = coverageRows.map(
       ({ executableAssertionId }: any) => executableAssertionId,
     );
-    expect(new Set(executableAssertionIds).size).toBe(59);
+    expect(new Set(executableAssertionIds).size).toBe(60);
     expect(
       executableAssertionIds.every((assertionId: string) =>
         /^rv\.[a-z0-9][a-z0-9.-]+$/u.test(assertionId),
@@ -101,9 +105,9 @@ describe('shared locale delivery contracts', () => {
       [...executableAssertionIds].sort(),
     );
     const executableAssertions = flattenExecutableRouteAssertions(coverage);
-    expect(executableAssertions).toHaveLength(59);
+    expect(executableAssertions).toHaveLength(60);
     expect(APP_LOCALES).toEqual(SUPPORTED_APP_LOCALES);
-    expect(new Set(executableAssertions.map(({ target }) => JSON.stringify(target))).size).toBe(59);
+    expect(new Set(executableAssertions.map(({ target }) => JSON.stringify(target))).size).toBe(60);
     const authenticatedAssertions = executableAssertions.filter(
       ({ target }) =>
         target.kind !== 'declared-static-fallback' && target.session === 'authenticated',
@@ -279,7 +283,7 @@ describe('shared locale delivery contracts', () => {
           .filter((route: string) => configuredPaths.includes(route)),
       ),
     ].sort();
-    expect(configuredPaths).toHaveLength(56);
+    expect(configuredPaths).toHaveLength(57);
     expect(coveredConfiguredPaths).toEqual(configuredPaths);
 
     const forgotPassword = coverage.rows.find(
@@ -345,7 +349,7 @@ describe('shared locale delivery contracts', () => {
             additionalProperties: false,
             required: ['dependencyLock', 'pnpmWorkspace', 'runtimeAssets', 'tests', 'sources'],
           }),
-          assertions: expect.objectContaining({ minItems: 59, maxItems: 59 }),
+          assertions: expect.objectContaining({ minItems: 60, maxItems: 60 }),
           productionData: expect.objectContaining({
             required: ['markerPrefix', 'created', 'cleaned', 'leaked'],
             properties: expect.objectContaining({
@@ -456,8 +460,8 @@ describe('shared locale delivery contracts', () => {
       );
       expect(context.routeViewCoverage.derivedEvidence).toEqual(
         expect.objectContaining({
-          configuredRouteCount: 56,
-          coveredConfiguredRouteCount: 56,
+          configuredRouteCount: 57,
+          coveredConfiguredRouteCount: 57,
           browserProof: expect.objectContaining({
             status: 'external-artifact',
             ownerIssue: '#867',
@@ -467,7 +471,7 @@ describe('shared locale delivery contracts', () => {
             proofStorage: 'ignored-local-or-github-actions-artifact',
             requiredAt: 'dev-release-candidate-gate',
             routeCoverageContractDigest: expect.stringMatching(/^[0-9a-f]{64}$/),
-            requiredAssertionCount: 59,
+            requiredAssertionCount: 60,
             contractReady: true,
             evidencePresent: false,
             ready: false,
@@ -479,13 +483,13 @@ describe('shared locale delivery contracts', () => {
       const executionEvidence =
         context.routeViewCoverage.derivedEvidence.browserProof.executionEvidence;
       expect(Boolean(executionEvidence)).toBe(semanticRouteAndE2EReady);
-      expect(executionEvidence?.assertionCount ?? 0).toBe(semanticRouteAndE2EReady ? 59 : 0);
+      expect(executionEvidence?.assertionCount ?? 0).toBe(semanticRouteAndE2EReady ? 60 : 0);
       expect(executionEvidence?.leakedDataCount ?? 0).toBe(0);
       expect(context.inventory).toEqual(
         expect.objectContaining({
           routeViewRowCount: context.routeViewCoverage.derivedEvidence.rowEvidence.length,
-          configuredRouteCount: 56,
-          coveredConfiguredRouteCount: 56,
+          configuredRouteCount: 57,
+          coveredConfiguredRouteCount: 57,
         }),
       );
       expect(context.routeViewCoverage.requiredRouteViews).toEqual([
