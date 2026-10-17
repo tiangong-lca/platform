@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up pnpm and Node.js
-        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
+        uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
         with:
           version: 11.24.0
           runtime: node@24.19.0
@@ -61,7 +61,7 @@ jobs:
           pnpm --silent release:proof:verify --proof .local/e2e-release/qualification-proof.json --format=json
 
       - name: Upload manual semantic qualification proof
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: manual-semantic-qualification-${{ steps.qualification-identity.outputs.proof_key }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
@@ -73,7 +73,7 @@ jobs:
 
       - name: Upload qualification diagnostics
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: semantic-qualification-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
