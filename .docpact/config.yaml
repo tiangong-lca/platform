@@ -656,6 +656,8 @@ rules:
     triggers:
       - path: config/supabaseEnv.ts
         kind: env-selection
+      - path: config/environments/*.env
+        kind: explicit-env-profile
       - path: src/services/**
         kind: service-logic
       - path: docs/agents/supabase-branching.md
