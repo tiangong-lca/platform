@@ -57,7 +57,7 @@ function unsafeEgressReason(source) {
     .replace(/\\u([0-9a-f]{4})/giu, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
     .replace(/\\x([0-9a-f]{2})/giu, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
     .replace(/\\\//gu, '/')
-    .replace(/'\s*\|\|\s*'/gu, '')
+    .replace(/'\s*\|\|\s*(?:e)?'/giu, '')
     .replace(/"([a-z_][a-z0-9_]*)"/giu, '$1');
 
   for (const match of active.matchAll(/https?:\/\/[^\s'"\\<>]+/giu)) {

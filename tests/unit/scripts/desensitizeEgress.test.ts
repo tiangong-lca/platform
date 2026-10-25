@@ -48,6 +48,11 @@ describe('SQL artifact outbound-target safety', () => {
   it.each([
     "select net.http_post(url := 'https:\\/\\/qgzvkongdjqiiamzbbts.supabase.co/functions/v1/current');",
     "select net.http_post(url := 'https://' || 'submidrhbtknjxfympna.supabase.co/functions/v1/current');",
+    "select net.http_post(url := E'https://' || E'qgzvkongdjqiiamzbbts.supabase.co/functions/v1/current');",
+    "select net.http_post(url := 'https://' || E'qgzvkongdjqiiamzbbts.supabase.co/functions/v1/current');",
+    "select net.http_post(url := e'https://' || e'qgzvkongdjqiiamzbbts.supabase.co/functions/v1/current');",
+    "select net.http_post(url := E'https://' || 'qgzvkongdjqiiamzbbts.supabase.co/functions/v1/current');",
+    "select net.http_post(url := e'https://' || E'qgzvkongdjqiiamzbbts.supabase.co/functions/v1/current');",
     "create trigger old_hook after insert on public.flows for each row execute function util.invoke_edge_webhook('webhook_flow_embedding','1000');",
     "select util.invoke_edge_function(name => 'webhook_process_embedding', body => '{}');",
   ])('rejects a known unsafe executable target: %s', (input) => {
