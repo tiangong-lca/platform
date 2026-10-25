@@ -366,3 +366,11 @@ describe('official backend selection in actual release jobs', () => {
     },
   );
 });
+
+it('keeps the manual main deploy explicit for the canonical repository only', () => {
+  const workflow = readFileSync(path.join(REPO_ROOT, '.github/workflows/ci.yml'), 'utf8');
+  expect(workflow).toContain(
+    "REACT_APP_ENV: ${{ github.repository == 'tiangong-lca/platform' && 'main' || 'local' }}",
+  );
+  expect(workflow.match(/REACT_APP_ENV:/gu)).toHaveLength(1);
+});
