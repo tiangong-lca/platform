@@ -48,9 +48,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-10-23
-lastReviewedCommit: a5302dbf337c8177844f285e3e21fc0c396f1981
-lastReviewedNote: 'Platform #1328 / PR #1329: reviewed conflict resolution against dev a5302dbf. Retained incoming navigation, review, dependency and qualification contracts plus the v6 latest-current draft reporting dependency and validation scope. Regenerated four-locale artifacts; 31 dashboard tests pass. Final checked-push evidence belongs on the PR.'
+lastReviewedAt: 2026-10-25
+lastReviewedCommit: f9b51626bf8fac8609be6416cd6b345764f075db
+lastReviewedNote: 'Platform #1332: reviewed local/custom defaults, explicit official profiles, fork-safe release selection and atomic SQL target rejection; qualification and protected gates remain intact, historical caller attribution is unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -158,7 +158,8 @@ Keep these entry-level facts in `AGENTS.md`. Use `DEV.md` and `docs/agents/repo-
 - package manager: repository-pinned `pnpm` `11.24.0`; install with `pnpm install --frozen-lockfile`
 - Node baseline: exact `24.19.0` via `.nvmrc`; use `nvm install` and `nvm use`
 - UI baseline: exact React `19.3.1`, antd `6.6.6`, icons `6.3.4`, and ProComponents `3.1.14-6`; `pnpm-workspace.yaml` collapses Umi's published fallback metadata to this one native generation
-- shared dev environment: `pnpm start` (`pnpm start:dev` is equivalent); it selects `.env.development*` over exact Umi-preloaded main-file defaults while retaining distinct explicit per-key build overrides
+- local/custom dev environment: `pnpm start` (`pnpm start:dev` is equivalent); tracked defaults are loopback, local files and distinct explicit per-key build overrides retain precedence, and known official hosted targets require an explicit profile
+- explicit shared hosted Dev: `pnpm start:hosted-dev`
 - explicit main-environment run: `pnpm start:main`
 - default lint gate: `pnpm lint` (Oxlint correctness, Prettier formatting, and native TypeScript 7 web typecheck)
 - Electron TypeScript 7 check: `pnpm tsc:electron`

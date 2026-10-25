@@ -15,6 +15,7 @@ This project includes two sync workflows used to keep self-hosted assets aligned
 Script: `docker/pull-edge-functions.sh`
 
 Behavior:
+
 - Require one reviewed full Edge commit SHA instead of following a moving ref.
 - Resolve that ref to one exact commit.
 - Replace `docker/volumes/functions/` with a delete-aware mirror of `supabase/functions/`.
@@ -35,9 +36,7 @@ Use another repository only for an explicit local or fork validation:
   --ref <reviewed-40-character-edge-commit>
 ```
 
-The helper is safe to invoke from another working directory because it resolves
-the target from its own location. It removes stale mirror files; review the
-complete generated diff before committing it.
+The helper is safe to invoke from another working directory because it resolves the target from its own location. It removes stale mirror files; review the complete generated diff before committing it.
 
 ### 2) Generate `data.sql` From a Reviewed Database Rebuild
 
@@ -66,6 +65,7 @@ Check-only mode (no file changes; use the same source environment):
 ```
 
 What the script does:
+
 - Verify a migration-only empty source and record its exact commit/migration head in the snapshot
 - Pull a full schema-only dump with `pg_dump --schema-only`
 - Run `docker/desensitize_data.sql.sh` automatically
@@ -83,14 +83,17 @@ The current pair is Edge `ceff9c4893e6fa9ab2b6e163c57b9d6428cbde37` and Database
 This is a **fresh-install initializer**, not an upgrade script for an existing database volume. Existing installs must apply Database-owned migrations through their operator workflow, retain backups, and include `api` in `PGRST_DB_SCHEMAS`; never expose `private`, `util`, or `archive`. Run the generator twice (`--check` on the second run), the snapshot contract test, and an isolated restore against the pinned Docker database plus its normal Auth migrations before updating the committed artifact.
 
 Desensitization rules include:
+
 - `"x_key":"<any>"` -> `"x_key":"edge-functions-key"`
 - `"apikey":"sb_secret_..."` -> `"apikey":"edge-functions-key"`
 - Remaining `sb_secret_*` -> `sb_secret_REDACTED`
 
 Deprecated compatibility wrapper:
+
 - `docker/scripts/sync-lca-migrations-to-data-sql.sh` forwards to `sync-migrations-to-data-sql.sh`
 
 The guide covers:
+
 - Prerequisites (Git and Docker)
 - Initial setup and configuration
 - Securing your installation
@@ -137,6 +140,7 @@ To update your self-hosted Supabase instance:
 ## Community & Support
 
 For troubleshooting common issues, see:
+
 - [GitHub Discussions](https://github.com/orgs/supabase/discussions?discussions_q=is%3Aopen+label%3Aself-hosted) - Questions, feature requests, and workarounds
 - [GitHub Issues](https://github.com/supabase/supabase/issues?q=is%3Aissue%20state%3Aopen%20label%3Aself-hosted) - Known issues
 - [Documentation](https://supabase.com/docs/guides/self-hosting) - Setup and configuration guides
@@ -157,6 +161,7 @@ Share your self-hosting experience:
 ⚠️ **The default configuration is not secure for production use.**
 
 Before deploying to production, you must:
+
 - Update all default passwords and secrets in the `.env` file
 - Generate new JWT secrets
 - Review and update CORS settings
@@ -169,3 +174,16 @@ See the [security section](https://supabase.com/docs/guides/self-hosting/docker#
 ## License
 
 This repository is licensed under the Apache 2.0 License. See the main [Supabase repository](https://github.com/supabase/supabase) for details.
+
+## Outbound-target safety and existing database volumes
+
+`desensitize_data.sql.sh` requires the repository Node.js baseline and its `scripts/validate-sql-egress.cjs` companion. It rejects known official Production/shared-Dev HTTP targets and retired non-FT dispatch patterns in default and strict modes, then atomically replaces output only after validation. Rejection preserves an existing destination/in-place input and creates no backup. Diagnostics omit SQL lines and credential values. `--strict` also rejects leftover credential patterns. Safe schema comments, descriptions and bare Production-identity refusal constants are preserved. This is a bounded literal/concatenation check, not a sandbox against arbitrary dynamic SQL, indirect DNS or later configuration.
+
+A fresh artifact does not upgrade existing persisted data. Before restoring an old dump or reconnecting an old database volume:
+
+1. Keep that database's external egress blocked **before PostgreSQL/pg_net starts**. Work on an isolated copy or operator-controlled environment; a check after the normal Compose startup may be too late for queued HTTP.
+2. Inspect trigger endpoint names and the configured target locally without displaying queue headers, bodies or secret values. Apply the Database-owned migration path for that volume; never use the fresh-install initializer as an in-place upgrade.
+3. Resolve old trigger configuration and pending HTTP queue disposition under the database owner's procedure, and configure the same-instance/internal backend or an explicitly owned custom backend with its own credentials.
+4. Verify the intended FT routes and local target before restoring egress. Preserve unrelated services and data.
+
+The application defaults are loopback/custom. Official hosted Main/shared-Dev require explicit profiles documented in `DEV.md`; imported database Vault values are a separate configuration surface. This change does not automatically migrate or quarantine an already-running external database.

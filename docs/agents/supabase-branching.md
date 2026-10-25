@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-23
-lastReviewedCommit: a5302dbf337c8177844f285e3e21fc0c396f1981
-lastReviewedNote: 'Platform #1328 / PR #1329: reviewed conflict resolution against dev a5302dbf. Retained incoming navigation, review, dependency and qualification contracts plus the v6 latest-current draft reporting dependency and validation scope. Regenerated four-locale artifacts; 31 dashboard tests pass. Final checked-push evidence belongs on the PR.'
+lastReviewedAt: 2026-10-25
+lastReviewedCommit: f9b51626bf8fac8609be6416cd6b345764f075db
+lastReviewedNote: 'Platform #1332: reviewed local/custom defaults, explicit official profiles, fork-safe release selection and atomic SQL target rejection; qualification and protected gates remain intact, historical caller attribution is unchanged.'
 ---
 
 # Supabase Environment And Database Workflow
@@ -55,17 +55,18 @@ lastReviewedNote: 'Platform #1328 / PR #1329: reviewed conflict resolution again
 
 ## Environment Contract
 
-| Need                             | Command           |
-| -------------------------------- | ----------------- |
-| shared persistent `dev`          | `pnpm start`      |
-| explicit shared persistent `dev` | `pnpm start:dev`  |
-| explicit `main` verification     | `pnpm start:main` |
+| Need                         | Command                         |
+| ---------------------------- | ------------------------------- |
+| local/custom backend         | `pnpm start` / `pnpm start:dev` |
+| explicit shared hosted Dev   | `pnpm start:hosted-dev`         |
+| explicit `main` verification | `pnpm start:main`               |
 
 Rules:
 
 - routine feature and fix work starts from Git `dev` and targets `dev`
 - do not infer the working trunk from GitHub default-branch UI alone
-- explicit `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` values supplied by the build environment override repository env-file defaults. For `REACT_APP_ENV=dev`, a runtime value that exactly equals the selected main-file default is treated as Umi's preloaded `.env` value and replaced by the corresponding `.env.development*` value; a distinct per-key runtime value remains explicit. Selected files otherwise remain fallback configuration, not an immutable deployment target
+- tracked `.env` and `.env.development` use safe loopback defaults. Local/custom modes never auto-load official backend profiles. `main` and `hosted-dev` are explicit first-party selections from `config/environments/<profile>.env`; unknown selectors fail. Ordinary modes reject a known official URL even if copied into a local override file or runtime environment
+- distinct explicit `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` values supplied by the build environment override file defaults per key. Umi-preloaded values that exactly match the neutral base `.env` are replaced by the selected profile's values. Local file ordering remains `.env.local`, then the applicable environment-local override. Qualification is always file-owned
 - closed semantic qualification builds with `REACT_APP_ENV=qualification` and `docker/e2e/qualification.env`; this fixed `.invalid` target is intercepted completely and is never a production or deployable backend identity
 - do not create ad-hoc Supabase clients outside `src/services/**`
 - OAuth consent and grant management use the shared Supabase client under `src/services/auth/oauth.ts`. Next owns the `/oauth/consent` bridge/page, the bounded byte-preserved opaque authorization-handle boundary, getClaims-based session check, safe callback navigation, and user grant list/revoke presentation. Connected Applications contains no API-key history or compatibility provisioning action, and account password/email changes use only Supabase Auth with no Cognito bridge. `database-engine` owns OAuth server configuration and client-capability enforcement; environment operators register separate exact redirect URIs and client IDs for Dev and production
@@ -129,7 +130,7 @@ The Process/Flow Hybrid services keep the current user JWT and data-source/state
 
 ## Database-Side Webhook Secrets
 
-Database-triggered Edge Function calls do not read this repo's frontend env files.
+Database-triggered Edge Function calls do not read this repo's frontend env files. Changing a frontend profile cannot repair an old database volume's Vault configuration or webhook triggers. Follow the existing-volume procedure in `docker/README.md` before importing old dumps or reconnecting outbound networking.
 
 They depend on branch-specific Vault secrets on the active Supabase branch:
 

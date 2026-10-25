@@ -45,9 +45,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-10-23
-lastReviewedCommit: a5302dbf337c8177844f285e3e21fc0c396f1981
-lastReviewedNote: 'Platform #1328 / PR #1329: reviewed conflict resolution against dev a5302dbf. Retained incoming navigation, review, dependency and qualification contracts plus the v6 latest-current draft reporting dependency and validation scope. Regenerated four-locale artifacts; 31 dashboard tests pass. Final checked-push evidence belongs on the PR.'
+lastReviewedAt: 2026-10-25
+lastReviewedCommit: f9b51626bf8fac8609be6416cd6b345764f075db
+lastReviewedNote: 'Platform #1332: reviewed local/custom defaults, explicit official profiles, fork-safe release selection and atomic SQL target rejection; qualification and protected gates remain intact, historical caller attribution is unchanged.'
 ---
 
 # Development Bootstrap
@@ -68,13 +68,21 @@ Dependency proposals and ordinary credential-free PR checks follow [dependency m
 - deciding minimum proof for a change
 - deciding which document owns a rule
 
+## Backend selection for source and self-hosted builds
+
+Ordinary `pnpm start`, `pnpm start:dev`, `pnpm build`, and `pre`/`test` modes use loopback/custom configuration. Set your own URL and public key in ignored `.env.local` (or `.env.development.local` for Dev). The placeholder key is for safe configuration only; local authentication requires the public key for your own backend. Docker Compose supplies its local backend URL and anonymous key explicitly.
+
+Official public backend settings live in `config/environments/main.env` and `hosted-dev.env`, which Umi never auto-loads. `pnpm start:main` deliberately selects Production; `pnpm start:hosted-dev` deliberately selects shared hosted Dev. Unknown selectors fail. A copied official URL in an ordinary local/custom mode is rejected instead of being contacted. Fixed semantic qualification continues to own its `.invalid` backend and ignores ambient overrides.
+
+Canonical release jobs explicitly select Main only for `tiangong-lca/platform`; a fork's workflow selects local configuration. For a deliberate custom deployment, pass your own URL and publishable key in its build environment. Brand selection does not grant backend selection.
+
 ## Local brand preview and builds
 
 Brand selection is independent of the backend environment. `APP_BRAND` accepts `tiangong` (default) or `atlas`; unknown values fail before startup/build. Both brands share the same routes, services, permissions and calculation behavior.
 
 ```bash
-pnpm start:atlas       # ATLAS UI, existing non-production dev environment
-pnpm start:tiangong    # TianGong UI, same dev environment
+pnpm start:atlas       # ATLAS UI, local/custom development backend
+pnpm start:tiangong    # TianGong UI, same local/custom backend
 pnpm build:atlas      # selected web bundle in dist/
 pnpm build:tiangong   # replaces dist/ with the TianGong bundle
 pnpm dist:atlas --dir # local unpacked desktop build; publication disabled
@@ -154,8 +162,9 @@ If no push will occur and a standalone handoff needs final evidence, run `pnpm d
 
 | Task | Command |
 | --- | --- |
-| start shared `dev` env | `pnpm start` |
-| explicit shared `dev` env | `pnpm start:dev` |
+| start local/custom backend | `pnpm start` |
+| equivalent local/custom backend | `pnpm start:dev` |
+| explicit shared hosted Dev | `pnpm start:hosted-dev` |
 | explicit `main` env | `pnpm start:main` |
 | sync the self-hosted Edge mirror from one reviewed commit | `./docker/pull-edge-functions.sh --ref <40-character-commit-sha>` |
 | local docpact gate | `pnpm docpact:gate` |
@@ -292,7 +301,7 @@ Both release commands default to read-only planning when `--apply` is omitted. `
 
 ## Command Rules
 
-- `pnpm start` and `pnpm start:dev` are equivalent. Both select `.env.development*` when Umi has preloaded exact main-file defaults; a distinct explicit `SUPABASE_URL` or `SUPABASE_PUBLISHABLE_KEY` supplied by the shell/build remains higher priority per key
+- `pnpm start` and `pnpm start:dev` are equivalent. Both use neutral loopback defaults with `.env.development*` overrides. A distinct explicit `SUPABASE_URL` or `SUPABASE_PUBLISHABLE_KEY` supplied by the shell/build remains higher priority per key; use `pnpm start:hosted-dev` for the shared hosted Dev profile
 - Edge mirror refresh accepts only a full reviewed commit SHA, records the resolved source in `docker/volumes/functions/.source-revision.json`, deletes stale mirror files, and must be rerun once with no resulting tracked change before handoff
 - documentation capture is a separate local operator workflow: this repository supplies only `config/docs-capture/profile.v1.json`, stable semantic locators, and its exact UI runtime
 - the generic Playwright engine, private credential pointer, dynamic loopback origin, access report, and screenshot outputs are owned by the workspace docs-impact tooling; they must not be copied into this repository or its release-E2E surfaces

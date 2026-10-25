@@ -86,7 +86,7 @@
     "start": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev max dev",
     "start:main": "cross-env REACT_APP_ENV=main UMI_ENV=dev max dev",
     "start:dev": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev max dev",
-    "start:no-mock": "cross-env REACT_APP_ENV=main MOCK=none UMI_ENV=dev max dev",
+    "start:no-mock": "cross-env REACT_APP_ENV=dev MOCK=none UMI_ENV=dev max dev",
     "start:pre": "cross-env REACT_APP_ENV=pre UMI_ENV=dev max dev",
     "start:test": "cross-env REACT_APP_ENV=test MOCK=none UMI_ENV=dev max dev",
     "test": "cross-env CI=true pnpm test:ci",
@@ -131,7 +131,8 @@
     "build:atlas": "cross-env APP_BRAND=atlas pnpm build",
     "build:tiangong": "cross-env APP_BRAND=tiangong pnpm build",
     "dist:atlas": "cross-env APP_BRAND=atlas node scripts/branding/package-local.cjs",
-    "test:branding:assets": "node --test scripts/branding/branding.test.mjs"
+    "test:branding:assets": "node --test scripts/branding/branding.test.mjs",
+    "start:hosted-dev": "cross-env REACT_APP_ENV=hosted-dev MOCK=none UMI_ENV=dev max dev"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": "pnpm lint-staged:js",
