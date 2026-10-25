@@ -28,6 +28,7 @@ const QUALIFICATION_PROOF_SCHEMA_VERSION = 'tiangong.semantic-harness-qualificat
 const ENVIRONMENT_CONTRACT_RELATIVE_PATH = 'docker/e2e/environment.json';
 const DOCKERFILE_RELATIVE_PATH = 'docker/e2e/Dockerfile';
 const QUALIFICATION_ENVIRONMENT_RELATIVE_PATH = 'docker/e2e/qualification.env';
+const OFFICIAL_MAIN_ENVIRONMENT_PATH = 'config/environments/main.env';
 const DEPENDENCY_LOCK_RELATIVE_PATH = 'pnpm-lock.yaml';
 const PNPM_WORKSPACE_RELATIVE_PATH = 'pnpm-workspace.yaml';
 const RECEIPT_TTL_MS = 60 * 60 * 1000;
@@ -1172,6 +1173,12 @@ function qualificationInputSha256(repositoryRoot = REPOSITORY_ROOT) {
   })
     .stdout.split('\0')
     .filter(Boolean)
+    .filter(
+      (line) =>
+        ![OFFICIAL_MAIN_ENVIRONMENT_PATH, 'config/environments/hosted-dev.env'].some((file) =>
+          line.endsWith(`\t${file}`),
+        ),
+    )
     .map((line) => {
       const match = /^([0-7]{6}) ([0-9a-f]+) ([0-3])\t([\s\S]+)$/u.exec(line);
       if (!match || match[3] !== '0') {
@@ -1582,7 +1589,7 @@ function prepareRuntimeInputs(context, options, runDirectory) {
   try {
     trackedMainEnvironment = options.qualification
       ? fs.readFileSync(path.join(REPOSITORY_ROOT, QUALIFICATION_ENVIRONMENT_RELATIVE_PATH), 'utf8')
-      : `${git(['show', 'origin/main:.env'])}\n`;
+      : `${git(['show', `origin/main:${git(['ls-tree', '--name-only', 'origin/main', '--', OFFICIAL_MAIN_ENVIRONMENT_PATH]) ? OFFICIAL_MAIN_ENVIRONMENT_PATH : '.env'}`])}\n`;
   } catch (error) {
     throw new ReleaseE2EError('The selected E2E backend environment is unavailable.', {
       cause: error,

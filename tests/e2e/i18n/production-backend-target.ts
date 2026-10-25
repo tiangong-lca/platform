@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { parseEnv } from 'node:util';
 
@@ -27,6 +27,7 @@ export type VerifiedProductionBackendTarget = {
 };
 
 const QUALIFICATION_ENVIRONMENT_RELATIVE_PATH = 'docker/e2e/qualification.env';
+const OFFICIAL_MAIN_ENVIRONMENT_PATH = 'config/environments/main.env';
 
 function parseProductionBackend(environment: string): {
   origin: string;
@@ -73,14 +74,29 @@ export function verifyProductionBackendTargetSources(
 }
 
 function readVerifiedDeploymentBackendTarget(): VerifiedProductionBackendTarget {
-  const candidateEnvironment = readFileSync(path.join(REPOSITORY_ROOT, '.env'), 'utf8');
+  const candidatePath = existsSync(path.join(REPOSITORY_ROOT, OFFICIAL_MAIN_ENVIRONMENT_PATH))
+    ? OFFICIAL_MAIN_ENVIRONMENT_PATH
+    : '.env';
+  const candidateEnvironment = readFileSync(path.join(REPOSITORY_ROOT, candidatePath), 'utf8');
   const trackedMainEnvironmentPath = process.env.E2E_TRACKED_MAIN_ENV_PATH?.trim();
-  const trackedMainEnvironment = trackedMainEnvironmentPath
-    ? readFileSync(path.resolve(trackedMainEnvironmentPath), 'utf8')
-    : execFileSync('git', ['show', 'origin/main:.env'], {
-        cwd: REPOSITORY_ROOT,
-        encoding: 'utf8',
-      });
+  let trackedMainEnvironment: string;
+  if (trackedMainEnvironmentPath) {
+    // The archived candidate container has no Git metadata. Its host-exported
+    // proof remains sufficient; do not execute any Git command in this branch.
+    trackedMainEnvironment = readFileSync(path.resolve(trackedMainEnvironmentPath), 'utf8');
+  } else {
+    const trackedPath = execFileSync(
+      'git',
+      ['ls-tree', '--name-only', 'origin/main', '--', OFFICIAL_MAIN_ENVIRONMENT_PATH],
+      { cwd: REPOSITORY_ROOT, encoding: 'utf8' },
+    ).trim()
+      ? OFFICIAL_MAIN_ENVIRONMENT_PATH
+      : '.env';
+    trackedMainEnvironment = execFileSync('git', ['show', `origin/main:${trackedPath}`], {
+      cwd: REPOSITORY_ROOT,
+      encoding: 'utf8',
+    });
+  }
   return verifyProductionBackendTargetSources(candidateEnvironment, trackedMainEnvironment);
 }
 

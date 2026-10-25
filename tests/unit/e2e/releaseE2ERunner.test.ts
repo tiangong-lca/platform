@@ -378,6 +378,8 @@ describe('release E2E controller contracts', () => {
       'export const sharedWorkflow = true;\n',
     );
     write('.env', 'SUPABASE_URL=https://deploy-one.invalid\n');
+    write('config/environments/main.env', 'SUPABASE_URL=https://official-one.invalid\n');
+    write('config/environments/hosted-dev.env', 'SUPABASE_URL=https://shared-one.invalid\n');
     write('.github/workflows/release-gate.yml', 'name: Release Gate\n');
     const gitEnvironment = isolatedGitEnvironment();
     expect(spawnSync('git', ['init', '-q'], { cwd: root, env: gitEnvironment }).status).toBe(0);
@@ -399,6 +401,9 @@ describe('release E2E controller contracts', () => {
     expect(controller.qualificationIdentity(root)).toEqual(initial);
 
     write('.env', 'SUPABASE_URL=https://deploy-two.invalid\n');
+    expect(controller.qualificationIdentity(root)).toEqual(initial);
+    write('config/environments/main.env', 'SUPABASE_URL=https://official-two.invalid\n');
+    write('config/environments/hosted-dev.env', 'SUPABASE_URL=https://shared-two.invalid\n');
     expect(controller.qualificationIdentity(root)).toEqual(initial);
     write('.env', 'SUPABASE_URL=https://deploy-one.invalid\n');
 
@@ -870,8 +875,10 @@ describe('release E2E isolated runtime inputs', () => {
   it('uses the host-exported tracked-main environment without container Git metadata', () => {
     const directory = makeTemporaryDirectory();
     const trackedMainPath = path.join(directory, 'tracked-main.env');
-    fs.copyFileSync(path.resolve(process.cwd(), '.env'), trackedMainPath);
+    fs.copyFileSync(path.resolve(process.cwd(), 'config/environments/main.env'), trackedMainPath);
     const originalPath = process.env.E2E_TRACKED_MAIN_ENV_PATH;
+    const originalGitDirectory = process.env.GIT_DIR;
+    process.env.GIT_DIR = '/missing-container-git-metadata';
     process.env.E2E_TRACKED_MAIN_ENV_PATH = trackedMainPath;
     try {
       expect(readVerifiedProductionBackendTarget()).toMatchObject({
@@ -880,6 +887,8 @@ describe('release E2E isolated runtime inputs', () => {
         trackedMainEnvironmentSha256: expect.stringMatching(/^[a-f0-9]{64}$/u),
       });
     } finally {
+      if (originalGitDirectory === undefined) delete process.env.GIT_DIR;
+      else process.env.GIT_DIR = originalGitDirectory;
       if (originalPath === undefined) delete process.env.E2E_TRACKED_MAIN_ENV_PATH;
       else process.env.E2E_TRACKED_MAIN_ENV_PATH = originalPath;
     }

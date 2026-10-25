@@ -348,3 +348,21 @@ describe('build.yml release-context canonical admission (executed workflow guard
     expect(outputs.release_head).toBeUndefined();
   });
 });
+
+describe('official backend selection in actual release jobs', () => {
+  it.each(['web-deploy', 'atlas-web-deploy', 'release'])(
+    'requires canonical repository identity before %s selects Main',
+    (jobName) => {
+      const workflow = readFileSync(path.join(REPO_ROOT, '.github/workflows/build.yml'), 'utf8');
+      const start = workflow.indexOf(`\n  ${jobName}:\n`);
+      expect(start).toBeGreaterThan(0);
+      const tail = workflow.slice(start + 1);
+      const next = tail.slice(1).search(/\n  [a-z][a-z-]*:\n/u);
+      const job = next < 0 ? tail : tail.slice(0, next + 1);
+      expect(job).toContain(
+        "REACT_APP_ENV: ${{ github.repository == 'tiangong-lca/platform' && 'main' || 'local' }}",
+      );
+      expect(job.match(/REACT_APP_ENV:/gu)).toHaveLength(1);
+    },
+  );
+});

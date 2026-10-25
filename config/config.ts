@@ -11,7 +11,7 @@ import proxy from './proxy';
 import routes from './routes';
 import { applySupabaseFrontendEnv } from './supabaseEnv';
 
-const { REACT_APP_ENV = 'main' } = process.env;
+const { REACT_APP_ENV = 'local' } = process.env;
 
 applySupabaseFrontendEnv(process.cwd(), REACT_APP_ENV);
 

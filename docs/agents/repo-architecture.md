@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-23
-lastReviewedCommit: a5302dbf337c8177844f285e3e21fc0c396f1981
-lastReviewedNote: 'Platform #1328 / PR #1329: reviewed conflict resolution against dev a5302dbf. Retained incoming navigation, review, dependency and qualification contracts plus the v6 latest-current draft reporting dependency and validation scope. Regenerated four-locale artifacts; 31 dashboard tests pass. Final checked-push evidence belongs on the PR.'
+lastReviewedAt: 2026-10-25
+lastReviewedCommit: f9b51626bf8fac8609be6416cd6b345764f075db
+lastReviewedNote: 'Platform #1332: reviewed local/custom defaults, explicit official profiles, fork-safe release selection and atomic SQL target rejection; qualification and protected gates remain intact, historical caller attribution is unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -47,7 +47,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `config/routes.ts` | route tree and route-family entrypoints |
 | `config/config.ts` | Umi runtime config |
 | `config/defaultSettings.ts`, `config/branding.ts`, `config/proxy.ts`, `config/oneapi.json` | app-shell defaults, branding, dev proxy, and support config |
-| `config/supabaseEnv.ts` | frontend env selection; standard Dev replaces Umi-preloaded values that exactly match main-file defaults with `.env.development*`, distinct explicit build values retain priority, and qualification selects a fixed non-production profile |
+| `config/supabaseEnv.ts` | frontend env selection; ordinary modes use loopback/custom defaults, explicit main/hosted-dev profiles select official backends, distinct per-key overrides retain priority, and qualification selects a fixed non-production profile |
 | `src/app.tsx` | runtime layout, auth redirect, cache monitors, and Umi-global antd 6 ConfigProvider/App theme synchronization |
 | `src/access.ts`, `src/global.tsx`, `src/requestErrorConfig.ts`, `src/contexts/**` | app-shell access control, request behavior, shared runtime state, and the global App feedback registrar used by non-component callers |
 | `src/pages/**` | route-level product pages |
@@ -306,3 +306,7 @@ The committed SDK version is pinned by `package.json` and `pnpm-lock.yaml`; `tes
 Worker #320 replay coverage: service calculation evidence may carry matrix v2 with a `lcia-coverage-replay-snapshot:v1` descriptor. Its count is the exact logical gap count, while the locator/hash bind compressed snapshot replay inputs. Legacy matrix v1 and browser static calculation retain their original JSONL contracts. The UI never labels or links a replay snapshot as a downloadable gap JSONL. Terminal snapshot-build errors follow the existing error state and clear pending polling; production raw artifact URLs remain unavailable as browser downloads.
 
 Result preview uses the shared data-list pagination defaults through the native Table pagination API. Server offsets and limits remain authoritative; changing page size resets the offset. A preview read does not announce command success. Unavailable results have one localized retryable notice, with raw reasons and warnings in collapsed technical evidence; numeric zero remains a result. Snapshot evidence prefers the current summary or snapshotSource identity, retaining the earlier snapshotBuilder field as a fallback.
+
+### Self-hosted outbound target boundary
+
+The SQL credential sanitizer also checks literal/concatenated known official HTTP targets and retired non-FT dispatch patterns before atomically replacing an artifact. Default and strict invocations both run that check; strict mode additionally rejects residual credential patterns. Comments, schema descriptions and bare environment-identity refusal constants remain valid. This bounded accidental-configuration check is not a SQL sandbox or a guarantee against arbitrary dynamic SQL or later operator configuration. The current generated initializer remains byte-equivalent; schema truth is still Database-owned. Existing-volume pre-egress migration belongs to the operator procedure in `docker/README.md`, not a claim that starting PostgreSQL and checking afterward protects queued pg_net.

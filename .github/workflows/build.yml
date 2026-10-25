@@ -414,6 +414,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       APP_BRAND: tiangong
+      REACT_APP_ENV: ${{ github.repository == 'tiangong-lca/platform' && 'main' || 'local' }}
       EDGEONE_OUTPUT_DIR: dist-edgeone
       EDGEONE_PROJECT_NAME: tiangong-lca-platform
       EDGEONE_CLI_VERSION: 1.4.6
@@ -502,6 +503,7 @@ jobs:
       contents: read
     env:
       APP_BRAND: atlas
+      REACT_APP_ENV: ${{ github.repository == 'tiangong-lca/platform' && 'main' || 'local' }}
       EDGEONE_OUTPUT_DIR: dist-edgeone
       EDGEONE_CLI_VERSION: 1.4.6
       EDGEONE_VITEST_VERSION: 3.2.4
@@ -673,6 +675,8 @@ jobs:
           retention-days: 30
 
   release:
+    env:
+      REACT_APP_ENV: ${{ github.repository == 'tiangong-lca/platform' && 'main' || 'local' }}
     needs:
       - release-context
       - release-qualified

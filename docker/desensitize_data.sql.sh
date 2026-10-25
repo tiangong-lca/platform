@@ -187,13 +187,14 @@ fi
 OUTPUT_DIR="$(dirname -- "${OUTPUT_FILE}")"
 mkdir -p "${OUTPUT_DIR}"
 
-if [[ "${CREATE_BACKUP}" == "1" ]]; then
-  BACKUP_FILE="${INPUT_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
-  cp -- "${INPUT_FILE}" "${BACKUP_FILE}"
-  log "[desensitize] backup created: ${BACKUP_FILE}"
+VALIDATOR="${SCRIPT_DIR}/scripts/validate-sql-egress.cjs"
+if [[ ! -f "${VALIDATOR}" ]] || ! command -v node >/dev/null 2>&1; then
+  echo "[desensitize] Node.js and the SQL target validator are required" >&2
+  exit 1
 fi
 
-TMP_FILE="$(mktemp /tmp/desensitize_data_sql.XXXXXX)"
+# Keep the temporary file beside its destination so the final rename is atomic.
+TMP_FILE="$(mktemp "${OUTPUT_DIR}/.data-sql.XXXXXX")"
 trap 'rm -f "${TMP_FILE}"' EXIT
 
 log "[desensitize] replacing sensitive patterns..."
@@ -207,24 +208,27 @@ sed -E \
   -e 's/sb_secret_[A-Za-z0-9._-]+/sb_secret_REDACTED/g' \
   "${INPUT_FILE}" > "${TMP_FILE}"
 
-cp -- "${TMP_FILE}" "${OUTPUT_FILE}"
+# Outbound-target validation applies to default and strict invocations alike.
+# No backup or destination is changed before all checks have passed.
+node "${VALIDATOR}" "${TMP_FILE}"
 
-leftover_sb_secret="$(grep -nE 'sb_secret_[A-Za-z0-9._-]+' "${OUTPUT_FILE}" | grep -v 'sb_secret_REDACTED' || true)"
-leftover_x_key="$(grep -nE '"x_key"[[:space:]]*:[[:space:]]*"[^"]*"' "${OUTPUT_FILE}" | grep -v '"x_key":"edge-functions-key"' || true)"
+leftover_sb_secret="$(grep -nE 'sb_secret_[A-Za-z0-9._-]+' "${TMP_FILE}" | grep -v 'sb_secret_REDACTED' || true)"
+leftover_x_key="$(grep -nE '"x_key"[[:space:]]*:[[:space:]]*"[^"]*"' "${TMP_FILE}" | grep -v '"x_key":"edge-functions-key"' || true)"
 
 if [[ -n "${leftover_sb_secret}" || -n "${leftover_x_key}" ]]; then
-  echo "[desensitize] warning: possible sensitive patterns remain" >&2
-  if [[ -n "${leftover_sb_secret}" ]]; then
-    echo "[desensitize] remaining sb_secret-like tokens:" >&2
-    echo "${leftover_sb_secret}" >&2
-  fi
-  if [[ -n "${leftover_x_key}" ]]; then
-    echo "[desensitize] remaining x_key tokens:" >&2
-    echo "${leftover_x_key}" >&2
-  fi
+  echo "[desensitize] warning: sensitive credential patterns remain; values are not logged" >&2
   if [[ "${STRICT}" == "1" ]]; then
     exit 2
   fi
 fi
+
+if [[ "${CREATE_BACKUP}" == "1" ]]; then
+  BACKUP_FILE="${INPUT_FILE}.backup.$(date +%Y%m%d_%H%M%S)"
+  cp -- "${INPUT_FILE}" "${BACKUP_FILE}"
+  log "[desensitize] backup created: ${BACKUP_FILE}"
+fi
+
+node -e 'const fs = require("node:fs"); fs.chmodSync(process.argv[1], fs.statSync(fs.existsSync(process.argv[2]) ? process.argv[2] : process.argv[3]).mode & 0o777);' "${TMP_FILE}" "${OUTPUT_FILE}" "${INPUT_FILE}"
+mv -f -- "${TMP_FILE}" "${OUTPUT_FILE}"
 
 log "[desensitize] done: ${OUTPUT_FILE}"

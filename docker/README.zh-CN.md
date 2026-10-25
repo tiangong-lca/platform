@@ -38,8 +38,7 @@ cd /path/to/tiangong-lca-next
   --ref <reviewed-40-character-edge-commit>
 ```
 
-脚本从自身位置解析目标目录，因此可以从其他工作目录调用。同步会删除
-Edge 精确版本中不存在的镜像文件；提交前必须审查完整生成 diff。
+脚本从自身位置解析目标目录，因此可以从其他工作目录调用。同步会删除 Edge 精确版本中不存在的镜像文件；提交前必须审查完整生成 diff。
 
 ## 2) 从已评审的 Database 空库重建生成 data.sql
 
@@ -94,3 +93,16 @@ Docker 仍使用 PostgreSQL 15.8。过滤器只在表 ACL 块移除 PG17 的 `MA
 兼容入口（已废弃）：
 
 - `docker/scripts/sync-lca-migrations-to-data-sql.sh` 会转发到新脚本
+
+## 外呼目标检查与已有数据库卷
+
+`desensitize_data.sql.sh` 需要仓库要求的 Node.js 版本及 `scripts/validate-sql-egress.cjs`。默认与 `--strict` 调用都会拒绝已知官方 Production／共享 Dev HTTP 目标和旧非 FT webhook 调用模式；全部检查通过后才原子替换输出。拒绝时保留已有目标文件或原地输入，不创建备份，不输出 SQL 行和凭据值。`--strict` 额外拒绝残留的凭据模式。注释、schema 描述及仅用于拒绝／环境识别的项目标识常量保持有效。这是针对字面量和简单拼接的意外配置检查，不是任意动态 SQL、间接域名或后续配置的沙箱。
+
+新初始化文件不会升级已有数据卷。恢复旧 dump 或重新接通旧数据库前：
+
+1. **在 PostgreSQL／pg_net 启动前阻断该数据库的外部网络访问**，使用隔离副本或操作员控制的环境；普通 Compose 启动后再检查可能晚于排队 HTTP 的发送。
+2. 只读检查触发器端点名和目标配置，不展示请求队列 headers、body 或凭据值。通过 Database owner 的迁移流程升级已有卷，不把 fresh-install 初始化文件当原地升级脚本。
+3. 按数据库 owner 的流程处理旧触发器及排队请求，并配置同实例内部后端或明确拥有的自定义后端及其凭据。
+4. 确认目标与 FT 路由符合预期后再恢复外部网络；保留其他服务与数据。
+
+应用默认使用本地／自定义后端；官方 Main／共享 Dev 需要 `DEV.md` 中的显式 profile。导入数据库的 Vault 值是独立配置面。本次修改不会自动迁移或隔离已经运行的外部数据库。
