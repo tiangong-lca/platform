@@ -31,13 +31,7 @@ Keep the reviewed React/Ant Design/ProComponents generation, internal SDK, TypeS
 
 ## Ordinary dependency checks
 
-Keep Node type proposals on the Node 24 LTS line: the npm entry ignores only
-`@types/node` versions `>=25.0.0`, leaving 24.x minor/patch updates eligible under
-the existing cooldown. Revisit this ceiling only after explicit approval of a
-later runtime major, including a security fix that requires that decision.
-Security alerts remain enabled. This does not change runtime pins or
-`actions/setup-node` versions; Dev-only configuration is not activated until it
-reaches the default branch through the existing release policy.
+Keep Node type proposals on the Node 24 LTS line: the npm entry ignores only `@types/node` versions `>=25.0.0`, leaving 24.x minor/patch updates eligible under the existing cooldown. Revisit this ceiling only after explicit approval of a later runtime major, including a security fix that requires that decision. Security alerts remain enabled. This does not change runtime pins or `actions/setup-node` versions; Dev-only configuration is not activated until it reaches the default branch through the existing release policy.
 
 `dependency-pr.yml` runs for relevant dependency, package-policy, runtime-selector and workflow paths in PRs targeting `dev` or `main`, including human-authored changes. It checks out the exact head with `fetch-depth: 0`, uses the existing pinned pnpm/Node setup, installs the frozen graph and runs the unchanged `pnpm prepush:gate`. Complete history and the `origin/main` and `origin/dev` refs are required by the locale audit, frozen German review and correction provenance contracts. Checkout fetches that history before removing its credentials; the candidate stays bound to its exact SHA. Full Jest logs remain available as a seven-day artifact. Manual runs have independent run identities; newer PR commits cancel only superseded runs for that PR.
 
