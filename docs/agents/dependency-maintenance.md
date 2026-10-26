@@ -14,8 +14,8 @@ checkPaths:
   - .github/dependabot.yml
   - .github/workflows/dependency-pr.yml
   - docs/agents/dependency-maintenance.md
-lastReviewedAt: 2026-10-19
-lastReviewedCommit: b1fa7a6d62b334df1206302a71a45e98c630203e
+lastReviewedAt: 2026-10-26
+lastReviewedCommit: b843976e312c00fb38db8e4d40c64c760ba25834
 lastReviewedNote: 'Platform #1315: reviewed native navigation-aware identity observation at b1fa7a6d after hosted380 Chromium context-loss failure. Fresh non-null generation and exact stored owner are observed atomically before/after held-response release; existing45s authenticated/15s public budget,120s test limit, routes and dispatch/logout checks remain.160 focused checks, lint, types and locale checks pass.380 hosted result remains68pass/1fail/30skip with separate verified cleanup success. New ordinary full checked push and real three-browser qualification remain Main-owned; workflow/runtime/package/coverage/release policies are unchanged.'
 related:
   - ../../AGENTS.md
@@ -30,6 +30,14 @@ Dependabot monitors the single root pnpm graph on Wednesdays at 05:00 and GitHub
 Keep the reviewed React/Ant Design/ProComponents generation, internal SDK, TypeScript adapter boundary, pnpm overrides, isolated linker, public-hoist patterns and lifecycle-script decisions intact. A proposal that outgrows an exact override or prerelease pin needs reviewed compatibility work; do not broaden policy merely to make installation pass. Embedded executable versions and toolchain/image identities remain separately governed. Preserve full-SHA Actions references when updating them.
 
 ## Ordinary dependency checks
+
+Keep Node type proposals on the Node 24 LTS line: the npm entry ignores only
+`@types/node` versions `>=25.0.0`, leaving 24.x minor/patch updates eligible under
+the existing cooldown. Revisit this ceiling only after explicit approval of a
+later runtime major, including a security fix that requires that decision.
+Security alerts remain enabled. This does not change runtime pins or
+`actions/setup-node` versions; Dev-only configuration is not activated until it
+reaches the default branch through the existing release policy.
 
 `dependency-pr.yml` runs for relevant dependency, package-policy, runtime-selector and workflow paths in PRs targeting `dev` or `main`, including human-authored changes. It checks out the exact head with `fetch-depth: 0`, uses the existing pinned pnpm/Node setup, installs the frozen graph and runs the unchanged `pnpm prepush:gate`. Complete history and the `origin/main` and `origin/dev` refs are required by the locale audit, frozen German review and correction provenance contracts. Checkout fetches that history before removing its credentials; the candidate stays bound to its exact SHA. Full Jest logs remain available as a seven-day artifact. Manual runs have independent run identities; newer PR commits cancel only superseded runs for that PR.
 

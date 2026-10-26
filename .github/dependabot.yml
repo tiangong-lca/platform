@@ -11,6 +11,9 @@ updates:
     cooldown:
       default-days: 7
     open-pull-requests-limit: 2
+    ignore:
+      - dependency-name: '@types/node'
+        versions: ['>=25.0.0']
     groups:
       native-ui-generation:
         patterns:
