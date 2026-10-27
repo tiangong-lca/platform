@@ -1,14 +1,18 @@
+import path from 'node:path';
+
 import { signInViaUi } from './auth';
 import { routeToCandidateUrl, selectAppLocaleThroughUi } from './contracts';
 import { expect, test, type Locator } from './fixtures';
 import { makeMinimalProcessJson, readProductionDataLedger } from './production-data-ledger';
+import { readVerifiedE2EBackendTarget } from './production-backend-target';
+import { writeSyntheticAllocationDiagnostic } from './process-allocation-diagnostics';
 
 // This fixture is exclusively in-memory on the reserved qualification origin.
 // Unmatched requests remain subject to the repository's hermetic backend guard.
 test('Process allocation survives deletion, batch editing and save/reopen', async ({
   page,
   baseURL,
-}) => {
+}, testInfo) => {
   test.skip(
     process.env.E2E_QUALIFICATION !== 'true',
     'Requires the hermetic qualification backend.',
@@ -212,13 +216,124 @@ test('Process allocation survives deletion, batch editing and save/reopen', asyn
     includeHidden: true,
   });
   await waitForDialogReady(batch);
+  // Diagnostic data is restricted to this test's reserved-origin synthetic fixture.
+  // Native click observations do not claim that React's onOk handler executed.
+  const diagnosticKey = '__tgSyntheticBatchAllocationDiagnostic';
+  await batch.evaluate((node, key) => {
+    const state = { events: [] as Array<Record<string, unknown>>, modal: node };
+    (window as any)[key] = state;
+    for (const type of [
+      'pointerdown',
+      'mousedown',
+      'mouseup',
+      'click',
+      'input',
+      'change',
+      'blur',
+    ]) {
+      node.addEventListener(
+        type,
+        (event) => {
+          const target = event.target as HTMLElement;
+          const input = target.closest('input[role="spinbutton"]') as HTMLInputElement | null;
+          const button = target.closest('button');
+          const control = input
+            ? 'fraction'
+            : button?.textContent?.trim() === 'OK'
+              ? 'ok'
+              : undefined;
+          if (!control || state.events.length >= 40) return;
+          state.events.push({
+            type,
+            control,
+            value: input
+              ? /^\d{0,3}(?:\.\d{0,3})?$/.test(input.value)
+                ? input.value
+                : '[invalid]'
+              : undefined,
+            trusted: event.isTrusted,
+          });
+        },
+        true,
+      );
+    }
+  }, diagnosticKey);
   await batch.getByRole('row').filter({ hasText: 'Raw material' }).getByRole('checkbox').check();
   await batch.getByRole('button', { name: 'Add product allocation', exact: true }).click();
   await batch.getByRole('combobox', { name: 'Target product' }).click();
   await page.getByText('Product B (#2)', { exact: true }).last().click();
-  await batch.getByRole('spinbutton').fill('100');
-  await batch.getByRole('button', { name: 'OK', exact: true }).click();
-  await expect(batch).toBeHidden();
+  let batchError: unknown;
+  let batchFailed = false;
+  try {
+    await batch.getByRole('spinbutton').fill('100');
+    await batch.getByRole('button', { name: 'OK', exact: true }).click();
+    await expect(batch).toBeHidden();
+  } catch (error) {
+    batchError = error;
+    batchFailed = true;
+  }
+  try {
+    if (process.env.E2E_QUALIFICATION !== 'true')
+      throw new Error('Synthetic diagnostic boundary required.');
+    // Preserve the existing actions, deadlines and original assertion result.
+    // No raw page text, HTML, credentials, URLs or caught-error strings are retained.
+    const diagnostic = await page
+      .evaluate((key) => {
+        const state = (window as any)[key];
+        const events = state?.events ?? [];
+        const modal = state?.modal as HTMLElement | undefined;
+        const rect = modal?.getBoundingClientRect();
+        const input = modal?.querySelector('input[role="spinbutton"]') as HTMLInputElement | null;
+        const ok = Array.from(modal?.querySelectorAll('button') ?? []).find(
+          (button) => button.textContent?.trim() === 'OK',
+        );
+        return {
+          events,
+          modalAttached: modal?.isConnected ?? false,
+          modalHidden: modal
+            ? !modal.isConnected ||
+              !rect?.width ||
+              !rect.height ||
+              getComputedStyle(modal).visibility === 'hidden'
+            : true,
+          fractionDomValue: input
+            ? /^\d{0,3}(?:\.\d{0,3})?$/.test(input.value)
+              ? input.value
+              : '[invalid]'
+            : null,
+          okDisabled: ok?.disabled ?? null,
+          errorAlertCount: modal?.querySelectorAll('.ant-alert-error').length ?? 0,
+          checkedRowCount:
+            modal?.querySelectorAll('tbody input[type="checkbox"]:checked').length ?? 0,
+          modalMotion: modal
+            ? Array.from(modal.classList)
+                .filter((name) => /-(?:appear|enter|leave)(?:-|$)/.test(name))
+                .map((name) => name.slice(0, 80))
+            : [],
+          committedReactValue: 'not-observed',
+          handlerStages: 'not-observed',
+        };
+      }, diagnosticKey)
+      .catch(() => ({ captureError: 'DOM_CAPTURE_FAILED' }));
+    const outputDirectory = path.dirname(
+      process.env.E2E_QUALIFICATION_RESULT_PATH ?? testInfo.outputPath('qualification.json'),
+    );
+    await writeSyntheticAllocationDiagnostic({
+      qualification: process.env.E2E_QUALIFICATION,
+      backendOrigin: readVerifiedE2EBackendTarget().origin,
+      frontendUrl: baseURL!,
+      browser: testInfo.project.name,
+      outputDirectory,
+      diagnostic,
+    });
+  } catch (diagnosticError) {
+    if (!batchFailed) throw diagnosticError;
+    testInfo.annotations.push({
+      type: 'allocation-diagnostic-failed',
+      description: 'Capture failed; the original browser assertion remains authoritative.',
+    });
+  }
+  if (batchFailed) throw batchError;
   await drawer.getByRole('button', { name: 'Save', exact: true }).click();
   await expect.poll(() => writes.length).toBe(1);
   const saved = writes[0].jsonOrdered.processDataSet.exchanges.exchange;

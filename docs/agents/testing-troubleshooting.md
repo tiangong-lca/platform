@@ -42,9 +42,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-10-26
-lastReviewedCommit: a5e998603ac49a97b99a29b6b14ae60bf61eb643
-lastReviewedNote: 'Platform #1342: reviewed focused frozen-metadata unit/component/browser regressions and unchanged full coverage, bootstrap, checked-push and release proof requirements.'
+lastReviewedAt: 2026-10-27
+lastReviewedCommit: b843976e312c00fb38db8e4d40c64c760ba25834
+lastReviewedNote: 'Platform #1354 recovery: reread routed contracts against exact recovered tree 36b5410e. Sanitized synthetic diagnostics and both workflow allowlists preserve product behavior, assertions, deadlines, retries, full inventory, resource closure and release boundaries. Scoped proof is separate from unresolved Linux qualification and the original f6 failure.'
 ---
 
 # Testing Troubleshooting
@@ -175,6 +175,10 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 | checked push reports an ineligible ref update | the source is not the current exact branch/`HEAD`, the destination is not a branch, or more than one update was requested | correct the refspec shown by the command; the helper must reject this shape before Docpact/full tests, and an ordinary raw deletion-only push intentionally skips those gates |
 | raw push fails after its hook passed but no receipt exists | only `push:checked` can bind the original push intent and activate bounded recovery after a failed transport | run a fresh `pnpm push:checked <normal-git-push-args>` so its ordinary hook re-establishes evidence; never use `--no-verify` or `HUSKY=0` manually |
 | every hook-driven receipt test exits before either fake gate on GitHub Ubuntu | the hook forced NVM even though `setup-node` had already activated exact Node 24.19.0 outside NVM | verify the active exact version first, use it when already 24.19.0, and consult NVM only as a fallback |
+
+## Synthetic allocation failure evidence
+
+For a qualification-only Process batch-allocation failure, inspect the dedicated sanitized `process-allocation-diagnostics-<browser>.json` artifact. Compare native fraction/input/blur and OK click events with the final numeric DOM value, disabled state, error-Alert count and modal motion flags. A returned Playwright click without a native click event narrows an input-delivery problem; a visible Alert narrows a caught validation/callback path. Neither observation establishes committed React state or a handler trace. Keep those fields `not-observed` until independently instrumented. Do not upload raw error-context, page HTML or browser artifacts to recover this evidence, and preserve the original failed assertion if diagnostic collection fails.
 
 ## Open-Handle Playbook
 

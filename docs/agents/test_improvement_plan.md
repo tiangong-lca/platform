@@ -45,9 +45,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-10-26
-lastReviewedCommit: a5e998603ac49a97b99a29b6b14ae60bf61eb643
-lastReviewedNote: 'Platform #1342: reviewed focused frozen-metadata unit/component/browser regressions and unchanged full coverage, bootstrap, checked-push and release proof requirements.'
+lastReviewedAt: 2026-10-27
+lastReviewedCommit: b843976e312c00fb38db8e4d40c64c760ba25834
+lastReviewedNote: 'Platform #1354 recovery: reread routed contracts against exact recovered tree 36b5410e. Sanitized synthetic diagnostics and both workflow allowlists preserve product behavior, assertions, deadlines, retries, full inventory, resource closure and release boundaries. Scoped proof is separate from unresolved Linux qualification and the original f6 failure.'
 ---
 
 # Testing Strategy

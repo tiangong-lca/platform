@@ -14,9 +14,9 @@ checkPaths:
   - .github/dependabot.yml
   - .github/workflows/dependency-pr.yml
   - docs/agents/dependency-maintenance.md
-lastReviewedAt: 2026-10-19
-lastReviewedCommit: b1fa7a6d62b334df1206302a71a45e98c630203e
-lastReviewedNote: 'Platform #1315: reviewed native navigation-aware identity observation at b1fa7a6d after hosted380 Chromium context-loss failure. Fresh non-null generation and exact stored owner are observed atomically before/after held-response release; existing45s authenticated/15s public budget,120s test limit, routes and dispatch/logout checks remain.160 focused checks, lint, types and locale checks pass.380 hosted result remains68pass/1fail/30skip with separate verified cleanup success. New ordinary full checked push and real three-browser qualification remain Main-owned; workflow/runtime/package/coverage/release policies are unchanged.'
+lastReviewedAt: 2026-10-27
+lastReviewedCommit: b843976e312c00fb38db8e4d40c64c760ba25834
+lastReviewedNote: 'Platform #1354 recovery: reread routed contracts against exact recovered tree 36b5410e. Sanitized synthetic diagnostics and both workflow allowlists preserve product behavior, assertions, deadlines, retries, full inventory, resource closure and release boundaries. Scoped proof is separate from unresolved Linux qualification and the original f6 failure.'
 related:
   - ../../AGENTS.md
   - repo-validation.md
@@ -70,5 +70,7 @@ Issue #1315 normally composes original proposal #1277 and advances only the six 
 The ordinary dependency workflow's one `semantic-qualification` job runs unchanged `e2e:qualify` and `release:proof:verify` against the archived exact candidate and existing digest-pinned images. It runs all three browsers, including the actual application two-tab held-refresh/foreign-session/sign-out scenario, and all existing harness controls. Reviewed discovery is 29 canonical cases per browser: Chromium executes 29, Firefox/WebKit each execute 14 and retain the existing 15 designed skips. Four harness controls per browser yield 99 discovered cases, 69 executed and 30 designed skips. No additional aggregate gate, credentials, production lane or release requirement is introduced.
 
 The resource observer snapshots preexisting Docker identities and context, source/tree, manifest/image labels, exact checkout output mounts, installed tools and measured runner capacity before qualification. Always-run recovery re-inspects exact fresh owned resources before deletion; final verification checks their absence and preserves preexisting/shared resources. No generic label prune or BuildKit pruning is permitted. Unattributable builder cache remains explicitly retained. The unchanged canonical browser smoke has no owner label or output mount: normal `--rm` completion plus complete inventory proves no survivor, but an ambiguous failed/cancelled survivor is retained and cleanup verification fails. A terminated hosted runner may prevent always-run recovery; absence of a receipt is not cleanup proof.
+
+The ordinary dependency PR job and the manual semantic workflow both retain the dedicated sanitized `process-allocation-diagnostics-<browser>.json` file when the reserved-origin synthetic Process allocation spec emits it. Its writer rejects non-qualification mode, another backend, a non-loopback frontend or an unconfigured browser; native events and modal flags do not establish React handler state or replace a failed assertion. The existing output mount places this file in the run directory; no exporter, qualification inventory, retry, runtime source or resource-closure change is required.
 
 Only selected credential-free JSON proof/diagnostic/resource files enter the seven-day ZIP; environment, auth state, screenshots, traces and video are excluded. Actual acceptance requires both canonical execution and resource closure, service artifact ID/digest, independent download/ZIP verification, raw canonical report hash and exact source/tool/image bindings. Local tests of the observer or workflow are not Docker capacity, browser or hosted cleanup evidence. Main promotion, release and root-integration holds remain unchanged.

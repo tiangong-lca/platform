@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-10-19
-lastReviewedCommit: 474e0da1e876af360948af494cb47c6621a6995c
-lastReviewedNote: 'Platform #1316: reviewed Message-only semantic hit-through and advancing session-fixture wall time at474e0da. Incoming message styles and native notice/Notification behavior remain; original ownership/generation/stale-dispatch assertions and99-case browser inventory are unchanged. Paired component and isolated actual-App Chromium proof pass, with meaningful interception/fixed-Date negatives. Independent code and full governed-document reviews found no remaining issue after removing the new private-DOM CSS assertion. Original665 hosted browser failures remain failed; successor full ordinary push and hosted qualification are pending. Dependency, coverage, release and production policies are unchanged.'
+lastReviewedAt: 2026-10-27
+lastReviewedCommit: b843976e312c00fb38db8e4d40c64c760ba25834
+lastReviewedNote: 'Platform #1354 recovery: reread routed contracts against exact recovered tree 36b5410e. Sanitized synthetic diagnostics and both workflow allowlists preserve product behavior, assertions, deadlines, retries, full inventory, resource closure and release boundaries. Scoped proof is separate from unresolved Linux qualification and the original f6 failure.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md
