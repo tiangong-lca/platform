@@ -1,4 +1,7 @@
 import {
+  CONTENT_LANGUAGE_REGISTRY,
+  getContentLanguageDefinition,
+  normalizeSupportedContentLanguage,
   REQUIRED_CONTENT_LANGUAGES,
   resolveContentLanguage,
   resolveContentLanguages,
@@ -31,7 +34,7 @@ type AnnualSupplyVolumeFormatOptions = {
   useDefaultSuffix?: boolean;
 };
 
-type AnnualSupplyVolumeUnitLookupRow = {
+export type AnnualSupplyVolumeUnitLookupRow = {
   referenceToFlowDataSetId?: unknown;
   referenceToFlowDataSetVersion?: unknown;
   refUnitRes?: ProcessRefUnitDisplay;
@@ -136,27 +139,27 @@ export const normalizeAnnualSupplyVolumeSuffix = (
   return ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX;
 };
 
+const isAnnualSupplyVolumeSuffix = (value: string) => {
+  const matched = value.match(/^([^\r\n]+)\/([^/\r\n]+)$/u);
+  return Boolean(
+    matched &&
+    CONTENT_LANGUAGE_REGISTRY.some(
+      ({ generatedContent }) => generatedContent.annualSupplyTimeUnit === matched[2],
+    ),
+  );
+};
+
 const resolveAnnualSupplyVolumeSuffix = (
   existingSuffix: unknown,
   suffix: unknown,
   options: AnnualSupplyVolumeFormatOptions,
 ) => {
-  const normalizedExistingSuffix = normalizeText(existingSuffix);
   const normalizedSuffix = normalizeAnnualSupplyVolumeSuffix(suffix, options);
-
-  if (!normalizedSuffix) {
-    return '';
+  if (normalizedSuffix) {
+    return normalizedSuffix;
   }
-
-  if (
-    normalizedExistingSuffix &&
-    normalizedExistingSuffix !== normalizedSuffix &&
-    normalizedExistingSuffix.endsWith(` ${normalizedSuffix}`)
-  ) {
-    return normalizedExistingSuffix;
-  }
-
-  return normalizedSuffix;
+  const normalizedExistingSuffix = normalizeText(existingSuffix);
+  return isAnnualSupplyVolumeSuffix(normalizedExistingSuffix) ? normalizedExistingSuffix : '';
 };
 
 export const sanitizeAnnualSupplyVolumeNumericInput = (value: unknown) => {
@@ -221,7 +224,11 @@ export const normalizeAnnualSupplyVolumeText = (
   const { numericText, suffixText } = parseAnnualSupplyVolumeText(value);
   return formatAnnualSupplyVolumeText(
     numericText,
-    resolveAnnualSupplyVolumeSuffix(suffixText, suffix, options),
+    resolveAnnualSupplyVolumeSuffix(
+      /[\r\n]/u.test(normalizeText(value)) ? '' : suffixText,
+      suffix,
+      options,
+    ),
     options,
   );
 };
@@ -360,16 +367,11 @@ export const mergeAnnualSupplyVolumeUnitRows = (
 
   return exchangeDataSource.map((exchange) => {
     const { id, version } = getReferenceFlowIdentity(exchange);
-    const unitRow =
-      normalizedUnitRows.find((row) => {
-        const rowId = normalizeText(row?.referenceToFlowDataSetId);
-        const rowVersion = normalizeText(row?.referenceToFlowDataSetVersion);
-
-        return rowId === id && rowVersion === version;
-      }) ??
-      normalizedUnitRows.find((row) => {
-        return normalizeText(row?.referenceToFlowDataSetId) === id;
-      });
+    const unitRow = normalizedUnitRows.find((row) => {
+      const rowId = normalizeText(row?.referenceToFlowDataSetId);
+      const rowVersion = normalizeText(row?.referenceToFlowDataSetVersion);
+      return id && version && rowId === id && rowVersion === version;
+    });
 
     if (!unitRow?.refUnitRes) {
       return exchange;
@@ -400,13 +402,25 @@ export const deriveAnnualSupplyVolumeSuffix = ({
   const refUnitRes = quantitativeReferenceExchange?.refUnitRes as ProcessRefUnitDisplay | undefined;
   const unitName =
     normalizeText(refUnitRes?.refUnitName) || normalizeText(getLangText(refUnitRes?.name, lang));
-  const referenceFlowName = normalizeText(
-    getLangText(referenceFlow?.['common:shortDescription'], lang),
-  );
-  const contextText = normalizeText(
-    getLangText(quantitativeReferenceExchange?.functionalUnitOrOther, lang),
-  );
-  const suffixParts = uniqueNonEmpty([unitName, contextText || referenceFlowName]);
+  const language = normalizeSupportedContentLanguage(lang);
+  const timeUnit = language
+    ? getContentLanguageDefinition(language).generatedContent.annualSupplyTimeUnit
+    : '';
 
-  return suffixParts.join(' ');
+  return unitName && timeUnit ? `${unitName}/${timeUnit}` : '';
+};
+
+/** An annualized single-line suffix is reusable when the exact unit is unavailable; it does not attest its unit. */
+export const getAnnualSupplyVolumeStoredSuffix = (value: unknown, lang: string) => {
+  const language = normalizeSupportedContentLanguage(lang) ?? lang.trim().toLowerCase();
+  const items = Array.isArray(value) ? value : [value];
+  const item = items.find(
+    (entry) =>
+      entry &&
+      typeof entry === 'object' &&
+      normalizeText(entry['@xml:lang']).toLowerCase() === language,
+  );
+  const text = normalizeText(item?.['#text']);
+  const { suffixText } = parseAnnualSupplyVolumeText(text);
+  return !/[\r\n]/u.test(text) && isAnnualSupplyVolumeSuffix(suffixText) ? suffixText : '';
 };

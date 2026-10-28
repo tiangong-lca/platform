@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-10-28
-lastReviewedCommit: 5e502c85033cab89ab7b2f055b90504abb765cc0
-lastReviewedNote: 'Reviewed Platform #1349 combined merge55475b7: current Dev preserves #1357 management UI, tests and locale artifacts; qualified Main supplies #1358 Portal patch and manifest6 image provenance. Metadata conflicts were resolved without replacing document bodies. Query, permission, canonical assertions, budgets, release and production boundaries remain unchanged. Combined-candidate execution is recorded on #1352 and is not inferred from Main proof.'
+lastReviewedCommit: 2e61c185fa20150809c15f1fed588f722426bb2b
+lastReviewedNote: 'Reviewed integrated Platform #432 candidate 2e61c185: exact annual units, supported use advice, schema-container merging and bounded native capture remain within existing ownership. Independent standards, specification and governed-document review found no material mismatch. Current nonempty native Save/reopen/Submit evidence is separately retained; explicit empty annual arrays remain unresolved. Numerical, dependency, release and authorization contracts are unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

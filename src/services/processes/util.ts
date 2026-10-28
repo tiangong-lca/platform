@@ -4,6 +4,7 @@ import { FormProcess } from '@/services/processes/data';
 import { createProcess as createTidasProcess } from '@tiangong-lca/tidas-sdk/core';
 import {
   CANONICAL_CONTENT_LANGUAGE,
+  getContentLanguageDefinition,
   normalizeSupportedContentLanguage,
 } from '../general/contentLanguageRegistry';
 import {
@@ -17,7 +18,6 @@ import {
   convertCopyrightToBoolean,
   convertToUTCISOString,
   formatDateTime,
-  getExactLangText,
   getLangJson,
   getLangList,
   getLangText,
@@ -26,11 +26,7 @@ import {
   removeEmptyObjects,
   toAmountNumber,
 } from '../general/util';
-import {
-  ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX,
-  deriveAnnualSupplyVolumeSuffix,
-  normalizeAnnualSupplyVolumeMultiLang,
-} from './annualSupplyOrProductionVolume';
+import { normalizeAnnualSupplyVolumeMultiLang } from './annualSupplyOrProductionVolume';
 import { normalizeExchangeLocationCode } from './exchangeLocation';
 
 const normalizeExchangeAmountValue = (value: string | number | null | undefined) => {
@@ -66,7 +62,14 @@ const hasReviewReportReference = (value: unknown): boolean => {
   return Object.values(value).some((field) => field !== undefined);
 };
 
-export function genProcessJsonOrdered(id: string, data: any) {
+export function genProcessJsonOrdered(
+  id: string,
+  data: any,
+  options?: {
+    /** Exact reference Flow unit resolved by the save boundary. */
+    annualSupplyVolumeUnit?: string;
+  },
+) {
   let quantitativeReference = {};
   const exchangeList = jsonToList(data?.exchanges?.exchange);
   const normalizeAnnualSupplyOrProductionVolume = (value: unknown) =>
@@ -75,18 +78,11 @@ export function genProcessJsonOrdered(id: string, data: any) {
       (item) => {
         const language =
           typeof item?.['@xml:lang'] === 'string' ? item['@xml:lang'] : CANONICAL_CONTENT_LANGUAGE;
-        const suffix = deriveAnnualSupplyVolumeSuffix({
-          exchangeDataSource: exchangeList,
-          getLangText: getExactLangText,
-          lang: language,
-        });
-
-        return (
-          suffix ||
-          (normalizeSupportedContentLanguage(language) === CANONICAL_CONTENT_LANGUAGE
-            ? ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX
-            : '')
-        );
+        const normalizedLanguage = normalizeSupportedContentLanguage(language);
+        const unitName = options?.annualSupplyVolumeUnit?.trim();
+        return unitName && normalizedLanguage
+          ? `${unitName}/${getContentLanguageDefinition(normalizedLanguage).generatedContent.annualSupplyTimeUnit}`
+          : '';
       },
       { useDefaultSuffix: false },
     );
@@ -459,7 +455,8 @@ export function genProcessJsonOrdered(id: string, data: any) {
               ?.uncertaintyAdjustments,
           ),
           useAdviceForDataSet: getLangJson(
-            data?.modellingAndValidation?.LCIMethodAndAllocation?.useAdviceForDataSet,
+            data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+              ?.useAdviceForDataSet,
           ),
         },
         completeness: {

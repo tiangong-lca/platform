@@ -20,9 +20,9 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-10-26
-lastReviewedCommit: 81bf639b80946bad144dd67e393d884148192696
-lastReviewedNote: 'Platform #1342: reviewed frozen result revision and unit display, exact-version optional enrichment and legacy unknown revisions. Calculation, data-quality policy, database ownership, release and validation gates remain unchanged.'
+lastReviewedAt: 2026-10-28
+lastReviewedCommit: 2e61c185fa20150809c15f1fed588f722426bb2b
+lastReviewedNote: 'Reviewed integrated Platform #432 candidate 2e61c185: exact annual units, supported use advice, schema-container merging and bounded native capture remain within existing ownership. Independent standards, specification and governed-document review found no material mismatch. Current nonempty native Save/reopen/Submit evidence is separately retained; explicit empty annual arrays remain unresolved. Numerical, dependency, release and authorization contracts are unchanged.'
 ---
 
 # Contribution Path Analysis Design

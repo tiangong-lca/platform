@@ -3,14 +3,18 @@ import { execFileSync } from 'node:child_process';
 import { runMatrixCalculation } from '@/services/lifeCycleModels/matrixCalculation/matrixWorker';
 import { materializeProductSystem } from '@/services/lifeCycleModels/productSystemPersistence';
 import { buildSaveLifeCycleModelPersistencePlan } from '@/services/lifeCycleModels/persistencePlan';
-import { genProcessJsonOrdered } from '@/services/processes/util';
+import { getProcessJsonOrderedForSave } from '@/services/processes/saveSerialization';
 import { jsonToList } from '@/services/general/util';
+import { getDataDetail } from '@/services/general/api';
+import { createProcess } from '@tiangong-lca/tidas-sdk/core';
 import {
   legacyProductDemandFixture,
   productDemandFixture,
   uuid,
   version,
 } from '../helpers/lifeCycleModelProductDemand';
+
+const mockGetDataDetail = jest.fn();
 
 jest.mock('@tiangong-lca/tidas-sdk/core', () => {
   return jest.requireActual(
@@ -20,6 +24,9 @@ jest.mock('@tiangong-lca/tidas-sdk/core', () => {
 
 // Keep the real language normalizer; a qualification fixture never calls translation services.
 jest.mock('@/services/general/api', () => ({
+  // Keep the production detail wrappers and unit resolver; only their data source is synthetic.
+  getDataDetail: (id: string, dataVersion: string, table: string) =>
+    mockGetDataDetail(id, dataVersion, table),
   normalizeLangPayloadForSave: async (payload: any) => {
     const { normalizeLangPayloadBeforeSave } = jest.requireActual('@/services/general/util');
     const result = await normalizeLangPayloadBeforeSave(payload, { intent: 'validation' });
@@ -34,6 +41,89 @@ const container = 'supabase_db_model1196-qualification';
 const actorId = uuid(1196001);
 const modelId = uuid(1196002);
 const nextVersion = '01.00.001';
+const referencePropertyId = uuid(1196004);
+const referenceGroupId = uuid(1196005);
+const referencePropertyVersion = '02.00.000';
+const referenceGroupVersion = '03.00.000';
+const referenceKey = (table: string, id: string, dataVersion: string) =>
+  `${table}/${id}@${dataVersion}`;
+const referenceFixtures = new Map<string, any>();
+const addReferenceFixture = (table: string, id: string, dataVersion: string, json: any) =>
+  referenceFixtures.set(referenceKey(table, id, dataVersion), {
+    id,
+    version: dataVersion,
+    json,
+    modifiedAt: '2026-10-14T00:00:00Z',
+    stateCode: 100,
+    ruleVerification: true,
+    userId: actorId,
+  });
+
+// These synthetic products use mass; the legacy implicit-zero product (14) has its own exact Flow.
+for (const flowNumber of [10, 11, 12, 14]) {
+  addReferenceFixture('flows', uuid(flowNumber), version, {
+    flowDataSet: {
+      flowInformation: { quantitativeReference: { referenceToReferenceFlowProperty: '0' } },
+      flowProperties: {
+        flowProperty: {
+          '@dataSetInternalID': '0',
+          referenceToFlowPropertyDataSet: {
+            '@refObjectId': referencePropertyId,
+            '@version': referencePropertyVersion,
+          },
+        },
+      },
+    },
+  });
+}
+addReferenceFixture('flowproperties', referencePropertyId, referencePropertyVersion, {
+  flowPropertyDataSet: {
+    flowPropertiesInformation: {
+      quantitativeReference: {
+        referenceToReferenceUnitGroup: {
+          '@refObjectId': referenceGroupId,
+          '@version': referenceGroupVersion,
+        },
+      },
+    },
+  },
+});
+addReferenceFixture('unitgroups', referenceGroupId, referenceGroupVersion, {
+  unitGroupDataSet: {
+    unitGroupInformation: { quantitativeReference: { referenceToReferenceUnit: '0' } },
+    units: { unit: { '@dataSetInternalID': '0', name: 'kg' } },
+  },
+});
+mockGetDataDetail.mockImplementation(async (id: string, dataVersion: string, table: string) => {
+  const data = referenceFixtures.get(referenceKey(table, id, dataVersion));
+  // Missing versions are unavailable, not an opportunity to borrow a latest fixture.
+  return data
+    ? { success: true, data: JSON.parse(JSON.stringify(data)) }
+    : { success: false, data: null };
+});
+
+const expectAnnualUnit = (jsonOrdered: any) => {
+  expect(
+    jsonToList(
+      jsonOrdered.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .annualSupplyOrProductionVolume,
+    ),
+  ).toEqual([{ '@xml:lang': 'en', '#text': '1 kg/year' }]);
+};
+const expectQualifiedAnnualProcess = (jsonOrdered: any) => {
+  expect(
+    createProcess(jsonOrdered, { mode: 'strict' }).validateEnhanced().validationIssues,
+  ).toEqual([]);
+  expectAnnualUnit(jsonOrdered);
+};
+const expectLegacyAnnualSnapshot = (snapshot: any, allocatedProviderIds: Set<string>) => {
+  // Historical sources and the primary draft are not promoted to fully qualified data here.
+  // Newly materialized allocated providers must still pass the installed strict SDK.
+  for (const row of snapshot.processes) {
+    expectAnnualUnit(row.json_ordered);
+    if (allocatedProviderIds.has(row.id)) expectQualifiedAnnualProcess(row.json_ordered);
+  }
+};
 const sqlJson = (value: unknown) => `'${JSON.stringify(value).replace(/'/g, "''")}'::jsonb`;
 const sql = (input: string) =>
   execFileSync(
@@ -106,6 +196,9 @@ async function prepare(
         : [],
   });
   if (!result.ok) throw new Error(`${result.code}: ${result.message}`);
+  for (const entry of result.plan.processMutations) {
+    if (entry.op !== 'delete') expectQualifiedAnnualProcess(entry.jsonOrdered);
+  }
   expect(
     result.plan.processMutations
       .filter((entry) => entry.op !== 'delete')
@@ -177,7 +270,25 @@ it('saves, updates, versions, retires and reloads real product providers atomica
   expect(sql('select max(version) from supabase_migrations.schema_migrations;').trim()).toBe(
     '20261009113000',
   );
+  expect(jest.isMockFunction(createProcess)).toBe(false);
+  expect(createProcess({}, { mode: 'strict' }).validateEnhanced().success).toBe(false);
+  expect(await getDataDetail(uuid(11), '99.00.000', 'flows')).toEqual({
+    success: false,
+    data: null,
+  });
   const created = await prepare('create');
+  expect(mockGetDataDetail).toHaveBeenCalledWith(uuid(11), version, 'flows');
+  expect(mockGetDataDetail).toHaveBeenCalledWith(uuid(12), version, 'flows');
+  expect(mockGetDataDetail).toHaveBeenCalledWith(
+    referencePropertyId,
+    referencePropertyVersion,
+    'flowproperties',
+  );
+  expect(mockGetDataDetail).toHaveBeenCalledWith(
+    referenceGroupId,
+    referenceGroupVersion,
+    'unitgroups',
+  );
   const old = created.plan.parent.jsonTg.submodels!;
   const updated = await prepare('update', old, version, 200);
   const versioned = await prepare('create', old, version, 200);
@@ -247,6 +358,7 @@ it('saves, updates, versions, retires and reloads real product providers atomica
   ).toBe(false);
   for (const snapshot of saved) {
     for (const provider of snapshot.processes) {
+      expectQualifiedAnnualProcess(provider.json_ordered);
       const references = jsonToList(
         provider.json_ordered.processDataSet.processInformation.technology
           .referenceToIncludedProcesses,
@@ -337,22 +449,26 @@ it.each([version, null])(
         downstreamProcess: { '@id': '0', '@flowUUID': connection.inputFlowId, '@version': version },
       })),
     };
-    const sourceRows = fixture.payload.instances.map((instance) => {
-      const data = JSON.parse(JSON.stringify(fixture.original));
-      data.processInformation.mathematicalRelations = undefined;
-      data.exchanges.exchange = instance.process.exchanges.map((entry) => ({
-        ...(entry.raw as any),
-        meanAmount: entry.amount,
-        resultingAmount: entry.amount,
-        referenceToVariable: undefined,
-        allocations: entry.allocations,
-        quantitativeReference: entry.internalId === instance.process.refExchangeInternalId,
-      }));
-      return {
-        id: instance.processId,
-        jsonOrdered: genProcessJsonOrdered(instance.processId, data),
-      };
-    });
+    const sourceRows = await Promise.all(
+      fixture.payload.instances.map(async (instance) => {
+        const data = JSON.parse(JSON.stringify(fixture.original));
+        data.processInformation.mathematicalRelations = undefined;
+        data.exchanges.exchange = instance.process.exchanges.map((entry) => ({
+          ...(entry.raw as any),
+          meanAmount: entry.amount,
+          resultingAmount: entry.amount,
+          referenceToVariable: undefined,
+          allocations: entry.allocations,
+          quantitativeReference: entry.internalId === instance.process.refExchangeInternalId,
+        }));
+        const jsonOrdered = await getProcessJsonOrderedForSave(instance.processId, data);
+        expectAnnualUnit(jsonOrdered);
+        return {
+          id: instance.processId,
+          jsonOrdered,
+        };
+      }),
+    );
     // Original downstream quantities match one source run; edits later increase Q and R demand.
     const downstreamExchanges = jsonToList(
       sourceRows[0].jsonOrdered.processDataSet.exchanges.exchange,
@@ -393,6 +509,7 @@ it.each([version, null])(
       insert into public.processes(id,json_ordered,user_id,state_code,model_id,model_version) values ('${primaryId}',${sqlJson(seedPrimary)}::json,'${actorId}',0,'${modelId}',${legacyModelVersion === null ? 'null' : `'${legacyModelVersion}'`});
     `);
       const storedLegacy = readSaved(version);
+      for (const row of storedLegacy.processes) expectAnnualUnit(row.json_ordered);
       expect(
         jsonToList(
           storedLegacy.model.json_ordered.lifeCycleModelDataSet.lifeCycleModelInformation.technology
@@ -477,6 +594,12 @@ it.each([version, null])(
         modelInfo: primaryInfo,
         data: { processDataSet: primaryData },
       });
+      const allocatedProviderIds = new Set<string>(
+        records
+          .filter((record) => record.modelInfo.type === 'allocated')
+          .map((record) => record.modelInfo.id),
+      );
+      expect(allocatedProviderIds.size).toBe(3);
       const upgrade = await buildSaveLifeCycleModelPersistencePlan({
         mode: 'update',
         modelId,
@@ -492,10 +615,17 @@ it.each([version, null])(
           .map((row: any) => ({ id: row.id, version: row.version, json: row.json })),
       });
       if (!upgrade.ok) throw new Error(upgrade.message);
+      for (const entry of upgrade.plan.processMutations) {
+        if (entry.op !== 'delete') {
+          expectAnnualUnit(entry.jsonOrdered);
+          if (allocatedProviderIds.has(entry.id)) expectQualifiedAnnualProcess(entry.jsonOrdered);
+        }
+      }
       isolatedTransaction(
         `set local role service_role; select private.save_lifecycle_model_bundle(${sqlJson({ ...upgrade.plan, actorUserId: actorId })});`,
       );
       const upgraded = readSaved(version);
+      expectLegacyAnnualSnapshot(upgraded, allocatedProviderIds);
       expect(upgraded.model.json_tg.xflow).toEqual(editorGraph);
       expect(
         upgraded.model.json_tg.submodels.filter((entry: any) => entry.type === 'allocated'),
@@ -526,6 +656,7 @@ it.each([version, null])(
         `set local role service_role; select private.save_lifecycle_model_bundle(${sqlJson({ ...createVersion, actorUserId: actorId })});`,
       );
       const versioned = readSaved(nextVersion);
+      expectLegacyAnnualSnapshot(versioned, allocatedProviderIds);
       const versionedAmount = replay(versioned);
       expect(versionedAmount).toBeCloseTo(125, 9);
       expect(versioned.model.json_tg.xflow).toEqual(editorGraph);

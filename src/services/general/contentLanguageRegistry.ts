@@ -26,6 +26,7 @@ export type ContentLanguageDefinition = {
   };
   generatedContent: {
     subproductPrefix: string;
+    annualSupplyTimeUnit: string;
   };
   serviceQuery: {
     status: ContentCapabilityStatus;
@@ -60,6 +61,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
     },
     generatedContent: {
       subproductPrefix: 'Subproduct: ',
+      annualSupplyTimeUnit: 'year',
     },
     serviceQuery: {
       status: 'native',
@@ -84,6 +86,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
     },
     generatedContent: {
       subproductPrefix: '子产品: ',
+      annualSupplyTimeUnit: '年',
     },
     serviceQuery: {
       status: 'native',
@@ -108,6 +111,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
     },
     generatedContent: {
       subproductPrefix: 'Nebenprodukt: ',
+      annualSupplyTimeUnit: 'Jahr',
     },
     serviceQuery: {
       status: 'declared-fallback',
@@ -132,6 +136,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
     },
     generatedContent: {
       subproductPrefix: 'Sous-produit : ',
+      annualSupplyTimeUnit: 'an',
     },
     serviceQuery: {
       status: 'declared-fallback',

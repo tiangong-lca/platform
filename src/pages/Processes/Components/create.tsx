@@ -34,6 +34,7 @@ import {
   ProcessImportData,
 } from '@/services/processes/data';
 import { ProcessForm } from './form';
+import { mergeProcessFormValues } from './formData';
 
 type TabKeysType = ProcessDataSetObjectKeys | 'validation' | 'complianceDeclarations';
 type FormProcessWithId = FormProcess & { id?: string };
@@ -94,33 +95,9 @@ const ProcessCreate: FC<CreateProps> = ({
   const intl = useIntl();
   const importedId = getImportedId(importData?.[0]);
 
-  const handletFromData = async () => {
+  const handletFromData = () => {
     const fieldsValue = formRefCreate.current?.getFieldsValue(true);
-    // if (fromData?.id)
-    if (activeTabKey === 'validation') {
-      await setFromData({
-        ...fromData,
-        modellingAndValidation: {
-          ...fromData?.modellingAndValidation,
-          validation: { ...fieldsValue?.modellingAndValidation?.validation },
-        },
-      } as FormProcessWithId);
-    } else if (activeTabKey === 'complianceDeclarations') {
-      await setFromData({
-        ...fromData,
-        modellingAndValidation: {
-          ...fromData?.modellingAndValidation,
-          complianceDeclarations: {
-            ...fieldsValue?.modellingAndValidation?.complianceDeclarations,
-          },
-        },
-      } as FormProcessWithId);
-    } else {
-      await setFromData({
-        ...fromData,
-        [activeTabKey]: fieldsValue?.[activeTabKey] ?? {},
-      } as FormProcessWithId);
-    }
+    setFromData((current) => mergeProcessFormValues(current, fieldsValue));
   };
 
   const reloadFromFirstPage = useCallback(async () => {
@@ -237,7 +214,13 @@ const ProcessCreate: FC<CreateProps> = ({
   }, [drawerVisible]);
 
   useEffect(() => {
-    setFromData({ ...fromData, exchanges: { exchange: exchangeDataSource } } as FormProcessWithId);
+    setFromData(
+      (current) =>
+        ({
+          ...current,
+          exchanges: { exchange: exchangeDataSource },
+        }) as FormProcessWithId,
+    );
   }, [exchangeDataSource]);
 
   return (
@@ -314,33 +297,7 @@ const ProcessCreate: FC<CreateProps> = ({
           <ProForm
             formRef={formRefCreate}
             initialValues={initData}
-            onValuesChange={async () => {
-              const allValues = formRefCreate.current!.getFieldsValue(true);
-              if (activeTabKey === 'validation') {
-                await setFromData({
-                  ...fromData,
-                  modellingAndValidation: {
-                    ...fromData?.modellingAndValidation,
-                    validation: { ...allValues?.modellingAndValidation?.validation },
-                  },
-                } as FormProcessWithId);
-              } else if (activeTabKey === 'complianceDeclarations') {
-                await setFromData({
-                  ...fromData,
-                  modellingAndValidation: {
-                    ...fromData?.modellingAndValidation,
-                    complianceDeclarations: {
-                      ...allValues?.modellingAndValidation?.complianceDeclarations,
-                    },
-                  },
-                } as FormProcessWithId);
-              } else {
-                await setFromData({
-                  ...fromData,
-                  [activeTabKey]: allValues[activeTabKey] ?? {},
-                } as FormProcessWithId);
-              }
-            }}
+            onValuesChange={handletFromData}
             submitter={{
               render: () => {
                 return [];
@@ -365,7 +322,8 @@ const ProcessCreate: FC<CreateProps> = ({
               }
 
               const processPayload = {
-                ...fromData,
+                ...mergeProcessFormValues(fromData, formRefCreate.current?.getFieldsValue(true)),
+                exchanges: { exchange: exchangeDataSource },
               };
               const result =
                 actionType === 'createVersion'

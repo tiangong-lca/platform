@@ -57,7 +57,8 @@ import {
   type ProcessDetailByVersionResponse,
   type ProcessTable,
 } from './data';
-import { genProcessJsonOrdered, genProcessName } from './util';
+import { genProcessName } from './util';
+import { getProcessJsonOrderedForSave } from './saveSerialization';
 import {
   matchesProcessExactSetClassification,
   matchesProcessExactSetKeyword,
@@ -362,7 +363,7 @@ export async function createProcess(
   modelId?: string,
   options?: NormalizeLangPayloadForSaveOptions & { allocationDraft?: boolean },
 ) {
-  const rawData = genProcessJsonOrdered(id, data);
+  const rawData = await getProcessJsonOrderedForSave(id, data);
   const normalizedResult = await normalizeLangPayloadForSave(rawData, options);
   const newData = normalizedResult?.payload ?? rawData;
   const validationError = normalizedResult?.validationError;
@@ -419,7 +420,7 @@ export async function createProcessVersion(
   modelId?: string,
   options?: NormalizeLangPayloadForSaveOptions & { allocationDraft?: boolean },
 ) {
-  const rawData = genProcessJsonOrdered(id, data);
+  const rawData = await getProcessJsonOrderedForSave(id, data);
   const normalizedResult = await normalizeLangPayloadForSave(rawData, options);
   const newData = normalizedResult?.payload ?? rawData;
   const validationError = normalizedResult?.validationError;
@@ -476,7 +477,7 @@ export async function updateProcess(
   modelId?: string,
   options?: NormalizeLangPayloadForSaveOptions & { allocationDraft?: boolean },
 ): Promise<UpdateProcessResult | undefined> {
-  const rawData = genProcessJsonOrdered(id, data);
+  const rawData = await getProcessJsonOrderedForSave(id, data);
   const normalizedResult = await normalizeLangPayloadForSave(rawData, options);
   const newData = normalizedResult?.payload ?? rawData;
   const validationError = normalizedResult?.validationError;

@@ -43,6 +43,21 @@ describe('contentLanguageRegistry', () => {
     ).toBe(true);
   });
 
+  it('declares annual unit time labels for every supported content language', () => {
+    // Fail-closed product snapshot: a new content language must declare its annual unit label.
+    expect(
+      CONTENT_LANGUAGE_REGISTRY.map(({ languageCode, generatedContent }) => [
+        languageCode,
+        generatedContent.annualSupplyTimeUnit,
+      ]),
+    ).toEqual([
+      ['en', 'year'],
+      ['zh', '年'],
+      ['de', 'Jahr'],
+      ['fr', 'an'],
+    ]);
+  });
+
   it.each([
     ['zh-CN', 'zh'],
     ['en_US', 'en'],

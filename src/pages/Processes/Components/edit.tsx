@@ -66,6 +66,7 @@ import type { FC } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import { ProcessForm } from './form';
+import { mergeProcessFormValues } from './formData';
 
 type TabKeysType = ProcessDataSetObjectKeys | 'validation' | 'complianceDeclarations';
 type FormProcessWithDatas = FormProcess & {
@@ -256,45 +257,18 @@ const ProcessEdit: FC<Props> = ({
   );
 
   const getCurrentProcessData = useCallback(() => {
-    const baseData = {
-      ...(initData ?? {}),
-      ...(fromData ?? {}),
-    } as FormProcessWithDatas;
+    const baseData = mergeProcessFormValues(initData, fromData);
 
     if (Object.keys(baseData).length === 0) {
       return undefined;
     }
 
-    const fieldsValue = formRefEdit.current?.getFieldsValue(true) ?? {};
-    const currentData = {
-      ...baseData,
-      ...fieldsValue,
-      exchanges: {
-        exchange: [...exchangeDataSource],
-      },
+    return {
+      ...mergeProcessFormValues(baseData, formRefEdit.current?.getFieldsValue(true)),
+      exchanges: { exchange: [...exchangeDataSource] },
       id,
     } as FormProcessWithDatas;
-
-    if (activeTabKey === 'validation') {
-      currentData.modellingAndValidation = {
-        ...baseData?.modellingAndValidation,
-        validation: {
-          ...fieldsValue?.modellingAndValidation?.validation,
-        },
-      };
-    } else if (activeTabKey === 'complianceDeclarations') {
-      currentData.modellingAndValidation = {
-        ...baseData?.modellingAndValidation,
-        complianceDeclarations: {
-          ...fieldsValue?.modellingAndValidation?.complianceDeclarations,
-        },
-      };
-    } else if (activeTabKey !== 'exchanges') {
-      currentData[activeTabKey] = fieldsValue?.[activeTabKey] ?? baseData?.[activeTabKey];
-    }
-
-    return currentData;
-  }, [activeTabKey, exchangeDataSource, fromData, id, initData]);
+  }, [exchangeDataSource, fromData, id, initData]);
 
   const handleLatestJsonChange = (latestJson: ProcessDetailData['json']) => {
     aiSuggestionDataRef.current = latestJson;
@@ -335,34 +309,11 @@ const ProcessEdit: FC<Props> = ({
     const dataSet = genProcessFromData(aiSuggestionDataRef.current?.processDataSet ?? {});
     applyProcessData({ ...dataSet, id }, { resetFields: true });
   };
-  const handletFromData = async () => {
-    if (fromData?.id) {
-      const fieldsValue = formRefEdit.current?.getFieldsValue(true);
-      if (activeTabKey === 'validation') {
-        await setFromData({
-          ...fromData,
-          modellingAndValidation: {
-            ...fromData?.modellingAndValidation,
-            validation: { ...fieldsValue?.modellingAndValidation?.validation },
-          },
-        });
-      } else if (activeTabKey === 'complianceDeclarations') {
-        await setFromData({
-          ...fromData,
-          modellingAndValidation: {
-            ...fromData?.modellingAndValidation,
-            complianceDeclarations: {
-              ...fieldsValue?.modellingAndValidation?.complianceDeclarations,
-            },
-          },
-        });
-      } else {
-        await setFromData({
-          ...fromData,
-          [activeTabKey]: fieldsValue?.[activeTabKey] ?? {},
-        });
-      }
-    }
+  const handletFromData = () => {
+    const fieldsValue = formRefEdit.current?.getFieldsValue(true);
+    setFromData((current) =>
+      current?.id ? mergeProcessFormValues(current, fieldsValue) : current,
+    );
   };
 
   const handletExchangeDataCreate = (data: ProcessExchangeData) => {
@@ -1287,33 +1238,10 @@ const ProcessEdit: FC<Props> = ({
             <ProForm
               formRef={formRefEdit}
               initialValues={initData}
-              onValuesChange={async (changedValues, changedFormValues) => {
+              onValuesChange={(changedValues, changedFormValues) => {
                 const allValues = formRefEdit.current?.getFieldsValue(true) ?? changedFormValues;
                 dismissChangedSdkValidationFields(changedValues);
-                if (activeTabKey === 'validation') {
-                  await setFromData({
-                    ...fromData,
-                    modellingAndValidation: {
-                      ...fromData?.modellingAndValidation,
-                      validation: { ...allValues?.modellingAndValidation?.validation },
-                    },
-                  } as FormProcessWithDatas);
-                } else if (activeTabKey === 'complianceDeclarations') {
-                  await setFromData({
-                    ...fromData,
-                    modellingAndValidation: {
-                      ...fromData?.modellingAndValidation,
-                      complianceDeclarations: {
-                        ...allValues?.modellingAndValidation?.complianceDeclarations,
-                      },
-                    },
-                  } as FormProcessWithDatas);
-                } else {
-                  await setFromData({
-                    ...fromData,
-                    [activeTabKey]: allValues[activeTabKey] ?? {},
-                  } as FormProcessWithDatas);
-                }
+                setFromData((current) => mergeProcessFormValues(current, allValues));
               }}
               submitter={{
                 render: () => {

@@ -10,6 +10,7 @@ import {
   genProcessName,
   genProcessNameJson,
 } from '@/services/processes/util';
+import { CONTENT_LANGUAGE_REGISTRY } from '@/services/general/contentLanguageRegistry';
 
 // Mock dependencies
 jest.mock('@/services/general/util', () => ({
@@ -477,6 +478,55 @@ describe('Process Utility Functions', () => {
       },
     };
 
+    it('preserves schema-path use advice and scientific siblings when serializing', () => {
+      const advice = [
+        { '@xml:lang': 'en', '#text': 'Use only for the documented production boundary.' },
+        { '@xml:lang': 'zh', '#text': '仅用于已说明的生产边界。' },
+      ];
+      const data = {
+        ...mockProcessData,
+        modellingAndValidation: {
+          LCIMethodAndAllocation: {
+            ...mockProcessData.modellingAndValidation.LCIMethodAndAllocation,
+            modellingConstants: [{ '@xml:lang': 'en', '#text': 'Cut-off documented.' }],
+            // This obsolete location must never override schema-owned advice.
+            useAdviceForDataSet: [{ '@xml:lang': 'en', '#text': 'Wrong location' }],
+          },
+          dataSourcesTreatmentAndRepresentativeness: {
+            useAdviceForDataSet: advice,
+            samplingProcedure: [{ '@xml:lang': 'en', '#text': 'Representative sample.' }],
+            dataCollectionPeriod: [{ '@xml:lang': 'en', '#text': 'Calendar year.' }],
+            uncertaintyAdjustments: [{ '@xml:lang': 'en', '#text': 'No adjustment.' }],
+          },
+          completeness: { completenessProductModel: 'All relevant flows quantified' },
+          validation: { review: [{ '@type': 'Not reviewed', 'common:reviewDetails': advice }] },
+          complianceDeclarations: {
+            compliance: [{ 'common:approvalOfOverallCompliance': 'Fully compliant' }],
+          },
+        },
+      };
+      const saved = genProcessJsonOrdered('test-id', data).processDataSet;
+      expect(saved.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness).toMatchObject(
+        data.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness,
+      );
+      expect(saved.modellingAndValidation.LCIMethodAndAllocation.modellingConstants).toEqual(
+        data.modellingAndValidation.LCIMethodAndAllocation.modellingConstants,
+      );
+      expect(saved.modellingAndValidation.validation.review['common:reviewDetails']).toEqual(
+        advice,
+      );
+      expect(saved.modellingAndValidation.complianceDeclarations.compliance).toMatchObject(
+        data.modellingAndValidation.complianceDeclarations.compliance[0],
+      );
+      expect(saved.processInformation.quantitativeReference.functionalUnitOrOther).toEqual(
+        mockProcessData.exchanges.exchange[1].functionalUnitOrOther,
+      );
+      expect(
+        genProcessFromData(saved).modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+          ?.useAdviceForDataSet,
+      ).toEqual(advice);
+    });
+
     it('should generate ordered process JSON with all sections', () => {
       const id = 'test-process-id';
       const result = genProcessJsonOrdered(id, mockProcessData);
@@ -549,7 +599,7 @@ describe('Process Utility Functions', () => {
       ).toBe('2');
     });
 
-    it('should normalize annual supply volume numeric text with the quantitative reference suffix', () => {
+    it('normalizes annual numeric text with the verified reference unit and keeps complete FU', () => {
       const dataWithAnnualSupplyVolume = {
         ...mockProcessData,
         modellingAndValidation: {
@@ -563,15 +613,17 @@ describe('Process Utility Functions', () => {
         },
       };
 
-      const result = genProcessJsonOrdered('test-id', dataWithAnnualSupplyVolume);
+      const result = genProcessJsonOrdered('test-id', dataWithAnnualSupplyVolume, {
+        annualSupplyVolumeUnit: 'kg',
+      });
 
       expect(
         result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
           .annualSupplyOrProductionVolume,
-      ).toEqual([{ '@xml:lang': 'en', '#text': '100 1 kg steel' }, { '#text': '200 1 kg steel' }]);
+      ).toEqual([{ '@xml:lang': 'en', '#text': '100 kg/year' }, { '#text': '200 kg/year' }]);
     });
 
-    it('should cap every localized annual supply volume value while saving', () => {
+    it('keeps annual values compact even when the reference description is long', () => {
       const dataWithLongAnnualSupplyContexts = {
         ...mockProcessData,
         exchanges: {
@@ -606,18 +658,25 @@ describe('Process Utility Functions', () => {
         },
       };
 
-      const result = genProcessJsonOrdered('test-id', dataWithLongAnnualSupplyContexts);
+      const result = genProcessJsonOrdered('test-id', dataWithLongAnnualSupplyContexts, {
+        annualSupplyVolumeUnit: 'kg',
+      });
       const annualSupplyValues =
         result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
           .annualSupplyOrProductionVolume;
 
-      expect(annualSupplyValues).toHaveLength(2);
-      expect(annualSupplyValues.map((item: { '#text': string }) => item['#text'].length)).toEqual([
-        500, 500,
+      expect(annualSupplyValues).toEqual([
+        { '@xml:lang': 'en', '#text': '100 kg/year' },
+        { '@xml:lang': 'zh', '#text': '100 kg/年' },
       ]);
-      expect(
-        annualSupplyValues.every((item: { '#text': string }) => item['#text'].endsWith('...')),
-      ).toBe(true);
+      const savedExchanges = result.processDataSet.exchanges.exchange;
+      const savedReference = (Array.isArray(savedExchanges) ? savedExchanges[0] : savedExchanges)
+        .referenceToFlowDataSet;
+      expect(savedReference['common:shortDescription']).toEqual(
+        dataWithLongAnnualSupplyContexts.exchanges.exchange[0].referenceToFlowDataSet[
+          'common:shortDescription'
+        ],
+      );
     });
 
     it('should preserve a previously resolved annual supply volume unit suffix while saving', () => {
@@ -641,7 +700,7 @@ describe('Process Utility Functions', () => {
         modellingAndValidation: {
           ...mockProcessData.modellingAndValidation,
           dataSourcesTreatmentAndRepresentativeness: {
-            annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '100 kg Steel' }],
+            annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '100 kg/year' }],
           },
         },
       };
@@ -651,7 +710,7 @@ describe('Process Utility Functions', () => {
       expect(
         result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
           .annualSupplyOrProductionVolume,
-      ).toEqual([{ '@xml:lang': 'en', '#text': '100 kg Steel' }]);
+      ).toEqual([{ '@xml:lang': 'en', '#text': '100 kg/year' }]);
     });
 
     it.each(['de', 'fr'])(
@@ -694,13 +753,13 @@ describe('Process Utility Functions', () => {
           result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
             .annualSupplyOrProductionVolume,
         ).toEqual([
-          { '@xml:lang': 'en', '#text': '100 kilogram Steel' },
+          { '@xml:lang': 'en', '#text': '100' },
           { '@xml:lang': targetLanguage, '#text': '100' },
         ]);
       },
     );
 
-    it('should save annual supply volume with a suffix even when no quantitative reference is selected', () => {
+    it('does not invent a unit when no quantitative reference is selected', () => {
       const dataWithoutRef = {
         ...mockProcessData,
         exchanges: {
@@ -735,7 +794,70 @@ describe('Process Utility Functions', () => {
       expect(
         result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
           .annualSupplyOrProductionVolume,
-      ).toEqual([{ '@xml:lang': 'en', '#text': '100 reference flow' }]);
+      ).toEqual([{ '@xml:lang': 'en', '#text': '100' }]);
+    });
+
+    it('preserves an annualized multiword unit until an exact resolved unit replaces it', () => {
+      const data = {
+        ...mockProcessData,
+        modellingAndValidation: {
+          dataSourcesTreatmentAndRepresentativeness: {
+            annualSupplyOrProductionVolume: [
+              { '@xml:lang': 'en', '#text': '12.5 metric ton/year' },
+            ],
+          },
+        },
+      };
+      const preserved = genProcessJsonOrdered('test-id', data);
+      expect(
+        preserved.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      ).toEqual([{ '@xml:lang': 'en', '#text': '12.5 metric ton/year' }]);
+      const resolved = genProcessJsonOrdered('test-id', data, { annualSupplyVolumeUnit: 'MJ' });
+      expect(
+        resolved.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      ).toEqual([{ '@xml:lang': 'en', '#text': '12.5 MJ/year' }]);
+    });
+
+    it.each(
+      CONTENT_LANGUAGE_REGISTRY.map(({ languageCode, generatedContent }) => [
+        languageCode,
+        generatedContent.annualSupplyTimeUnit,
+      ]),
+    )('serializes the exact unit with the %s annual time unit', (language, timeUnit) => {
+      const data = {
+        ...mockProcessData,
+        exchanges: {
+          exchange: mockProcessData.exchanges.exchange.map((exchange) => ({
+            ...exchange,
+            refUnitRes: { refUnitName: 'wrong-cache-unit' },
+          })),
+        },
+        modellingAndValidation: {
+          ...mockProcessData.modellingAndValidation,
+          dataSourcesTreatmentAndRepresentativeness: {
+            annualSupplyOrProductionVolume: [
+              { '@xml:lang': language, '#text': '100 old full functional unit' },
+            ],
+          },
+        },
+      };
+      const saved = genProcessJsonOrdered('test-id', data, {
+        annualSupplyVolumeUnit: 'g',
+      }).processDataSet;
+      expect(
+        saved.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      ).toEqual([{ '@xml:lang': language, '#text': `100 g/${timeUnit}` }]);
+      expect(saved.processInformation.quantitativeReference.functionalUnitOrOther).toEqual(
+        mockProcessData.exchanges.exchange[1].functionalUnitOrOther,
+      );
+      const unresolved = genProcessJsonOrdered('test-id', data).processDataSet;
+      expect(
+        unresolved.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      ).toEqual([{ '@xml:lang': language, '#text': '100' }]);
     });
 
     it('should use resultingAmount if not zero, otherwise use meanAmount', () => {

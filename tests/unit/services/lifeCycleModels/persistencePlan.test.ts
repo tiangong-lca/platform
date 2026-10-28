@@ -11,7 +11,7 @@ const {
 
 const mockNormalizeLangPayloadForSave = jest.fn();
 const mockJsonToList = jest.fn();
-const mockGenProcessJsonOrdered = jest.fn();
+const mockGetProcessJsonOrderedForSave = jest.fn();
 const mockGenReferenceToResultingProcess = jest.fn();
 
 jest.mock('@/services/general/api', () => ({
@@ -24,9 +24,9 @@ jest.mock('@/services/general/util', () => ({
   jsonToList: (...args: any[]) => mockJsonToList(...args),
 }));
 
-jest.mock('@/services/processes/util', () => ({
+jest.mock('@/services/processes/saveSerialization', () => ({
   __esModule: true,
-  genProcessJsonOrdered: (...args: any[]) => mockGenProcessJsonOrdered(...args),
+  getProcessJsonOrderedForSave: (...args: any[]) => mockGetProcessJsonOrderedForSave(...args),
 }));
 
 jest.mock('@/services/lifeCycleModels/util', () => ({
@@ -115,7 +115,7 @@ beforeEach(() => {
   mockJsonToList.mockImplementation((value: any) =>
     Array.isArray(value) ? value : value ? [value] : [],
   );
-  mockGenProcessJsonOrdered.mockImplementation((_id: string, data: any) => ({
+  mockGetProcessJsonOrderedForSave.mockImplementation((_id: string, data: any) => ({
     processDataSet: data,
   }));
   mockGenReferenceToResultingProcess.mockImplementation(

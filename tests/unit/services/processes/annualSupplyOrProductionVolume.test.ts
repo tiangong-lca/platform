@@ -8,6 +8,7 @@ import {
   formatAnnualSupplyVolumeText,
   getAnnualSupplyVolumeDisplayNumericText,
   getAnnualSupplyVolumeLanguages,
+  getAnnualSupplyVolumeStoredSuffix,
   mergeAnnualSupplyVolumeUnitRows,
   normalizeAnnualSupplyVolumeMultiLang,
   normalizeAnnualSupplyVolumeText,
@@ -186,9 +187,14 @@ describe('annualSupplyOrProductionVolume helpers', () => {
     ).toEqual(['en', 'zh', 'ja', 'fr']);
   });
 
-  it('preserves an existing unit prefix when the derived suffix only has reference flow text', () => {
-    expect(normalizeAnnualSupplyVolumeText('100 kg Steel', 'Steel')).toBe('100 kg Steel');
-    expect(normalizeAnnualSupplyVolumeText('100 old suffix', 'Steel')).toBe('100 Steel');
+  it('replaces legacy context and preserves only a conforming annual unit when lookup is unavailable', () => {
+    expect(normalizeAnnualSupplyVolumeText('100 narrative kg/year', 'kg/year')).toBe('100 kg/year');
+    expect(normalizeAnnualSupplyVolumeText('100 kg/year', '', { useDefaultSuffix: false })).toBe(
+      '100 kg/year',
+    );
+    expect(normalizeAnnualSupplyVolumeText('100 kg/年', '', { useDefaultSuffix: false })).toBe(
+      '100 kg/年',
+    );
     expect(normalizeAnnualSupplyVolumeText('100 old suffix', '', { useDefaultSuffix: false })).toBe(
       '100',
     );
@@ -230,8 +236,8 @@ describe('annualSupplyOrProductionVolume helpers', () => {
       lang: 'en',
     });
 
-    expect(suffix).toBe('kg Steel slab');
-    expect(normalizeAnnualSupplyVolumeText('100 old suffix', suffix)).toBe('100 kg Steel slab');
+    expect(suffix).toBe('kg/year');
+    expect(normalizeAnnualSupplyVolumeText('100 old suffix', suffix)).toBe('100 kg/year');
     expect(ANNUAL_SUPPLY_VOLUME_TEXT_PATTERN.test('100 kg Steel slab')).toBe(true);
   });
 
@@ -253,7 +259,7 @@ describe('annualSupplyOrProductionVolume helpers', () => {
         ],
         lang: 'en',
       }),
-    ).toBe('kilogram Steel slab');
+    ).toBe('kilogram/year');
   });
 
   it('builds unit lookup rows and merges resolved flow units into exchange rows', () => {
@@ -310,7 +316,6 @@ describe('annualSupplyOrProductionVolume helpers', () => {
       },
       {
         ...exchangeRows[1],
-        refUnitRes: { refUnitName: 'm3' },
       },
     ]);
 
@@ -343,7 +348,7 @@ describe('annualSupplyOrProductionVolume helpers', () => {
         ],
         lang: 'en',
       }),
-    ).toBe('kg annual output');
+    ).toBe('kg/year');
 
     expect(
       deriveAnnualSupplyVolumeSuffix({
@@ -362,7 +367,7 @@ describe('annualSupplyOrProductionVolume helpers', () => {
         ],
         lang: 'en',
       }),
-    ).toBe('kg functional unit');
+    ).toBe('kg/year');
   });
 
   it('does not use an undeclared reference-flow language and leaves suffix blank when none is selected', () => {
@@ -402,5 +407,81 @@ describe('annualSupplyOrProductionVolume helpers', () => {
         lang: 'en',
       }),
     ).toBe('');
+  });
+});
+
+describe('annual unit display and stored-value boundaries', () => {
+  it.each([
+    ['kilogram', 'kilogram/year'],
+    [{ '#text': 'kilogram' }, 'kilogram/year'],
+    [123, ''],
+    [undefined, ''],
+  ])(
+    'handles supported and malformed unit display shapes %# without borrowing Flow or FU text',
+    (name, expected) => {
+      expect(
+        deriveAnnualSupplyVolumeSuffix({
+          exchangeDataSource: [
+            {
+              quantitativeReference: true,
+              referenceToFlowDataSet: {
+                'common:shortDescription': [
+                  { '@xml:lang': 'en', '#text': 'Full product description' },
+                ],
+              },
+              refUnitRes: { name },
+              functionalUnitOrOther: { '#text': 'Complete functional unit' },
+            },
+          ],
+          lang: 'en',
+        }),
+      ).toBe(expected);
+    },
+  );
+  it('keeps an existing unsupported language only under its exact stored tag', () => {
+    const annual = { '@xml:lang': 'ja', '#text': '100 kg/year' };
+    expect(getAnnualSupplyVolumeStoredSuffix(annual, 'ja')).toBe('kg/year');
+    expect(getAnnualSupplyVolumeStoredSuffix(annual, 'de-DE')).toBe('');
+    expect(
+      deriveAnnualSupplyVolumeSuffix({
+        exchangeDataSource: [
+          {
+            quantitativeReference: true,
+            referenceToFlowDataSet: {},
+            refUnitRes: { refUnitName: 'kg' },
+          },
+        ],
+        lang: 'ja',
+      }),
+    ).toBe('');
+  });
+});
+
+describe('schema-compatible annualized suffix preservation', () => {
+  it('preserves a multiword unit when unavailable, but an exact unit overrides it', () => {
+    expect(
+      normalizeAnnualSupplyVolumeText('100 metric ton/year', '', { useDefaultSuffix: false }),
+    ).toBe('100 metric ton/year');
+    expect(
+      getAnnualSupplyVolumeStoredSuffix(
+        [{ '@xml:lang': 'en', '#text': '100 metric ton/year' }],
+        'en',
+      ),
+    ).toBe('metric ton/year');
+    expect(
+      normalizeAnnualSupplyVolumeText('100 metric ton/year', 'MJ/year', {
+        useDefaultSuffix: false,
+      }),
+    ).toBe('100 MJ/year');
+  });
+  it.each([
+    '100 kg full functional unit description',
+    '100 metric ton',
+    '100 unit\ncontinued/year',
+  ])('does not preserve unannualized or multiline narrative %s', (value) => {
+    expect(normalizeAnnualSupplyVolumeText(value, '', { useDefaultSuffix: false })).toBe('100');
+    expect(getAnnualSupplyVolumeStoredSuffix([{ '@xml:lang': 'en', '#text': value }], 'en')).toBe(
+      '',
+    );
   });
 });

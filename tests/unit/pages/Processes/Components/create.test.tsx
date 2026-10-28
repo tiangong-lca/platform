@@ -258,6 +258,146 @@ describe('ProcessCreate component', () => {
     mockCreateProcessVersion.mockResolvedValue({ data: { id: 'generated-id' } });
   });
 
+  it.each(['create', 'copy', 'createVersion'])(
+    'preserves complete scientific data through partial modelling form snapshots in %s',
+    async (actionType) => {
+      const scientificData = {
+        processInformation: {
+          dataSetInformation: {
+            'common:generalComment': [{ '@xml:lang': 'en', '#text': 'Boundary.' }],
+          },
+          technology: {
+            technologyDescriptionAndIncludedProcesses: [
+              { '@xml:lang': 'en', '#text': 'Production technology.' },
+            ],
+          },
+          time: {
+            'common:referenceYear': '2025',
+            'common:timeRepresentativenessDescription': [
+              { '@xml:lang': 'en', '#text': 'Year boundary.' },
+            ],
+          },
+          geography: {
+            locationOfOperationSupplyOrProduction: {
+              '@location': 'CN',
+              descriptionOfRestrictions: [{ '@xml:lang': 'en', '#text': 'Regional boundary.' }],
+            },
+          },
+        },
+        modellingAndValidation: {
+          LCIMethodAndAllocation: {
+            modellingConstants: [{ '@xml:lang': 'en', '#text': 'Cut-off.' }],
+          },
+          dataSourcesTreatmentAndRepresentativeness: {
+            useAdviceForDataSet: [
+              { '@xml:lang': 'en', '#text': 'Use within the documented boundary.' },
+            ],
+            annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '100 kg/year' }],
+            samplingProcedure: [{ '@xml:lang': 'en', '#text': 'Sample.' }],
+            dataCutOffAndCompletenessPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Coverage principle.' },
+            ],
+            deviationsFromCutOffAndCompletenessPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Coverage exceptions.' },
+            ],
+            dataSelectionAndCombinationPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Selection principle.' },
+            ],
+            deviationsFromSelectionAndCombinationPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Selection exceptions.' },
+            ],
+            dataTreatmentAndExtrapolationsPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Treatment principle.' },
+            ],
+            deviationsFromTreatmentAndExtrapolationPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Treatment exceptions.' },
+            ],
+            dataCollectionPeriod: [{ '@xml:lang': 'en', '#text': 'Annual collection.' }],
+            uncertaintyAdjustments: [{ '@xml:lang': 'en', '#text': 'Uncertainty basis.' }],
+          },
+          completeness: { completenessProductModel: 'All relevant flows quantified' },
+          validation: { review: [{ '@type': 'Not reviewed' }] },
+          complianceDeclarations: {
+            compliance: [{ 'common:approvalOfOverallCompliance': 'Fully compliant' }],
+          },
+        },
+        administrativeInformation: {
+          publicationAndOwnership: { 'common:dataSetVersion': '01.01.000' },
+        },
+        exchanges: {
+          exchange: [
+            {
+              '@dataSetInternalID': '0',
+              quantitativeReference: true,
+              meanAmount: '1',
+              functionalUnitOrOther: [
+                { '@xml:lang': 'en', '#text': '1 kg product at the factory gate.' },
+              ],
+            },
+          ],
+        },
+        LCIAResults: { LCIAResult: [{ meanAmount: '0.5' }] },
+      };
+      mockGenProcessFromData.mockReturnValue(scientificData);
+      mockGetProcessDetail.mockResolvedValue({ data: { json: { processDataSet: {} } } });
+      render(
+        <ProcessCreate
+          {...baseProps}
+          actionType={actionType}
+          id='process-1'
+          version='01.01.000'
+          importData={actionType === 'create' ? [{ processDataSet: {} }] : undefined}
+        />,
+      );
+      if (actionType !== 'create')
+        fireEvent.click(
+          screen.getByRole('button', { name: actionType === 'copy' ? /copy-icon/ : 'create' }),
+        );
+      await waitFor(() =>
+        expect(latestProcessFormProps?.exchangeDataSource).toEqual(
+          scientificData.exchanges.exchange,
+        ),
+      );
+      await act(async () => {
+        latestProcessFormProps.onTabChange('modellingAndValidation');
+      });
+      const updatedSampling = [{ '@xml:lang': 'en', '#text': 'Updated sample.' }];
+      // Model the mounted tab returning only its registered fields.
+      await act(async () => {
+        proFormApi.setFieldsValue({
+          modellingAndValidation: {
+            dataSourcesTreatmentAndRepresentativeness: { samplingProcedure: updatedSampling },
+          },
+        });
+        triggerValuesChange?.({}, {});
+        await latestProcessFormProps.onData();
+      });
+      // Programmatic form changes must also be read by the final Save.
+      proFormApi.setFieldsValue({
+        processInformation: { technology: { technologyDescriptionAndIncludedProcesses: [] } },
+      });
+      await act(async () => {
+        await proFormApi.submit();
+      });
+      const save = actionType === 'createVersion' ? mockCreateProcessVersion : mockCreateProcess;
+      const payload = save.mock.calls[0][actionType === 'createVersion' ? 2 : 1];
+      expect(payload).toMatchObject({
+        ...scientificData,
+        processInformation: {
+          ...scientificData.processInformation,
+          technology: { technologyDescriptionAndIncludedProcesses: [] },
+        },
+        modellingAndValidation: {
+          ...scientificData.modellingAndValidation,
+          dataSourcesTreatmentAndRepresentativeness: {
+            ...scientificData.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness,
+            samplingProcedure: updatedSampling,
+          },
+        },
+      });
+    },
+  );
+
   it('submits new process and normalizes allocations when no fraction is set', async () => {
     render(<ProcessCreate {...baseProps} />);
 

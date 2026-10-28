@@ -5,8 +5,8 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "7dd340b7deef8ad41301a9313bf37119289c70894e43f7f1be902c3fa2815933",
-    "auditedInputDigest": "92e38ffc096b620f1b18a0eb1dae2a895ce15208102f406eb9879e266116cf58"
+    "sourceManifestDigest": "84650ec520469589fc49152f041d9c0ce85a90eb1565fa58d6fb18ba68214fae",
+    "auditedInputDigest": "b75d02739a7def70a49d08258477f6f52f048dbc4624e000c942da1dc5f1a7cc"
   },
   "inventory": {
     "sourceMessageCount": 3614,
@@ -47,7 +47,7 @@
     "messageCount": 3614,
     "completeCount": 3614,
     "blockedCount": 0,
-    "dossierDigest": "a26b29ba585ca67d5f573f7f87815e486761220e9954d4eb0813784d37133861",
+    "dossierDigest": "a72b12564ab0dd28df1946c2ba54d6b185ec9912bcbffc54f01856e161477dd9",
     "catalogDigest": "9fb928731975e3b4fc93c63d77f9cc3d65117cd8ce2538e5eeb8785eb2d943d8",
     "moduleCount": 32,
     "moduleDigest": "3b4f2df2201d552cc6e09b75bcebf64a30ac3511d401d79c50d4eb6e806195d3",
@@ -1305,7 +1305,7 @@
   },
   "inputs": {
     "src/services/general/localeRegistry.ts": "8e6aed3f617d3cb021e73676296a5d2eb7846e35c8515d34766aaa86fabf77fb",
-    "src/services/general/contentLanguageRegistry.ts": "c5e1ef5afbad36dfce86d327801390e0347707c1ad8126c45064e913fbf406a4",
+    "src/services/general/contentLanguageRegistry.ts": "49ae27f2bf3865b345c7e33b3770a5ac6bc6507c471df917ea5d20d6f63ec071",
     "src/services/general/localeCapabilities.ts": "d8903f58f8b5582bb4a491a8724b9ba5b8adf93f5f48dcfc7c908bb4eaa5dcd7",
     "src/services/referenceResources/manifest.ts": "ef7cb96ab189b86abc21060ad002ebabf1372c73904918994a6fe36b541f85fc",
     "src/services/referenceResources/reference-resource-manifest.json": "f4905a73cd7aa6cc2414533bdf432d0f4b420879d2251e3751ffbead9dab5f8a",
@@ -1322,5 +1322,5 @@
     "docs/plans/i18n-fr-FR/style-guide.md": "3b651e352a50676ed7f6609dcad88145dbd6a9ad81177ad261526b59d7bf4db4"
   },
   "blockedContext": [],
-  "contextDigest": "48b739f115e56087da38d900a2343042c0af7eaef07055e47d71a51b5d04beeb"
+  "contextDigest": "f236cb6f2db0ab26a01a79a4cbfac16da0ea5ec5260ff3b6afd0f3af1019c623"
 }

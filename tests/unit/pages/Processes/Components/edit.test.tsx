@@ -485,6 +485,153 @@ describe('ProcessEdit component', () => {
     mockValidateEnhanced.mockReturnValue({ success: true });
   });
 
+  it.each(['save', 'review'])(
+    'preserves complete scientific data and explicit clears before %s',
+    async (action) => {
+      const scientificData = {
+        processInformation: {
+          dataSetInformation: {
+            'common:generalComment': [{ '@xml:lang': 'en', '#text': 'Boundary.' }],
+          },
+          technology: {
+            technologyDescriptionAndIncludedProcesses: [
+              { '@xml:lang': 'en', '#text': 'Production technology.' },
+            ],
+          },
+          time: {
+            'common:referenceYear': '2025',
+            'common:timeRepresentativenessDescription': [
+              { '@xml:lang': 'en', '#text': 'Year boundary.' },
+            ],
+          },
+          geography: {
+            locationOfOperationSupplyOrProduction: {
+              '@location': 'CN',
+              descriptionOfRestrictions: [{ '@xml:lang': 'en', '#text': 'Regional boundary.' }],
+            },
+          },
+        },
+        modellingAndValidation: {
+          LCIMethodAndAllocation: {
+            modellingConstants: [{ '@xml:lang': 'en', '#text': 'Cut-off.' }],
+          },
+          dataSourcesTreatmentAndRepresentativeness: {
+            useAdviceForDataSet: [
+              { '@xml:lang': 'en', '#text': 'Use within the documented boundary.' },
+            ],
+            annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '100 kg/year' }],
+            samplingProcedure: [{ '@xml:lang': 'en', '#text': 'Sample.' }],
+            dataCutOffAndCompletenessPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Coverage principle.' },
+            ],
+            deviationsFromCutOffAndCompletenessPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Coverage exceptions.' },
+            ],
+            dataSelectionAndCombinationPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Selection principle.' },
+            ],
+            deviationsFromSelectionAndCombinationPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Selection exceptions.' },
+            ],
+            dataTreatmentAndExtrapolationsPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Treatment principle.' },
+            ],
+            deviationsFromTreatmentAndExtrapolationPrinciples: [
+              { '@xml:lang': 'en', '#text': 'Treatment exceptions.' },
+            ],
+            dataCollectionPeriod: [{ '@xml:lang': 'en', '#text': 'Annual collection.' }],
+            uncertaintyAdjustments: [{ '@xml:lang': 'en', '#text': 'Uncertainty basis.' }],
+          },
+          completeness: { completenessProductModel: 'All relevant flows quantified' },
+          validation: { review: [{ '@type': 'Not reviewed' }] },
+          complianceDeclarations: {
+            compliance: [{ 'common:approvalOfOverallCompliance': 'Fully compliant' }],
+          },
+        },
+        administrativeInformation: {
+          publicationAndOwnership: { 'common:dataSetVersion': '01.01.000' },
+        },
+        exchanges: {
+          exchange: [
+            {
+              '@dataSetInternalID': '0',
+              quantitativeReference: true,
+              meanAmount: '1',
+              functionalUnitOrOther: [
+                { '@xml:lang': 'en', '#text': '1 kg product at the factory gate.' },
+              ],
+            },
+          ],
+        },
+        LCIAResults: { LCIAResult: [{ meanAmount: '0.5' }] },
+      };
+      mockGenProcessFromData.mockImplementation((data) =>
+        data === processDataset ? scientificData : data,
+      );
+      mockUpdateProcess.mockImplementation(async (_id, _version, payload) => ({
+        data: [
+          {
+            id: 'process-1',
+            version: '1.0.0',
+            json: { processDataSet: payload },
+            state_code: 10,
+            rule_verification: true,
+          },
+        ],
+      }));
+      render(<ProcessEdit {...baseProps} />);
+      fireEvent.click(screen.getByRole('button'));
+      await waitFor(() =>
+        expect(latestProcessFormProps?.exchangeDataSource).toEqual(
+          scientificData.exchanges.exchange,
+        ),
+      );
+      await act(async () => {
+        latestProcessFormProps.onTabChange('modellingAndValidation');
+      });
+      const updatedSampling = [{ '@xml:lang': 'en', '#text': 'Updated sample.' }];
+      await act(async () => {
+        proFormApi.setFieldsValue({
+          modellingAndValidation: {
+            dataSourcesTreatmentAndRepresentativeness: { samplingProcedure: updatedSampling },
+          },
+        });
+        triggerValuesChange?.({}, {});
+        await latestProcessFormProps.onData();
+      });
+      proFormApi.setFieldsValue({
+        processInformation: { technology: { technologyDescriptionAndIncludedProcesses: [] } },
+      });
+      if (action === 'save')
+        await act(async () => {
+          await proFormApi.submit();
+        });
+      else {
+        fireEvent.click(screen.getByRole('button', { name: 'Submit for Review' }));
+      }
+      await waitFor(() =>
+        expect(mockSubmitDatasetReview).toHaveBeenCalledTimes(action === 'review' ? 1 : 0),
+      );
+      expect(mockUpdateProcess.mock.calls[0][2]).toMatchObject({
+        ...scientificData,
+        processInformation: {
+          ...scientificData.processInformation,
+          technology: { technologyDescriptionAndIncludedProcesses: [] },
+        },
+        modellingAndValidation: {
+          ...scientificData.modellingAndValidation,
+          dataSourcesTreatmentAndRepresentativeness: {
+            ...scientificData.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness,
+            samplingProcedure: updatedSampling,
+          },
+        },
+      });
+      expect(mockUpdateProcess.mock.invocationCallOrder[0]).toBeLessThan(
+        mockSubmitDatasetReview.mock.invocationCallOrder[0] ?? Infinity,
+      );
+    },
+  );
+
   it('loads process data and submits updates successfully', async () => {
     render(<ProcessEdit {...baseProps} />);
 

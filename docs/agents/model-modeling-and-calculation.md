@@ -203,6 +203,8 @@ h = C g
 
 ## 9. 编辑、计算与保存
 
+生成 Process 的保存计划在完成旧记录字段覆盖后，复用 Process 保存准备逻辑，按精确版本的参考 Flow、FlowProperty 和 UnitGroup 解析年度量单位。该步骤规范年度量文本，不改变计算数量、分配、provider 身份或 bundle 保存协议。
+
 Model 的数据有三种相互关联的表达：
 
 | 表达     | 内容                                           | 用途                         |

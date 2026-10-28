@@ -1,15 +1,17 @@
 import { normalizeSupportedContentLanguage } from '@/services/general/contentLanguageRegistry';
-import { getExactLangText, getUnitData } from '@/services/general/util';
+import { getExactLangText } from '@/services/general/util';
 import {
   ANNUAL_SUPPLY_VOLUME_NUMERIC_TEXT_PATTERN,
   ANNUAL_SUPPLY_VOLUME_TEXT_PATTERN,
   buildAnnualSupplyVolumeMultiLang,
-  buildAnnualSupplyVolumeUnitLookupRows,
   deriveAnnualSupplyVolumeSuffix,
   getAnnualSupplyVolumeDisplayNumericText,
   getAnnualSupplyVolumeLanguages,
+  getAnnualSupplyVolumeStoredSuffix,
+  getQuantitativeReferenceExchange,
   mergeAnnualSupplyVolumeUnitRows,
 } from '@/services/processes/annualSupplyOrProductionVolume';
+import { getAnnualSupplyVolumeUnitRows } from '@/services/processes/annualSupplyVolumeUnit';
 import type { ProcessExchangeData } from '@/services/processes/data';
 import type { ProFormInstance } from '@ant-design/pro-components';
 import { Form, Input, InputNumber, Space, theme } from 'antd';
@@ -41,8 +43,24 @@ const AnnualSupplyOrProductionVolumeForm: FC<Props> = ({
 }) => {
   const intl = useIntl();
   const { token } = theme.useToken();
-  const [exchangeDataSourceWithUnits, setExchangeDataSourceWithUnits] =
-    useState(exchangeDataSource);
+  const [resolvedUnits, setResolvedUnits] = useState<{
+    source: ProcessExchangeData[];
+    exchanges: ProcessExchangeData[];
+  }>();
+  // Table display caches have no exact Flow identity; only this lookup proves their unit.
+  const exchangesWithoutCachedUnits = useMemo(
+    () =>
+      exchangeDataSource.map((exchange) => {
+        const { refUnitRes: _cachedUnit, ...withoutUnit } = exchange;
+        void _cachedUnit;
+        return withoutUnit;
+      }),
+    [exchangeDataSource],
+  );
+  const exchangeDataSourceWithUnits =
+    resolvedUnits?.source === exchangeDataSource
+      ? resolvedUnits.exchanges
+      : exchangesWithoutCachedUnits;
   const form = formRef?.current;
   const formValues = typeof form?.getFieldValue === 'function' ? form.getFieldValue(name) : [];
   const hasStoredFormValue = Array.isArray(formValues)
@@ -57,14 +75,15 @@ const AnnualSupplyOrProductionVolumeForm: FC<Props> = ({
 
   const suffixByLang = useMemo(() => {
     return annualSupplyVolumeLangs.reduce<Record<string, string>>((accumulator, language) => {
-      accumulator[language] = deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: exchangeDataSourceWithUnits,
-        getLangText: getExactLangText,
-        lang: language,
-      });
+      accumulator[language] =
+        deriveAnnualSupplyVolumeSuffix({
+          exchangeDataSource: exchangeDataSourceWithUnits,
+          getLangText: getExactLangText,
+          lang: language,
+        }) || getAnnualSupplyVolumeStoredSuffix(formValues, language);
       return accumulator;
     }, {});
-  }, [annualSupplyVolumeLangs, exchangeDataSourceWithUnits]);
+  }, [annualSupplyVolumeLangs, exchangeDataSourceWithUnits, formValues]);
 
   const getSuffixForLang = useCallback(
     (value: string) => {
@@ -78,26 +97,31 @@ const AnnualSupplyOrProductionVolumeForm: FC<Props> = ({
   const currentSuffix = getSuffixForLang(lang);
 
   useEffect(() => {
-    setExchangeDataSourceWithUnits(exchangeDataSource);
-
-    const unitLookupRows = buildAnnualSupplyVolumeUnitLookupRows(exchangeDataSource);
-    const hasReferenceFlow = unitLookupRows.some((row) => row.referenceToFlowDataSetId);
-
-    if (!hasReferenceFlow) {
-      return;
-    }
-
-    getUnitData('flow', unitLookupRows).then(
+    const exchange = getQuantitativeReferenceExchange(exchangeDataSource);
+    const reference = Array.isArray(exchange?.referenceToFlowDataSet)
+      ? exchange.referenceToFlowDataSet[0]
+      : exchange?.referenceToFlowDataSet;
+    if (!reference?.['@refObjectId'] || !reference?.['@version']) return;
+    let ignore = false;
+    getAnnualSupplyVolumeUnitRows(exchangeDataSource).then(
       (unitRows) => {
-        setExchangeDataSourceWithUnits(
-          mergeAnnualSupplyVolumeUnitRows(exchangeDataSource, unitRows),
-        );
+        if (!ignore) {
+          setResolvedUnits({
+            source: exchangeDataSource,
+            exchanges: mergeAnnualSupplyVolumeUnitRows(exchangesWithoutCachedUnits, unitRows),
+          });
+        }
       },
       () => {
-        setExchangeDataSourceWithUnits(exchangeDataSource);
+        if (!ignore) {
+          setResolvedUnits({ source: exchangeDataSource, exchanges: exchangesWithoutCachedUnits });
+        }
       },
     );
-  }, [exchangeDataSource]);
+    return () => {
+      ignore = true;
+    };
+  }, [exchangeDataSource, exchangesWithoutCachedUnits]);
 
   useEffect(() => {
     if (!form || typeof form.setFieldValue !== 'function' || !hasStoredFormValue) {

@@ -85,6 +85,8 @@ Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `Cal
 | 6 | `util_calculate.ts` | allocated provider records, independent result records, LCIA via existing evidence path, standard instance projection |
 | 7 | `api.ts` | persistence plan, bundle save (unchanged schema), save-status mapping: authoritative rejection → `SAVE_REJECTED`; transport failures or unparseable response bodies → `SAVE_STATUS_UNKNOWN` (never a definite rejection without evidence) |
 
+Generated Process mutations use `processes/saveSerialization.ts` after the final old-record metadata override, before language normalization and SDK validation. This shared preparation resolves the exact reference unit for annual-volume text; it does not change calculated quantities, allocation, provider identity or bundle persistence.
+
 ## Calculation Semantics
 
 - The system is demand-driven: the ★ reference target is the final demand `y` of the reference view; every other view is driven by connected consumers. Cycles enter the equations fully; nothing breaks edges.

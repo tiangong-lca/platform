@@ -89,6 +89,11 @@ jest.mock('@/services/lifeCycleModels/api', () => ({
 
 const mockGenProcessJsonOrdered = jest.fn();
 const mockGenProcessName = jest.fn();
+const mockGetAnnualSupplyVolumeUnitRows = jest.fn();
+
+jest.mock('@/services/processes/annualSupplyVolumeUnit', () => ({
+  getAnnualSupplyVolumeUnitRows: (...args: any[]) => mockGetAnnualSupplyVolumeUnitRows(...args),
+}));
 
 jest.mock('@/services/processes/util', () => ({
   __esModule: true,
@@ -204,6 +209,7 @@ beforeEach(() => {
   mockGetLifeCyclesByIdAndVersion.mockReset();
   mockGenProcessJsonOrdered.mockReset();
   mockGenProcessName.mockReset();
+  mockGetAnnualSupplyVolumeUnitRows.mockReset().mockResolvedValue([]);
   mockClassificationToString.mockReset();
   mockGenClassificationZH.mockReset();
   mockGetLangText.mockReset();
@@ -468,6 +474,163 @@ describe('createProcess', () => {
       count: null,
     });
     expect(mockFrom).not.toHaveBeenCalled();
+  });
+});
+
+describe('annual unit at the process save boundary', () => {
+  const save = (action: string, data: any) => {
+    if (action === 'create') return processesApi.createProcess(sampleId, data);
+    if (action === 'createVersion')
+      return processesApi.createProcessVersion(sampleId, sampleVersion, data);
+    return processesApi.updateProcess(sampleId, sampleVersion, data);
+  };
+  const reference = {
+    '@dataSetInternalID': '0',
+    quantitativeReference: true,
+    referenceToFlowDataSet: { '@refObjectId': 'flow-current', '@version': '02.00.000' },
+    functionalUnitOrOther: [{ '@xml:lang': 'en', '#text': 'One complete functional unit.' }],
+    refUnitRes: { refUnitName: 'stale-unit' },
+  };
+  const processData = {
+    exchanges: { exchange: [reference] },
+    modellingAndValidation: {
+      dataSourcesTreatmentAndRepresentativeness: {
+        annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '12.5 kg/year' }],
+      },
+    },
+  };
+
+  it.each(['create', 'createVersion', 'update'])(
+    'resolves the current reference unit before %s even when the annual tab was not visited',
+    async (action) => {
+      mockGetAnnualSupplyVolumeUnitRows.mockResolvedValue([
+        {
+          referenceToFlowDataSetId: 'flow-current',
+          referenceToFlowDataSetVersion: '01.00.000',
+          refUnitRes: { refUnitName: 'wrong-version-unit' },
+        },
+        {
+          referenceToFlowDataSetId: 'flow-current',
+          referenceToFlowDataSetVersion: '02.00.000',
+          refUnitRes: { refUnitName: 'MJ' },
+        },
+      ]);
+      const unchanged = JSON.stringify(processData);
+      await save(action, processData);
+      expect(mockGetAnnualSupplyVolumeUnitRows).toHaveBeenCalledWith([reference]);
+      expect(mockGenProcessJsonOrdered).toHaveBeenCalledWith(sampleId, processData, {
+        annualSupplyVolumeUnit: 'MJ',
+      });
+      expect(JSON.stringify(processData)).toBe(unchanged);
+    },
+  );
+
+  it('does not use a mismatched or missing exact unit as serializer evidence', async () => {
+    mockGetAnnualSupplyVolumeUnitRows.mockResolvedValue([
+      {
+        referenceToFlowDataSetId: 'flow-current',
+        referenceToFlowDataSetVersion: '01.00.000',
+        refUnitRes: { refUnitName: 'wrong-version-unit' },
+      },
+    ]);
+    await save('createVersion', processData);
+    expect(mockGenProcessJsonOrdered).toHaveBeenCalledWith(sampleId, processData);
+  });
+
+  it.each(['create', 'createVersion', 'update'])(
+    'passes the complete prepared payload through normalization, validation and the %s command unchanged',
+    async (action) => {
+      const prepared = {
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: { 'common:UUID': sampleId },
+            quantitativeReference: { functionalUnitOrOther: reference.functionalUnitOrOther },
+          },
+          modellingAndValidation: {
+            LCIMethodAndAllocation: {
+              modellingConstants: [{ '@xml:lang': 'en', '#text': 'Cut-off.' }],
+            },
+            dataSourcesTreatmentAndRepresentativeness: {
+              annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '12.5 MJ/year' }],
+              useAdviceForDataSet: [{ '@xml:lang': 'en', '#text': 'Use within the boundary.' }],
+            },
+            validation: { review: { '@type': 'Not reviewed' } },
+            complianceDeclarations: {
+              compliance: { 'common:approvalOfOverallCompliance': 'Not defined' },
+            },
+          },
+          administrativeInformation: {
+            dataEntryBy: { 'common:timeStamp': '2026-10-14T00:00:00Z' },
+          },
+          exchanges: {
+            exchange: {
+              '@dataSetInternalID': '0',
+              meanAmount: 1,
+              referenceToFlowDataSet: reference.referenceToFlowDataSet,
+            },
+          },
+        },
+      };
+      const before = JSON.stringify(prepared);
+      mockGetAnnualSupplyVolumeUnitRows.mockResolvedValue([
+        {
+          referenceToFlowDataSetId: 'flow-current',
+          referenceToFlowDataSetVersion: '02.00.000',
+          refUnitRes: { refUnitName: 'MJ' },
+        },
+      ]);
+      mockGenProcessJsonOrdered.mockReturnValue(prepared);
+      mockNormalizeLangPayloadForSave.mockResolvedValue({ payload: prepared });
+      await save(action, processData);
+      expect(mockNormalizeLangPayloadForSave).toHaveBeenCalledWith(prepared, undefined);
+      expect(mockValidateDatasetRuleVerification).toHaveBeenCalledWith(
+        'process data set',
+        prepared,
+        '',
+      );
+      const command =
+        action === 'createVersion'
+          ? mockInvokeDatasetCreateVersion.mock.calls[0][0]
+          : mockInvokeDatasetCommand.mock.calls[0][1];
+      expect(command).toEqual({
+        id: sampleId,
+        table: 'processes',
+        ...(action === 'createVersion' ? { sourceVersion: sampleVersion } : {}),
+        ...(action === 'update' ? { version: sampleVersion } : {}),
+        jsonOrdered: prepared,
+        modelId: action === 'update' ? undefined : null,
+        ruleVerification: true,
+      });
+      expect(JSON.stringify(command.jsonOrdered)).toBe(before);
+      expect(mockGetAnnualSupplyVolumeUnitRows.mock.invocationCallOrder[0]).toBeLessThan(
+        mockGenProcessJsonOrdered.mock.invocationCallOrder[0],
+      );
+      expect(mockGenProcessJsonOrdered.mock.invocationCallOrder[0]).toBeLessThan(
+        mockNormalizeLangPayloadForSave.mock.invocationCallOrder[0],
+      );
+      expect(mockNormalizeLangPayloadForSave.mock.invocationCallOrder[0]).toBeLessThan(
+        mockValidateDatasetRuleVerification.mock.invocationCallOrder[0],
+      );
+    },
+  );
+
+  it('does not add a unit lookup when no annual value is supplied', async () => {
+    await save('create', { exchanges: { exchange: [reference] } });
+    expect(mockGetAnnualSupplyVolumeUnitRows).not.toHaveBeenCalled();
+  });
+
+  it('leaves malformed or absent references to existing validation without trusting their cache', async () => {
+    const data = {
+      ...processData,
+      exchanges: { exchange: [{ ...reference, referenceToFlowDataSet: { '@version': 1 } }] },
+    };
+    await save('update', data);
+    expect(mockGenProcessJsonOrdered).toHaveBeenCalledWith(sampleId, data);
+    await save('create', { ...processData, exchanges: {} });
+    expect(mockGenProcessJsonOrdered).toHaveBeenLastCalledWith(sampleId, {
+      ...processData,
+      exchanges: {},
+    });
   });
 });
 

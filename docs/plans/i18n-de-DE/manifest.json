@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "92e38ffc096b620f1b18a0eb1dae2a895ce15208102f406eb9879e266116cf58",
+    "auditedInputDigest": "b75d02739a7def70a49d08258477f6f52f048dbc4624e000c942da1dc5f1a7cc",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -74,7 +74,7 @@
     "activeStaticKeyCount": 2410,
     "activeDynamicKeyCount": 323,
     "reservedKeyCount": 881,
-    "productionSourceFileCount": 515,
+    "productionSourceFileCount": 518,
     "literalReferenceCount": 4433,
     "dynamicCallsiteCount": 38,
     "dynamicCallsiteSummaryCount": 38,
@@ -48403,7 +48403,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 305,
+          "line": 288,
           "column": 15,
           "symbol": "ProcessCreate",
           "defaultMessage": "Cancel",
@@ -48412,7 +48412,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1257,
+          "line": 1208,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Cancel",
@@ -48667,13 +48667,13 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 305,
+              "line": 288,
               "column": 15,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1257,
+              "line": 1208,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -48855,7 +48855,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1232,
+          "line": 1183,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Data Check",
@@ -48912,7 +48912,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1232,
+              "line": 1183,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -49028,7 +49028,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 862,
+          "line": 813,
           "column": 14,
           "symbol": "getValidationHint",
           "defaultMessage": "Data check failed, please check the data!",
@@ -49085,7 +49085,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 862,
+              "line": 813,
               "column": 14,
               "kind": "formatMessage"
             },
@@ -49284,7 +49284,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 933,
+          "line": 884,
           "column": 11,
           "symbol": "handleCheckData",
           "defaultMessage": "Data validation passed.",
@@ -49341,7 +49341,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 933,
+              "line": 884,
               "column": 11,
               "kind": "formatMessage"
             },
@@ -49761,7 +49761,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 246,
+          "line": 229,
           "column": 25,
           "symbol": "ProcessCreate",
           "defaultMessage": "Copy",
@@ -49818,7 +49818,7 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 246,
+              "line": 229,
               "column": 25,
               "kind": "FormattedMessage"
             },
@@ -49952,7 +49952,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 263,
+          "line": 246,
           "column": 15,
           "symbol": "ProcessCreate",
           "defaultMessage": "Create",
@@ -50057,7 +50057,7 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 263,
+              "line": 246,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -50197,7 +50197,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 407,
+          "line": 365,
           "column": 23,
           "symbol": "ProcessCreate",
           "defaultMessage": "Data with the same ID and version already exists.",
@@ -50254,7 +50254,7 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 407,
+              "line": 365,
               "column": 23,
               "kind": "formatMessage"
             },
@@ -50361,7 +50361,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 396,
+          "line": 354,
           "column": 19,
           "symbol": "ProcessCreate",
           "defaultMessage": "Created successfully!",
@@ -50412,7 +50412,7 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 396,
+              "line": 354,
               "column": 19,
               "kind": "formatMessage"
             },
@@ -50528,7 +50528,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 261,
+          "line": 244,
           "column": 15,
           "symbol": "ProcessCreate",
           "defaultMessage": "Create Version",
@@ -50585,7 +50585,7 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 261,
+              "line": 244,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -52184,7 +52184,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1178,
+          "line": 1129,
           "column": 27,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit",
@@ -52193,7 +52193,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1189,
+          "line": 1140,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit",
@@ -52370,13 +52370,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1178,
+              "line": 1129,
               "column": 27,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1189,
+              "line": 1140,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -54382,7 +54382,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1129,
+          "line": 1080,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Process information",
@@ -54406,7 +54406,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1129,
+              "line": 1080,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -54694,7 +54694,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1148,
+          "line": 1099,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Model Results",
@@ -54703,7 +54703,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1164,
+          "line": 1115,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Model Results",
@@ -54739,13 +54739,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1148,
+              "line": 1099,
               "column": 15,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1164,
+              "line": 1115,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -55995,7 +55995,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1242,
+          "line": 1193,
           "column": 21,
           "symbol": "ProcessEdit",
           "defaultMessage": "Submit for Review",
@@ -56016,7 +56016,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1242,
+              "line": 1193,
               "column": 21,
               "kind": "FormattedMessage"
             }
@@ -56183,7 +56183,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 308,
+          "line": 291,
           "column": 15,
           "symbol": "ProcessCreate",
           "defaultMessage": "Save",
@@ -56192,7 +56192,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1271,
+          "line": 1222,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Save",
@@ -56363,13 +56363,13 @@
             },
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 308,
+              "line": 291,
               "column": 15,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1271,
+              "line": 1222,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -56524,7 +56524,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 592,
+          "line": 543,
           "column": 11,
           "symbol": "handleSubmit",
           "defaultMessage": "Saved successfully!",
@@ -56566,7 +56566,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 592,
+              "line": 543,
               "column": 11,
               "kind": "formatMessage"
             },
@@ -57359,7 +57359,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1250,
+          "line": 1201,
           "column": 19,
           "symbol": "ProcessEdit",
           "defaultMessage": "Update Reference",
@@ -57458,7 +57458,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1250,
+              "line": 1201,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -156303,7 +156303,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 389,
+          "line": 347,
           "column": 21,
           "symbol": "ProcessCreate",
           "defaultMessage": "Saved as a draft with existing allocation issues. Repair these before validation, review or calculation.",
@@ -156312,7 +156312,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 568,
+          "line": 519,
           "column": 11,
           "symbol": "handleSubmit",
           "defaultMessage": "Saved as a draft with existing allocation issues. Repair these before validation, review or calculation.",
@@ -156327,13 +156327,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 389,
+              "line": 347,
               "column": 21,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 568,
+              "line": 519,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -157779,7 +157779,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 757,
+          "line": 708,
           "column": 11,
           "symbol": "handleCheckData",
           "defaultMessage": "This data set is under review and cannot be validated",
@@ -157794,7 +157794,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 757,
+              "line": 708,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -158058,7 +158058,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 276,
+          "line": 259,
           "column": 13,
           "symbol": "ProcessCreate",
           "defaultMessage": "Copy process",
@@ -158073,7 +158073,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 276,
+              "line": 259,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -158141,7 +158141,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 283,
+          "line": 266,
           "column": 13,
           "symbol": "ProcessCreate",
           "defaultMessage": "Create process",
@@ -158156,7 +158156,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 283,
+              "line": 266,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -158224,7 +158224,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 278,
+          "line": 261,
           "column": 13,
           "symbol": "ProcessCreate",
           "defaultMessage": "Create Version",
@@ -158239,7 +158239,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 278,
+              "line": 261,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -158307,7 +158307,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1199,
+          "line": 1150,
           "column": 11,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit process",
@@ -158322,7 +158322,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1199,
+              "line": 1150,
               "column": 11,
               "kind": "FormattedMessage"
             }
@@ -192620,7 +192620,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1007,
+          "line": 958,
           "column": 15,
           "symbol": "submitReview",
           "defaultMessage": "Review submission failed",
@@ -192635,7 +192635,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1007,
+              "line": 958,
               "column": 15,
               "kind": "formatMessage"
             }
@@ -192721,7 +192721,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1016,
+          "line": 967,
           "column": 11,
           "symbol": "submitReview",
           "defaultMessage": "Review submitted successfully",
@@ -192748,7 +192748,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1016,
+              "line": 967,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -202444,7 +202444,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/AnnualSupplyOrProductionVolume/form.tsx",
-          "line": 157,
+          "line": 181,
           "column": 19,
           "symbol": "fieldRules",
           "defaultMessage": "Please enter a number.",
@@ -202459,7 +202459,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/AnnualSupplyOrProductionVolume/form.tsx",
-              "line": 157,
+              "line": 181,
               "column": 19,
               "kind": "formatMessage"
             }
@@ -203636,7 +203636,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 840,
+          "line": 791,
           "column": 34,
           "symbol": "handleCheckData",
           "defaultMessage": "Select exactly one item as the quantitative reference.",
@@ -203651,7 +203651,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 840,
+              "line": 791,
               "column": 34,
               "kind": "formatMessage"
             }
@@ -203719,7 +203719,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 828,
+          "line": 779,
           "column": 34,
           "symbol": "handleCheckData",
           "defaultMessage": "Add at least one exchange",
@@ -203734,7 +203734,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 828,
+              "line": 779,
               "column": 34,
               "kind": "formatMessage"
             }
@@ -208234,7 +208234,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/create.tsx",
-          "line": 202,
+          "line": 179,
           "column": 41,
           "symbol": "newData",
           "defaultMessage": "Automatically generated",
@@ -208249,7 +208249,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/create.tsx",
-              "line": 202,
+              "line": 179,
               "column": 41,
               "kind": "formatMessage"
             }
@@ -240575,7 +240575,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 608,
+          "line": 559,
           "column": 13,
           "symbol": "handleSubmit",
           "defaultMessage": "This data is open data, save failed",
@@ -240638,7 +240638,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 608,
+              "line": 559,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -253193,7 +253193,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 615,
+          "line": 566,
           "column": 13,
           "symbol": "handleSubmit",
           "defaultMessage": "Data is under review, save failed",
@@ -253256,7 +253256,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 615,
+              "line": 566,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -296810,7 +296810,7 @@
       "count": 1,
       "file": "src/pages/Processes/Components/AnnualSupplyOrProductionVolume/form.tsx",
       "expression": "requiredRule?.messageKey ?? 'validator.lang.text.required'",
-      "locations": ["130:19"],
+      "locations": ["154:19"],
       "category": "active-dynamic",
       "family": "schemaValidation",
       "reviewStatus": "reviewed"

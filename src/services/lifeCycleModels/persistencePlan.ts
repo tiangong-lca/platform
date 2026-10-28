@@ -11,7 +11,7 @@ import {
   createLifeCycleModel as createTidasLifeCycleModel,
   createProcess as createTidasProcess,
 } from '@tiangong-lca/tidas-sdk/core';
-import { genProcessJsonOrdered } from '../processes/util';
+import { getProcessJsonOrderedForSave } from '../processes/saveSerialization';
 import type {
   LifeCycleModelGraphEdge,
   LifeCycleModelGraphNode,
@@ -391,7 +391,10 @@ async function buildProcessMutation(args: {
     operation = 'create';
   }
 
-  const rawProcessJsonOrdered = genProcessJsonOrdered(args.process.modelInfo.id, processDataSet);
+  const rawProcessJsonOrdered = await getProcessJsonOrderedForSave(
+    args.process.modelInfo.id,
+    processDataSet,
+  );
   const normalizedResult = await normalizeLangPayloadForSave(rawProcessJsonOrdered, {
     intent: args.langIntent,
   });

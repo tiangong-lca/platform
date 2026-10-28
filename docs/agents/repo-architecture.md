@@ -56,6 +56,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `src/components/DataNavigation/navigation.ts` | native ProLayout menu shaping and scope-link destinations; preserves the received route/access metadata |
 | `src/services/**` | app-side Supabase/API access, ordered-dataset shaping, typed locale normalization and runtime fallback for Node-loaded services, explicit anonymous-route policy, and service logic |
 | `src/services/general/tidasScalarStorage.ts` | canonical TIDAS year/percentage scalar normalization and the Process/Flow save-boundary issue format |
+| `src/services/processes/annualSupplyOrProductionVolume.ts`, `annualSupplyVolumeUnit.ts`, `saveSerialization.ts` | numeric annual formatting, exact versioned reference-unit resolution and shared save preparation; Process API and LifecycleModel persistence planning use the same boundary after final field overrides |
 | `src/services/general/aiSuggestion.ts` | authenticated AI suggestion enqueue, bounded polling, terminal validation, and versioned result decoding |
 | `src/services/dataProducts/**` | authenticated data-product commands, closure-check projections, result-package requests, and the curated `task-summary.v2` feed consumed by the global task center |
 | `src/locales/**` | UI strings; every supported locale follows one canonical message manifest, with leaf topology, key ownership, placeholders, and dynamic families kept aligned |
@@ -66,6 +67,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `scripts/e2e/**`, `docker/e2e/**` | test-only exact-candidate release-E2E orchestration, deterministic closed-simulator backend profile, isolated environment, static server, preflight, diagnostics, and bounded continuation |
 | `scripts/e2e/maintained-patches.cjs` | exact maintained patch inventory and digest shared by isolated image creation, build/runtime verification and resource identity; input grammar and retirement rules belong to `dependency-maintenance.md` |
 | `scripts/qualification/**`, `playwright.closure-download.config.ts`, `tests/browser/**` | test-only exact-commit scope-closure Next adapter and loopback browser contract accepted by the Worker provider aggregator |
+| `scripts/qualification/process-capture-*` | local Process payload diagnostic: two-origin sandbox shell, audited read/auth gateway and one captured-and-aborted create-version request; no deployed product route or business-write proxy |
 | `playwright.config.ts`, `tests/e2e/i18n/**` | test-only semantic localization browser matrix, guarded production fixture ledger, and non-secret evidence reporter |
 | `playwright.dataset-lists.config.ts`, `tests/e2e/dataset-lists/**` | separately selected synthetic Chromium layout and list-request proof; local screenshots are not production or release qualification |
 | `config/docs-capture/profile.v1.json` | source-bound product adapter facts consumed and validated by workspace-owned documentation capture tooling: runtime/readiness, login/identity, auth mutation allowlist, denial marker, and locator policy |
