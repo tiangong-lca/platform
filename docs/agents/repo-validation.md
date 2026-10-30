@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-10-30
-lastReviewedCommit: 2f3d0188da6893072fb32a805ac85a26f4badaee
-lastReviewedNote: 'Reviewed Platform #1371: exact native URI decoding backport preserves the CommonJS/plus API, dependency graph, toolchain and full qualification requirements; installed caller and native-browser proof remain distinct from raw registry audit and source delivery.'
+lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
+lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -325,3 +325,7 @@ Maintained-patch image proof must exercise both generated build contexts, depend
 `tests/unit/config/installedUriDecodeContract.test.ts` launches the native installed contracts outside Jest mappers. Resolve the decoder through the real `@umijs/history -> query-string` parents and bind its exact patch identity. Cover valid multilingual queries, plus/encoded-plus, duplicates, null/empty values, parser options, fragments and TypeErrors; malformed UTF-8 recovery; and the intentional single-pass escape/dollar corrections. Exercise development and production CommonJS history, memory navigation, hash/browser initialization and navigation, and the actual ESM browser bundle. Dispose each synthetic DOM and build service. These small functional inputs and the reviewed upstream algorithm do not claim a measured resource bound for every runtime.
 
 Native-browser qualification must consume that same installed ESM bundle and verify initial, push and replace query state with valid and malformed inputs, with no external requests and explicit browser/context cleanup. This isolated router proof does not replace the application's unchanged canonical semantic qualification, actual dependency-image patch inventory, full checked-push gate or fresh hosted artifacts. Record raw audit findings separately from installed-patch behavior, and retain the dependency-maintenance retirement conditions.
+
+## Published result query proof
+
+For Platform #1378, focused service/component tests cover exact identities, publication pinning, bounded preparation, rejection, signed values, source-switch cancellation and cursor/filter resets. `playwright.result-preview.config.ts` selects the credential-free `published-query.spec.ts` rendered original-Process flow against the closed synthetic backend. This is browser consumer proof, not a live Worker/S3/Database qualification. The ordinary full pre-push coverage gate and four-locale artifact checks remain required.

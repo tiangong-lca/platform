@@ -27,9 +27,9 @@ checkPaths:
   - src/services/processes/api.ts
   - .github/workflows/ci.yml
   - .github/workflows/build.yml
-lastReviewedAt: 2026-10-25
-lastReviewedCommit: f9b51626bf8fac8609be6416cd6b345764f075db
-lastReviewedNote: 'Platform #1302: reviewed frontend result presentation, exact-version metadata reads, removal of coverage-only warnings and focused browser/unit proof. Backend semantics, authorization, dependencies and full delivery gates remain unchanged; validation outcomes are recorded in the Issue and PR.'
+lastReviewedAt: 2026-10-30
+lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
+lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
 ---
 
 # LCIA Method Bundle and Calculation Evidence Contract
@@ -102,3 +102,7 @@ Keeping BAFU flow properties and unit groups private is compatible with this con
 New Calculation Bundles are ready independently of optional export jobs. The export panel defaults to Parquet and only an explicit Generate action enqueues. Status polling continues only for queued/running/waiting/stale work; terminal states and read failures stop polling. Refresh reads status without retrying. CSV is independently gzipped and bounded per file (250,000 rows, 64 MiB serialized CSV); audit files reuse canonical evidence. Pages contain at most 20 member links plus an export manifest. Each download refreshes authorization and rechecks the same Worker job, package, Bundle hash, source manifest hash and file hash/size/media type before saving verified bytes. Package/format changes discard stale in-flight responses.
 
 Data Processing opens process results from the result list using an exact process ID and version, with LCIA shown first. A requested version absent from the bundle never falls back to another process. Method labels and units come from the reviewed exact-version catalog and alias mapping. Process and flow names use the existing authenticated-readable dataset service with explicit versions, a panel-scoped bounded cache, and at most six concurrent reads per batch. LCI metadata is limited to the visible 25-row page plus the reference flow. Missing names retain exact identifiers and allow retry without changing result values; the displayed dataset reference quantity is not a new normalization of those values. Technical hashes and diagnostics remain in collapsed evidence panels. Closure status translations and the new-calculation affordance preserve existing execution gating.
+
+## Published numerical artifact view
+
+The original Process published-results tab consumes the exact release-bound query envelope. Its units, names, method versions and reference quantity come from frozen artifact metadata, never the current static method catalog. It does not reinterpret the persisted numeric evidence as a new calculation input. LCIA zero, negative and small finite values remain numeric; sparse LCI omits exact zero without conflating filtering/pagination with scientific absence.
