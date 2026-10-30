@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: 80233595de60b0f6207e3306eef8ce566451d05f
-lastReviewedNote: 'Platform #1372 Main-to-Dev documentation merge review against Dev 80233595 and Main 1b62c203: retained #1378 exact-version published-result proof and #1372 installed Axios/redirect-callback proof, raw/vendor audit boundaries, frozen bootstrap, serial Umi commands and unchanged complete qualification gates. Runtime qualification of this combined candidate remains pending.'
+lastReviewedCommit: 4ef4d43e207f0caff7108b3242dc2b5a8b0ebed9
+lastReviewedNote: 'Reviewed Platform #1383 diagnostic preparation: qualification-only fixed-schema event/state counts, actual manifest/source binding and bounded private output preserve original actions, assertions, budgets and browser inventory. Timing and missing-history limits remain explicit; no failure cause, product fix, native reproduction or delivery completion is claimed.'
 ---
 
 # Testing Troubleshooting
@@ -204,5 +204,7 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 ## Portal lifecycle and patch evidence
 
 An abandoned-render Escape registration is a separately reproduced library defect, not an automatic explanation for a hosted modal/drawer timeout. Compare native event delivery, actual committed state, ancestry and callback publication before choosing a repair. Preserve the original assertion and failure history. Exact pnpm patch installation can require uncached registry metadata for supply-chain verification even when all package bytes are present: use the normal frozen policy check rather than disabling policy or claiming offline verification passed.
+
+For a mobile navigation dialog that remains visible after Escape, inspect the exact source-bound bounded report described in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics). Compare document-capture/window-bubble delivery, focus and known overlay states without inferring a unique cause from counts. Missing or incomplete capture preserves the original failed result; a later instrumented pass is neither a fix nor evidence that the earlier failure was flaky.
 
 If a frozen dependency-image install reports `ENOENT` for a declared patch, inspect both generated build contexts and the Docker copy order. Patch bytes must arrive before installation and participate in cache, manifest, runtime and qualification identity. Validate every manifest consumer when the internal version changes, then rerun the corrected committed candidate. A cleanup receipt with no observed survivors does not establish browser qualification when image construction never reached a candidate runtime.

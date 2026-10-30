@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: 80233595de60b0f6207e3306eef8ce566451d05f
-lastReviewedNote: 'Platform #1372 Main-to-Dev documentation merge review against Dev 80233595 and Main 1b62c203: retained #1378 exact-version published-result proof and #1372 installed Axios/redirect-callback proof, raw/vendor audit boundaries, frozen bootstrap, serial Umi commands and unchanged complete qualification gates. Runtime qualification of this combined candidate remains pending.'
+lastReviewedCommit: 4ef4d43e207f0caff7108b3242dc2b5a8b0ebed9
+lastReviewedNote: 'Reviewed Platform #1383 diagnostic preparation: qualification-only fixed-schema event/state counts, actual manifest/source binding and bounded private output preserve original actions, assertions, budgets and browser inventory. Timing and missing-history limits remain explicit; no failure cause, product fix, native reproduction or delivery completion is claimed.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -192,6 +192,8 @@ Atlas publication changes additionally execute the actual inline temporary-path 
 Semantic qualification closure uses the shared contract in `scripts/e2e/qualification-closure.cjs`: compare the exact registered assertion ID set, required browser applicability and the reviewed per-browser canonical/harness execution and designed-skip inventory against actual discovery and results. A same-count substitution, missing browser, partial run, noncanonical evidence or nonzero external/write/cleanup count must fail. When scenarios change, review the complete inventory explicitly; never accept observed totals as their own expectation. Qualification proof v6 includes assertion identities, browser applicability and the canonical-report digest, and earlier proof schemas must be regenerated. The manual workflow retains allowlisted sanitized count/controller diagnostics even on failure, separately from successful qualification proof; it does not upload environment files, credentials, screenshots, traces or raw page contents.
 
 The dedicated canonical semantic qualification report owns assertion/browser facts. Host finalization verifies its raw-byte SHA-256 against the completed container result before applying strict closure checks and projecting the external proof. Generic sanitized diagnostic copies are not proof sources: valid route identifiers can contain words such as `password`, while diagnostic redaction must still protect real credentials. Missing bindings, changed reports and unexpected proof fields fail closed.
+
+The qualification-only mobile navigation observer follows the bounded schema, output and privacy contract in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics). Changes to it require inert source-binding, privacy/cap, serialization, error-precedence, listener-cleanup and output-copy controls, plus preservation of the original mobile action/assertion AST and the complete 99-case declaration inventory. Its report never replaces canonical assertion, browser, cleanup or qualification-proof evidence; hosted artifact acceptance still requires actual downloaded byte and source validation.
 
 Private container reports must be readable by the invoking host operator before host finalization. Transfer only generated run-output descendants and the exact recovery ledger to the owner observed on their host-precreated mount roots inside the container namespace; preserve private modes and never follow symlinks or transfer credential mounts, recovery-directory siblings, or unrelated paths. Apply the handoff after both successful and failed execution. Malformed or unreadable results must retain explicit read-error diagnostics rather than being misreported as browser assertion failures.
 

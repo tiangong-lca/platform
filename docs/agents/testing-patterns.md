@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: 80233595de60b0f6207e3306eef8ce566451d05f
-lastReviewedNote: 'Platform #1372 Main-to-Dev documentation merge review against Dev 80233595 and Main 1b62c203: retained #1378 exact-version published-result proof and #1372 installed Axios/redirect-callback proof, raw/vendor audit boundaries, frozen bootstrap, serial Umi commands and unchanged complete qualification gates. Runtime qualification of this combined candidate remains pending.'
+lastReviewedCommit: 4ef4d43e207f0caff7108b3242dc2b5a8b0ebed9
+lastReviewedNote: 'Reviewed Platform #1383 diagnostic preparation: qualification-only fixed-schema event/state counts, actual manifest/source binding and bounded private output preserve original actions, assertions, budgets and browser inventory. Timing and missing-history limits remain explicit; no failure cause, product fix, native reproduction or delivery completion is claimed.'
 ---
 
 # Testing Patterns Reference

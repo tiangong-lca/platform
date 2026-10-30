@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: 784779ce3836b1c0bd601980fd6c4d145e810efe
-lastReviewedNote: 'Reviewed Platform #1358 patch image closure at784779ce: declared tracked patch bytes bind install contexts, cache identity, manifest6, runtime, reporter and resource verification. Focused controls and typed/static review pass; fresh hosted proof remains required. Backend authority, credential isolation, canonical assertions, execution budgets and release policy are unchanged.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: 4ef4d43e207f0caff7108b3242dc2b5a8b0ebed9
+lastReviewedNote: 'Reviewed Platform #1383 diagnostic preparation: qualification-only fixed-schema event/state counts, actual manifest/source binding and bounded private output preserve original actions, assertions, budgets and browser inventory. Timing and missing-history limits remain explicit; no failure cause, product fix, native reproduction or delivery completion is claimed.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md
