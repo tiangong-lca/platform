@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: 4ef4d43e207f0caff7108b3242dc2b5a8b0ebed9
-lastReviewedNote: 'Reviewed Platform #1383 diagnostic preparation: qualification-only fixed-schema event/state counts, actual manifest/source binding and bounded private output preserve original actions, assertions, budgets and browser inventory. Timing and missing-history limits remain explicit; no failure cause, product fix, native reproduction or delivery completion is claimed.'
+lastReviewedCommit: cd921af4a7f960f55b880d93c345c1c796b64f78
+lastReviewedNote: 'Reviewed combined Platform #1372/#1381/#1383 Dev preparation: retain qualified Axios and Zod Main repairs, independent Dev business work and bounded qualification diagnostics. Original actions, assertions, budgets, privacy and all four patches remain; fresh combined qualification and causal diagnosis are not inferred.'
 ---
 
 # Pre-Push Gate Policy
