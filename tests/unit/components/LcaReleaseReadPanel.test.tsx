@@ -15,11 +15,13 @@ jest.mock('@umijs/max', () => ({
 }));
 
 const mockGetCurrent = jest.fn();
+const mockGetRelease = jest.fn();
 const mockGetCurrentForProcess = jest.fn();
 const mockCreateDownload = jest.fn();
 
 jest.mock('@/services/lcaReleases', () => ({
   __esModule: true,
+  getLcaRelease: (...args: any[]) => mockGetRelease(...args),
   getCurrentLcaRelease: (...args: any[]) => mockGetCurrent(...args),
   getCurrentLcaReleaseForProcess: (...args: any[]) => mockGetCurrentForProcess(...args),
   createLcaReleaseArtifactDownload: (...args: any[]) => mockCreateDownload(...args),
@@ -190,4 +192,17 @@ describe('LcaReleaseReadPanel', () => {
     rerender(<LcaReleaseReadPanel processId='id' processVersion={undefined} />);
     expect(await screen.findByText('Release metadata is unavailable.')).toBeInTheDocument();
   });
+});
+
+it('keeps downloads tied to the result release rather than a newer current release', async () => {
+  mockGetRelease.mockResolvedValue({ data: release, error: null });
+  render(
+    <LcaReleaseReadPanel
+      processId='exact'
+      processVersion='01.00.000'
+      releaseRunId={release.releaseRunId}
+    />,
+  );
+  await waitFor(() => expect(mockGetRelease).toHaveBeenCalledWith(release.releaseRunId));
+  expect(mockGetCurrentForProcess).not.toHaveBeenCalled();
 });

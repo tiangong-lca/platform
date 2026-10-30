@@ -65,6 +65,7 @@ import {
   licenseTypeOptions,
   processtypeOfDataSetOptions,
 } from './optiondata';
+import PublishedResultsPanel from './publishedResultsPanel';
 import ProcessLciaResultsPanel from './processLciaResultsPanel';
 import { shouldUsePublishedLciaResults } from './publishedLciaResults';
 
@@ -183,6 +184,12 @@ const ProcessView: FC<Props> = ({
     ];
   const [lciaResultDataSource, setLciaResultDataSource] = useState<LCIAResultTable[]>([]);
   const tabList = [
+    {
+      key: 'publishedResults',
+      tab: (
+        <FormattedMessage id='pages.publishedResults.title' defaultMessage='Published results' />
+      ),
+    },
     {
       key: 'processInformation',
       tab: (
@@ -1855,6 +1862,7 @@ const ProcessView: FC<Props> = ({
         />
       </>
     ),
+    publishedResults: <PublishedResultsPanel id={id} version={version} lang={lang} />,
     lciaResults: (
       <ProcessLciaResultsPanel
         baseCalculationEvidence={initData?.LCIAResults?.['common:other']}

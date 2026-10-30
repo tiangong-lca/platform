@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-29
-lastReviewedCommit: f2dbc551fc760c655e2a5ba9118aaf79845b625b
-lastReviewedNote: 'Reviewed Platform #1364: missing solver units fall back to exact-version verified method metadata; values and valid returned units remain unchanged. Added focused row and panel regressions; existing ownership and gate contracts still apply.'
+lastReviewedAt: 2026-10-30
+lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
+lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -247,6 +247,12 @@ Review Management consumes the central v4 review projection with keyword search 
 Batch selection is one Root/Reference selection model. A top-level Reference can be selected directly. Selecting an expandable Process or Lifecycle Model Root loads and auto-selects its current-tab References, deduplicates a Reference shared by multiple Roots, preserves independently selected References, and disables submission while child loading is incomplete or failed. Selecting another Root type does not issue a child query. Removing a Root removes only the References that are no longer selected manually or through another Root. Simple Root and Reference reviews expose only approve/reject actions; Review Member approval has no opinion field and rejection requires a reason. Reviewer outcomes are advice, so the UI must not infer the Admin result from their votes.
 
 Each readable Root or Reference row offers a view icon backed by the existing read-only Contact, Source, Unit Group, Flow Property, Flow, Process, or Lifecycle Model drawer. Rejection reasons remain in owner notifications and do not change dataset detail pages. Existing Contact `Sync to Open Data` behavior remains a separate entrypoint.
+
+### Published numerical results on original Process details
+
+`publishedResultsPanel.tsx -> services/lcaReleases/resultQuery.ts -> lca_release_results (mode=query)` reads authenticated published LCI/LCIA for the exact original UUID/version. The query service owns HDF5; the browser receives bounded validated JSON, with frozen method/flow units and quantitative reference. This tab creates no dataset/catalog, starts no calculation and does not change state-120 eligibility. Existing calculation/package readers retain their distinct routes.
+
+The first accepted response pins publication identity, including cold-cache responses. Source identity remounts the session; every view/page/filter change cancels the old request. Preparation retries at most four times per explicit load, then offers manual retry. Missing/revoked access, transport failure and preparation stay distinct. LCI uses 50-entry server cursors and a bounded metadata filter; zero entries are omitted by the completed sparse artifact, while search/pagination also hide unrelated nonzero entries. Signed/tiny values render without fixed-decimal rounding. Download expansion uses the overview's release run through the existing fresh-link panel, so a newly current release is not silently mixed with displayed results.
 
 ### Calculation Bundle And Release Readback
 
