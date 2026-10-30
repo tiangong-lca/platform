@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-30
-lastReviewedCommit: 2f3d0188da6893072fb32a805ac85a26f4badaee
-lastReviewedNote: 'Reviewed Platform #1371: exact native URI decoding backport preserves the CommonJS/plus API, dependency graph, toolchain and full qualification requirements; installed caller and native-browser proof remain distinct from raw registry audit and source delivery.'
+lastReviewedCommit: 2cadf125f9ebaad6a35b27e35a88b444416320bd
+lastReviewedNote: 'Reviewed Platform #1372: approved scoped Axios graph and exact redirect-callback patch preserve URI repairs, toolchain, supported consumers and unchanged full qualification requirements; baseline differences and raw/vendor audit boundaries remain explicit.'
 ---
 
 # Testing Troubleshooting

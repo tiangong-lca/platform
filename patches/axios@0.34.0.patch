@@ -1,0 +1,19 @@
+diff --git a/lib/adapters/http.js b/lib/adapters/http.js
+index 5a3b9ee766ac856c3c5a88f2acacda53f16c1b3a..e90ba234c1d2b46ac45053fd5a089c5d43f724b7 100755
+--- a/lib/adapters/http.js
++++ b/lib/adapters/http.js
+@@ -28,12 +28,12 @@ var supportedProtocols = platform.protocols.map(function(protocol) {
+   return protocol + ':';
+ });
+ 
+-function dispatchBeforeRedirect(options) {
++function dispatchBeforeRedirect(options, responseDetails, requestDetails) {
+   if (options.beforeRedirects.proxy) {
+     options.beforeRedirects.proxy(options);
+   }
+   if (options.beforeRedirects.config) {
+-    options.beforeRedirects.config(options);
++    options.beforeRedirects.config(options, responseDetails, requestDetails);
+   }
+ }
+ 

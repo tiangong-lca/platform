@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-10-30
-lastReviewedCommit: 2f3d0188da6893072fb32a805ac85a26f4badaee
-lastReviewedNote: 'Reviewed Platform #1371: exact native URI decoding backport preserves the CommonJS/plus API, dependency graph, toolchain and full qualification requirements; installed caller and native-browser proof remain distinct from raw registry audit and source delivery.'
+lastReviewedCommit: 2cadf125f9ebaad6a35b27e35a88b444416320bd
+lastReviewedNote: 'Reviewed Platform #1372: approved scoped Axios graph and exact redirect-callback patch preserve URI repairs, toolchain, supported consumers and unchanged full qualification requirements; baseline differences and raw/vendor audit boundaries remain explicit.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -325,3 +325,11 @@ Maintained-patch image proof must exercise both generated build contexts, depend
 `tests/unit/config/installedUriDecodeContract.test.ts` launches the native installed contracts outside Jest mappers. Resolve the decoder through the real `@umijs/history -> query-string` parents and bind its exact patch identity. Cover valid multilingual queries, plus/encoded-plus, duplicates, null/empty values, parser options, fragments and TypeErrors; malformed UTF-8 recovery; and the intentional single-pass escape/dollar corrections. Exercise development and production CommonJS history, memory navigation, hash/browser initialization and navigation, and the actual ESM browser bundle. Dispose each synthetic DOM and build service. These small functional inputs and the reviewed upstream algorithm do not claim a measured resource bound for every runtime.
 
 Native-browser qualification must consume that same installed ESM bundle and verify initial, push and replace query state with valid and malformed inputs, with no external requests and explicit browser/context cleanup. This isolated router proof does not replace the application's unchanged canonical semantic qualification, actual dependency-image patch inventory, full checked-push gate or fresh hosted artifacts. Record raw audit findings separately from installed-patch behavior, and retain the dependency-maintenance retirement conditions.
+
+## Maintained Axios request compatibility
+
+`tests/unit/config/installedAxiosContract.test.ts` launches the parent-bound installed Axios and real generated Umi facade outside Jest's package/service mappers. Native contracts execute the installed PluginManager and actual app error callbacks, isolating only bootstrap registration and UI/localization ports. Verify public declaration consumers with native TypeScript 7 and retain development, test and production generated-import identities. The fixture must not replace Axios, its transport or the generated request implementation.
+
+Exercise facade response modes, request/response interceptor order and ejection, error identity and callbacks, cancellation, query/form/body encoding, proxy selection and redirects. Direct `getRequestInstance()` synchronous interceptors require separate rejection/recovery/dispatch-count tests because Umi's asynchronous wrappers cannot enter those paths. Stream limits need small below/above-limit controls for returned `responseType: 'stream'` errors and streamed uploads with `maxRedirects: 0`; buffered/default-redirect requests do not qualify those guards. Bind `beforeRedirect` arguments, response headers, option mutation, thrown cancellation and proxy-before-config ordering to the real installed Node adapter.
+
+`installedAxiosBrowser.contract.cjs` verifies actual XHR and `useRequest` behavior in the supported native browser engines, including app error branches and same/cross-origin XSRF behavior. Node credential-routing tests separately cover same/changed-origin destination headers, proxy authorization and `no_proxy` transitions with dummy credentials. Restore proxy environment variables and verify every owned browser, listener, stream, type fixture and build service is closed. These fixtures do not attest whole-app bootstrap, production endpoints or every Axios option; the unchanged build, complete gate, canonical semantic qualification and actual hosted artifact/resource proof remain required. Preserve baseline differences and the known Umi temporary-interceptor overlap rather than claiming that this update introduces isolation.
