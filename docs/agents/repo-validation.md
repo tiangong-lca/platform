@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-10-29
-lastReviewedCommit: 8e0d043c5cf5d1a03ffd80934035cf4a94c3aa9d
-lastReviewedNote: 'Reviewed combined Platform #1363/#1364 backmerge: preserve Main security dependency graph, maintained patches and installed regressions together with Dev exact-version LCIA unit fallback and tests. Conflict resolution changes review metadata only; combined-candidate gates and hosted qualification are recorded separately.'
+lastReviewedAt: 2026-10-30
+lastReviewedCommit: 2f3d0188da6893072fb32a805ac85a26f4badaee
+lastReviewedNote: 'Reviewed Platform #1371: exact native URI decoding backport preserves the CommonJS/plus API, dependency graph, toolchain and full qualification requirements; installed caller and native-browser proof remain distinct from raw registry audit and source delivery.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -319,3 +319,9 @@ For #1358, `tests/unit/config/installedPortalEscape.test.ts` launches the real i
 CJS/JSDOM success is not ESM/native-browser proof. Native qualification must resolve the actual patched ESM bundle, use default body containers, close child then parent with two real Escapes, restore opener focus and verify owned browser/server cleanup. Use fresh keyboard and pointer rounds with an explicitly focused, focusable opener before activation. The synthetic pointer trigger focuses itself in its opening handler before capturing focus and setting open state; label that setup separately from the real click; both rounds must verify opener focus inside activation and restore that exact element after closing. Keep trusted Enter/Escape and pointer-click classification distinct; a mouse click, platform Tab behavior or fallback `document.body` alone does not establish a restorable focus precondition. The explicitly opted-in Main hotfix path in dependency maintenance additionally runs the unchanged complete canonical semantic qualification and resource/artifact closure. Ordinary aggregate/Action jobs must succeed; their legitimate protected-hotfix skips are accepted only by bound hotfix admission while Main Candidate owns its full gate. Keep this browser proof separate from release proof; no local result claims the historical failure's cause.
 
 Maintained-patch image proof must exercise both generated build contexts, dependency cache identity, manifest version 6, build/runtime checks and the resource observer. Cover patch-free inputs; missing, changed, untracked, nonregular, symlinked, escaping and lock-mismatched files; unsupported or duplicate mappings; and stale image/manifest rejection. The reporter must accept the exact current manifest without Git and reject legacy version 5 without a fallback. A focused test or native fixture is not an actual Docker install or canonical hosted qualification: retain the real failed image-build evidence and require fresh current-source execution plus artifact/resource verification.
+
+## Maintained URI decoder compatibility
+
+`tests/unit/config/installedUriDecodeContract.test.ts` launches the native installed contracts outside Jest mappers. Resolve the decoder through the real `@umijs/history -> query-string` parents and bind its exact patch identity. Cover valid multilingual queries, plus/encoded-plus, duplicates, null/empty values, parser options, fragments and TypeErrors; malformed UTF-8 recovery; and the intentional single-pass escape/dollar corrections. Exercise development and production CommonJS history, memory navigation, hash/browser initialization and navigation, and the actual ESM browser bundle. Dispose each synthetic DOM and build service. These small functional inputs and the reviewed upstream algorithm do not claim a measured resource bound for every runtime.
+
+Native-browser qualification must consume that same installed ESM bundle and verify initial, push and replace query state with valid and malformed inputs, with no external requests and explicit browser/context cleanup. This isolated router proof does not replace the application's unchanged canonical semantic qualification, actual dependency-image patch inventory, full checked-push gate or fresh hosted artifacts. Record raw audit findings separately from installed-patch behavior, and retain the dependency-maintenance retirement conditions.

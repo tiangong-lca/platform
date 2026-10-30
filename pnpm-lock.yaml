@@ -15,6 +15,7 @@ overrides:
 
 patchedDependencies:
   '@rc-component/portal@2.2.1': b54fad3197311b0723001e869cd1b7305dad444286aa0a0ca9097fcf96969a6c
+  decode-uri-component@0.2.2: 20621cc46533eab2eab42e20bc0d8fbc14fabeea53b3be58df0dce90c793a77d
   http-cache-semantics@4.3.0: a2290919f463f6bed147f2d4d93f17a7f209d01fc39b773e3d1060f20a409838
 
 importers:
@@ -14185,7 +14186,7 @@ snapshots:
 
   decimal.js@10.6.0: {}
 
-  decode-uri-component@0.2.2: {}
+  decode-uri-component@0.2.2(patch_hash=20621cc46533eab2eab42e20bc0d8fbc14fabeea53b3be58df0dce90c793a77d): {}
 
   decompress-response@6.0.0:
     dependencies:
@@ -17807,7 +17808,7 @@ snapshots:
 
   query-string@6.14.1:
     dependencies:
-      decode-uri-component: 0.2.2
+      decode-uri-component: 0.2.2(patch_hash=20621cc46533eab2eab42e20bc0d8fbc14fabeea53b3be58df0dce90c793a77d)
       filter-obj: 1.1.0
       split-on-first: 1.1.0
       strict-uri-encode: 2.0.0

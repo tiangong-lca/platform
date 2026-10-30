@@ -67,4 +67,5 @@ minimumReleaseAgeExclude:
 
 patchedDependencies:
   '@rc-component/portal@2.2.1': patches/@rc-component__portal@2.2.1.patch
+  decode-uri-component@0.2.2: patches/decode-uri-component@0.2.2.patch
   http-cache-semantics@4.3.0: patches/http-cache-semantics@4.3.0.patch

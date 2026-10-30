@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-10-29
-lastReviewedCommit: 8e0d043c5cf5d1a03ffd80934035cf4a94c3aa9d
-lastReviewedNote: 'Reviewed combined Platform #1363/#1364 backmerge: preserve Main security dependency graph, maintained patches and installed regressions together with Dev exact-version LCIA unit fallback and tests. Conflict resolution changes review metadata only; combined-candidate gates and hosted qualification are recorded separately.'
+lastReviewedAt: 2026-10-30
+lastReviewedCommit: 2f3d0188da6893072fb32a805ac85a26f4badaee
+lastReviewedNote: 'Reviewed Platform #1371: exact native URI decoding backport preserves the CommonJS/plus API, dependency graph, toolchain and full qualification requirements; installed caller and native-browser proof remain distinct from raw registry audit and source delivery.'
 ---
 
 # Testing Patterns Reference
