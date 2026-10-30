@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: 80233595de60b0f6207e3306eef8ce566451d05f
+lastReviewedNote: 'Platform #1372 Main-to-Dev documentation merge review against Dev 80233595 and Main 1b62c203: retained #1378 exact-version published-result proof and #1372 installed Axios/redirect-callback proof, raw/vendor audit boundaries, frozen bootstrap, serial Umi commands and unchanged complete qualification gates. Runtime qualification of this combined candidate remains pending.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -329,3 +329,11 @@ Native-browser qualification must consume that same installed ESM bundle and ver
 ## Published result query proof
 
 For Platform #1378, focused service/component tests cover exact identities, publication pinning, bounded preparation, rejection, signed values, source-switch cancellation and cursor/filter resets. `playwright.result-preview.config.ts` selects the credential-free `published-query.spec.ts` rendered original-Process flow against the closed synthetic backend. This is browser consumer proof, not a live Worker/S3/Database qualification. The ordinary full pre-push coverage gate and four-locale artifact checks remain required.
+
+## Maintained Axios request compatibility
+
+`tests/unit/config/installedAxiosContract.test.ts` launches the parent-bound installed Axios and real generated Umi facade outside Jest's package/service mappers. Native contracts execute the installed PluginManager and actual app error callbacks, isolating only bootstrap registration and UI/localization ports. Verify public declaration consumers with native TypeScript 7 and retain development, test and production generated-import identities. The fixture must not replace Axios, its transport or the generated request implementation.
+
+Exercise facade response modes, request/response interceptor order and ejection, error identity and callbacks, cancellation, query/form/body encoding, proxy selection and redirects. Direct `getRequestInstance()` synchronous interceptors require separate rejection/recovery/dispatch-count tests because Umi's asynchronous wrappers cannot enter those paths. Stream limits need small below/above-limit controls for returned `responseType: 'stream'` errors and streamed uploads with `maxRedirects: 0`; buffered/default-redirect requests do not qualify those guards. Bind `beforeRedirect` arguments, response headers, option mutation, thrown cancellation and proxy-before-config ordering to the real installed Node adapter.
+
+`installedAxiosBrowser.contract.cjs` verifies actual XHR and `useRequest` behavior in the supported native browser engines, including app error branches and same/cross-origin XSRF behavior. Node credential-routing tests separately cover same/changed-origin destination headers, proxy authorization and `no_proxy` transitions with dummy credentials. Restore proxy environment variables and verify every owned browser, listener, stream, type fixture and build service is closed. These fixtures do not attest whole-app bootstrap, production endpoints or every Axios option; the unchanged build, complete gate, canonical semantic qualification and actual hosted artifact/resource proof remain required. Preserve baseline differences and the known Umi temporary-interceptor overlap rather than claiming that this update introduces isolation.

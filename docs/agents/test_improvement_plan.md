@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: 80233595de60b0f6207e3306eef8ce566451d05f
+lastReviewedNote: 'Platform #1372 Main-to-Dev documentation merge review against Dev 80233595 and Main 1b62c203: retained #1378 exact-version published-result proof and #1372 installed Axios/redirect-callback proof, raw/vendor audit boundaries, frozen bootstrap, serial Umi commands and unchanged complete qualification gates. Runtime qualification of this combined candidate remains pending.'
 ---
 
 # Testing Strategy

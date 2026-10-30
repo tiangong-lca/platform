@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed the existing frozen bootstrap, serial Umi commands and hook-owned full gate for published-result UI delivery; no toolchain or bootstrap behavior changes.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: 80233595de60b0f6207e3306eef8ce566451d05f
+lastReviewedNote: 'Platform #1372 Main-to-Dev documentation merge review against Dev 80233595 and Main 1b62c203: retained #1378 exact-version published-result proof and #1372 installed Axios/redirect-callback proof, raw/vendor audit boundaries, frozen bootstrap, serial Umi commands and unchanged complete qualification gates. Runtime qualification of this combined candidate remains pending.'
 ---
 
 # Development Bootstrap

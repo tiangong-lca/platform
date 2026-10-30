@@ -18,6 +18,8 @@ overrides:
   '@umijs/server>react': 19.3.1
   '@umijs/server>react-dom': 19.3.1
   '@umijs/plugins@4.7.24>dva-immer': '-'
+  # Reviewed maintained 0.x request consumer; retain the exact Umi parent boundary.
+  '@umijs/plugins@4.7.24>axios': 0.34.0
 
 # pnpm 11 requires every dependency lifecycle script to be decided explicitly.
 allowBuilds:
@@ -67,5 +69,6 @@ minimumReleaseAgeExclude:
 
 patchedDependencies:
   '@rc-component/portal@2.2.1': patches/@rc-component__portal@2.2.1.patch
+  axios@0.34.0: patches/axios@0.34.0.patch
   decode-uri-component@0.2.2: patches/decode-uri-component@0.2.2.patch
   http-cache-semantics@4.3.0: patches/http-cache-semantics@4.3.0.patch
