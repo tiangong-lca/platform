@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: cccbe66ef17634bbfe13ce7016e1229ee1377197
-lastReviewedNote: 'Reviewed Platform #1385: exact official five-file Hono static-path backport and native baseline/candidate/consumer proof preserve the graph, prior patches and gate policy. The user approved the documented Utoo literal-percent filename restriction; its baseline difference remains explicit. Full delivery and production exposure are not inferred.'
+lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
+lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0.0.147: preserve all current product, locale and bounded mobile diagnostic changes plus the exact official Hono backport and approved Utoo percent-filename restriction. Graph, prior patches and gate policy remain unchanged; combined qualification and causal diagnosis are not inferred.'
 ---
 
 # Testing Execution State
