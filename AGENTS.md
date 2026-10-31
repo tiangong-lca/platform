@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: cd921af4a7f960f55b880d93c345c1c796b64f78
+lastReviewedCommit: ead1fa1c6388c46684cafbf3ce5c4da48029cc18
 lastReviewedNote: 'Reviewed combined Platform #1372/#1381/#1383 Dev preparation: retain qualified Axios and Zod Main repairs, independent Dev business work and bounded qualification diagnostics. Original actions, assertions, budgets, privacy and all four patches remain; fresh combined qualification and causal diagnosis are not inferred.'
 related:
   - .docpact/config.yaml
