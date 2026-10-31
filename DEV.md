@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: cccbe66ef17634bbfe13ce7016e1229ee1377197
-lastReviewedNote: 'Reviewed Platform #1384: exact native MockJS 1.1.0 source/dist/min/map repair preserves inherited-source and ordinary data semantics, detaches inherited destination defaults, retains all prior patches, versions and install policy, and adds isolated installed/OpenAPI/native-browser contracts. Full local/hosted/Main/Dev/root qualification requirements remain unchanged.'
+lastReviewedCommit: fc17551de7fce02c47e256fa56322609ecf44c0c
+lastReviewedNote: 'Reviewed Platform #1384: add the explicitly scoped Darwin-only Sparkplug mitigation for the observed Node24.19 native GC path and real parent-bound Jest-worker flag/runtime/closure controls. Exact runtime/images/dependencies/MockJS patch and complete worker, discovery, coverage and delivery contracts remain unchanged; upstream-fixed runtime adoption stays separately qualified.'
 ---
 
 # Development Bootstrap
