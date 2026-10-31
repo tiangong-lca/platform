@@ -16,11 +16,18 @@ import {
   type BrowserCapture,
   type NavigationRecord,
   type NavigationState,
+  type NavigationDetail,
   type SourceBinding,
 } from '../../../scripts/e2e/mobile-navigation-diagnostic.cjs';
 
 const hash = (value: string | Buffer) => crypto.createHash('sha256').update(value).digest('hex');
 const zeroState = () => Object.fromEntries(STATE_KEYS.map((key) => [key, 0])) as NavigationState;
+const detail = (recordSequence: number | null): NavigationDetail => ({
+  recordSequence,
+  popover: [0, 0, 0],
+  tooltip: [0, 0, 0],
+  composition: [0, null],
+});
 const source = (): SourceBinding => ({
   candidateCommit: '1'.repeat(40),
   candidateTree: '2'.repeat(40),
@@ -50,8 +57,40 @@ const capture = (): BrowserCapture => ({
   countOverflow: false,
   observerErrorCount: 0,
   disposed: true,
+  compositionPrehistory: 'unknown',
+  details: {
+    initial: detail(0),
+    escapeCapture: null,
+    escapeBubble: null,
+    frame: null,
+    final: detail(null),
+  },
+  frame: { scheduled: 0, completed: 0, cancelled: 0, triggerSequence: null },
 });
 const counters = () => ({ pageErrorCount: 0, consoleErrorCount: 0, counterOverflow: false });
+const frameCapture = (): BrowserCapture => {
+  const data = capture();
+  for (const stage of ['document-capture', 'window-bubble', 'post-escape-frame'] as const) {
+    const sequence = data.records.length;
+    data.records.push({
+      ...data.records[0],
+      sequence,
+      elapsedMs: sequence,
+      stage,
+      key: stage === 'post-escape-frame' ? 'none' : 'escape',
+    });
+  }
+  data.final!.elapsedMs = 4;
+  data.details = {
+    initial: detail(0),
+    escapeCapture: detail(1),
+    escapeBubble: detail(2),
+    frame: detail(3),
+    final: detail(null),
+  };
+  data.frame = { scheduled: 1, completed: 1, cancelled: 0, triggerSequence: 1 };
+  return data;
+};
 
 describe('bounded mobile navigation diagnostic contract (inert fixtures, not qualification proof)', () => {
   it('retains fixed data only and never labels an original failed step as a qualification pass', () => {
@@ -67,30 +106,176 @@ describe('bounded mobile navigation diagnostic contract (inert fixtures, not qua
     );
   });
 
+  it('accepts a completed frame or normal cancellation without inventing another keyboard event', () => {
+    const completed = frameCapture();
+    expect(buildReport(source(), completed, counters(), 'passed').captureStatus).toBe('complete');
+    const cancelled = frameCapture();
+    cancelled.records.pop();
+    cancelled.details.frame = null;
+    cancelled.frame.completed = 0;
+    cancelled.frame.cancelled = 1;
+    expect(buildReport(source(), cancelled, counters(), 'passed').captureStatus).toBe('complete');
+    cancelled.frame.cancelled = 0;
+    cancelled.disposed = false;
+    expect(buildReport(source(), cancelled, counters(), 'passed').captureStatus).toBe('incomplete');
+  });
+
+  it('rejects retained schema 1 under the new source rather than silently upgrading it', () => {
+    const report: any = buildReport(source(), capture(), counters(), 'passed');
+    report.schemaVersion = 1;
+    expect(() => assertReport(report)).toThrow();
+  });
+
+  it.each([
+    (data: any) => {
+      data.compositionPrehistory = 'known-clear';
+    },
+    (data: any) => {
+      data.details.initial.imeBlocked = false;
+    },
+    (data: any) => {
+      data.details.initial.popover.push(0);
+    },
+    (data: any) => {
+      data.details.initial.tooltip[0] = 33;
+    },
+    (data: any) => {
+      data.details.initial.composition = [0, 0];
+    },
+    (data: any) => {
+      data.details.initial.composition = [1, null];
+    },
+    (data: any) => {
+      data.details.initial.composition = [256, 0];
+    },
+    (data: any) => {
+      data.details.initial.composition = [1, 1];
+    },
+    (data: any) => {
+      data.details.final.composition = [1, 5];
+    },
+    (data: any) => {
+      data.details.escapeCapture.recordSequence = 2;
+    },
+    (data: any) => {
+      data.details.escapeBubble.recordSequence = 1;
+    },
+    (data: any) => {
+      data.frame.triggerSequence = 2;
+    },
+    (data: any) => {
+      data.frame.scheduled = 2;
+    },
+    (data: any) => {
+      data.frame.cancelled = 1;
+    },
+    (data: any) => {
+      data.frame.completed = 0;
+    },
+    (data: any) => {
+      data.details.frame = null;
+    },
+    (data: any) => {
+      data.records[3].key = 'escape';
+    },
+    (data: any) => {
+      data.records[3].trusted = true;
+    },
+    (data: any) => {
+      data.details.initial.popover[Symbol('private')] = 'private';
+    },
+    (data: any) => {
+      Object.defineProperty(data.details.initial.tooltip, 'toJSON', { value: () => 'private' });
+    },
+    (data: any) => {
+      data.details.escapeCapture.composition = [2, 1];
+      data.details.final.composition = [1, 1];
+    },
+    (data: any) => {
+      data.records.length = 10000;
+    },
+  ])('rejects invalid v2 detail/lifecycle/reference payload (%#)', (mutate) => {
+    const data = frameCapture();
+    mutate(data);
+    const invalid = buildReport(source(), data, counters(), 'failed');
+    expect(invalid.captureStatus).toBe('invalid');
+    expect(JSON.stringify(invalid)).not.toContain('private');
+  });
+
+  it('rejects new detail/tuple accessors without invoking them', () => {
+    const getter = jest.fn(() => 'private');
+    const data = frameCapture();
+    Object.defineProperty(data.details.initial!, 'recordSequence', {
+      enumerable: true,
+      get: getter,
+    });
+    expect(buildReport(source(), data, counters(), 'failed').captureStatus).toBe('invalid');
+    const other = frameCapture();
+    Object.defineProperty(other.details.initial!.popover, '0', { enumerable: true, get: getter });
+    expect(buildReport(source(), other, counters(), 'failed').captureStatus).toBe('invalid');
+    expect(getter).not.toHaveBeenCalled();
+  });
+
   it('bounds every allowed maximal record and snapshot below 24 KiB', () => {
     const data = capture();
     const state = Object.fromEntries(
       STATE_KEYS.map((key) => [key, LIMITS.nodes]),
     ) as NavigationState;
-    state.navigationHiddenCount = 0;
+    state.navigationVisibleCount = 16;
+    state.navigationHiddenCount = 16;
     data.records = Array.from({ length: LIMITS.records }, (_, index): NavigationRecord => ({
       ...data.records[0],
       sequence: index,
       elapsedMs: LIMITS.elapsedMs,
-      stage: index === 0 ? 'initial' : 'document-capture',
-      key: index === 0 ? 'none' : 'escape',
+      stage:
+        index === 0
+          ? 'initial'
+          : index === 2
+            ? 'window-bubble'
+            : index === 3
+              ? 'post-escape-frame'
+              : 'document-capture',
+      key: index === 0 || index === 3 ? 'none' : 'escape',
       focus: 'language-action',
       state,
     }));
     data.final = { elapsedMs: LIMITS.elapsedMs, focus: 'language-action', state };
-    const report = buildReport(
-      source(),
-      data,
-      { pageErrorCount: 255, consoleErrorCount: 255, counterOverflow: false },
-      'passed',
-    );
-    expect(report.captureStatus).toBe('complete');
-    expect(Buffer.byteLength(`${JSON.stringify(report)}\n`)).toBeLessThanOrEqual(24 * 1024);
+    const maximalDetail = (sequence: number | null): NavigationDetail => ({
+      recordSequence: sequence,
+      popover: [32, 32, 32],
+      tooltip: [32, 32, 32],
+      composition: [255, LIMITS.elapsedMs],
+    });
+    data.details = {
+      initial: maximalDetail(0),
+      escapeCapture: maximalDetail(1),
+      escapeBubble: maximalDetail(2),
+      frame: maximalDetail(3),
+      final: maximalDetail(null),
+    };
+    data.frame = { scheduled: 1, completed: 1, cancelled: 0, triggerSequence: 1 };
+    data.observerErrorCount = 255;
+    data.disposed = false;
+    const fixture = runtimeFixture();
+    try {
+      const binding = readRuntimeBinding(fixture.env, fixture.root);
+      const report = buildReport(
+        binding.source,
+        data,
+        { pageErrorCount: 255, consoleErrorCount: 255, counterOverflow: false },
+        'passed',
+      );
+      expect(report.captureStatus).toBe('incomplete');
+      const written = writeReport(binding, report);
+      expect(written.bytes).toBe(Buffer.byteLength(`${JSON.stringify(report)}\n`));
+      expect(written.bytes).toBeLessThanOrEqual(24 * 1024);
+      process.stdout.write(
+        `${JSON.stringify({ kind: 'mobile-navigation-v2-maximal-bytes', bytes: written.bytes, cap: LIMITS.bytes })}\n`,
+      );
+      expect(assertReport(JSON.parse(fs.readFileSync(written.path, 'utf8')))).toEqual(report);
+    } finally {
+      fs.rmSync(fixture.directory, { recursive: true, force: true });
+    }
   });
 
   it.each([

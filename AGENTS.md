@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: ead1fa1c6388c46684cafbf3ce5c4da48029cc18
-lastReviewedNote: 'Reviewed combined Platform #1372/#1381/#1383 Dev preparation: retain qualified Axios and Zod Main repairs, independent Dev business work and bounded qualification diagnostics. Original actions, assertions, budgets, privacy and all four patches remain; fresh combined qualification and causal diagnosis are not inferred.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: 162c450f3ee98d31285a21388589bb7e30da17c7
+lastReviewedNote: 'Reviewed Platform #1383 native locale audit/provenance regeneration after the equivalent mobile action extraction. The c26 baseline, catalogs, message IDs and assertions remain unchanged; only callsite coordinates, source census/input digest and dependent digest bindings refresh. Native diagnostic/runtime bytes remain retained; no canonical qualification is claimed.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -134,7 +134,7 @@ Do not start from additional governed source docs, proposal docs, or README-leve
 - `scripts/typescript-native-parser.mjs` plus its `scripts/typescript-native-parser.d.mts` declaration are the sole allowed `typescript/unstable/*` import boundary; repository source-analysis consumers import that adapter, and a TypeScript upgrade must preserve its focused AST/traversal/diagnostic contract tests
 - Oxlint owns JavaScript/TypeScript correctness, including unused and deprecated API diagnostics. The repo-local `tiangong/no-invalid-this` Oxlint plugin preserves the one legacy rule that Oxlint does not yet implement natively. Prettier remains the formatter but no longer organizes imports; do not reintroduce ESLint, a standalone deprecated-API scanner, or a Compiler-API formatting plugin
 - Jest `30.5.0` uses the repository slow-first sequencer to start the three known process-heavy contract suites early without changing discovery or the test inventory. The pre-push receipt suite builds one reusable seed but copies an isolated repository and bare remote for every test case
-- on macOS, the shared Jest runner disables concurrent recompilation and Maglev after the documented Node 24/V8 `ClearStaleLeftTrimmedPointerVisitor` crash reproduced inside those optimization tiers; the unit stage retains its 25% worker pool and `512MB` idle-memory recycle boundary without serializing the suite
+- on macOS, the shared Jest runner passes `--no-concurrent-recompilation --no-maglev --no-sparkplug` to mitigate the documented Node 24.19/V8 GC crash path; the Sparkplug flag is a temporary workaround, not a repaired runtime. The unit stage retains its 25% worker pool and `512MB` idle-memory recycle boundary; the validation guide and troubleshooting runbook own worker proof and retirement
 - locale identity and runtime adapters live in `src/services/general/localeRegistry.ts`; shared topology, canonical-message ownership, and dynamic-message audit rules live in `docs/plans/i18n-de-DE/manifest.json` plus the owning audit commands documented in `docs/agents/repo-validation.md`
 - the reusable autonomous Goal for adding or backfilling one product language lives in `docs/agents/i18n-language-delivery-goal.md`; it preserves Umi's native flag icons, separates UI/content/reference-resource capabilities, audits every active registry locale, requires official-first classification/location localization, and keeps country/region variants outside the single-language product contract
 - semantic localization E2E uses `playwright.config.ts` and `tests/e2e/i18n/**`; direct focused work uses `pnpm e2e:dev`, while exact committed qualification uses the repository-owned `e2e:env:install` / `e2e:env:doctor` / `e2e:release` controller against an archived clean commit and an isolated production bundle without mounting the parent workspace; the GitHub qualification is credential-free/read-only, hermetic, manually dispatched on a chosen ref or run by the bounded ordinary dependency PR job documented in `docs/agents/dependency-maintenance.md`, and is not part of release proof

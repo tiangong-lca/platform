@@ -10,6 +10,10 @@ import {
   type FocusCategory,
   type NavigationRecord,
   type NavigationSnapshot,
+  type NavigationDetail,
+  type NavigationDetails,
+  type OverlayCounts,
+  type FrameLifecycle,
   type RuntimeBinding,
 } from '../../../scripts/e2e/mobile-navigation-diagnostic.cjs';
 
@@ -22,10 +26,26 @@ export function installMobileNavigationObserver(limits: typeof LIMITS): void {
   if (Object.prototype.hasOwnProperty.call(owner, '__tgMobileNavigationDiagnostic'))
     throw new Error('Observer already installed.');
   const records: NavigationRecord[] = [];
+  const details: NavigationDetails = {
+    initial: null,
+    escapeCapture: null,
+    escapeBubble: null,
+    frame: null,
+    final: null,
+  };
+  const frame: FrameLifecycle = { scheduled: 0, completed: 0, cancelled: 0, triggerSequence: null };
   const started = performance.now();
   let recordOverflow = false;
   let countOverflow = false;
   let observerErrorCount = 0;
+  let closed = false;
+  let finishing = false;
+  let finished: BrowserCapture | undefined;
+  let escapeAttempted = false;
+  let selectedEscape: KeyboardEvent | null = null;
+  let pendingFrame: number | null = null;
+  let compositionCount = 0;
+  let lastCompositionElapsed: number | null = null;
   const fault = () => {
     observerErrorCount = Math.min(limits.count, observerErrorCount + 1);
   };
@@ -42,8 +62,7 @@ export function installMobileNavigationObserver(limits: typeof LIMITS): void {
   const visible = (element: HTMLElement) => {
     const style = getComputedStyle(element);
     const box = element.getBoundingClientRect();
-    // Bounded overlay-box metric, not the complete Playwright locator engine.
-    // Transparent boxes still count, matching the ordinary computeBox case.
+    // Selected box metric, not the complete Playwright visibility algorithm.
     return style.visibility === 'visible' && box.width > 0 && box.height > 0;
   };
   const focus = (navigation: HTMLElement[]): FocusCategory => {
@@ -66,89 +85,203 @@ export function installMobileNavigationObserver(limits: typeof LIMITS): void {
       return 'other-overlay';
     return 'other';
   };
-  const snapshot = (): NavigationSnapshot => {
+  const observe = (
+    selected: boolean,
+    sequence: number | null,
+  ): { snapshot: NavigationSnapshot; detail: NavigationDetail | null } => {
     const navigation = nodes('.ant-pro-drawer-sider');
-    const navigationVisibleCount = navigation.filter(visible).length;
     let animationVisits = 0;
-    const navigationMotionCount = navigation.filter((element) => {
-      const wrapper = element.closest<HTMLElement>('.ant-drawer-content-wrapper') || element;
-      const animations = wrapper.getAnimations({ subtree: true });
+    const moving = (element: HTMLElement) => {
+      const animations = element.getAnimations({ subtree: true });
       if (animationVisits + animations.length > limits.animations) countOverflow = true;
       const inspected = animations.slice(0, Math.max(0, limits.animations - animationVisits));
       animationVisits += inspected.length;
       return inspected.some((animation) => animation.playState === 'running' || animation.pending);
-    }).length;
-    return {
-      elapsedMs: elapsed(),
-      focus: focus(navigation),
-      state: {
-        navigationCount: navigation.length,
-        navigationVisibleCount,
-        navigationHiddenCount: navigation.length - navigationVisibleCount,
-        navigationOpenCount: navigation.filter(
-          (element) =>
-            element.closest('.ant-drawer')?.classList.contains('ant-drawer-open') === true,
-        ).length,
-        navigationMotionCount,
-        dialogVisibleCount: nodes('[role="dialog"]').filter(visible).length,
-        modalVisibleCount: nodes('.ant-modal').filter(visible).length,
-        menuVisibleCount: nodes('[role="menu"]').filter(visible).length,
-        listboxVisibleCount: nodes('[role="listbox"]').filter(visible).length,
-        dropdownVisibleCount: nodes('.ant-dropdown').filter(visible).length,
-      },
     };
+    const state = {
+      navigationCount: navigation.length,
+      navigationVisibleCount: navigation.filter(visible).length,
+      navigationHiddenCount: 0,
+      navigationOpenCount: navigation.filter(
+        (element) => element.closest('.ant-drawer')?.classList.contains('ant-drawer-open') === true,
+      ).length,
+      navigationMotionCount: navigation.filter((element) =>
+        moving(element.closest<HTMLElement>('.ant-drawer-content-wrapper') || element),
+      ).length,
+      dialogVisibleCount: nodes('[role="dialog"]').filter(visible).length,
+      modalVisibleCount: nodes('.ant-modal').filter(visible).length,
+      menuVisibleCount: nodes('[role="menu"]').filter(visible).length,
+      listboxVisibleCount: nodes('[role="listbox"]').filter(visible).length,
+      dropdownVisibleCount: nodes('.ant-dropdown').filter(visible).length,
+    };
+    state.navigationHiddenCount = state.navigationCount - state.navigationVisibleCount;
+    const overlay = (selector: string, leave: string): OverlayCounts => {
+      const roots = nodes(selector);
+      return [
+        roots.filter(visible).length,
+        roots.filter(moving).length,
+        roots.filter(
+          (element) =>
+            element.classList.contains(leave) || element.classList.contains(`${leave}-active`),
+        ).length,
+      ];
+    };
+    // No private Portal/IME state is read. Each category is sampled only at a
+    // fixed selected point, sharing the navigation animation inspection budget.
+    const popover = selected ? overlay('.ant-popover', 'ant-zoom-big-leave') : null;
+    const tooltip = selected ? overlay('.ant-tooltip', 'ant-zoom-big-fast-leave') : null;
+    const snapshot: NavigationSnapshot = { elapsedMs: elapsed(), focus: focus(navigation), state };
+    const detail: NavigationDetail | null =
+      popover && tooltip
+        ? {
+            recordSequence: sequence,
+            popover,
+            tooltip,
+            composition: [compositionCount, lastCompositionElapsed],
+          }
+        : null;
+    return { snapshot, detail };
   };
-  const capture = (stage: NavigationRecord['stage'], event?: KeyboardEvent) => {
-    if (event && event.key !== 'Enter' && event.key !== 'Escape') return;
+  const capture = (
+    stage: NavigationRecord['stage'],
+    event?: KeyboardEvent,
+    slot?: Exclude<keyof NavigationDetails, 'final'>,
+  ): number | null => {
+    if (closed || (event && event.key !== 'Enter' && event.key !== 'Escape')) return null;
     if (records.length >= limits.records) {
       recordOverflow = true;
-      return;
+      return null;
     }
     try {
+      const sequence = records.length;
+      const observation = observe(slot !== undefined, sequence);
+      if (closed) return null;
       records.push({
-        sequence: records.length,
-        ...snapshot(),
+        sequence,
+        ...observation.snapshot,
         stage,
         key: event ? (event.key === 'Enter' ? 'enter' : 'escape') : 'none',
         trusted: Boolean(event?.isTrusted),
         composing: Boolean(event?.isComposing),
         defaultPrevented: Boolean(event?.defaultPrevented),
       });
+      if (slot) details[slot] = observation.detail;
+      return sequence;
     } catch {
+      fault();
+      return null;
+    }
+  };
+  const scheduleFrame = (sequence: number) => {
+    try {
+      pendingFrame = window.requestAnimationFrame(() => {
+        if (closed) return;
+        // Native RAF cannot run before registration returns. An inconsistent
+        // replacement is a fault, not permission to publish an unbound sample.
+        if (frame.scheduled !== 1) {
+          fault();
+          return;
+        }
+        pendingFrame = null;
+        frame.completed = 1;
+        capture('post-escape-frame', undefined, 'frame');
+      });
+      frame.scheduled = 1;
+      frame.triggerSequence = sequence;
+    } catch {
+      pendingFrame = null;
       fault();
     }
   };
-  const documentCapture = (event: KeyboardEvent) => capture('document-capture', event);
-  const windowBubble = (event: KeyboardEvent) => capture('window-bubble', event);
+  const documentCapture = (event: KeyboardEvent) => {
+    if (closed) return;
+    const selected = event.key === 'Escape' && !escapeAttempted;
+    if (selected) escapeAttempted = true;
+    const sequence = capture('document-capture', event, selected ? 'escapeCapture' : undefined);
+    if (selected && sequence !== null && !closed) {
+      selectedEscape = event;
+      scheduleFrame(sequence);
+    }
+  };
+  const windowBubble = (event: KeyboardEvent) => {
+    if (closed) return;
+    const selected = event === selectedEscape;
+    capture('window-bubble', event, selected ? 'escapeBubble' : undefined);
+    if (selected) selectedEscape = null;
+  };
+  const compositionEnd = () => {
+    if (closed) return;
+    if (compositionCount === limits.count) {
+      countOverflow = true;
+      return;
+    }
+    compositionCount++;
+    lastCompositionElapsed = elapsed();
+  };
+  const handle = {
+    finish(): BrowserCapture {
+      if (finished) return finished;
+      if (finishing) throw new Error('Observer finish is already in progress.');
+      finishing = true;
+      closed = true;
+      selectedEscape = null;
+      let disposed = true;
+      const cleanup = (operation: () => void) => {
+        try {
+          operation();
+        } catch {
+          disposed = false;
+          fault();
+        }
+      };
+      if (pendingFrame !== null) {
+        const id = pendingFrame;
+        pendingFrame = null;
+        cleanup(() => {
+          window.cancelAnimationFrame(id);
+          frame.cancelled = 1;
+        });
+      }
+      cleanup(() => document.removeEventListener('keydown', documentCapture, true));
+      cleanup(() => window.removeEventListener('keydown', windowBubble, false));
+      cleanup(() => window.removeEventListener('compositionend', compositionEnd, false));
+      let final: NavigationSnapshot | null = null;
+      try {
+        const observation = observe(true, null);
+        final = observation.snapshot;
+        details.final = observation.detail;
+      } catch {
+        fault();
+      }
+      cleanup(() => {
+        if (owner.__tgMobileNavigationDiagnostic === handle)
+          delete owner.__tgMobileNavigationDiagnostic;
+      });
+      finished = {
+        records,
+        final,
+        recordOverflow,
+        countOverflow,
+        observerErrorCount,
+        disposed,
+        compositionPrehistory: 'unknown',
+        details,
+        frame,
+      };
+      return finished;
+    },
+  };
   Object.defineProperty(owner, '__tgMobileNavigationDiagnostic', {
     configurable: true,
-    value: {
-      finish(): BrowserCapture {
-        let final: NavigationSnapshot | null = null;
-        let disposed = false;
-        try {
-          final = snapshot();
-        } catch {
-          fault();
-        }
-        try {
-          document.removeEventListener('keydown', documentCapture, true);
-          window.removeEventListener('keydown', windowBubble, false);
-          delete owner.__tgMobileNavigationDiagnostic;
-          disposed = true;
-        } catch {
-          fault();
-        }
-        return { records, final, recordOverflow, countOverflow, observerErrorCount, disposed };
-      },
-    },
+    value: handle,
   });
   try {
     document.addEventListener('keydown', documentCapture, { capture: true, passive: true });
     window.addEventListener('keydown', windowBubble, { passive: true });
-    capture('initial');
+    window.addEventListener('compositionend', compositionEnd, { passive: true });
+    capture('initial', undefined, 'initial');
   } catch {
-    owner.__tgMobileNavigationDiagnostic?.finish();
+    handle.finish();
     throw new Error('Observer installation failed.');
   }
 }
