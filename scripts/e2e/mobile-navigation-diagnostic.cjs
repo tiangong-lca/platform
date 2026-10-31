@@ -4,8 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 
-// Expected traffic is one initial snapshot and eight key-phase records for the
-// menu and avatar Enter/Escape pairs, plus the separate final/failure snapshot.
+// Expected traffic is one initial, eight key phases and at most one frame record,
+// plus the separate final snapshot. Five fixed detail slots preserve the byte cap.
 // finite headroom permits repeats without retaining an unbounded event stream.
 // Compact JSON for every allowed field at these caps remains below 24 KiB.
 const LIMITS = Object.freeze({
@@ -103,6 +103,67 @@ function assertSnapshot(snapshot) {
   assertState(snapshot.state);
 }
 
+// Browser values cross a serialization boundary before validation. Reject
+// custom array channels as well as holes/accessors, including on the new tuples.
+function list(value, length) {
+  return (
+    Array.isArray(value) &&
+    Object.getPrototypeOf(value) === Array.prototype &&
+    value.length <= LIMITS.records &&
+    (length === undefined || value.length === length) &&
+    Object.getOwnPropertySymbols(value).length === 0 &&
+    Object.getOwnPropertyNames(value).length === value.length + 1 &&
+    Array.from({ length: value.length }, (_, index) => {
+      const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+      return descriptor && Object.hasOwn(descriptor, 'value') && descriptor.enumerable;
+    }).every(Boolean)
+  );
+}
+
+function assertDetail(detail, snapshot, sequence) {
+  if (
+    !exact(detail, ['recordSequence', 'popover', 'tooltip', 'composition']) ||
+    detail.recordSequence !== sequence ||
+    !snapshot ||
+    !['popover', 'tooltip'].every(
+      (key) => list(detail[key], 3) && detail[key].every((value) => integer(value, LIMITS.nodes)),
+    ) ||
+    !list(detail.composition, 2) ||
+    !integer(detail.composition[0]) ||
+    (detail.composition[0] === 0
+      ? detail.composition[1] !== null
+      : !integer(detail.composition[1], LIMITS.elapsedMs) ||
+        detail.composition[1] > snapshot.elapsedMs)
+  )
+    fail();
+}
+
+function captureComplete(capture) {
+  const firstEscape = capture.records.find(
+    (entry) => entry.stage === 'document-capture' && entry.key === 'escape',
+  );
+  return (
+    capture.records[0]?.stage === 'initial' &&
+    capture.details.initial !== null &&
+    capture.final !== null &&
+    capture.details.final !== null &&
+    capture.disposed &&
+    !capture.recordOverflow &&
+    !capture.countOverflow &&
+    capture.observerErrorCount === 0 &&
+    capture.frame.scheduled === capture.frame.completed + capture.frame.cancelled &&
+    (firstEscape
+      ? capture.details.escapeCapture?.recordSequence === firstEscape.sequence &&
+        capture.frame.scheduled === 1
+      : capture.details.escapeCapture === null &&
+        capture.details.escapeBubble === null &&
+        capture.frame.scheduled === 0) &&
+    (capture.frame.completed === 1
+      ? capture.details.frame !== null
+      : capture.details.frame === null)
+  );
+}
+
 function assertCapture(capture) {
   if (
     !exact(capture, [
@@ -112,13 +173,21 @@ function assertCapture(capture) {
       'countOverflow',
       'observerErrorCount',
       'disposed',
+      'compositionPrehistory',
+      'details',
+      'frame',
     ]) ||
-    !Array.isArray(capture.records) ||
+    !list(capture.records) ||
     capture.records.length > LIMITS.records ||
     !boolean(capture.recordOverflow) ||
     !boolean(capture.countOverflow) ||
     !integer(capture.observerErrorCount) ||
-    !boolean(capture.disposed)
+    !boolean(capture.disposed) ||
+    capture.compositionPrehistory !== 'unknown' ||
+    !exact(capture.details, ['initial', 'escapeCapture', 'escapeBubble', 'frame', 'final']) ||
+    !exact(capture.frame, ['scheduled', 'completed', 'cancelled', 'triggerSequence']) ||
+    !['scheduled', 'completed', 'cancelled'].every((key) => integer(capture.frame[key], 1)) ||
+    capture.frame.completed + capture.frame.cancelled > capture.frame.scheduled
   )
     fail();
   let elapsed = 0;
@@ -138,15 +207,17 @@ function assertCapture(capture) {
       entry.sequence !== index ||
       !integer(entry.elapsedMs, LIMITS.elapsedMs) ||
       entry.elapsedMs < elapsed ||
-      !['initial', 'document-capture', 'window-bubble'].includes(entry.stage) ||
+      !['initial', 'document-capture', 'window-bubble', 'post-escape-frame'].includes(
+        entry.stage,
+      ) ||
       !['none', 'enter', 'escape'].includes(entry.key) ||
       ![entry.trusted, entry.composing, entry.defaultPrevented].every(boolean) ||
       !FOCUS.includes(entry.focus)
     )
       fail();
     if (
-      entry.stage === 'initial'
-        ? index !== 0 ||
+      entry.stage === 'initial' || entry.stage === 'post-escape-frame'
+        ? (entry.stage === 'initial' && index !== 0) ||
           entry.key !== 'none' ||
           entry.trusted ||
           entry.composing ||
@@ -160,6 +231,70 @@ function assertCapture(capture) {
   if (capture.final !== null) {
     assertSnapshot(capture.final);
     if (capture.final.elapsedMs < elapsed) fail();
+  }
+  const references = [
+    ['initial', 'initial', 'none'],
+    ['escapeCapture', 'document-capture', 'escape'],
+    ['escapeBubble', 'window-bubble', 'escape'],
+    ['frame', 'post-escape-frame', 'none'],
+  ];
+  const compositions = [];
+  for (const [slot, stage, key] of references) {
+    const detail = capture.details[slot];
+    if (detail === null) continue;
+    if (!exact(detail, ['recordSequence', 'popover', 'tooltip', 'composition'])) fail();
+    if (!integer(detail?.recordSequence, LIMITS.records - 1)) fail();
+    const entry = capture.records[detail.recordSequence];
+    if (
+      !entry ||
+      entry.stage !== stage ||
+      entry.key !== key ||
+      (slot === 'initial' && entry.sequence !== 0)
+    )
+      fail();
+    assertDetail(detail, entry, entry.sequence);
+    compositions.push([entry.sequence, detail.composition]);
+  }
+  if (capture.details.final !== null) {
+    assertDetail(capture.details.final, capture.final, null);
+    compositions.push([LIMITS.records, capture.details.final.composition]);
+  }
+  compositions.sort((a, b) => a[0] - b[0]);
+  let previousCount = 0,
+    previousTime = 0;
+  for (const [, [count, time]] of compositions) {
+    if (count < previousCount || (time !== null && time < previousTime)) fail();
+    previousCount = count;
+    previousTime = time ?? previousTime;
+  }
+  const selected = capture.details.escapeCapture?.recordSequence;
+  const bubble = capture.details.escapeBubble?.recordSequence;
+  const frame = capture.details.frame?.recordSequence;
+  const frameEntries = capture.records.filter((entry) => entry.stage === 'post-escape-frame');
+  if (
+    selected !== undefined &&
+    selected !==
+      capture.records.find((entry) => entry.stage === 'document-capture' && entry.key === 'escape')
+        ?.sequence
+  )
+    fail();
+  if (bubble !== undefined && (selected === undefined || bubble <= selected)) fail();
+  if (
+    frameEntries.length > 1 ||
+    (frameEntries.length === 1 ? frame !== frameEntries[0].sequence : frame !== undefined)
+  )
+    fail();
+  if (capture.frame.scheduled === 0) {
+    if (capture.frame.triggerSequence !== null || frame !== undefined) fail();
+  } else {
+    if (selected === undefined || capture.frame.triggerSequence !== selected) fail();
+    if (
+      frame !== undefined &&
+      (capture.frame.completed !== 1 ||
+        frame <= selected ||
+        (bubble !== undefined && frame <= bubble))
+    )
+      fail();
   }
 }
 
@@ -180,7 +315,7 @@ function assertReport(report) {
       'capture',
     ]) ||
     report.kind !== 'tiangong.mobile-navigation-diagnostic' ||
-    report.schemaVersion !== 1 ||
+    report.schemaVersion !== 2 ||
     report.scope !== 'qualification-diagnostic-only' ||
     report.case !== 'responsive-mobile-navigation' ||
     report.browser !== 'chromium' ||
@@ -193,14 +328,7 @@ function assertReport(report) {
     fail();
   assertBinding(report.source);
   assertCapture(report.capture);
-  const complete =
-    report.capture.records[0]?.stage === 'initial' &&
-    report.capture.final !== null &&
-    report.capture.disposed &&
-    !report.capture.recordOverflow &&
-    !report.capture.countOverflow &&
-    report.capture.observerErrorCount === 0 &&
-    !report.counterOverflow;
+  const complete = captureComplete(report.capture) && !report.counterOverflow;
   if (report.captureStatus === 'complete' && !complete) fail();
   if (Buffer.byteLength(`${JSON.stringify(report)}\n`, 'utf8') > LIMITS.bytes) fail();
   return report;
@@ -222,20 +350,15 @@ function buildReport(source, capture, counters, originalStepOutcome, observerFai
       countOverflow: false,
       observerErrorCount: 1,
       disposed: false,
+      compositionPrehistory: 'unknown',
+      details: { initial: null, escapeCapture: null, escapeBubble: null, frame: null, final: null },
+      frame: { scheduled: 0, completed: 0, cancelled: 0, triggerSequence: null },
     };
   const complete =
-    valid &&
-    capture.records[0]?.stage === 'initial' &&
-    capture.final !== null &&
-    capture.disposed &&
-    !capture.recordOverflow &&
-    !capture.countOverflow &&
-    capture.observerErrorCount === 0 &&
-    !counters.counterOverflow &&
-    !observerFailed;
+    valid && captureComplete(capture) && !counters.counterOverflow && !observerFailed;
   return assertReport({
     kind: 'tiangong.mobile-navigation-diagnostic',
-    schemaVersion: 1,
+    schemaVersion: 2,
     scope: 'qualification-diagnostic-only',
     case: 'responsive-mobile-navigation',
     browser: 'chromium',
@@ -402,6 +525,7 @@ module.exports = {
   FOCUS,
   STATE_KEYS,
   assertReport,
+  assertCapture,
   buildReport,
   readRuntimeBinding,
   writeReport,

@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
-lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0.0.147: preserve all current product, locale and bounded mobile diagnostic changes plus the exact official Hono backport and approved Utoo percent-filename restriction. Graph, prior patches and gate policy remain unchanged; combined qualification and causal diagnosis are not inferred.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: 0cf171f2a80155b37a3a2d971b41dc0dae281aac
+lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0cf171f2a: retain MockJS, the Darwin Sparkplug mitigation, equivalent mobile-action extraction, passive schema 2 and generated locale evidence with the exact official Hono backport and approved Utoo percent-filename restriction. Preserve the five prior patches, unrelated graph/version/install policy and canonical actions, budgets and privacy; combined full/hosted qualification, Dev reconciliation and root integration remain pending.'
 ---
 
 # Development Bootstrap

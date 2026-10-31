@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
-lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0.0.147: preserve all current product, locale and bounded mobile diagnostic changes plus the exact official Hono backport and approved Utoo percent-filename restriction. Graph, prior patches and gate policy remain unchanged; combined qualification and causal diagnosis are not inferred.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: 0cf171f2a80155b37a3a2d971b41dc0dae281aac
+lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0cf171f2a: retain MockJS, the Darwin Sparkplug mitigation, equivalent mobile-action extraction, passive schema 2 and generated locale evidence with the exact official Hono backport and approved Utoo percent-filename restriction. Preserve the five prior patches, unrelated graph/version/install policy and canonical actions, budgets and privacy; combined full/hosted qualification, Dev reconciliation and root integration remain pending.'
 ---
 
 # Testing Execution State
@@ -67,6 +67,8 @@ This is a checked-in reference, not a per-PR execution ledger. A delivery's post
 ## Current State
 
 - Issue #1358 owns the separately reproduced Portal commit-lifecycle repair, maintained-patch image input closure and exact Main semantic admission. Acceptance requires installed-package, native ESM/default-container/focus, current-source canonical semantic and normal complete-gate evidence; actual executions and remaining work are recorded on that Issue/PR. Package versions and unrelated dependency resolutions remain intact. Successful new evidence does not establish #1354's historical failure cause or independently authorize publication.
+
+- Issue #1383 retains the failed canonical mobile Escape result and owns further diagnosis. Its separate native control now exercises real uncontrolled ProLayout state through the exact product mobile-action adapter, actual drawer hiding and exact-opener restoration, with a separately labeled descendant-popup closing condition. The shell omits authenticated services, Umi routing and predecessor history; worktree-hash component evidence cannot establish the historical cause or replace canonical qualification. Approved passive schema 2 additionally retains five selected overlay/composition detail points and one unawaited optional frame, with exact caps, original-error precedence and owned cleanup controls; composition prehistory remains unknown. Actual receipts, remaining investigation and any later instrumentation approval belong on the Issue.
 
 - repo is in full-closure maintenance mode
 - there is no active ordered coverage queue right now

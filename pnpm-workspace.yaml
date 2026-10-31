@@ -73,3 +73,4 @@ patchedDependencies:
   axios@0.34.0: patches/axios@0.34.0.patch
   decode-uri-component@0.2.2: patches/decode-uri-component@0.2.2.patch
   http-cache-semantics@4.3.0: patches/http-cache-semantics@4.3.0.patch
+  mockjs@1.1.0: patches/mockjs@1.1.0.patch

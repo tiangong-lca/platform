@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "f18197b7b105eb290237d1b3f2bf6cad537aec9e11a7cf21c50534c132ca5602",
+    "auditedInputDigest": "a18f90ff9bcb82c654af904db07beed7f3c72367d06d5c619df9b714b9ad43d2",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -74,7 +74,7 @@
     "activeStaticKeyCount": 2434,
     "activeDynamicKeyCount": 323,
     "reservedKeyCount": 881,
-    "productionSourceFileCount": 517,
+    "productionSourceFileCount": 518,
     "literalReferenceCount": 4461,
     "dynamicCallsiteCount": 38,
     "dynamicCallsiteSummaryCount": 38,
@@ -1302,7 +1302,7 @@
           "kind": "formatMessage",
           "path": "src/app.tsx",
           "line": 296,
-          "column": 25,
+          "column": 13,
           "symbol": "layout",
           "defaultMessage": "Navigation Mode",
           "defaultMessageExpression": null
@@ -1310,7 +1310,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 515,
+          "line": 501,
           "column": 9,
           "symbol": "layout",
           "defaultMessage": "Navigation Mode",
@@ -1323,8 +1323,8 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 296, "column": 25, "kind": "formatMessage" },
-            { "path": "src/app.tsx", "line": 515, "column": 9, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 296, "column": 13, "kind": "formatMessage" },
+            { "path": "src/app.tsx", "line": 501, "column": 9, "kind": "formatMessage" }
           ]
         }
       ]
@@ -1448,7 +1448,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 438,
+          "line": 424,
           "column": 102,
           "symbol": "layout",
           "defaultMessage": "Page style setting",
@@ -1457,7 +1457,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 441,
+          "line": 427,
           "column": 99,
           "symbol": "layout",
           "defaultMessage": "Page style setting",
@@ -1470,8 +1470,8 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 438, "column": 102, "kind": "formatMessage" },
-            { "path": "src/app.tsx", "line": 441, "column": 99, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 424, "column": 102, "kind": "formatMessage" },
+            { "path": "src/app.tsx", "line": 427, "column": 99, "kind": "formatMessage" }
           ]
         }
       ]
@@ -3896,7 +3896,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 438,
+          "line": 424,
           "column": 30,
           "symbol": "layout",
           "defaultMessage": "Close",
@@ -3909,7 +3909,7 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 438, "column": 30, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 424, "column": 30, "kind": "formatMessage" }
           ]
         }
       ]
@@ -4564,7 +4564,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 441,
+          "line": 427,
           "column": 29,
           "symbol": "layout",
           "defaultMessage": "Open",
@@ -4577,7 +4577,7 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 441, "column": 29, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 427, "column": 29, "kind": "formatMessage" }
           ]
         }
       ]
@@ -13881,7 +13881,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 401,
+          "line": 387,
           "column": 16,
           "symbol": "layout",
           "defaultMessage": "OpenAPI documentation",
@@ -13894,7 +13894,7 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 401, "column": 16, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 387, "column": 16, "kind": "formatMessage" }
           ]
         }
       ]
@@ -25864,7 +25864,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 370,
+          "line": 356,
           "column": 33,
           "symbol": "layout",
           "defaultMessage": "Account Center",
@@ -25877,7 +25877,7 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 370, "column": 33, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 356, "column": 33, "kind": "formatMessage" }
           ]
         }
       ]
@@ -27287,7 +27287,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 324,
+          "line": 310,
           "column": 25,
           "symbol": "layout",
           "defaultMessage": "Data Dashboard",
@@ -27296,7 +27296,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 331,
+          "line": 317,
           "column": 20,
           "symbol": "layout",
           "defaultMessage": "Data Dashboard",
@@ -27309,8 +27309,8 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 324, "column": 25, "kind": "formatMessage" },
-            { "path": "src/app.tsx", "line": 331, "column": 20, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 310, "column": 25, "kind": "formatMessage" },
+            { "path": "src/app.tsx", "line": 317, "column": 20, "kind": "formatMessage" }
           ]
         }
       ]
@@ -27434,7 +27434,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 344,
+          "line": 330,
           "column": 25,
           "symbol": "layout",
           "defaultMessage": "Data Processing",
@@ -27443,7 +27443,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 351,
+          "line": 337,
           "column": 20,
           "symbol": "layout",
           "defaultMessage": "Data Processing",
@@ -27456,8 +27456,8 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 344, "column": 25, "kind": "formatMessage" },
-            { "path": "src/app.tsx", "line": 351, "column": 20, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 330, "column": 25, "kind": "formatMessage" },
+            { "path": "src/app.tsx", "line": 337, "column": 20, "kind": "formatMessage" }
           ]
         }
       ]
@@ -31580,7 +31580,7 @@
         {
           "kind": "formatMessage",
           "path": "src/app.tsx",
-          "line": 460,
+          "line": 446,
           "column": 26,
           "symbol": "layout",
           "defaultMessage": "Supporting Data",
@@ -31593,7 +31593,7 @@
           "argumentSignature": [],
           "placeholders": [],
           "locations": [
-            { "path": "src/app.tsx", "line": 460, "column": 26, "kind": "formatMessage" }
+            { "path": "src/app.tsx", "line": 446, "column": 26, "kind": "formatMessage" }
           ]
         }
       ]

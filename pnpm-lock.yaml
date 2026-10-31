@@ -20,6 +20,7 @@ patchedDependencies:
   axios@0.34.0: e4b45cea1fb166b9c6a0baaea501412597e74e044ce99d2fceb63e89fb93bf9b
   decode-uri-component@0.2.2: 20621cc46533eab2eab42e20bc0d8fbc14fabeea53b3be58df0dce90c793a77d
   http-cache-semantics@4.3.0: a2290919f463f6bed147f2d4d93f17a7f209d01fc39b773e3d1060f20a409838
+  mockjs@1.1.0: a8fde2bf4334e7ec75a47febab8d347885f0fbac6d37aa95718189ecc2018271
 
 importers:
 
@@ -12584,7 +12585,7 @@ snapshots:
       lodash: 4.18.1
       memoizee: 0.4.17
       mock.js: 0.2.0
-      mockjs: 1.1.0
+      mockjs: 1.1.0(patch_hash=a8fde2bf4334e7ec75a47febab8d347885f0fbac6d37aa95718189ecc2018271)
       node-fetch: 2.7.0(encoding@0.1.13)
       number-to-words: 1.2.4
       nunjucks: 3.2.4(chokidar@3.5.3)
@@ -16883,7 +16884,7 @@ snapshots:
 
   mock.js@0.2.0: {}
 
-  mockjs@1.1.0:
+  mockjs@1.1.0(patch_hash=a8fde2bf4334e7ec75a47febab8d347885f0fbac6d37aa95718189ecc2018271):
     dependencies:
       commander: 13.1.0
 
