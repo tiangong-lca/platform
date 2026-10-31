@@ -43,9 +43,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: ead1fa1c6388c46684cafbf3ce5c4da48029cc18
-lastReviewedNote: 'Reviewed combined Platform #1372/#1381/#1383 Dev preparation: retain qualified Axios and Zod Main repairs, independent Dev business work and bounded qualification diagnostics. Original actions, assertions, budgets, privacy and all four patches remain; fresh combined qualification and causal diagnosis are not inferred.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
+lastReviewedNote: 'Platform #1390 bounded preparation: reviewed six exact optimizer/cancellation backports, retained matcher APIs and graph generations, native consumer and source-map proof. Toolchain, supported platforms, gate inventory/coverage, Main hotfix and Dev/root integration requirements remain unchanged; full/hosted/artifact qualification and delivery are still pending.'
 ---
 
 # Testing Troubleshooting

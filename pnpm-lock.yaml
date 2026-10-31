@@ -18,7 +18,13 @@ patchedDependencies:
   '@rc-component/portal@2.2.1': b54fad3197311b0723001e869cd1b7305dad444286aa0a0ca9097fcf96969a6c
   axios@0.34.0: e4b45cea1fb166b9c6a0baaea501412597e74e044ce99d2fceb63e89fb93bf9b
   decode-uri-component@0.2.2: 20621cc46533eab2eab42e20bc0d8fbc14fabeea53b3be58df0dce90c793a77d
+  glob@10.5.0: fb2d5d62bbe363d30ec7d0c82ce3acd0d2d0f7861a9e6583b0fe23ed976e53b0
+  glob@13.0.6: 181160691ec88f19b37dbb999dcb24028adb57dd06c61f2edd7e0932451fa2d5
+  glob@9.3.5: 9a580be7941ffa4dbd47c4019ba1b69d67338f87fc231a7ffac3cee8a916b192
   http-cache-semantics@4.3.0: a2290919f463f6bed147f2d4d93f17a7f209d01fc39b773e3d1060f20a409838
+  minimatch@10.2.5: 61982131221462da49cd8046d2b1955b907b0861afaa248c159b4be226e7f0f8
+  minimatch@8.0.7: 8a247ded175a2ebe7b18c940d7c92bed48798d89f5194a544204cbcf2e408901
+  minimatch@9.0.9: 4c4d6885dbd061adc3ac796bba95d394cdef7405bed294fb34b884b2be03231e
 
 importers:
 
@@ -10081,7 +10087,7 @@ snapshots:
       debug: 4.4.3(supports-color@8.1.1)
       dir-compare: 4.2.0
       fs-extra: 11.3.6
-      minimatch: 9.0.9
+      minimatch: 9.0.9(patch_hash=4c4d6885dbd061adc3ac796bba95d394cdef7405bed294fb34b884b2be03231e)
       plist: 3.1.0
     transitivePeerDependencies:
       - supports-color
@@ -10659,7 +10665,7 @@ snapshots:
       chalk: 4.1.2
       collect-v8-coverage: 1.0.3
       exit-x: 0.2.2
-      glob: 13.0.6
+      glob: 13.0.6(patch_hash=181160691ec88f19b37dbb999dcb24028adb57dd06c61f2edd7e0932451fa2d5)
       graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-instrument: 6.0.3(supports-color@8.1.1)
@@ -13203,7 +13209,7 @@ snapshots:
       js-yaml: 4.3.2
       json5: 2.2.3
       lazy-val: 1.0.5
-      minimatch: 10.2.5
+      minimatch: 10.2.5(patch_hash=61982131221462da49cd8046d2b1955b907b0861afaa248c159b4be226e7f0f8)
       pkijs: 3.4.0
       plist: 3.1.0
       proper-lockfile: 4.1.2
@@ -15341,18 +15347,18 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@10.5.0:
+  glob@10.5.0(patch_hash=fb2d5d62bbe363d30ec7d0c82ce3acd0d2d0f7861a9e6583b0fe23ed976e53b0):
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
-      minimatch: 9.0.9
+      minimatch: 9.0.9(patch_hash=4c4d6885dbd061adc3ac796bba95d394cdef7405bed294fb34b884b2be03231e)
       minipass: 7.1.3
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
-  glob@13.0.6:
+  glob@13.0.6(patch_hash=181160691ec88f19b37dbb999dcb24028adb57dd06c61f2edd7e0932451fa2d5):
     dependencies:
-      minimatch: 10.2.5
+      minimatch: 10.2.5(patch_hash=61982131221462da49cd8046d2b1955b907b0861afaa248c159b4be226e7f0f8)
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -15365,10 +15371,10 @@ snapshots:
       once: 1.4.0
       path-is-absolute: 1.0.1
 
-  glob@9.3.5:
+  glob@9.3.5(patch_hash=9a580be7941ffa4dbd47c4019ba1b69d67338f87fc231a7ffac3cee8a916b192):
     dependencies:
       fs.realpath: 1.0.0
-      minimatch: 8.0.7
+      minimatch: 8.0.7(patch_hash=8a247ded175a2ebe7b18c940d7c92bed48798d89f5194a544204cbcf2e408901)
       minipass: 4.2.8
       path-scurry: 1.11.1
 
@@ -16056,7 +16062,7 @@ snapshots:
       chalk: 4.1.2
       ci-info: 4.4.0
       deepmerge: 4.3.1
-      glob: 13.0.6
+      glob: 13.0.6(patch_hash=181160691ec88f19b37dbb999dcb24028adb57dd06c61f2edd7e0932451fa2d5)
       graceful-fs: 4.2.11
       jest-circus: 30.5.0(babel-plugin-macros@3.1.0)(supports-color@8.1.1)
       jest-docblock: 30.5.0
@@ -16240,7 +16246,7 @@ snapshots:
       cjs-module-lexer: 2.2.1
       collect-v8-coverage: 1.0.3
       es-module-lexer: 2.3.0
-      glob: 13.0.6
+      glob: 13.0.6(patch_hash=181160691ec88f19b37dbb999dcb24028adb57dd06c61f2edd7e0932451fa2d5)
       graceful-fs: 4.2.11
       jest-haste-map: 30.5.0
       jest-message-util: 30.5.0
@@ -16806,7 +16812,7 @@ snapshots:
 
   minimalistic-crypto-utils@1.0.1: {}
 
-  minimatch@10.2.5:
+  minimatch@10.2.5(patch_hash=61982131221462da49cd8046d2b1955b907b0861afaa248c159b4be226e7f0f8):
     dependencies:
       brace-expansion: 5.0.12
 
@@ -16818,11 +16824,11 @@ snapshots:
     dependencies:
       brace-expansion: 2.1.7
 
-  minimatch@8.0.7:
+  minimatch@8.0.7(patch_hash=8a247ded175a2ebe7b18c940d7c92bed48798d89f5194a544204cbcf2e408901):
     dependencies:
       brace-expansion: 2.1.7
 
-  minimatch@9.0.9:
+  minimatch@9.0.9(patch_hash=4c4d6885dbd061adc3ac796bba95d394cdef7405bed294fb34b884b2be03231e):
     dependencies:
       brace-expansion: 2.1.7
 
@@ -18125,11 +18131,11 @@ snapshots:
 
   rimraf@4.4.1:
     dependencies:
-      glob: 9.3.5
+      glob: 9.3.5(patch_hash=9a580be7941ffa4dbd47c4019ba1b69d67338f87fc231a7ffac3cee8a916b192)
 
   rimraf@5.0.1:
     dependencies:
-      glob: 10.5.0
+      glob: 10.5.0(patch_hash=fb2d5d62bbe363d30ec7d0c82ce3acd0d2d0f7861a9e6583b0fe23ed976e53b0)
 
   ripemd160@2.0.3:
     dependencies:
@@ -18887,8 +18893,8 @@ snapshots:
   test-exclude@7.0.2:
     dependencies:
       '@istanbuljs/schema': 0.1.6
-      glob: 10.5.0
-      minimatch: 10.2.5
+      glob: 10.5.0(patch_hash=fb2d5d62bbe363d30ec7d0c82ce3acd0d2d0f7861a9e6583b0fe23ed976e53b0)
+      minimatch: 10.2.5(patch_hash=61982131221462da49cd8046d2b1955b907b0861afaa248c159b4be226e7f0f8)
 
   text-segmentation@1.0.3:
     dependencies:
