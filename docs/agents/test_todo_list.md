@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: 1b62c203cad17417510e1af7a6e47b16c95efed8
-lastReviewedNote: 'Reviewed Platform #1381: raise the existing Zod declaration floor to ^4.6.7 while preserving the qualified installed 4.6.7 root/SDK graph, all four maintained patches, toolchain and install policy. Existing installed-consumer, full-gate, hosted semantic and Main/Dev/root qualification requirements remain unchanged.'
+lastReviewedCommit: cccbe66ef17634bbfe13ce7016e1229ee1377197
+lastReviewedNote: 'Reviewed Platform #1384: exact native MockJS 1.1.0 source/dist/min/map repair preserves inherited-source and ordinary data semantics, detaches inherited destination defaults, retains all prior patches, versions and install policy, and adds isolated installed/OpenAPI/native-browser contracts. Full local/hosted/Main/Dev/root qualification requirements remain unchanged.'
 ---
 
 # Testing Execution State
