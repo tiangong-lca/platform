@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: 4bc2f118a5b11b9b534ecf0b1ed968f56d1aa5b5
-lastReviewedNote: 'Reviewed Platform #1383 passive schema 2 against 4bc2f118a: five bounded detail slots, one unawaited optional frame, unknown composition prehistory, exact rejection precedence and independent cleanup. Actual serialized native controls remain separate from canonical qualification; inventory, actions, budgets, dependency/Portal contracts and historical failure remain unchanged.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: 162c450f3ee98d31285a21388589bb7e30da17c7
+lastReviewedNote: 'Reviewed Platform #1383 native locale audit/provenance regeneration after the equivalent mobile action extraction. The c26 baseline, catalogs, message IDs and assertions remain unchanged; only callsite coordinates, source census/input digest and dependent digest bindings refresh. Native diagnostic/runtime bytes remain retained; no canonical qualification is claimed.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
