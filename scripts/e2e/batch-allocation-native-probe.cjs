@@ -6,44 +6,244 @@ const fs = require('node:fs'),
 const { performance } = require('node:perf_hooks');
 const { check, deduplicateRoots } = require('./batch-allocation-native-policy.cjs');
 const { Ownership, readSnapshot, runtimeRemovable } = require('./portal-native-resources.cjs');
-async function disk(roots, writeRoot, remainingMs) {
-  const started = performance.now(),
-    admitted = deduplicateRoots(roots, (p) => fs.realpathSync(p));
-  let entries = 0,
-    total = 0;
+const STAGES = Object.freeze({
+  root: ['resolution', 'root-limit'],
+  traversal: ['read', 'entry-limit', 'entry-type', 'symlink-target', 'symlink-escape', 'deadline'],
+  du: ['spawn', 'timeout', 'output-cap', 'exit', 'count', 'total'],
+  ownership: ['missing-pid', 'capture', 'bind', 'closure'],
+  capacity: ['read', 'value', 'memory', 'charged-disk', 'free-disk'],
+  parse: ['json', 'result'],
+  protocol: ['helper-failure', 'helper-result', 'phase-admission'],
+});
+const ROOT_KINDS = Object.freeze(['source', 'browser-cache', 'output', 'unknown']);
+const ENTRY_KINDS = Object.freeze(['symlink', 'socket', 'file', 'directory', 'other', 'unknown']);
+const ERRNOS = Object.freeze([
+  'ENOENT',
+  'EACCES',
+  'EPERM',
+  'ELOOP',
+  'ENOTDIR',
+  'EIO',
+  'ENOSPC',
+  'EMFILE',
+  'ENFILE',
+  'EINVAL',
+  'ESRCH',
+  'ETIMEDOUT',
+  'unknown',
+]);
+const exact = (v, keys) =>
+  v &&
+  [Object.prototype, null].includes(Object.getPrototypeOf(v)) &&
+  Object.getOwnPropertySymbols(v).length === 0 &&
+  Object.getOwnPropertyNames(v).length === keys.length &&
+  keys.every((k) => {
+    const d = Object.getOwnPropertyDescriptor(v, k);
+    return d && d.enumerable && Object.hasOwn(d, 'value');
+  });
+function assertDiagnostic(value) {
+  check(
+    exact(value, ['stage', 'rootKind', 'entryKind', 'condition', 'errno', 'observations']) &&
+      typeof value.stage === 'string' &&
+      Object.hasOwn(STAGES, value.stage) &&
+      STAGES[value.stage].includes(value.condition) &&
+      ROOT_KINDS.includes(value.rootKind) &&
+      ENTRY_KINDS.includes(value.entryKind) &&
+      ERRNOS.includes(value.errno) &&
+      exact(value.observations, ['availableMemoryBytes', 'freeDiskBytes', 'chargedDiskBytes']) &&
+      Object.values(value.observations).every(
+        (n) => n === null || (Number.isSafeInteger(n) && n >= 0),
+      ),
+    'resource_diagnostic_invalid',
+  );
+  return value;
+}
+function diagnostic(
+  stage,
+  condition,
+  { rootKind = 'unknown', entryKind = 'unknown', error, observations = {} } = {},
+) {
+  let errno = 'unknown';
+  try {
+    const d = error && Object.getOwnPropertyDescriptor(error, 'code');
+    if (d && Object.hasOwn(d, 'value') && ERRNOS.includes(d.value)) errno = d.value;
+  } catch {}
+  return assertDiagnostic({
+    stage,
+    rootKind,
+    entryKind,
+    condition,
+    errno,
+    observations: {
+      availableMemoryBytes: null,
+      freeDiskBytes: null,
+      chargedDiskBytes: null,
+      ...observations,
+    },
+  });
+}
+function diagnosticError(value) {
+  return Object.assign(new Error('native_resource_unknown'), {
+    resourceDiagnostic: assertDiagnostic(value),
+  });
+}
+function assertProbeResult(value) {
+  if (exact(value, ['status', 'diagnostic']) && value.status === 'unknown') {
+    assertDiagnostic(value.diagnostic);
+    return value;
+  }
+  check(
+    exact(value, ['status', 'bytes', 'freeBytes', 'availableMemory', 'diagnostic']) &&
+      value.status === 'ok' &&
+      value.diagnostic === null &&
+      ['bytes', 'freeBytes', 'availableMemory'].every(
+        (k) => Number.isSafeInteger(value[k]) && value[k] >= 0,
+      ),
+    'resource_probe_result_invalid',
+  );
+  return value;
+}
+function capacityDiagnostic(value) {
+  assertProbeResult(value);
+  check(value.status === 'ok', 'capacity_probe_invalid');
+  const observations = {
+    availableMemoryBytes: value.availableMemory,
+    freeDiskBytes: value.freeBytes,
+    chargedDiskBytes: value.bytes,
+  };
+  if (value.availableMemory < 4 * 1024 ** 3)
+    return diagnostic('capacity', 'memory', { observations });
+  if (value.bytes > 12 * 1024 ** 3) return diagnostic('capacity', 'charged-disk', { observations });
+  if (value.freeBytes < 12 * 1024 ** 3 - value.bytes)
+    return diagnostic('capacity', 'free-disk', { rootKind: 'output', observations });
+  return null;
+}
+function decodeProbeResult(raw, code) {
+  if (typeof raw !== 'string') throw diagnosticError(diagnostic('parse', 'result'));
+  if (raw.length > 4096) throw diagnosticError(diagnostic('du', 'output-cap'));
+  let value;
+  try {
+    value = JSON.parse(raw);
+  } catch {
+    throw diagnosticError(diagnostic('parse', 'json'));
+  }
+  try {
+    assertProbeResult(value);
+  } catch {
+    throw diagnosticError(diagnostic('parse', 'result'));
+  }
+  if (value.status === 'unknown') throw diagnosticError(value.diagnostic);
+  if (code !== 0) throw diagnosticError(diagnostic('protocol', 'helper-result'));
+  const rejected = capacityDiagnostic(value);
+  if (rejected) throw diagnosticError(rejected);
+  return value;
+}
+async function disk(roots, writeRoot, remainingMs, injected = {}) {
+  const io = injected.fs || fs,
+    spawn = injected.spawn || cp.spawn,
+    clock = injected.now || (() => performance.now()),
+    inspect = injected.snapshot || readSnapshot,
+    Owner = injected.Ownership || Ownership,
+    freemem = injected.freemem || os.freemem,
+    rootKinds = injected.rootKinds || [],
+    started = clock();
+  let rootKind = 'unknown',
+    entryKind = 'unknown',
+    total = 0,
+    entries = 0,
+    charged = null,
+    free = null;
+  const failure = (stage, condition, error) =>
+    diagnosticError(
+      diagnostic(stage, condition, {
+        rootKind,
+        entryKind,
+        error,
+        observations: {
+          availableMemoryBytes: null,
+          freeDiskBytes: free,
+          chargedDiskBytes: charged,
+        },
+      }),
+    );
+  let admitted;
+  try {
+    admitted = deduplicateRoots(roots, (p) => io.realpathSync(p));
+  } catch (error) {
+    throw failure('root', error?.code === 'disk_root_limit' ? 'root-limit' : 'resolution', error);
+  }
   for (const root of admitted) {
-    const rootStart = performance.now();
-    const queue = [root];
+    rootKind = ROOT_KINDS.includes(rootKinds[roots.indexOf(root)])
+      ? rootKinds[roots.indexOf(root)]
+      : 'unknown';
+    entryKind = 'unknown';
+    const accountRootKind = rootKind,
+      rootStart = clock(),
+      queue = [root];
     while (queue.length) {
-      check(
-        performance.now() - started < Math.min(15000, remainingMs) &&
-          performance.now() - rootStart < 5000,
-        'disk_probe_timeout',
-      );
+      if (!(clock() - started < Math.min(15000, remainingMs) && clock() - rootStart < 5000))
+        throw failure('traversal', 'deadline');
       const dir = queue.pop();
-      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        check(++entries <= 500000, 'disk_entry_limit');
+      rootKind =
+        dir === writeRoot || dir.startsWith(writeRoot + path.sep) ? 'output' : accountRootKind;
+      let children;
+      try {
+        children = io.readdirSync(dir, { withFileTypes: true });
+      } catch (error) {
+        entryKind = 'directory';
+        throw failure('traversal', 'read', error);
+      }
+      for (const entry of children) {
+        entryKind = entry.isSymbolicLink()
+          ? 'symlink'
+          : entry.isDirectory()
+            ? 'directory'
+            : entry.isFile()
+              ? 'file'
+              : entry.isSocket?.()
+                ? 'socket'
+                : 'other';
+        if (++entries > 500000) throw failure('traversal', 'entry-limit');
         const file = path.join(dir, entry.name);
+        rootKind =
+          file === writeRoot || file.startsWith(writeRoot + path.sep) ? 'output' : accountRootKind;
         if (entry.isSymbolicLink()) {
-          const target = fs.realpathSync(file);
-          check(
-            admitted.some((p) => target === p || target.startsWith(p + path.sep)),
-            'unadmitted_disk_symlink',
-          );
+          let target;
+          try {
+            target = io.realpathSync(file);
+          } catch (error) {
+            throw failure('traversal', 'symlink-target', error);
+          }
+          if (!admitted.some((p) => target === p || target.startsWith(p + path.sep)))
+            throw failure('traversal', 'symlink-escape');
         } else if (entry.isDirectory()) queue.push(file);
-        else check(entry.isFile(), 'nonregular_disk_input');
+        else if (!entry.isFile()) throw failure('traversal', 'entry-type');
       }
     }
+    entryKind = 'unknown';
     const bytes = await new Promise((resolve, reject) => {
-      // Gate the same PID before exec so even a tiny output-root probe is bound
-      // before its command can finish. The path is an argument, never shell code.
-      const child = cp.spawn('/bin/sh', ['-c', 'read gate; exec du -sk "$1"', 'batch-disk', root], {
-        stdio: ['pipe', 'pipe', 'ignore'],
-      });
-      const owners = new Ownership();
-      owners.capture(child.pid, child);
-      if (!owners.bind(child.pid, readSnapshot({ remainingMs: 1000 }))) {
-        child.once('close', () => reject(Error('disk_owner_unknown')));
+      let child, owners;
+      try {
+        child = spawn('/bin/sh', ['-c', 'read gate; exec du -sk "$1"', 'batch-disk', root], {
+          stdio: ['pipe', 'pipe', 'ignore'],
+        });
+      } catch (error) {
+        reject(failure('du', 'spawn', error));
+        return;
+      }
+      if (!Number.isSafeInteger(child.pid) || child.pid < 1) {
+        reject(failure('ownership', 'missing-pid'));
+        return;
+      }
+      try {
+        owners = new Owner();
+        owners.capture(child.pid, child);
+      } catch (error) {
+        reject(failure('ownership', 'capture', error));
+        return;
+      }
+      if (!owners.bind(child.pid, inspect({ remainingMs: 1000 }))) {
+        reject(failure('ownership', 'bind'));
         return;
       }
       let data = '',
@@ -51,52 +251,79 @@ async function disk(roots, writeRoot, remainingMs) {
       const timer = setTimeout(
         () => {
           failed = true;
-          const plan = owners.signalPlan(readSnapshot({ remainingMs: 1000 }), 1000);
+          const plan = owners.signalPlan(inspect({ remainingMs: 1000 }), 1000);
           if (plan.status === 'ok') for (const pid of plan.pids) process.kill(pid, 'SIGKILL');
-          reject(Error('disk_root_timeout'));
+          reject(failure('du', 'timeout'));
         },
         Math.min(
-          Math.max(1, 5000 - (performance.now() - rootStart)),
-          Math.max(1, remainingMs - (performance.now() - started)),
+          Math.max(1, 5000 - (clock() - rootStart)),
+          Math.max(1, remainingMs - (clock() - started)),
         ),
       );
       child.stdout.on('data', (value) => {
         data += value;
         if (data.length > 4096) {
           failed = true;
-          reject(Error('disk_output_limit'));
+          reject(failure('du', 'output-cap'));
         }
       });
-      child.once('error', reject);
+      child.once('error', (error) => {
+        clearTimeout(timer);
+        failed = true;
+        reject(failure('du', 'spawn', error));
+      });
       child.once('close', (code) => {
         clearTimeout(timer);
         if (failed) return;
-        const match = /^([0-9]+)\s/u.exec(data.trim());
-        const value = match && Number(match[1]) * 1024;
-        if (
-          code !== 0 ||
-          !Number.isSafeInteger(value) ||
-          value < 0 ||
-          !owners.closure(readSnapshot({ remainingMs: 1000 })).verified
-        )
-          reject(Error('disk_accounting_unknown'));
-        else resolve(value);
+        if (code !== 0) {
+          reject(failure('du', 'exit'));
+          return;
+        }
+        const match = /^([0-9]+)\s/u.exec(data.trim()),
+          value = match && Number(match[1]) * 1024;
+        if (!Number.isSafeInteger(value) || value < 0) {
+          reject(failure('du', 'count'));
+          return;
+        }
+        if (!owners.closure(inspect({ remainingMs: 1000 })).verified) {
+          reject(failure('ownership', 'closure'));
+          return;
+        }
+        resolve(value);
       });
       child.stdin.end('run\n');
     });
     total += bytes;
-    check(Number.isSafeInteger(total), 'disk_total_invalid');
+    if (!Number.isSafeInteger(total)) throw failure('du', 'total');
   }
-  const info = fs.statfsSync(writeRoot);
-  const free = info.bavail * info.bsize;
-  check(Number.isSafeInteger(free) && free >= 0, 'free_disk_unknown');
-  return {
-    roots: admitted,
+  charged = total;
+  rootKind = 'output';
+  entryKind = 'unknown';
+  let info;
+  try {
+    info = io.statfsSync(writeRoot);
+  } catch (error) {
+    throw failure('capacity', 'read', error);
+  }
+  free = info.bavail * info.bsize;
+  if (!Number.isSafeInteger(free) || free < 0) {
+    free = null;
+    throw failure('capacity', 'value');
+  }
+  let available;
+  try {
+    available = freemem();
+  } catch (error) {
+    throw failure('capacity', 'read', error);
+  }
+  if (!Number.isSafeInteger(available) || available < 0) throw failure('capacity', 'value');
+  return assertProbeResult({
+    status: 'ok',
     bytes: total,
     freeBytes: free,
-    availableMemory: os.freemem(),
-    status: 'ok',
-  };
+    availableMemory: available,
+    diagnostic: null,
+  });
 }
 if (require.main === module) {
   if (process.argv[2] === '--remove') {
@@ -118,12 +345,25 @@ if (require.main === module) {
     });
   } else {
     const input = JSON.parse(process.argv[2]);
-    disk(input.roots, input.writeRoot, input.remainingMs)
+    disk(input.roots, input.writeRoot, input.remainingMs, { rootKinds: input.rootKinds })
       .then((value) => process.stdout.write(JSON.stringify(value)))
-      .catch(() => {
-        process.stdout.write(JSON.stringify({ status: 'unknown' }));
+      .catch((error) => {
+        let value;
+        try {
+          value = assertDiagnostic(error.resourceDiagnostic);
+        } catch {
+          value = diagnostic('protocol', 'helper-failure');
+        }
+        process.stdout.write(JSON.stringify({ status: 'unknown', diagnostic: value }));
         process.exitCode = 1;
       });
   }
 }
-module.exports = { disk };
+module.exports = {
+  disk,
+  diagnostic,
+  assertDiagnostic,
+  assertProbeResult,
+  capacityDiagnostic,
+  decodeProbeResult,
+};

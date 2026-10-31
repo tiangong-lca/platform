@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import vm from 'node:vm';
+import { EventEmitter } from 'node:events';
 
 const {
   Budget,
@@ -12,13 +13,85 @@ const {
   deduplicateRoots,
   independentCleanup,
 } = require('../../../scripts/e2e/batch-allocation-native-policy.cjs');
-const { parse, assertReceipt } = require('../../../scripts/e2e/batch-allocation-native.cjs');
+const {
+  parse,
+  assertReceipt,
+  recordObservedFailure,
+} = require('../../../scripts/e2e/batch-allocation-native.cjs');
+const {
+  disk,
+  diagnostic,
+  assertDiagnostic,
+  assertProbeResult,
+  capacityDiagnostic,
+  decodeProbeResult,
+} = require('../../../scripts/e2e/batch-allocation-native-probe.cjs');
 const { PRODUCT } = require('../../../scripts/e2e/batch-allocation-native-source.cjs');
 const { Ownership } = require('../../../scripts/e2e/portal-native-resources.cjs');
 const {
   runControl,
 } = require('../../../tests/package-contracts/native-batch-allocation/control.spec.cjs');
 const source = (file: string) => fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+function probePorts({
+  entries = [] as any[],
+  entryRoot = '/output',
+  readError = null as any,
+  linkError = null as any,
+  duCode = 0,
+  duOutput = '1 private-output\n',
+  bind = true,
+} = {}) {
+  class FakeOwner {
+    capture() {}
+    bind() {
+      return bind;
+    }
+    closure() {
+      return { verified: true };
+    }
+    signalPlan() {
+      return { status: 'ok', pids: [] };
+    }
+  }
+  return {
+    rootKinds: ['source', 'browser-cache', 'output'],
+    now: () => 0,
+    fs: {
+      realpathSync: (file: string) => {
+        if (linkError && file.endsWith('/private-entry')) throw linkError;
+        return file;
+      },
+      readdirSync: (file: string) => {
+        if (readError) throw readError;
+        return file === entryRoot ? entries : [];
+      },
+      statfsSync: () => ({ bavail: LIMITS.diskBytes, bsize: 1 }),
+    },
+    freemem: () => LIMITS.rssBytes,
+    snapshot: () => ({ status: 'ok' }),
+    Ownership: FakeOwner,
+    spawn: () => {
+      const child: any = new EventEmitter();
+      child.pid = 42;
+      child.stdout = new EventEmitter();
+      child.stdin = {
+        end: () =>
+          queueMicrotask(() => {
+            child.stdout.emit('data', duOutput);
+            child.emit('close', duCode);
+          }),
+      };
+      return child;
+    },
+  };
+}
+const entry = (kind: string) => ({
+  name: 'private-entry',
+  isSymbolicLink: () => kind === 'symlink',
+  isDirectory: () => kind === 'directory',
+  isFile: () => kind === 'file',
+  isSocket: () => kind === 'socket',
+});
 function clock() {
   let time = 1000;
   const budget = new Budget(() => time);
@@ -35,6 +108,223 @@ function clock() {
     },
   };
 }
+
+describe('resource failure capsules with injected filesystem/helper ports only', () => {
+  it.each(['socket', 'other'])(
+    'preserves rejected %s kind without admitting it or retaining its name',
+    async (kind) => {
+      let error: any;
+      try {
+        await disk(
+          ['/source', '/browser', '/output'],
+          '/output',
+          15000,
+          probePorts({ entries: [entry(kind)] }),
+        );
+      } catch (value) {
+        error = value;
+      }
+      expect(error.resourceDiagnostic).toMatchObject({
+        stage: 'traversal',
+        rootKind: 'output',
+        entryKind: kind,
+        condition: 'entry-type',
+        errno: 'unknown',
+      });
+      expect(JSON.stringify(error.resourceDiagnostic)).not.toContain('private');
+    },
+  );
+  it('distinguishes a dangling symlink from an unreadable directory and retains only allowlisted errno', async () => {
+    const cases = [
+      {
+        ports: probePorts({
+          entries: [entry('symlink')],
+          linkError: Object.assign(Error('private path text'), { code: 'ENOENT' }),
+        }),
+        expected: {
+          stage: 'traversal',
+          rootKind: 'output',
+          entryKind: 'symlink',
+          condition: 'symlink-target',
+          errno: 'ENOENT',
+        },
+      },
+      {
+        ports: probePorts({
+          readError: Object.assign(Error('private path text'), { code: 'EACCES' }),
+        }),
+        expected: {
+          stage: 'traversal',
+          rootKind: 'source',
+          entryKind: 'directory',
+          condition: 'read',
+          errno: 'EACCES',
+        },
+      },
+    ];
+    for (const item of cases) {
+      let error: any;
+      try {
+        await disk(['/source', '/browser', '/output'], '/output', 15000, item.ports);
+      } catch (value) {
+        error = value;
+      }
+      expect(error.resourceDiagnostic).toMatchObject(item.expected);
+      expect(JSON.stringify(error.resourceDiagnostic)).not.toContain('private');
+    }
+  });
+  it.each([
+    [{ bind: false }, 'ownership', 'bind'],
+    [{ duCode: 1 }, 'du', 'exit'],
+    [{ duOutput: 'private nonnumeric output' }, 'du', 'count'],
+  ])(
+    'separates helper/ownership/count failures without command output',
+    async (options, stage, condition) => {
+      let error: any;
+      try {
+        await disk(['/source'], '/output', 15000, probePorts(options as any));
+      } catch (value) {
+        error = value;
+      }
+      expect(error.resourceDiagnostic).toMatchObject({ stage, condition, rootKind: 'source' });
+      expect(JSON.stringify(error.resourceDiagnostic)).not.toContain('private');
+    },
+  );
+  it('records safe numeric observations only after complete accounting', async () => {
+    const value = await disk(['/source', '/browser', '/output'], '/output', 15000, probePorts());
+    expect(value).toEqual({
+      status: 'ok',
+      bytes: 3072,
+      freeBytes: LIMITS.diskBytes,
+      availableMemory: LIMITS.rssBytes,
+      diagnostic: null,
+    });
+    expect(capacityDiagnostic(value)).toBeNull();
+    const input = {
+      status: 'ok',
+      bytes: 100,
+      freeBytes: LIMITS.diskBytes,
+      availableMemory: LIMITS.rssBytes,
+      diagnostic: null,
+    };
+    expect(capacityDiagnostic({ ...input, availableMemory: LIMITS.rssBytes - 1 })).toMatchObject({
+      stage: 'capacity',
+      condition: 'memory',
+      observations: {
+        availableMemoryBytes: LIMITS.rssBytes - 1,
+        freeDiskBytes: LIMITS.diskBytes,
+        chargedDiskBytes: 100,
+      },
+    });
+    expect(capacityDiagnostic({ ...input, bytes: LIMITS.diskBytes + 1 })).toMatchObject({
+      stage: 'capacity',
+      condition: 'charged-disk',
+    });
+    expect(capacityDiagnostic({ ...input, freeBytes: 0 })).toMatchObject({
+      stage: 'capacity',
+      condition: 'free-disk',
+      rootKind: 'output',
+    });
+  });
+  it('rejects private/unknown fields, non-enum text, accessors and unsafe observed values', () => {
+    const value = diagnostic('protocol', 'helper-failure');
+    expect(assertDiagnostic(value)).toBe(value);
+    for (const extra of ['path', 'entryName', 'message', 'stdout', 'environment', 'host'])
+      expect(() => assertDiagnostic({ ...value, [extra]: 'private' })).toThrow();
+    for (const field of ['stage', 'rootKind', 'entryKind', 'condition', 'errno'])
+      expect(() => assertDiagnostic({ ...value, [field]: 'private-text' })).toThrow();
+    expect(() =>
+      assertDiagnostic({
+        ...value,
+        observations: { ...value.observations, chargedDiskBytes: NaN },
+      }),
+    ).toThrow();
+    const accessor = { ...value };
+    Object.defineProperty(accessor, 'errno', {
+      enumerable: true,
+      get: () => {
+        throw Error('must not read');
+      },
+    });
+    expect(() => assertDiagnostic(accessor)).toThrow('resource_diagnostic_invalid');
+    expect(() =>
+      assertProbeResult({ status: 'unknown', diagnostic: value, path: 'private' }),
+    ).toThrow();
+    expect(
+      diagnostic('traversal', 'read', {
+        error: Object.assign(Error('private'), { code: 'SECRET' }),
+      }).errno,
+    ).toBe('unknown');
+  });
+  it('retains the first failing phase/capsule across later cascading failure and successful cleanup', () => {
+    const state = { observedFailure: null as any, cleanup: { verified: false } };
+    const original = diagnostic('traversal', 'symlink-target', {
+      rootKind: 'output',
+      entryKind: 'symlink',
+      error: { code: 'ENOENT' },
+    });
+    recordObservedFailure(state, 'begin', original);
+    recordObservedFailure(state, 'cleanup', diagnostic('protocol', 'phase-admission'));
+    state.cleanup.verified = true;
+    expect(state.observedFailure).toEqual({ phase: 'begin', diagnostic: original });
+    expect(state.cleanup.verified).toBe(true);
+  });
+  it('preserves capacity-read errors after charged bytes and rejects malformed helper results privately', async () => {
+    const ports = probePorts();
+    ports.fs.statfsSync = () => {
+      throw Object.assign(Error('private mount'), { code: 'EIO' });
+    };
+    let thrown: any;
+    try {
+      await disk(['/source'], '/output', 15000, ports);
+    } catch (error) {
+      thrown = error;
+    }
+    expect(thrown.resourceDiagnostic).toMatchObject({
+      stage: 'capacity',
+      condition: 'read',
+      errno: 'EIO',
+      observations: { chargedDiskBytes: 1024, freeDiskBytes: null, availableMemoryBytes: null },
+    });
+    for (const [raw, code, stage, condition] of [
+      ['private invalid JSON', 0, 'parse', 'json'],
+      ['{"status":"unknown","path":"private"}', 1, 'parse', 'result'],
+      [
+        JSON.stringify({
+          status: 'ok',
+          bytes: 100,
+          freeBytes: LIMITS.diskBytes,
+          availableMemory: LIMITS.rssBytes,
+          diagnostic: null,
+        }),
+        1,
+        'protocol',
+        'helper-result',
+      ],
+      [
+        JSON.stringify({
+          status: 'ok',
+          bytes: 100,
+          freeBytes: LIMITS.diskBytes,
+          availableMemory: 1,
+          diagnostic: null,
+        }),
+        0,
+        'capacity',
+        'memory',
+      ],
+    ]) {
+      let error: any;
+      try {
+        decodeProbeResult(raw, code);
+      } catch (value) {
+        error = value;
+      }
+      expect(error.resourceDiagnostic).toMatchObject({ stage, condition });
+      expect(JSON.stringify(error.resourceDiagnostic)).not.toContain('private');
+    }
+  });
+});
 
 describe('bounded native batch allocation policy without runtime allocation', () => {
   it('abort cleanup uses the admitted observer export and owner token without importing retained output', async () => {
@@ -221,7 +511,7 @@ describe('bounded native batch allocation policy without runtime allocation', ()
     expect(() => assertReceipt({ nativePass: true, rawDom: 'forbidden' })).toThrow();
     const { budget } = clock();
     const value = {
-      schema: 'platform.batch-allocation-native.v1',
+      schema: 'platform.batch-allocation-native.v2',
       limits: LIMITS,
       startMono: budget.start,
       workDeadlineMono: budget.workDeadline,
@@ -257,8 +547,12 @@ describe('bounded native batch allocation policy without runtime allocation', ()
         runtimeRetained: false,
       },
       nativePass: false,
+      observedFailure: null,
     };
     expect(assertReceipt(value)).toBe(value);
+    expect(() =>
+      assertReceipt({ ...value, schema: 'platform.batch-allocation-native.v1' }),
+    ).toThrow('resource_receipt_invalid');
     expect(() => assertReceipt({ ...value, nativePass: true })).toThrow('false_native_pass');
     expect(() =>
       assertReceipt({ ...value, cleanup: { ...value.cleanup, rawDom: 'forbidden' } }),

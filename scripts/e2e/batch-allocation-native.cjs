@@ -7,12 +7,17 @@ const fs = require('node:fs'),
   net = require('node:net');
 const { performance } = require('node:perf_hooks');
 const {
+  diagnostic,
+  assertDiagnostic,
+  assertProbeResult,
+  decodeProbeResult,
+} = require('./batch-allocation-native-probe.cjs');
+const {
   Budget,
   LIMITS,
   BROWSERS,
   CONTROLS,
   check,
-  capacity,
   deduplicateRoots,
 } = require('./batch-allocation-native-policy.cjs');
 const {
@@ -125,6 +130,25 @@ const list = (value, max) =>
     return d && d.enumerable && Object.hasOwn(d, 'value');
   }).every(Boolean);
 const uint = (value) => Number.isSafeInteger(value) && value >= 0;
+const PHASES = Object.freeze([
+  'preparation',
+  'build',
+  'server',
+  'browser',
+  'browser-closed',
+  'begin',
+  'publication',
+  'published',
+  'monitor',
+  'cleanup',
+  'unknown',
+]);
+function recordObservedFailure(receipt, phase, value) {
+  assertDiagnostic(value);
+  check(PHASES.includes(phase), 'diagnostic_phase_invalid');
+  if (receipt.observedFailure === null) receipt.observedFailure = { phase, diagnostic: value };
+  return receipt.observedFailure;
+}
 function assertReceipt(value) {
   const keys = [
     'schema',
@@ -145,10 +169,11 @@ function assertReceipt(value) {
     'ownership',
     'cleanup',
     'nativePass',
+    'observedFailure',
   ];
   check(exact(value, keys), 'resource_receipt_invalid');
   check(
-    value.schema === 'platform.batch-allocation-native.v1' &&
+    value.schema === 'platform.batch-allocation-native.v2' &&
       exact(value.limits, Object.keys(LIMITS)) &&
       Object.keys(LIMITS).every((k) => value.limits[k] === LIMITS[k]) &&
       [value.startMono, value.workDeadlineMono, value.hardDeadlineMono, value.elapsedMs].every(
@@ -289,9 +314,18 @@ function assertReceipt(value) {
           !c.runtimeRetained)),
     'cleanup_receipt_invalid',
   );
+  if (value.observedFailure !== null) {
+    check(
+      exact(value.observedFailure, ['phase', 'diagnostic']) &&
+        PHASES.includes(value.observedFailure.phase),
+      'observed_failure_invalid',
+    );
+    assertDiagnostic(value.observedFailure.diagnostic);
+  }
   check(
     !value.nativePass ||
       (c.verified &&
+        value.observedFailure === null &&
         value.withinDeadline &&
         value.capacity === 'verified' &&
         value.diskRoots.length > 0 &&
@@ -333,6 +367,7 @@ async function execute(options) {
     workerResult = null,
     stopping = false,
     publication = true;
+  let activePhase = 'preparation';
   let browserIndex = 0,
     browserOpen = false;
   const failures = [],
@@ -341,7 +376,7 @@ async function execute(options) {
       if (failures.length < 128 && !failures.includes(code)) failures.push(code);
     };
   const receipt = {
-    schema: 'platform.batch-allocation-native.v1',
+    schema: 'platform.batch-allocation-native.v2',
     limits: LIMITS,
     startMono: budget.start,
     workDeadlineMono: budget.workDeadline,
@@ -368,6 +403,7 @@ async function execute(options) {
     ownership: [],
     cleanup: { verified: false, runtimeRetained: true, workerExited: false, portClosed: false },
     nativePass: false,
+    observedFailure: null,
   };
   const remaining = () => budget.remaining(true);
   const snapshot = () => readSnapshot({ remainingMs: Math.min(1000, remaining()) });
@@ -467,6 +503,7 @@ async function execute(options) {
     return true;
   };
   const disk = () => {
+    const failingPhase = activePhase;
     if (diskPromise) return diskPromise;
     check(!stopping && budget.remaining() > 100, 'disk_after_stop');
     lastDiskStart = budget.now();
@@ -474,6 +511,15 @@ async function execute(options) {
       const child = launch(path.join(__dirname, 'batch-allocation-native-probe.cjs'), [
         JSON.stringify({
           roots: receipt.diskRoots.map((item) => item.path),
+          rootKinds: receipt.diskRoots.map((item) =>
+            item.path === fs.realpathSync(root)
+              ? 'source'
+              : item.path === browserCache()
+                ? 'browser-cache'
+                : item.path === output
+                  ? 'output'
+                  : 'unknown',
+          ),
           writeRoot: output,
           remainingMs: Math.min(LIMITS.diskProbeMs, budget.remaining()),
         }),
@@ -481,6 +527,7 @@ async function execute(options) {
       let data = '';
       const timer = setTimeout(
         () => {
+          recordObservedFailure(receipt, failingPhase, diagnostic('du', 'timeout'));
           stop('disk-probe-deadline');
           signalOwned('SIGTERM');
           reject(Error('disk_deadline'));
@@ -489,7 +536,23 @@ async function execute(options) {
       );
       child.stdout.on('data', (bytes) => {
         data += bytes;
+        if (data.length <= 4096) {
+          let candidate;
+          try {
+            candidate = JSON.parse(data);
+          } catch {}
+          if (candidate?.status === 'unknown') {
+            try {
+              assertProbeResult(candidate);
+              recordObservedFailure(receipt, failingPhase, candidate.diagnostic);
+            } catch {
+              recordObservedFailure(receipt, failingPhase, diagnostic('parse', 'result'));
+            }
+            stop('disk-or-capacity-unknown');
+          }
+        }
         if (data.length > 4096) {
+          recordObservedFailure(receipt, failingPhase, diagnostic('du', 'output-cap'));
           stop('disk-output-cap');
           reject(Error('disk_output_cap'));
         }
@@ -497,9 +560,7 @@ async function execute(options) {
       child.once('close', (code) => {
         clearTimeout(timer);
         try {
-          const value = JSON.parse(data);
-          check(code === 0 && value.status === 'ok', 'disk_unknown');
-          capacity(value.availableMemory, value.bytes, [value.freeBytes]);
+          const value = decodeProbeResult(data, code);
           receipt.samples.maxDiskAgeMs = Math.max(
             receipt.samples.maxDiskAgeMs,
             budget.diskAt === null ? 0 : budget.now() - budget.diskAt,
@@ -511,7 +572,14 @@ async function execute(options) {
           receipt.capacity = 'verified';
           check(!budget.stopping, 'disk_limit');
           resolve();
-        } catch {
+        } catch (error) {
+          let observed;
+          try {
+            observed = assertDiagnostic(error.resourceDiagnostic);
+          } catch {
+            observed = diagnostic('protocol', 'helper-failure');
+          }
+          recordObservedFailure(receipt, failingPhase, observed);
           stop('disk-or-capacity-unknown');
           reject(Error('disk_unknown'));
         }
@@ -669,6 +737,12 @@ async function execute(options) {
         (async () => {
           try {
             check(!stopping, 'stopping');
+            activePhase =
+              message.type === 'begin'
+                ? 'begin'
+                : PHASES.includes(message.phase)
+                  ? message.phase
+                  : 'unknown';
             sampleProcess();
             await disk();
             budget.freshness();
@@ -708,12 +782,19 @@ async function execute(options) {
               }
             }
             write('checkpoint.json', {
+              phase: activePhase,
               cases: budget.cases,
               samples: receipt.samples,
               ownership: registry.evidence(),
             });
             worker.send({ type: 'ack', id: message.id, ok: true });
           } catch {
+            if (receipt.observedFailure === null)
+              recordObservedFailure(
+                receipt,
+                activePhase,
+                diagnostic('protocol', 'phase-admission'),
+              );
             stop('phase-admission-failed');
             if (worker.connected) worker.send({ type: 'ack', id: message.id, ok: false });
           }
@@ -907,4 +988,4 @@ if (require.main === module)
     console.error('Batch allocation native admission failed.');
     process.exitCode = 1;
   });
-module.exports = { parse, plan, assertReceipt, execute };
+module.exports = { parse, plan, assertReceipt, execute, recordObservedFailure };
