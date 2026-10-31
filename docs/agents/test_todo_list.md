@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
-lastReviewedNote: 'Platform #1390 bounded preparation: reviewed six exact optimizer/cancellation backports, retained matcher APIs and graph generations, native consumer and source-map proof. Toolchain, supported platforms, gate inventory/coverage, Main hotfix and Dev/root integration requirements remain unchanged; full/hosted/artifact qualification and delivery are still pending.'
+lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
+lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
 ---
 
 # Testing Execution State
@@ -67,6 +67,8 @@ This is a checked-in reference, not a per-PR execution ledger. A delivery's post
 ## Current State
 
 - Issue #1358 owns the separately reproduced Portal commit-lifecycle repair, maintained-patch image input closure and exact Main semantic admission. Acceptance requires installed-package, native ESM/default-container/focus, current-source canonical semantic and normal complete-gate evidence; actual executions and remaining work are recorded on that Issue/PR. Package versions and unrelated dependency resolutions remain intact. Successful new evidence does not establish #1354's historical failure cause or independently authorize publication.
+
+- Issue #1383 retains the failed canonical mobile Escape result and owns further diagnosis. Its separate native control now exercises real uncontrolled ProLayout state through the exact product mobile-action adapter, actual drawer hiding and exact-opener restoration, with a separately labeled descendant-popup closing condition. The shell omits authenticated services, Umi routing and predecessor history; worktree-hash component evidence cannot establish the historical cause or replace canonical qualification. Approved passive schema 2 additionally retains five selected overlay/composition detail points and one unawaited optional frame, with exact caps, original-error precedence and owned cleanup controls; composition prehistory remains unknown. Actual receipts, remaining investigation and any later instrumentation approval belong on the Issue.
 
 - repo is in full-closure maintenance mode
 - there is no active ordered coverage queue right now

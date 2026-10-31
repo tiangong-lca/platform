@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: e98d1d631d9895c49f0d6c02bed39206ac28df77
+lastReviewedNote: 'Reviewed Platform #1383 stateful native control and equivalent mobile action extraction against failed e98 source. Worktree component evidence omits services, routing and predecessor history; the closing popup is a controlled stimulus. Canonical inventory, timeouts, retries, privacy, dependency and Portal patch contracts remain; no historical cause, product repair or qualification is claimed.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -89,7 +89,7 @@ Native mixed layout owns header tools/account, scope overflow, side-menu collaps
 
 The authenticated ProLayout has no global footer beneath its content. Its existing help action opens a native dropdown containing locale-aware documentation plus the selected brand's homepage, source link and copyright label. This preserves access without reducing table height or adding another persistent header action. Standalone login and recovery pages retain their own footer.
 
-Sidebar collapse and expansion remain owned by the native ProLayout component, including its icon, generated styles, state classes, click handler and layout widths. `AccessibleCollapsedButton` decorates the supplied React element with a localized accessible name, expanded state, focus target and keyboard activation; it does not replace the component with its unrendered `props.children` or alter the native style-prefix class. A project-owned data attribute scopes the focus outline without overriding native presentation. Mobile navigation continues through the existing native drawer trigger.
+Sidebar collapse and expansion remain owned by the native ProLayout component, including its icon, generated styles, state classes, click handler and layout widths. `AccessibleCollapsedButton` decorates the supplied React element with a localized accessible name, expanded state, focus target and keyboard activation; it does not replace the component with its unrendered `props.children` or alter the native style-prefix class. A project-owned data attribute scopes the focus outline without overriding native presentation. Mobile navigation uses the plain `renderMobileNavigationAction` function from `src/components/MobileNavigationAction`: its native button invokes the existing native header trigger, with the supplied collapse callback retained as the missing-trigger fallback. It adds no component boundary or second collapse state.
 
 `config/brandAssets.ts` connects the shared profile to in-memory development middleware and a Webpack asset plugin. `scripts/branding/assets.cjs` generates the selected manifest and the 404, maintenance and OAuth-bridge shell presentation without editing tracked templates. The bridge script and hosted routing/noindex contracts remain intact. Static assets live under `public/brands/atlas`; desktop icons under `icons/atlas` come from the supplied rounded ATLAS asset package.
 

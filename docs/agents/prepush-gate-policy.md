@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
-lastReviewedNote: 'Platform #1390 bounded preparation: reviewed six exact optimizer/cancellation backports, retained matcher APIs and graph generations, native consumer and source-map proof. Toolchain, supported platforms, gate inventory/coverage, Main hotfix and Dev/root integration requirements remain unchanged; full/hosted/artifact qualification and delivery are still pending.'
+lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
+lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
 ---
 
 # Pre-Push Gate Policy
