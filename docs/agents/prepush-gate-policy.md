@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: 1b62c203cad17417510e1af7a6e47b16c95efed8
-lastReviewedNote: 'Reviewed Platform #1381: raise the existing Zod declaration floor to ^4.6.7 while preserving the qualified installed 4.6.7 root/SDK graph, all four maintained patches, toolchain and install policy. Existing installed-consumer, full-gate, hosted semantic and Main/Dev/root qualification requirements remain unchanged.'
+lastReviewedCommit: cccbe66ef17634bbfe13ce7016e1229ee1377197
+lastReviewedNote: 'Reviewed Platform #1385: exact official five-file Hono static-path backport and native baseline/candidate/consumer proof preserve the graph, prior patches and gate policy. The user approved the documented Utoo literal-percent filename restriction; its baseline difference remains explicit. Full delivery and production exposure are not inferred.'
 ---
 
 # Pre-Push Gate Policy

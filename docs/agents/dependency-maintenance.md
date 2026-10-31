@@ -15,9 +15,9 @@ checkPaths:
   - .github/dependabot.yml
   - .github/workflows/dependency-pr.yml
   - docs/agents/dependency-maintenance.md
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 2cadf125f9ebaad6a35b27e35a88b444416320bd
-lastReviewedNote: 'Reviewed Platform #1372: approved scoped Axios graph and exact redirect-callback patch preserve URI repairs, toolchain, supported consumers and unchanged full qualification requirements; baseline differences and raw/vendor audit boundaries remain explicit.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: cccbe66ef17634bbfe13ce7016e1229ee1377197
+lastReviewedNote: 'Reviewed Platform #1385: exact official five-file Hono static-path backport and native baseline/candidate/consumer proof preserve the graph, prior patches and gate policy. The user approved the documented Utoo literal-percent filename restriction; its baseline difference remains explicit. Full delivery and production exposure are not inferred.'
 related:
   - ../../AGENTS.md
   - repo-validation.md
@@ -111,3 +111,11 @@ For a deliberately selected Main hotfix, the PR body additionally carries exactl
 The separate browser job first checks canonical same-repository identity, an open Main PR on `codex/hotfix-*`, exact checkout/current fetched Main/base/head/version, one authoritative existing hotfix marker and one matching semantic marker. It reuses the bound Main context validator; missing, duplicate, quoted, malformed or stale markers fail before installation. Forks are refused for the protected Main hotfix opt-in; ordinary fork proposals retain their existing successful-job path. Unknown events are refused. Ordinary qualification requires both aggregate and Action jobs to succeed; this protected hotfix route instead requires both to be explicitly skipped, with the unchanged Main Candidate gate retaining aggregate ownership. Failed/cancelled dependencies never admit either path.
 
 This opt-in reuses the complete existing canonical 99-case job with 45-second default expectations/navigation, zero retries and unchanged test-specific budgets, resource observer, cleanup verification and artifact acknowledgement. It adds no aggregate, secret, permission, publication or deployment capability, and is separate from release proof. A source change invalidates old proof; inspect the actual exact-head artifact and resource receipts. Local installed contracts, a skipped job and the marker itself do not establish browser qualification.
+
+## Maintained Hono static middleware
+
+`patches/@hono__node-server@1.19.17.patch` carries the default percent-path guard and explicit `allowPercentInPath` option from upstream [9821792](https://github.com/honojs/node-server/commit/982179278529d5673812116b042829f27794966f). Both installed runtime formats, both declaration formats and README are maintained together. Keep the original 1.x exports, method behavior, streams and supported Node/Hono/node-ws peers; this is not a 2.x adapter migration. Current Umi/Utoo ranges and node-ws peers do not admit the published fixed 2.x line.
+
+Rejecting a path before the additional decode must retain the routed-path/context `onNotFound` call and continuation. Literal percent names remain an explicit low-level opt-in only with access control over the complete static route; fixed `options.path` retains upstream behavior. Utoo's hardcoded static call does not expose that option. The [explicit user decision for #1385](https://github.com/tiangong-lca/platform/issues/1385#issuecomment-6542920653) accepts the official default restriction: percent-bearing generated filenames are unavailable through Utoo's dynamic static-serving path. Keep the actual `100%.js` baseline 200/candidate 404 differential as proof of this intentional restriction, without claiming equivalent behavior. Do not relax the default guard or enable the opt-in in Utoo.
+
+The maintained package remains version `1.19.17`; raw version-based GHSA-rmxm-3fg6-px4f/audit 1243661/native alert 146 may remain. Keep those scanner records separate from source/behavior evidence and production exposure. Retirement requires a supported parent/peer route and the real CJS/ESM static, native Utoo/Umi, HTTP(S), proxy/lazy/HMR and cleanup proof in the validation guide. No default Webpack result alone qualifies this optional bundler.
