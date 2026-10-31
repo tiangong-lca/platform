@@ -4,7 +4,7 @@ const fs = require('node:fs'), path = require('node:path'), crypto = require('no
 const { performance } = require('node:perf_hooks');
 const os = require('node:os');
 const { readSnapshot, Ownership, createRuntime, runtimeRemovable } = require('./portal-native-resources.cjs');
-const http = require('node:http'), cp = require('node:child_process'), { createRequire } = require('node:module');
+const http = require('node:http'), cp = require('node:child_process'), { createRequire, Module } = require('node:module');
 const root = path.resolve(__dirname, '../..'), req = createRequire(path.join(root, 'package.json'));
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 // Scalar definitions preserve real-file-only metafile binding. A whole-object
@@ -53,6 +53,8 @@ function sources(expectedHead) {
   const files = [
     'scripts/e2e/mobile-navigation-native.cjs',
     'scripts/e2e/mobile-navigation-native.d.cts',
+    'scripts/e2e/mobile-navigation-diagnostic.cjs', 'scripts/e2e/mobile-navigation-diagnostic.d.cts',
+    'tests/e2e/i18n/mobile-navigation-observer.ts',
     'tests/package-contracts/native-mobile-navigation/fixture.mjs',
     'tests/unit/components/fixtures/mobile-navigation-original-action.fixture',
     'src/components/MobileNavigationAction/index.tsx', 'src/app.tsx',
@@ -71,7 +73,7 @@ function sources(expectedHead) {
     failedSourceCommit: 'e98d1d631d9895c49f0d6c02bed39206ac28df77',
     headTree: git(['rev-parse', 'HEAD^{tree}']),
     worktreeChangeCount: git(['status', '--porcelain=v1', '--untracked-files=all']).split('\n').filter(Boolean).length,
-    composition: 'real-uncontrolled-ProLayout-with-product-native-action-and-canonical-hover-prefix',
+    composition: 'real-uncontrolled-ProLayout-with-product-native-action-canonical-hover-and-actual-passive-v2-observer',
     representativePresentation: 'TianGong-terminal-dark-French-four-data-scopes',
     isolation: 'unused-Umi-theme-sync-hook-import-is-external-and-side-effect-free',
     omitted: ['authenticated-header-tools-and-avatar', 'user-access-filtering', 'deployment-brand-environment-overrides', 'authenticated-services', 'Umi-router-bootstrap', 'responsive-predecessor-history'],
@@ -163,6 +165,41 @@ async function execute(options, binding) {
     } };
     const built = await race(esbuild.build({ plugins: [bindingPlugin], absWorkingDir: root, stdin: { contents: entry, resolveDir: root, sourcefile: 'mobile-navigation-native-entry.mjs' }, bundle: true, write: false, metafile: true, platform: 'browser', format: 'iife', target: 'es2022', mainFields: ['module', 'main'], preserveSymlinks: false, define: BROWSER_DEFINES, jsx: 'automatic', outfile: path.join(output, 'fixture.js'), logLevel: 'silent' }));
     check(Object.values(built.metafile.outputs).every(output => output.imports.every(item => item.path !== '@umijs/max')), 'unexpected_executed_umi_import');
+    // Load the real host module through the already-owned pinned compiler, then
+    // pass its actual closure-free browser exports through Page.evaluate.
+    const observerFile = path.join(root, 'tests/e2e/i18n/mobile-navigation-observer.ts');
+    const observerBuilt = await race(esbuild.build({ plugins: [bindingPlugin], absWorkingDir: root,
+      entryPoints: [observerFile], bundle: false, write: false, platform: 'node', format: 'cjs', target: 'es2022',
+      outfile: path.join(output, 'observer-host.cjs'), logLevel: 'silent' }));
+    const observerBytes = observerBuilt.outputFiles[0].contents;
+    const observerModule = new Module(observerFile, module);
+    observerModule.filename = observerFile; observerModule.paths = Module._nodeModulePaths(path.dirname(observerFile));
+    observerModule._compile(Buffer.from(observerBytes).toString('utf8'), observerFile);
+    const { installMobileNavigationObserver, finishMobileNavigationObserver } = observerModule.exports;
+    const passiveContract = req('./scripts/e2e/mobile-navigation-diagnostic.cjs');
+    check(typeof installMobileNavigationObserver === 'function' && typeof finishMobileNavigationObserver === 'function', 'actual_observer_exports_missing');
+    const cancellationOwner = crypto.randomUUID();
+    const cancellationSetup = `(() => {
+      if (Object.prototype.hasOwnProperty.call(window, '__tgPassiveCancellationControl')) throw Error('Cancellation control already exists.');
+      const finish = (${finishMobileNavigationObserver.toString()});
+      let capture = null, finishCalls = 0, finishErrors = 0, removeErrors = 0;
+      const remove = () => { try { window.removeEventListener('keydown', onKeyDown, false); return true; } catch { removeErrors++; return false; } };
+      const onKeyDown = event => {
+        if (event.key !== 'Escape' || !event.isTrusted || finishCalls) return;
+        finishCalls++;
+        try { capture = finish(); } catch { finishErrors++; } finally { remove(); }
+      };
+      const control = { owner: ${JSON.stringify(cancellationOwner)}, cleanup() { const removed = remove(); if (removed && window.__tgPassiveCancellationControl === control) delete window.__tgPassiveCancellationControl;
+        return { capture, finishCalls, finishErrors, removeErrors, disposed: !Object.prototype.hasOwnProperty.call(window, '__tgPassiveCancellationControl') }; } };
+      Object.defineProperty(window, '__tgPassiveCancellationControl', { configurable: true, value: control });
+      window.addEventListener('keydown', onKeyDown, { passive: true });
+    })()`;
+    receipt.passiveObserver = { schemaVersion: 2, hostTransformSha256: sha(observerBytes),
+      hostSourceSha256: sha(fs.readFileSync(observerFile)), installExportSha256: sha(installMobileNavigationObserver.toString()),
+      finishExportSha256: sha(finishMobileNavigationObserver.toString()), cancellationSetupSha256: sha(cancellationSetup),
+      cancellationSetup: 'separate-test-listener-finishes-on-single-trusted-Escape-without-cancelling-product-event' };
+    fs.writeFileSync(path.join(output, 'observer-host.cjs'), observerBytes, { mode: 0o600 });
+    fs.writeFileSync(path.join(output, 'cancellation-setup.js'), cancellationSetup, { mode: 0o600 });
     const inputs = Object.keys(built.metafile.inputs).filter(name => name !== 'mobile-navigation-native-entry.mjs' && name !== '<stdin>').map(name => fs.realpathSync(path.resolve(root, name)));
     const portalInputs = inputs.filter(file => file.includes('/@rc-component/portal/'));
     check(portalInputs.length > 0 && portalInputs.every(file => file.startsWith(binding.portalRoot + '/es/')) && portalInputs.includes(path.join(binding.portalRoot, 'es/useEscKeyDown.js')), 'wrong_or_duplicate_portal_bundle');
@@ -208,9 +245,10 @@ async function execute(options, binding) {
       };
       const cases = [];
       receipt.controlCases = cases;
-      for (const scenario of ['navigation-only', 'descendant-popup-closing']) {
+      for (const scenario of ['navigation-only', 'descendant-popup-closing', 'navigation-cancel-frame']) {
         receipt.step = `${name}:${scenario}:setup`;
-        const caseResult = { scenario, outcome: 'pending', capture: null, componentCleanup: null };
+        const caseResult = { scenario, outcome: 'pending', capture: null, passiveCapture: null, cancellationControl: null, componentCleanup: null };
+        let cancellationInstalled = false;
         cases.push(caseResult);
         try {
         // Fresh pages isolate conditions without a pointer-reset action that
@@ -221,7 +259,12 @@ async function execute(options, binding) {
         await race(page.goto(origin, { waitUntil: 'networkidle' })); const actualAsset = await race(asset); check(sha(await actualAsset.body()) === bundleHash, 'served_bundle_mismatch');
         check(sha(await (await race(cssAsset)).body()) === receipt.bundle.servedCssSha256, 'served_css_mismatch');
         await page.waitForFunction(() => window.mobileNavigationControl?.snapshot().committed);
-        await page.evaluate(value => window.mobileNavigationControl.configure(value), scenario);
+        await page.evaluate(value => window.mobileNavigationControl.configure(value), scenario === 'navigation-cancel-frame' ? 'navigation-only' : scenario);
+        await page.evaluate(installMobileNavigationObserver, passiveContract.LIMITS);
+        if (scenario === 'navigation-cancel-frame') {
+          await page.evaluate(cancellationSetup);
+          cancellationInstalled = true;
+        }
         const navigation = page.getByRole('dialog');
         const header = page.getByTestId('pro-layout-global-header');
         const menuButton = header.locator('.tg-pro-layout-mobile-menu-action');
@@ -253,7 +296,7 @@ async function execute(options, binding) {
         }
         receipt.step = `${name}:${scenario}:escape`;
         await page.keyboard.press('Escape');
-        if (scenario === 'navigation-only') {
+        if (scenario !== 'descendant-popup-closing') {
           receipt.step = `${name}:${scenario}:assert-hidden`;
           await expect(navigation).toBeHidden({ timeout: 45000 });
           receipt.step = `${name}:${scenario}:assert-focus`;
@@ -273,7 +316,7 @@ async function execute(options, binding) {
         check(enters[0].focus === 'opener' && observed.openerConnected, 'opener_focus_unproved');
         check(enters[0].menuActionHovered, 'canonical_hover_precondition_unproved');
         check(escapes[0].navigationOpenCount === 1 && escapes[0].navigationVisibleCount === 1, 'escape_navigation_precondition_unproved');
-        if (scenario === 'navigation-only') {
+        if (scenario !== 'descendant-popup-closing') {
           check(observed.navigationOpenCount === 0 && observed.navigationVisibleCount === 0 && observed.restoredOpener, 'navigation_hide_or_restore_failed');
           check(observed.collapseCalls.includes(false) && observed.collapseCalls.slice(observed.collapseCalls.indexOf(false) + 1).includes(true), 'native_state_chain_unproved');
         } else {
@@ -288,6 +331,45 @@ async function execute(options, binding) {
           try { caseResult.capture = await snapshot(); }
           catch { receipt.failures.push({ phase: 'capture', code: 'final_capture_failed' }); }
           try {
+            let cancellation = null;
+            if (cancellationInstalled) {
+              cancellation = await page.evaluate(owner => {
+                const control = window.__tgPassiveCancellationControl;
+                return control?.owner === owner ? control.cleanup() : null;
+              }, cancellationOwner);
+              const { finishCalls, finishErrors, removeErrors, disposed } = cancellation;
+              check(finishCalls === 1 && finishErrors === 0 && removeErrors === 0 && disposed === true, 'cancellation_control_failed');
+              caseResult.cancellationControl = { finishCalls, finishErrors, removeErrors, disposed };
+            }
+            const passive = cancellation?.capture ?? await page.evaluate(finishMobileNavigationObserver);
+            passiveContract.assertCapture(passive);
+            check(Buffer.byteLength(JSON.stringify(passive)) <= passiveContract.LIMITS.bytes, 'passive_capture_byte_cap');
+            caseResult.passiveCapture = passive;
+            check(passive.disposed && !passive.recordOverflow && !passive.countOverflow && passive.observerErrorCount === 0, 'passive_capture_incomplete');
+            if (caseResult.outcome === 'passed') {
+              const cancelled = scenario === 'navigation-cancel-frame';
+              check(passive.frame.scheduled === 1 && passive.frame.completed + passive.frame.cancelled === 1, 'passive_frame_lifecycle_unproved');
+              if (cancelled) check(passive.frame.completed === 0 && passive.frame.cancelled === 1, 'passive_cancellation_unproved');
+              if (scenario === 'descendant-popup-closing') check(passive.frame.completed === 1, 'native_completed_frame_unproved');
+              check(passive.compositionPrehistory === 'unknown' && passive.details.final.composition[0] === 0, 'passive_composition_contract_failed');
+              if (!cancelled) {
+                const selected = passive.details.escapeCapture;
+                check(selected && selected.popover[0] === (scenario === 'descendant-popup-closing' ? 1 : 0), 'passive_selected_popover_unproved');
+                check(selected.tooltip[0] === 0, 'unexpected_native_tooltip');
+                if (scenario === 'descendant-popup-closing') check(selected.popover[1] === 1 && selected.popover[2] === 1, 'passive_closing_popover_unproved');
+              }
+            }
+          } catch { receipt.failures.push({ phase: 'passive-capture', code: 'passive_capture_or_control_failed' }); }
+          // Always attempt the actual observer finish, even if control cleanup or
+          // validation failed. Duplicate finish has no effect after a normal close.
+          try { await page?.evaluate(finishMobileNavigationObserver); }
+          catch { receipt.failures.push({ phase: 'cleanup', code: 'passive_finish_failed' }); }
+          try { await page?.evaluate(owner => {
+            const control = window.__tgPassiveCancellationControl;
+            if (control?.owner === owner) control.cleanup();
+          }, cancellationOwner); }
+          catch { receipt.failures.push({ phase: 'cleanup', code: 'cancellation_listener_cleanup_failed' }); }
+          try {
             const result = await page.evaluate(() => window.mobileNavigationControl.dispose());
             check(result.componentDisposed && result.observerDisposed && !result.overflow && result.remaining.keydown === 0 && result.remaining.compositionend === 0, 'component_cleanup_failed');
             caseResult.componentCleanup = result;
@@ -298,7 +380,7 @@ async function execute(options, binding) {
           catch { receipt.failures.push({ phase: 'cleanup', code: 'page_close_failed' }); }
         }
       }
-      const componentCleanup = { verified: cases.length === 2 && cases.every(item => item.componentCleanup?.componentDisposed === true && item.componentCleanup?.observerDisposed === true) };
+      const componentCleanup = { verified: cases.length === 3 && cases.every(item => item.componentCleanup?.componentDisposed === true && item.componentCleanup?.observerDisposed === true && item.passiveCapture?.disposed === true) };
       check(componentCleanup.verified, 'component_cleanup_failed');
       check(externalRequests === 0 && pageErrors === 0 && consoleErrors === 0 && !browserCounterOverflow, 'browser_boundary_failed');
       receipt.browsers.push({ name, version: browser.version(), bundleSha256: bundleHash, nativeCases: cases, externalRequests, pageErrors, consoleErrors, browserCounterOverflow, componentCleanup });

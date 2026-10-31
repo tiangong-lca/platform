@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: e98d1d631d9895c49f0d6c02bed39206ac28df77
-lastReviewedNote: 'Reviewed Platform #1383 stateful native control and equivalent mobile action extraction against failed e98 source. Worktree component evidence omits services, routing and predecessor history; the closing popup is a controlled stimulus. Canonical inventory, timeouts, retries, privacy, dependency and Portal patch contracts remain; no historical cause, product repair or qualification is claimed.'
+lastReviewedCommit: 4bc2f118a5b11b9b534ecf0b1ed968f56d1aa5b5
+lastReviewedNote: 'Reviewed Platform #1383 passive schema 2 against 4bc2f118a: five bounded detail slots, one unawaited optional frame, unknown composition prehistory, exact rejection precedence and independent cleanup. Actual serialized native controls remain separate from canonical qualification; inventory, actions, budgets, dependency/Portal contracts and historical failure remain unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

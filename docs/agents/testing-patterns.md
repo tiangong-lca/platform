@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: e98d1d631d9895c49f0d6c02bed39206ac28df77
-lastReviewedNote: 'Reviewed Platform #1383 stateful native control and equivalent mobile action extraction against failed e98 source. Worktree component evidence omits services, routing and predecessor history; the closing popup is a controlled stimulus. Canonical inventory, timeouts, retries, privacy, dependency and Portal patch contracts remain; no historical cause, product repair or qualification is claimed.'
+lastReviewedCommit: 4bc2f118a5b11b9b534ecf0b1ed968f56d1aa5b5
+lastReviewedNote: 'Reviewed Platform #1383 passive schema 2 against 4bc2f118a: five bounded detail slots, one unawaited optional frame, unknown composition prehistory, exact rejection precedence and independent cleanup. Actual serialized native controls remain separate from canonical qualification; inventory, actions, budgets, dependency/Portal contracts and historical failure remain unchanged.'
 ---
 
 # Testing Patterns Reference
@@ -295,3 +295,5 @@ Run affected React form suites with `CI=true` so the existing act-warning guard 
 Run real package lifecycle contracts in isolated Node children with development/production React and actual unique IDs; Jest's test-mode ID substitution cannot establish multi-Portal ordering. Observe effect commit separately from render, keep a non-replayed sibling beside the replayed StrictMode subtree, and make a reparent discriminator change which subtree wins. At least one assertion preserves callback dispatch order. Check both event-listener removals and process/window disposal, propagate cleanup/receipt failure to exit status, and label in-memory negative controls explicitly. Native keyboard/default-container/focus and ESM bundle execution remain separate browser evidence.
 
 Image-input tests should bind declared patch bytes before cache lookup, then cover both dependency and candidate contexts and every manifest consumer, including the Git-free evidence reporter. Use a patch-free control and explicit path/hash/index/schema failures. Resource observer fixtures canonicalize their owned temporary root before deriving paths so macOS aliases do not replace the intended ownership assertions with an unrelated setup failure.
+
+Passive mobile diagnostics use five fixed schema-2 detail slots and one optional unawaited frame under the original record/byte caps. Normal cancellation is explicit evidence, never a reason to wait or retry the product action. Observe only selected DOM predicates and window composition counts with unknown prehistory; preserve exact original rejection identity and independent cleanup. The owning wire/lifecycle contract is in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics).

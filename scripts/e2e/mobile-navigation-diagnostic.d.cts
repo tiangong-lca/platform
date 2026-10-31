@@ -26,11 +26,32 @@ export type NavigationSnapshot = {
 };
 export type NavigationRecord = NavigationSnapshot & {
   sequence: number;
-  stage: 'initial' | 'document-capture' | 'window-bubble';
+  stage: 'initial' | 'document-capture' | 'window-bubble' | 'post-escape-frame';
   key: 'none' | 'enter' | 'escape';
   trusted: boolean;
   composing: boolean;
   defaultPrevented: boolean;
+};
+export type OverlayCounts = [visible: number, motion: number, closing: number];
+export type ObservedComposition = [windowEndCount: number, lastEndElapsedMs: number | null];
+export type NavigationDetail = {
+  recordSequence: number | null;
+  popover: OverlayCounts;
+  tooltip: OverlayCounts;
+  composition: ObservedComposition;
+};
+export type NavigationDetails = {
+  initial: NavigationDetail | null;
+  escapeCapture: NavigationDetail | null;
+  escapeBubble: NavigationDetail | null;
+  frame: NavigationDetail | null;
+  final: NavigationDetail | null;
+};
+export type FrameLifecycle = {
+  scheduled: 0 | 1;
+  completed: 0 | 1;
+  cancelled: 0 | 1;
+  triggerSequence: number | null;
 };
 export type BrowserCapture = {
   records: NavigationRecord[];
@@ -39,6 +60,9 @@ export type BrowserCapture = {
   countOverflow: boolean;
   observerErrorCount: number;
   disposed: boolean;
+  compositionPrehistory: 'unknown';
+  details: NavigationDetails;
+  frame: FrameLifecycle;
 };
 export type SourceBinding = {
   candidateCommit: string;
@@ -58,7 +82,7 @@ export type ErrorCounters = {
 };
 export type DiagnosticReport = {
   kind: 'tiangong.mobile-navigation-diagnostic';
-  schemaVersion: 1;
+  schemaVersion: 2;
   scope: 'qualification-diagnostic-only';
   case: 'responsive-mobile-navigation';
   browser: 'chromium';
@@ -82,6 +106,7 @@ export const LIMITS: Readonly<{
 export const FOCUS: readonly FocusCategory[];
 export const STATE_KEYS: readonly (keyof NavigationState)[];
 export function assertReport(value: unknown): DiagnosticReport;
+export function assertCapture(value: unknown): asserts value is BrowserCapture;
 export function buildReport(
   source: SourceBinding,
   capture: unknown,

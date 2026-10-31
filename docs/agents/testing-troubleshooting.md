@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: e98d1d631d9895c49f0d6c02bed39206ac28df77
-lastReviewedNote: 'Reviewed Platform #1383 stateful native control and equivalent mobile action extraction against failed e98 source. Worktree component evidence omits services, routing and predecessor history; the closing popup is a controlled stimulus. Canonical inventory, timeouts, retries, privacy, dependency and Portal patch contracts remain; no historical cause, product repair or qualification is claimed.'
+lastReviewedCommit: 4bc2f118a5b11b9b534ecf0b1ed968f56d1aa5b5
+lastReviewedNote: 'Reviewed Platform #1383 passive schema 2 against 4bc2f118a: five bounded detail slots, one unawaited optional frame, unknown composition prehistory, exact rejection precedence and independent cleanup. Actual serialized native controls remain separate from canonical qualification; inventory, actions, budgets, dependency/Portal contracts and historical failure remain unchanged.'
 ---
 
 # Testing Troubleshooting
@@ -205,7 +205,7 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 
 An abandoned-render Escape registration is a separately reproduced library defect, not an automatic explanation for a hosted modal/drawer timeout. Compare native event delivery, actual committed state, ancestry and callback publication before choosing a repair. Preserve the original assertion and failure history. Exact pnpm patch installation can require uncached registry metadata for supply-chain verification even when all package bytes are present: use the normal frozen policy check rather than disabling policy or claiming offline verification passed.
 
-For a mobile navigation dialog that remains visible after Escape, inspect the exact source-bound bounded report described in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics). Compare document-capture/window-bubble delivery, focus and known overlay states without inferring a unique cause from counts. Missing or incomplete capture preserves the original failed result; a later instrumented pass is neither a fix nor evidence that the earlier failure was flaky.
+For a mobile navigation dialog that remains visible after Escape, inspect the exact source-bound bounded report described in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics). Compare document-capture/window-bubble delivery, focus and known overlay states without inferring a unique cause from counts. Missing or incomplete capture preserves the original failed result; a later instrumented pass is neither a fix nor evidence that the earlier failure was flaky. For schema 2, inspect the selected detail references, scheduled/completed/cancelled frame counts and explicit unknown composition prehistory. A cancelled optional frame is normal and does not justify an extra action or wait. Known Popover/Tooltip leave classes do not prove Portal eligibility, and missing observed composition events do not establish a clear private IME gate.
 
 If a frozen dependency-image install reports `ENOENT` for a declared patch, inspect both generated build contexts and the Docker copy order. Patch bytes must arrive before installation and participate in cache, manifest, runtime and qualification identity. Validate every manifest consumer when the internal version changes, then rerun the corrected committed candidate. A cleanup receipt with no observed survivors does not establish browser qualification when image construction never reached a candidate runtime.
 
