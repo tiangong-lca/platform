@@ -18,6 +18,7 @@ import {
 } from '@/components';
 import AccessDenied from '@/components/AccessDenied';
 import { renderAccessibleCollapsedButton } from '@/components/AccessibleCollapsedButton';
+import { renderMobileNavigationAction } from '@/components/MobileNavigationAction';
 import AccessibleSettingDrawer from '@/components/AccessibleSettingDrawer';
 import LCIACacheMonitor from '@/components/LCIACacheMonitor';
 import SystemMaintenance from '@/components/SystemMaintenance';
@@ -50,7 +51,6 @@ import {
   DashboardOutlined,
   DatabaseOutlined,
   LinkOutlined,
-  MenuOutlined,
   ProjectOutlined,
 } from '@ant-design/icons';
 import type { MenuDataItem, Settings as LayoutSettings } from '@ant-design/pro-components';
@@ -292,27 +292,13 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 
       if (headerProps.isMobile) {
         actions.unshift(
-          <button
-            aria-label={formatMessage({
+          renderMobileNavigationAction(
+            formatMessage({
               id: 'app.setting.navigationmode',
               defaultMessage: 'Navigation Mode',
-            })}
-            className='tg-pro-layout-mobile-menu-action'
-            key='mobile-navigation'
-            type='button'
-            onClick={(event) => {
-              const nativeTrigger = event.currentTarget
-                .closest('[data-testid="pro-layout-global-header"]')
-                ?.querySelector<HTMLElement>('.ant-pro-global-header-collapsed-button');
-              if (nativeTrigger) {
-                nativeTrigger.click();
-                return;
-              }
-              headerProps.onCollapse?.(!headerProps.collapsed);
-            }}
-          >
-            <MenuOutlined aria-hidden />
-          </button>,
+            }),
+            headerProps,
+          ),
         );
       }
 
