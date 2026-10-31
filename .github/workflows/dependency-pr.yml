@@ -229,6 +229,7 @@ jobs:
             .local/e2e-release/runs/**/preflight-report.json
             .local/e2e-release/runs/**/semantic-harness-qualification.json
             .local/e2e-release/runs/**/qualification-evidence-roundtrip.json
+            .local/e2e-release/runs/**/mobile-navigation-diagnostic.json
           archive: true
           include-hidden-files: true
           if-no-files-found: error

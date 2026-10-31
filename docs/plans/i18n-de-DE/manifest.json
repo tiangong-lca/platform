@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "d2c481b9b5e82e9b9a6345c6e8f498e41025088273384dfedea2cd7c2baa63f4",
+    "auditedInputDigest": "f18197b7b105eb290237d1b3f2bf6cad537aec9e11a7cf21c50534c132ca5602",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -69,13 +69,13 @@
   "summary": {
     "localeCount": 4,
     "localeLeafModuleCounts": { "en-US": 31, "zh-CN": 31, "de-DE": 31, "fr-FR": 31 },
-    "localeUniqueKeyCounts": { "en-US": 3614, "zh-CN": 3614, "de-DE": 3614, "fr-FR": 3614 },
-    "canonicalCandidateKeyCount": 3614,
-    "activeStaticKeyCount": 2410,
+    "localeUniqueKeyCounts": { "en-US": 3638, "zh-CN": 3638, "de-DE": 3638, "fr-FR": 3638 },
+    "canonicalCandidateKeyCount": 3638,
+    "activeStaticKeyCount": 2434,
     "activeDynamicKeyCount": 323,
     "reservedKeyCount": 881,
-    "productionSourceFileCount": 515,
-    "literalReferenceCount": 4433,
+    "productionSourceFileCount": 517,
+    "literalReferenceCount": 4461,
     "dynamicCallsiteCount": 38,
     "dynamicCallsiteSummaryCount": 38,
     "registeredDynamicCallsiteCount": 38,
@@ -54391,7 +54391,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1946,
+          "line": 1954,
           "column": 13,
           "symbol": "ProcessView",
           "defaultMessage": "Process information",
@@ -54412,7 +54412,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1946,
+              "line": 1954,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -54712,7 +54712,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1964,
+          "line": 1972,
           "column": 18,
           "symbol": "ProcessView",
           "defaultMessage": "Model Results",
@@ -54751,7 +54751,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1964,
+              "line": 1972,
               "column": 18,
               "kind": "FormattedMessage"
             }
@@ -57741,7 +57741,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1978,
+          "line": 1986,
           "column": 34,
           "symbol": "ProcessView",
           "defaultMessage": "View",
@@ -57750,7 +57750,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1991,
+          "line": 1999,
           "column": 30,
           "symbol": "ProcessView",
           "defaultMessage": "View",
@@ -57759,7 +57759,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1995,
+          "line": 2003,
           "column": 30,
           "symbol": "ProcessView",
           "defaultMessage": "View",
@@ -57768,7 +57768,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 2000,
+          "line": 2008,
           "column": 11,
           "symbol": "ProcessView",
           "defaultMessage": "View",
@@ -57909,25 +57909,25 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1978,
+              "line": 1986,
               "column": 34,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1991,
+              "line": 1999,
               "column": 30,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1995,
+              "line": 2003,
               "column": 30,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 2000,
+              "line": 2008,
               "column": 11,
               "kind": "FormattedMessage"
             },
@@ -79982,7 +79982,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 219,
+          "line": 227,
           "column": 24,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Artifact set hash",
@@ -79997,7 +79997,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 219,
+              "line": 227,
               "column": 24,
               "kind": "messageHelper"
             }
@@ -80065,7 +80065,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 198,
+          "line": 206,
           "column": 23,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Blockers",
@@ -80080,7 +80080,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 198,
+              "line": 206,
               "column": 23,
               "kind": "messageHelper"
             }
@@ -80148,7 +80148,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 279,
+          "line": 287,
           "column": 18,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Download ZIP",
@@ -80163,7 +80163,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 279,
+              "line": 287,
               "column": 18,
               "kind": "messageHelper"
             }
@@ -80231,7 +80231,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 124,
+          "line": 132,
           "column": 11,
           "symbol": "downloadArtifact",
           "defaultMessage": "The secure download link could not be refreshed. Please retry.",
@@ -80246,7 +80246,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 124,
+              "line": 132,
               "column": 11,
               "kind": "messageHelper"
             }
@@ -80314,7 +80314,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 151,
+          "line": 159,
           "column": 17,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "No canonical Model / Result Release is available for this Process. Legacy LCIA results remain separate.",
@@ -80329,7 +80329,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 151,
+              "line": 159,
               "column": 17,
               "kind": "messageHelper"
             }
@@ -80397,7 +80397,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 214,
+          "line": 222,
           "column": 24,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Release manifest hash",
@@ -80412,7 +80412,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 214,
+              "line": 222,
               "column": 24,
               "kind": "messageHelper"
             }
@@ -80480,7 +80480,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 191,
+          "line": 199,
           "column": 19,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Pending",
@@ -80495,7 +80495,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 191,
+              "line": 199,
               "column": 19,
               "kind": "messageHelper"
             }
@@ -80563,7 +80563,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 139,
+          "line": 147,
           "column": 7,
           "symbol": "title",
           "defaultMessage": "Process release",
@@ -80578,7 +80578,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 139,
+              "line": 147,
               "column": 7,
               "kind": "messageHelper"
             }
@@ -80646,7 +80646,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 187,
+          "line": 195,
           "column": 20,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Readback",
@@ -80661,7 +80661,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 187,
+              "line": 195,
               "column": 20,
               "kind": "messageHelper"
             }
@@ -80729,7 +80729,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 172,
+          "line": 180,
           "column": 12,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Refresh",
@@ -80744,7 +80744,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 172,
+              "line": 180,
               "column": 12,
               "kind": "messageHelper"
             }
@@ -80812,7 +80812,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 159,
+          "line": 167,
           "column": 12,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Retry",
@@ -80827,7 +80827,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 159,
+              "line": 167,
               "column": 12,
               "kind": "messageHelper"
             }
@@ -80895,7 +80895,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 209,
+          "line": 217,
           "column": 24,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Release run ID",
@@ -80910,7 +80910,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 209,
+              "line": 217,
               "column": 24,
               "kind": "messageHelper"
             }
@@ -80978,7 +80978,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 183,
+          "line": 191,
           "column": 20,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Status",
@@ -80993,7 +80993,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 183,
+              "line": 191,
               "column": 20,
               "kind": "messageHelper"
             }
@@ -81061,7 +81061,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 140,
+          "line": 148,
           "column": 7,
           "symbol": "title",
           "defaultMessage": "Model / Result Release",
@@ -81076,7 +81076,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 140,
+              "line": 148,
               "column": 7,
               "kind": "messageHelper"
             }
@@ -81144,7 +81144,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 190,
+          "line": 198,
           "column": 19,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Verified",
@@ -81159,7 +81159,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 190,
+              "line": 198,
               "column": 19,
               "kind": "messageHelper"
             }
@@ -81227,7 +81227,7 @@
         {
           "kind": "messageHelper",
           "path": "src/components/LcaReleaseReadPanel/index.tsx",
-          "line": 179,
+          "line": 187,
           "column": 20,
           "symbol": "LcaReleaseReadPanel",
           "defaultMessage": "Release version",
@@ -81242,7 +81242,7 @@
           "locations": [
             {
               "path": "src/components/LcaReleaseReadPanel/index.tsx",
-              "line": 179,
+              "line": 187,
               "column": 20,
               "kind": "messageHelper"
             }
@@ -93260,7 +93260,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1366,
+          "line": 1373,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Data set format(s)",
@@ -93284,7 +93284,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1366,
+              "line": 1373,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -157871,7 +157871,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 230,
+          "line": 237,
           "column": 9,
           "symbol": "tabList",
           "defaultMessage": "Compliance declarations",
@@ -157901,7 +157901,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 230,
+              "line": 237,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -158390,7 +158390,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 2008,
+          "line": 2016,
           "column": 11,
           "symbol": "ProcessView",
           "defaultMessage": "View process",
@@ -158405,7 +158405,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 2008,
+              "line": 2016,
               "column": 11,
               "kind": "FormattedMessage"
             }
@@ -158906,7 +158906,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1699,
+          "line": 1706,
           "column": 22,
           "symbol": "contentList",
           "defaultMessage": "Input",
@@ -158948,7 +158948,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1699,
+              "line": 1706,
               "column": 22,
               "kind": "FormattedMessage"
             },
@@ -159132,7 +159132,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1780,
+          "line": 1787,
           "column": 17,
           "symbol": "contentList",
           "defaultMessage": "Output",
@@ -159174,7 +159174,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1780,
+              "line": 1787,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -200953,7 +200953,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 225,
+          "line": 232,
           "column": 12,
           "symbol": "tabList",
           "defaultMessage": "Validation",
@@ -200983,7 +200983,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 225,
+              "line": 232,
               "column": 12,
               "kind": "FormattedMessage"
             },
@@ -206502,7 +206502,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 207,
+          "line": 214,
           "column": 9,
           "symbol": "tabList",
           "defaultMessage": "Administrative information",
@@ -206532,7 +206532,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 207,
+              "line": 214,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -206615,7 +206615,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1314,
+          "line": 1321,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data set generator / modeller",
@@ -206645,7 +206645,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1314,
+              "line": 1321,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -206737,7 +206737,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1677,
+          "line": 1684,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Access and use restrictions",
@@ -206773,7 +206773,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1677,
+              "line": 1684,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -206856,7 +206856,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1616,
+          "line": 1623,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Copyright?",
@@ -206886,7 +206886,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1616,
+              "line": 1623,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -207135,7 +207135,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1331,
+          "line": 1338,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data entry by",
@@ -207165,7 +207165,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1331,
+              "line": 1338,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -207248,7 +207248,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1464,
+          "line": 1471,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Data set version",
@@ -207278,7 +207278,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1464,
+              "line": 1471,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -207361,7 +207361,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1438,
+          "line": 1445,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Date of last revision",
@@ -207391,7 +207391,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1438,
+              "line": 1445,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -207483,7 +207483,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1298,
+          "line": 1305,
           "column": 11,
           "symbol": "contentList",
           "defaultMessage": "Intended applications",
@@ -207519,7 +207519,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1298,
+              "line": 1305,
               "column": 11,
               "kind": "FormattedMessage"
             },
@@ -207602,7 +207602,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1658,
+          "line": 1665,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "License type",
@@ -207632,7 +207632,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1658,
+              "line": 1665,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -208130,7 +208130,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1493,
+          "line": 1500,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Permanent data set URI",
@@ -208160,7 +208160,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1493,
+              "line": 1500,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -208335,7 +208335,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1286,
+          "line": 1293,
           "column": 11,
           "symbol": "contentList",
           "defaultMessage": "Project",
@@ -208371,7 +208371,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1286,
+              "line": 1293,
               "column": 11,
               "kind": "FormattedMessage"
             },
@@ -208454,7 +208454,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1424,
+          "line": 1431,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Publication and ownership",
@@ -208484,7 +208484,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1424,
+              "line": 1431,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -208567,7 +208567,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1273,
+          "line": 1280,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Commissioner of data set",
@@ -208597,7 +208597,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1273,
+              "line": 1280,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -208680,7 +208680,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1381,
+          "line": 1388,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Converted original data set from:",
@@ -208710,7 +208710,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1381,
+              "line": 1388,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -208876,7 +208876,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1411,
+          "line": 1418,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Official approval of data set by producer/operator:",
@@ -208906,7 +208906,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1411,
+              "line": 1418,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -208989,7 +208989,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1637,
+          "line": 1644,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Entities or persons with exclusive access to this data set",
@@ -209019,7 +209019,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1637,
+              "line": 1644,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -209102,7 +209102,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1595,
+          "line": 1602,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Owner of data set",
@@ -209132,7 +209132,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1595,
+              "line": 1602,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -209215,7 +209215,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1396,
+          "line": 1403,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Data entry by:",
@@ -209245,7 +209245,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1396,
+              "line": 1403,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -209328,7 +209328,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1554,
+          "line": 1561,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Registration authority",
@@ -209358,7 +209358,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1554,
+              "line": 1561,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -209441,7 +209441,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1539,
+          "line": 1546,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Unchanged re-publication of:",
@@ -209471,7 +209471,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1539,
+              "line": 1546,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -209554,7 +209554,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1575,
+          "line": 1582,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Registration number",
@@ -209584,7 +209584,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1575,
+              "line": 1582,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -209667,7 +209667,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1345,
+          "line": 1352,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Time stamp (last saved)",
@@ -209697,7 +209697,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1345,
+              "line": 1352,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -209780,7 +209780,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1519,
+          "line": 1526,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Workflow and publication status",
@@ -209810,7 +209810,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1519,
+              "line": 1526,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -213726,7 +213726,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 216,
+          "line": 223,
           "column": 9,
           "symbol": "tabList",
           "defaultMessage": "Inputs and Outputs",
@@ -213756,7 +213756,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 216,
+              "line": 223,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -214645,7 +214645,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 221,
+          "line": 228,
           "column": 12,
           "symbol": "tabList",
           "defaultMessage": "LCIA Results",
@@ -214666,7 +214666,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 221,
+              "line": 228,
               "column": 12,
               "kind": "FormattedMessage"
             }
@@ -216644,7 +216644,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 198,
+          "line": 205,
           "column": 9,
           "symbol": "tabList",
           "defaultMessage": "Modelling and validation",
@@ -216674,7 +216674,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 198,
+              "line": 205,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -219647,7 +219647,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1091,
+          "line": 1098,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Annual supply or production volume",
@@ -219683,7 +219683,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1091,
+              "line": 1098,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -219766,7 +219766,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1164,
+          "line": 1171,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Completeness",
@@ -219796,7 +219796,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1164,
+              "line": 1171,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -220143,7 +220143,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1202,
+          "line": 1209,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Completeness elementary flows, per topic",
@@ -220173,7 +220173,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1202,
+              "line": 1209,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -220256,7 +220256,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1216,
+          "line": 1223,
           "column": 25,
           "symbol": "contentList",
           "defaultMessage": "completeness type",
@@ -220286,7 +220286,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1216,
+              "line": 1223,
               "column": 25,
               "kind": "FormattedMessage"
             },
@@ -220369,7 +220369,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1239,
+          "line": 1246,
           "column": 25,
           "symbol": "contentList",
           "defaultMessage": "value",
@@ -220399,7 +220399,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1239,
+              "line": 1246,
               "column": 25,
               "kind": "FormattedMessage"
             },
@@ -220491,7 +220491,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1257,
+          "line": 1264,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Completeness other problem field(s)",
@@ -220527,7 +220527,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1257,
+              "line": 1264,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -220610,7 +220610,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1178,
+          "line": 1185,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Completeness product model",
@@ -220640,7 +220640,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1178,
+              "line": 1185,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -222413,7 +222413,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1115,
+          "line": 1122,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data collection period",
@@ -222449,7 +222449,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1115,
+              "line": 1122,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -222541,7 +222541,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 966,
+          "line": 973,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data cut-off and completeness principles",
@@ -222577,7 +222577,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 966,
+              "line": 973,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -222669,7 +222669,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 990,
+          "line": 997,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data selection and combination principles",
@@ -222705,7 +222705,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 990,
+              "line": 997,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -222788,7 +222788,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 959,
+          "line": 966,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data sources, treatment, and representativeness",
@@ -222818,7 +222818,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 959,
+              "line": 966,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -222910,7 +222910,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1014,
+          "line": 1021,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data treatment and extrapolations principles",
@@ -222946,7 +222946,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1014,
+              "line": 1021,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223038,7 +223038,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 978,
+          "line": 985,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Deviation from data cut-off and completeness principles / explanations",
@@ -223074,7 +223074,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 978,
+              "line": 985,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223166,7 +223166,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 908,
+          "line": 915,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Deviations from LCI method approaches / explanations",
@@ -223202,7 +223202,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 908,
+              "line": 915,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223294,7 +223294,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 869,
+          "line": 876,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Deviation from LCI method principle / explanations",
@@ -223330,7 +223330,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 869,
+              "line": 876,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223422,7 +223422,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 929,
+          "line": 936,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Deviation from modelling constants / explanations",
@@ -223458,7 +223458,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 929,
+              "line": 936,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223550,7 +223550,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1002,
+          "line": 1009,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Deviation from data selection and combination principles / explanations",
@@ -223586,7 +223586,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1002,
+              "line": 1009,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223678,7 +223678,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1026,
+          "line": 1033,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Deviation from data treatment and extrapolations principles / explanations",
@@ -223714,7 +223714,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1026,
+              "line": 1033,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223797,7 +223797,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 812,
+          "line": 819,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "LCI method and allocation",
@@ -223827,7 +223827,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 812,
+              "line": 819,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -223910,7 +223910,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 889,
+          "line": 896,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "LCI method approaches",
@@ -223940,7 +223940,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 889,
+              "line": 896,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -224023,7 +224023,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 851,
+          "line": 858,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "LCI method principle",
@@ -224053,7 +224053,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 851,
+              "line": 858,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -224145,7 +224145,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 920,
+          "line": 927,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Modelling constants",
@@ -224181,7 +224181,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 920,
+              "line": 927,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -224264,7 +224264,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1074,
+          "line": 1081,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Percentage supply or production covered",
@@ -224294,7 +224294,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1074,
+              "line": 1081,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -224633,7 +224633,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1040,
+          "line": 1047,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Data handling report",
@@ -224663,7 +224663,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1040,
+              "line": 1047,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -224755,7 +224755,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1054,
+          "line": 1061,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Data source(s) used for this data set",
@@ -224791,7 +224791,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1054,
+              "line": 1061,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -224874,7 +224874,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 943,
+          "line": 950,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "LCA methodology report",
@@ -224904,7 +224904,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 943,
+              "line": 950,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -225183,7 +225183,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1103,
+          "line": 1110,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Sampling procedure",
@@ -225219,7 +225219,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1103,
+              "line": 1110,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -225379,7 +225379,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 826,
+          "line": 833,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Dataset type",
@@ -225430,7 +225430,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 826,
+              "line": 833,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -225943,7 +225943,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1127,
+          "line": 1134,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Uncertainty adjustments",
@@ -225979,7 +225979,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1127,
+              "line": 1134,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -226636,7 +226636,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 1139,
+          "line": 1146,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Use advice for data set",
@@ -226672,7 +226672,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 1139,
+              "line": 1146,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -227071,7 +227071,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 189,
+          "line": 196,
           "column": 9,
           "symbol": "tabList",
           "defaultMessage": "Process information",
@@ -227101,7 +227101,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 189,
+              "line": 196,
               "column": 9,
               "kind": "FormattedMessage"
             },
@@ -227193,7 +227193,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 302,
+          "line": 309,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Base name",
@@ -227229,7 +227229,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 302,
+              "line": 309,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -227371,7 +227371,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 456,
+          "line": 463,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Data set valid until:",
@@ -227401,7 +227401,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 456,
+              "line": 463,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -227511,7 +227511,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 506,
+          "line": 513,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Geographical representativeness description",
@@ -227520,7 +227520,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 544,
+          "line": 551,
           "column": 17,
           "symbol": "contentList",
           "defaultMessage": "Geographical representativeness description",
@@ -227577,13 +227577,13 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 506,
+              "line": 513,
               "column": 13,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 544,
+              "line": 551,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -227681,7 +227681,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 335,
+          "line": 342,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Quantitative product or process properties",
@@ -227717,7 +227717,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 335,
+              "line": 342,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -227809,7 +227809,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 381,
+          "line": 388,
           "column": 11,
           "symbol": "contentList",
           "defaultMessage": "General comment on data set",
@@ -227845,7 +227845,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 381,
+              "line": 388,
               "column": 11,
               "kind": "FormattedMessage"
             },
@@ -227919,7 +227919,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 275,
+          "line": 282,
           "column": 17,
           "symbol": "contentList",
           "defaultMessage": "ID",
@@ -227943,7 +227943,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 275,
+              "line": 282,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -228026,7 +228026,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 356,
+          "line": 363,
           "column": 17,
           "symbol": "contentList",
           "defaultMessage": "Identifier of sub-data set",
@@ -228056,7 +228056,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 356,
+              "line": 363,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -228139,7 +228139,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 498,
+          "line": 505,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Location",
@@ -228169,7 +228169,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 498,
+              "line": 505,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -228252,7 +228252,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 484,
+          "line": 491,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Location",
@@ -228282,7 +228282,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 484,
+              "line": 491,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -228433,7 +228433,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 324,
+          "line": 331,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Mix and location types",
@@ -228469,7 +228469,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 324,
+              "line": 331,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -228561,7 +228561,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 610,
+          "line": 617,
           "column": 11,
           "symbol": "contentList",
           "defaultMessage": "Model description",
@@ -228597,7 +228597,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 610,
+              "line": 617,
               "column": 11,
               "kind": "FormattedMessage"
             },
@@ -228671,7 +228671,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 294,
+          "line": 301,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Name",
@@ -228695,7 +228695,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 294,
+              "line": 301,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -228778,7 +228778,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 407,
+          "line": 414,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Data set LCA report, background info",
@@ -228808,7 +228808,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 407,
+              "line": 414,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -228891,7 +228891,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 597,
+          "line": 604,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Flow diagram(s) or picture(s)",
@@ -228921,7 +228921,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 597,
+              "line": 604,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -229004,7 +229004,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 586,
+          "line": 593,
           "column": 15,
           "symbol": "contentList",
           "defaultMessage": "Technology pictogram",
@@ -229034,7 +229034,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 586,
+              "line": 593,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -229117,7 +229117,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 433,
+          "line": 440,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Reference year",
@@ -229147,7 +229147,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 433,
+              "line": 440,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -229239,7 +229239,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 526,
+          "line": 533,
           "column": 17,
           "symbol": "contentList",
           "defaultMessage": "Sub-location(s)",
@@ -229248,7 +229248,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 536,
+          "line": 543,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Sub-location(s)",
@@ -229293,13 +229293,13 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 526,
+              "line": 533,
               "column": 17,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 536,
+              "line": 543,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -229397,7 +229397,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 372,
+          "line": 379,
           "column": 11,
           "symbol": "contentList",
           "defaultMessage": "Synonyms",
@@ -229433,7 +229433,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 372,
+              "line": 379,
               "column": 11,
               "kind": "FormattedMessage"
             },
@@ -229525,7 +229525,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 575,
+          "line": 582,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Technical purpose of product or process",
@@ -229561,7 +229561,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 575,
+              "line": 582,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -229644,7 +229644,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 557,
+          "line": 564,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Technological representativeness",
@@ -229674,7 +229674,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 557,
+              "line": 564,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -229766,7 +229766,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 564,
+          "line": 571,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Technology description including background system",
@@ -229802,7 +229802,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 564,
+              "line": 571,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -229885,7 +229885,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 419,
+          "line": 426,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Time representativeness",
@@ -229915,7 +229915,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 419,
+              "line": 426,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -230007,7 +230007,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 471,
+          "line": 478,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Time representativeness description",
@@ -230043,7 +230043,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 471,
+              "line": 478,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -230135,7 +230135,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 312,
+          "line": 319,
           "column": 13,
           "symbol": "contentList",
           "defaultMessage": "Treatment, standards, routes",
@@ -230171,7 +230171,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 312,
+              "line": 319,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -230254,7 +230254,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 626,
+          "line": 633,
           "column": 17,
           "symbol": "contentList",
           "defaultMessage": "Variable / parameter",
@@ -230284,7 +230284,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 626,
+              "line": 633,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -230376,7 +230376,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 795,
+          "line": 802,
           "column": 19,
           "symbol": "contentList",
           "defaultMessage": "Comment, units, defaults",
@@ -230412,7 +230412,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 795,
+              "line": 802,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -230495,7 +230495,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 663,
+          "line": 670,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Formula",
@@ -230525,7 +230525,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 663,
+              "line": 670,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -230608,7 +230608,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 732,
+          "line": 739,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Maximum value",
@@ -230638,7 +230638,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 732,
+              "line": 739,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -230721,7 +230721,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 686,
+          "line": 693,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Mean value",
@@ -230751,7 +230751,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 686,
+              "line": 693,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -230834,7 +230834,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 709,
+          "line": 716,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Minimum value",
@@ -230864,7 +230864,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 709,
+              "line": 716,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -230947,7 +230947,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 640,
+          "line": 647,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Name of variable",
@@ -230977,7 +230977,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 640,
+              "line": 647,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -231060,7 +231060,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 778,
+          "line": 785,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Relative standard deviation (95%) in %",
@@ -231090,7 +231090,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 778,
+              "line": 785,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -231173,7 +231173,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 755,
+          "line": 762,
           "column": 23,
           "symbol": "contentList",
           "defaultMessage": "Uncertainty distribution type",
@@ -231203,7 +231203,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 755,
+              "line": 762,
               "column": 23,
               "kind": "FormattedMessage"
             },
@@ -231688,6 +231688,2058 @@
       },
       "references": [],
       "defaultMessages": []
+    },
+    {
+      "id": "pages.publishedResults.amount",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Amount",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 945,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "数值",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 942,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Wert",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 945,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Valeur",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 944,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 227,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Amount",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 292,
+          "column": 19,
+          "symbol": "ResultSession",
+          "defaultMessage": "Amount",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Amount",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 227,
+              "column": 17,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 292,
+              "column": 19,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.basis",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Reference quantity",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 936,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "参考量",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 933,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Referenzmenge",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 936,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Quantité de référence",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 935,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 114,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Reference quantity",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Reference quantity",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 114,
+              "column": 17,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.direction",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Direction",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 949,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "方向",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 946,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Richtung",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 949,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Direction",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 948,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 269,
+          "column": 19,
+          "symbol": "ResultSession",
+          "defaultMessage": "Direction",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Direction",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 269,
+              "column": 19,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.downloads",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Release files",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 955,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "发布文件",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 952,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Veröffentlichte Dateien",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 955,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Fichiers de la publication",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 954,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 318,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Release files",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Release files",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 318,
+              "column": 17,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.error",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Published results could not be loaded. Please retry.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 942,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "已发布结果加载失败，请重试。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 939,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Veröffentlichte Ergebnisse konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 942,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Impossible de charger les résultats publiés. Veuillez réessayer.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 941,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 194,
+          "column": 13,
+          "symbol": "ResultSession",
+          "defaultMessage": "Published results could not be loaded. Please retry.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Published results could not be loaded. Please retry.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 194,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.first",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "First page",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 953,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "第一页",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 950,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Erste Seite",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 953,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Première page",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 952,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 304,
+          "column": 16,
+          "symbol": "ResultSession",
+          "defaultMessage": "First page",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "First page",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 304,
+              "column": 16,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.flow",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Flow",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 948,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "流",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 945,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Fluss",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 948,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Flux",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 947,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 257,
+          "column": 24,
+          "symbol": "ResultSession",
+          "defaultMessage": "Flow",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Flow",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 257,
+              "column": 24,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.input",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Input",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 950,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "输入",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 947,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Input",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 950,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Entrée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 949,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 276,
+          "column": 21,
+          "symbol": "ResultSession",
+          "defaultMessage": "Input",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Input",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 276,
+              "column": 21,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.lci",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "LCI",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 938,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "LCI",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 935,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "LCI",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 938,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "LCI",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 937,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 140,
+          "column": 20,
+          "symbol": "ResultSession",
+          "defaultMessage": "LCI",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "LCI",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 140,
+              "column": 20,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.lcia",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "LCIA",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 937,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "LCIA",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 934,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "LCIA",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 937,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "LCIA",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 936,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 135,
+          "column": 20,
+          "symbol": "ResultSession",
+          "defaultMessage": "LCIA",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "LCIA",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 135,
+              "column": 20,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.location",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Location",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 952,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "地理位置",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 949,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Standort",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 952,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Localisation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 951,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 283,
+          "column": 19,
+          "symbol": "ResultSession",
+          "defaultMessage": "Location",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Location",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 283,
+              "column": 19,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.method",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Impact category",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 943,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "影响类别",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 940,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Wirkungskategorie",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 943,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Catégorie d’impact",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 942,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 212,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Impact category",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Impact category",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 212,
+              "column": 17,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.next",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Next page",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 954,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "下一页",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 951,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Nächste Seite",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 954,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Page suivante",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 953,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 307,
+          "column": 16,
+          "symbol": "ResultSession",
+          "defaultMessage": "Next page",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Next page",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 307,
+              "column": 16,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.nonzero",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 947,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "零值清单项已省略；搜索和分页仅在非零项中进行。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 944,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Nullwerte der Sachbilanz werden ausgelassen; Suche und Seitenwechsel beziehen sich auf Nichtnull-Einträge.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 947,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Les entrées nulles sont omises ; la recherche et la pagination portent sur les entrées non nulles.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 946,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 243,
+          "column": 15,
+          "symbol": "ResultSession",
+          "defaultMessage": "Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 243,
+              "column": 15,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.output",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Output",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 951,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "输出",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 948,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Output",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 951,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Sortie",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 950,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 278,
+          "column": 21,
+          "symbol": "ResultSession",
+          "defaultMessage": "Output",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Output",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 278,
+              "column": 21,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.preparing",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Preparing published results. Please retry shortly.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 940,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "正在准备已发布结果，请稍后重试。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 937,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Veröffentlichte Ergebnisse werden vorbereitet. Bitte versuchen Sie es in Kürze erneut.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 940,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Préparation des résultats publiés. Veuillez réessayer dans un instant.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 939,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 170,
+          "column": 13,
+          "symbol": "ResultSession",
+          "defaultMessage": "Preparing published results. Please retry shortly.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Preparing published results. Please retry shortly.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 170,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.release",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Published release",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 934,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "发布版本",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 931,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Veröffentlichte Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 934,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Version publiée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 933,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 94,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Published release",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Published release",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 94,
+              "column": 17,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.retry",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Retry",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 933,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "重试",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 930,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Erneut versuchen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 933,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Réessayer",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 932,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 81,
+          "column": 8,
+          "symbol": "refresh",
+          "defaultMessage": "Retry",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Retry",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 81,
+              "column": 8,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.search",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Search inventory",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 939,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "搜索清单",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 936,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Sachbilanz durchsuchen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 939,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Rechercher dans l’inventaire",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 938,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 149,
+          "column": 23,
+          "symbol": "ResultSession",
+          "defaultMessage": "Search inventory",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 154,
+          "column": 13,
+          "symbol": "ResultSession",
+          "defaultMessage": "Search inventory",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Search inventory",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 149,
+              "column": 23,
+              "kind": "formatMessage"
+            },
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 154,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.source",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Source process",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 935,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "原过程",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 932,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Quellprozess",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 935,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Procédé source",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 934,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 104,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Source process",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Source process",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 104,
+              "column": 17,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.title",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Published results",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 932,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "已发布结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 929,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Veröffentlichte Ergebnisse",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 932,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Résultats publiés",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 931,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/view.tsx",
+          "line": 190,
+          "column": 9,
+          "symbol": "tabList",
+          "defaultMessage": "Published results",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Published results",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/view.tsx",
+              "line": 190,
+              "column": 9,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.unavailable",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "No published results are available for this exact version.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 941,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "此精确版本暂无可查看的已发布结果。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 938,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Für diese genaue Version sind keine veröffentlichten Ergebnisse verfügbar.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 941,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Aucun résultat publié n’est disponible pour cette version exacte.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 940,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 182,
+          "column": 13,
+          "symbol": "ResultSession",
+          "defaultMessage": "No published results are available for this exact version.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "No published results are available for this exact version.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 182,
+              "column": 13,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.unit",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Unit",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 946,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "单位",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 943,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Einheit",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 946,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Unité",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 945,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 232,
+          "column": 22,
+          "symbol": "ResultSession",
+          "defaultMessage": "Unit",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 297,
+          "column": 24,
+          "symbol": "ResultSession",
+          "defaultMessage": "Unit",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Unit",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 232,
+              "column": 22,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 297,
+              "column": 24,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.version",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 944,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "版本",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 941,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 944,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 943,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 221,
+          "column": 17,
+          "symbol": "ResultSession",
+          "defaultMessage": "Version",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "FormattedMessage",
+          "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+          "line": 263,
+          "column": 19,
+          "symbol": "ResultSession",
+          "defaultMessage": "Version",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 221,
+              "column": 17,
+              "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
+              "line": 263,
+              "column": 19,
+              "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "pages.review.ReviewLifeCycleModelsDetail.edit.title",
@@ -267765,7 +269817,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/view.tsx",
-          "line": 245,
+          "line": 252,
           "column": 14,
           "symbol": "processExchangeColumns",
           "defaultMessage": "Actions",
@@ -267969,7 +270021,7 @@
             },
             {
               "path": "src/pages/Processes/Components/view.tsx",
-              "line": 245,
+              "line": 252,
               "column": 14,
               "kind": "FormattedMessage"
             },
@@ -296700,7 +298752,7 @@
       "count": 1,
       "file": "src/components/LcaReleaseReadPanel/index.tsx",
       "expression": "id",
-      "locations": ["66:45"],
+      "locations": ["73:45"],
       "category": "active-dynamic",
       "family": "dataProcessing",
       "reviewStatus": "reviewed"

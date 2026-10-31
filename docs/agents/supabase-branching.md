@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: 784779ce3836b1c0bd601980fd6c4d145e810efe
-lastReviewedNote: 'Reviewed Platform #1358 patch image closure at784779ce: declared tracked patch bytes bind install contexts, cache identity, manifest6, runtime, reporter and resource verification. Focused controls and typed/static review pass; fresh hosted proof remains required. Backend authority, credential isolation, canonical assertions, execution budgets and release policy are unchanged.'
+lastReviewedAt: 2026-10-30
+lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
+lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
 ---
 
 # Supabase Environment And Database Workflow
@@ -144,3 +144,7 @@ Review final approval with pending opinions requires Database #857 (`review_one_
 ### National carbon draft reporting dependency
 
 The organization screen requires Database #860's `api.qry_national_carbon_organization_contributions_v6(integer)` and v6 snapshot with `draftDatasetCount`. Apply and verify that migration in the matching environment before publishing Platform #1328. The original RPC remains v5 for old strict clients; the new frontend does not fall back to a missing draft metric.
+
+## Published HDF5 query dependency
+
+Platform #1378 requires Database #877 and Edge #513 plus the independently deployed Worker #348 query service in the selected environment. The new authenticated mode performs fresh actor RLS and current-publication checks for every request; no browser artifact locator, direct service RPC, HDF5 parser or legacy-reader fallback is allowed. The generated self-hosted mirror remains unchanged until the owning backend commits are promoted and qualified. Source delivery does not imply deployment.

@@ -1,6 +1,7 @@
 import {
   createLcaReleaseArtifactDownload,
   getCurrentLcaRelease,
+  getLcaRelease,
   getCurrentLcaReleaseForProcess,
   type LcaReleaseArtifact,
   type LcaReleaseDataset,
@@ -22,6 +23,7 @@ type Props = {
   processId?: string;
   processVersion?: string;
   compact?: boolean;
+  releaseRunId?: string;
 };
 
 type ReleaseIssue = { code: string; message: string };
@@ -60,7 +62,12 @@ function triggerDownload(url: string, filename: string): void {
   link.remove();
 }
 
-const LcaReleaseReadPanel = ({ processId, processVersion, compact = false }: Props) => {
+const LcaReleaseReadPanel = ({
+  processId,
+  processVersion,
+  releaseRunId,
+  compact = false,
+}: Props) => {
   const intl = useIntl();
   const t = useCallback(
     (id: string, defaultMessage: string) => intl.formatMessage({ id, defaultMessage }),
@@ -79,8 +86,9 @@ const LcaReleaseReadPanel = ({ processId, processVersion, compact = false }: Pro
       setLoading(true);
       setIssue(null);
       setRelease(null);
-      const result =
-        processId && processVersion
+      const result = releaseRunId
+        ? await getLcaRelease(releaseRunId)
+        : processId && processVersion
           ? await getCurrentLcaReleaseForProcess(processId, processVersion)
           : await getCurrentLcaRelease();
       if (!cancelled) {
@@ -99,7 +107,7 @@ const LcaReleaseReadPanel = ({ processId, processVersion, compact = false }: Pro
     return () => {
       cancelled = true;
     };
-  }, [processId, processVersion, reloadToken]);
+  }, [processId, processVersion, releaseRunId, reloadToken]);
 
   const datasets = release?.datasets;
   const unitProcess = datasetForRole(datasets, 'unit_process');

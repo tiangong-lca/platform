@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: fc17551de7fce02c47e256fa56322609ecf44c0c
-lastReviewedNote: 'Reviewed Platform #1384: add the explicitly scoped Darwin-only Sparkplug mitigation for the observed Node24.19 native GC path and real parent-bound Jest-worker flag/runtime/closure controls. Exact runtime/images/dependencies/MockJS patch and complete worker, discovery, coverage and delivery contracts remain unchanged; upstream-fixed runtime adoption stays separately qualified.'
+lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
+lastReviewedNote: 'Reviewed Platform #1384 against qualified Main 0.0.147: preserve promoted business and bounded diagnostic contracts while adding the reviewed MockJS native repair and targeted Darwin Sparkplug mitigation. Existing versions, image pins, prior patches, full discovery/worker/coverage gates and privacy remain; fresh combined qualification is required and historical failure causes are not inferred.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -193,6 +193,8 @@ Semantic qualification closure uses the shared contract in `scripts/e2e/qualific
 
 The dedicated canonical semantic qualification report owns assertion/browser facts. Host finalization verifies its raw-byte SHA-256 against the completed container result before applying strict closure checks and projecting the external proof. Generic sanitized diagnostic copies are not proof sources: valid route identifiers can contain words such as `password`, while diagnostic redaction must still protect real credentials. Missing bindings, changed reports and unexpected proof fields fail closed.
 
+The qualification-only mobile navigation observer follows the bounded schema, output and privacy contract in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics). Changes to it require inert source-binding, privacy/cap, serialization, error-precedence, listener-cleanup and output-copy controls, plus preservation of the original mobile action/assertion AST and the complete 99-case declaration inventory. Its report never replaces canonical assertion, browser, cleanup or qualification-proof evidence; hosted artifact acceptance still requires actual downloaded byte and source validation.
+
 Private container reports must be readable by the invoking host operator before host finalization. Transfer only generated run-output descendants and the exact recovery ledger to the owner observed on their host-precreated mount roots inside the container namespace; preserve private modes and never follow symlinks or transfer credential mounts, recovery-directory siblings, or unrelated paths. Apply the handoff after both successful and failed execution. Malformed or unreadable results must retain explicit read-error diagnostics rather than being misreported as browser assertion failures.
 
 The Darwin-only Sparkplug flag is a temporary mitigation for the observed Node24.19 baseline-frame GC crash. `tests/unit/scripts/testRunner.test.ts` launches a native fixture through the actual installed `jest -> @jest/core -> jest-runner -> jest-worker` chain, captures two distinct child PIDs and their Node/full-V8/execArgv identities, verifies all three direct flags, and closes the pool without forced exits. Its negative control omits Sparkplug's flag and must fail after closing both children. Keep this in the existing suite so discovery remains unchanged. The ordinary and compact launchers use the same direct argument list; do not put the V8 flags into `NODE_OPTIONS`. A focused coverage result for the previously crashed module is diagnostic evidence, not complete source or full-gate acceptance. The exact runtime remains24.19.0; the released upstream fix and qualified-workaround retirement boundary are documented in [testing troubleshooting](testing-troubleshooting.md).
@@ -327,6 +329,10 @@ Maintained-patch image proof must exercise both generated build contexts, depend
 `tests/unit/config/installedUriDecodeContract.test.ts` launches the native installed contracts outside Jest mappers. Resolve the decoder through the real `@umijs/history -> query-string` parents and bind its exact patch identity. Cover valid multilingual queries, plus/encoded-plus, duplicates, null/empty values, parser options, fragments and TypeErrors; malformed UTF-8 recovery; and the intentional single-pass escape/dollar corrections. Exercise development and production CommonJS history, memory navigation, hash/browser initialization and navigation, and the actual ESM browser bundle. Dispose each synthetic DOM and build service. These small functional inputs and the reviewed upstream algorithm do not claim a measured resource bound for every runtime.
 
 Native-browser qualification must consume that same installed ESM bundle and verify initial, push and replace query state with valid and malformed inputs, with no external requests and explicit browser/context cleanup. This isolated router proof does not replace the application's unchanged canonical semantic qualification, actual dependency-image patch inventory, full checked-push gate or fresh hosted artifacts. Record raw audit findings separately from installed-patch behavior, and retain the dependency-maintenance retirement conditions.
+
+## Published result query proof
+
+For Platform #1378, focused service/component tests cover exact identities, publication pinning, bounded preparation, rejection, signed values, source-switch cancellation and cursor/filter resets. `playwright.result-preview.config.ts` selects the credential-free `published-query.spec.ts` rendered original-Process flow against the closed synthetic backend. This is browser consumer proof, not a live Worker/S3/Database qualification. The ordinary full pre-push coverage gate and four-locale artifact checks remain required.
 
 ## Maintained Axios request compatibility
 

@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: fc17551de7fce02c47e256fa56322609ecf44c0c
-lastReviewedNote: 'Reviewed Platform #1384: add the explicitly scoped Darwin-only Sparkplug mitigation for the observed Node24.19 native GC path and real parent-bound Jest-worker flag/runtime/closure controls. Exact runtime/images/dependencies/MockJS patch and complete worker, discovery, coverage and delivery contracts remain unchanged; upstream-fixed runtime adoption stays separately qualified.'
+lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
+lastReviewedNote: 'Reviewed Platform #1384 against qualified Main 0.0.147: preserve promoted business and bounded diagnostic contracts while adding the reviewed MockJS native repair and targeted Darwin Sparkplug mitigation. Existing versions, image pins, prior patches, full discovery/worker/coverage gates and privacy remain; fresh combined qualification is required and historical failure causes are not inferred.'
 ---
 
 # Testing Execution State

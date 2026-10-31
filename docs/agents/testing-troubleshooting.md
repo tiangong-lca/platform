@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: fc17551de7fce02c47e256fa56322609ecf44c0c
-lastReviewedNote: 'Reviewed Platform #1384: add the explicitly scoped Darwin-only Sparkplug mitigation for the observed Node24.19 native GC path and real parent-bound Jest-worker flag/runtime/closure controls. Exact runtime/images/dependencies/MockJS patch and complete worker, discovery, coverage and delivery contracts remain unchanged; upstream-fixed runtime adoption stays separately qualified.'
+lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
+lastReviewedNote: 'Reviewed Platform #1384 against qualified Main 0.0.147: preserve promoted business and bounded diagnostic contracts while adding the reviewed MockJS native repair and targeted Darwin Sparkplug mitigation. Existing versions, image pins, prior patches, full discovery/worker/coverage gates and privacy remain; fresh combined qualification is required and historical failure causes are not inferred.'
 ---
 
 # Testing Troubleshooting
@@ -204,6 +204,8 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 ## Portal lifecycle and patch evidence
 
 An abandoned-render Escape registration is a separately reproduced library defect, not an automatic explanation for a hosted modal/drawer timeout. Compare native event delivery, actual committed state, ancestry and callback publication before choosing a repair. Preserve the original assertion and failure history. Exact pnpm patch installation can require uncached registry metadata for supply-chain verification even when all package bytes are present: use the normal frozen policy check rather than disabling policy or claiming offline verification passed.
+
+For a mobile navigation dialog that remains visible after Escape, inspect the exact source-bound bounded report described in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics). Compare document-capture/window-bubble delivery, focus and known overlay states without inferring a unique cause from counts. Missing or incomplete capture preserves the original failed result; a later instrumented pass is neither a fix nor evidence that the earlier failure was flaky.
 
 If a frozen dependency-image install reports `ENOENT` for a declared patch, inspect both generated build contexts and the Docker copy order. Patch bytes must arrive before installation and participate in cache, manifest, runtime and qualification identity. Validate every manifest consumer when the internal version changes, then rerun the corrected committed candidate. A cleanup receipt with no observed survivors does not establish browser qualification when image construction never reached a candidate runtime.
 
