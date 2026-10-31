@@ -88,7 +88,9 @@ function unitWorkerArgs(platform = process.platform) {
 }
 
 function jestNodeArgs(platform = process.platform) {
-  return platform === 'darwin' ? ['--no-concurrent-recompilation', '--no-maglev'] : [];
+  return platform === 'darwin'
+    ? ['--no-concurrent-recompilation', '--no-maglev', '--no-sparkplug']
+    : [];
 }
 
 function runJest(args, stage = 'jest') {
