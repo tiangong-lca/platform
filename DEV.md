@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
-lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: 0351ddc065eed13996e79f8250f8c5ab69062692
+lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness, pre-browser source admission and separate bounded native controls against Main 0351ddc0. Existing bootstrap, ownership, branch, product/dependency, canonical inventory/action/budget/privacy and full-gate boundaries remain intact; new runtime and delivery acceptance require their separate actual evidence.'
 ---
 
 # Development Bootstrap
@@ -303,7 +303,7 @@ Both release commands default to read-only planning when `--apply` is omitted. `
 - use `pnpm start:main` only when the task explicitly requires the `main` environment
 - direct semantic E2E development is configured by `playwright.config.ts`, runs from `tests/e2e/i18n/**`, and serves the local worktree with `pnpm start:main`; `E2E_BASE_URL` must remain a loopback URL
 - release E2E accepts only a clean committed Next candidate, exports it with `git archive`, builds one production bundle in the digest-pinned Playwright image, serves that immutable bundle internally, and never mounts `lca-workspace`, `.git`, unrelated submodules, host dependencies, or browser profiles
-- release preflight verifies the environment/candidate identities, writable isolated storage, all three browser launches, bundle/login readiness, production backend target, optional role-neutral login, recovery-ledger safety, and Playwright discovery before production fixture intent/create
+- release preflight verifies the environment/candidate identities, writable isolated storage, qualification-only batch-diagnostic source admission before any browser, all three browser launches, bundle/login readiness, production backend target, optional role-neutral login, recovery-ledger safety, and Playwright discovery before production fixture intent/create
 - only one install/run/resume/clean invocation may mutate project-owned E2E state at a time; a dead owner lock is recovered automatically, while a live owner fails early instead of racing shared build/runtime/ledger state
 - a failed build, server, or preflight phase may activate one ignored one-hour HMAC-bound continuation receipt; argument-free `pnpm e2e:release:resume` revalidates the exact commit/tree/lock/environment/source/image/arguments and reruns preflight, while browser results and production-fixture phases are never reused
 - race diagnosis may add `--project <browser> --spec <path>` or `--grep <pattern> --repeat-each <1-5>`; repeat is accepted only for a focused read-only scope and cannot write verified evidence

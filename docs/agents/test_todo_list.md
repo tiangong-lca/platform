@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
-lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: 0351ddc065eed13996e79f8250f8c5ab69062692
+lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness and separate bounded native controls against Main 0351ddc0. Preserve original canonical AST, inventory, actions, budgets, privacy and exact failures; source admission precedes browsers and only three browser-specific JSON diagnostics enter artifacts. Invocation ownership and installed Wave shape corrections are bound to issue evidence. Native, full/hosted, artifact and Main/Dev/root acceptance remain separate pending stages; no historical cause or product fix is claimed.'
 ---
 
 # Testing Execution State
@@ -65,6 +65,8 @@ lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fd
 This is a checked-in reference, not a per-PR execution ledger. A delivery's post-commit, hook-owned full-gate result belongs in its PR validation evidence; update this section when the reference counts, coverage policy, or queue state materially changes.
 
 ## Current State
+
+- Issue #1396 owns the qualification-only batch allocation witness and separate bounded native controls. It preserves the historical failed source, complete original canonical actions and budgets, and the distinction between public observations and private handler state. Implementation, inert checks, one reviewed native set, exact canonical/hosted artifacts and subsequent Main/Dev/root delivery are separate evidence stages; actual outcomes and remaining work belong on the Issue. No historical cause, product fix or qualification pass follows from adding the observer.
 
 - Issue #1358 owns the separately reproduced Portal commit-lifecycle repair, maintained-patch image input closure and exact Main semantic admission. Acceptance requires installed-package, native ESM/default-container/focus, current-source canonical semantic and normal complete-gate evidence; actual executions and remaining work are recorded on that Issue/PR. Package versions and unrelated dependency resolutions remain intact. Successful new evidence does not establish #1354's historical failure cause or independently authorize publication.
 

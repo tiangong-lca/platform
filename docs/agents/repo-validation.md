@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
-lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: 0351ddc065eed13996e79f8250f8c5ab69062692
+lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness and separate bounded native controls against Main 0351ddc0. Preserve original canonical AST, inventory, actions, budgets, privacy and exact failures; source admission precedes browsers and only three browser-specific JSON diagnostics enter artifacts. Invocation ownership and installed Wave shape corrections are bound to issue evidence. Native, full/hosted, artifact and Main/Dev/root acceptance remain separate pending stages; no historical cause or product fix is claimed.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -317,6 +317,10 @@ For the six-family Supabase `2.118.0` update, run the mapper-independent `instal
 For Platform #1328, run the dashboard service/page suites against the required v6 contract, including invalid or missing draft fields, localized sixth-column placement, zero values, and ten-row client pagination without extra RPCs. Browser proof uses the qualification build and intercepted synthetic snapshots, checking six-column alignment, long localized labels and rank continuity. Database #860 must be available in the selected environment before frontend publication; database counting and ordering proof stays in its SQL suite.
 
 ## Maintained Portal lifecycle compatibility
+
+For #1396, the batch allocation observer/diagnostic/original-spec suites must prove strict bounded schemas, initial absence versus observer fault, original-element/Locator separation, fixed public selectors, privacy under oversized/nested input, event-work saturation, independent listener disposal and exact object/primitive original-error precedence. The integration suite exercises pre-browser source-admission rejection and the exact three-file workflow allowlists. Preserve the immutable original spec AST and canonical config digest. Native supervisor fault tests cover deadline/cancellation, ownership and PID reuse, capacity/RSS/disk/freshness failures, no-new-start projection, independent cleanup and safe runtime retention; constants in a receipt are not enforcement proof.
+
+After source review, run only the one serial 12-control set specified in [dependency maintenance](dependency-maintenance.md#bounded-batch-allocation-diagnostics). Verify actual valid vectors, enabled native rejection controls, visible Alert/retained dialog, cancel/no callback, initial selector feasibility, every source/served-byte binding and actual resource receipt. Keep failed/incomplete/not-run outcomes. Native passes do not establish canonical handler execution, repair the historical `632d1d204aaa` failure or replace the unchanged complete checked-push/hosted qualification and downloaded artifact proof.
 
 For #1358, `tests/unit/config/installedPortalEscape.test.ts` launches the real installed CJS package outside Jest mappers/test-ID substitution. Require committed markers, nested and sibling ordering, committed and aborted reparent, isolated StrictMode effect replay, callback publication, close/reopen, all-active dispatch order, omitted callbacks/keyboard=false, both IME gates and both listener cleanups. The intentionally naive effect-only control must fail its nested assertion; injected cleanup failures must return nonzero despite green behavioral assertions. Bind the resolved package/source hashes, not a receipt-provided arbitrary path.
 
