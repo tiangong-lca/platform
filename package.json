@@ -167,7 +167,7 @@
     "three": "^0.185.1",
     "topojson-client": "^3.1.0",
     "uuid": "^14.0.2",
-    "zod": "^4.5.4"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@jest/test-sequencer": "^30.5.0",

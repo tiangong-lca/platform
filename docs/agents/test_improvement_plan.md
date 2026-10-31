@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
+lastReviewedAt: 2026-10-31
+lastReviewedCommit: cd921af4a7f960f55b880d93c345c1c796b64f78
+lastReviewedNote: 'Reviewed combined Platform #1372/#1381/#1383 Dev preparation: retain qualified Axios and Zod Main repairs, independent Dev business work and bounded qualification diagnostics. Original actions, assertions, budgets, privacy and all four patches remain; fresh combined qualification and causal diagnosis are not inferred.'
 ---
 
 # Testing Strategy

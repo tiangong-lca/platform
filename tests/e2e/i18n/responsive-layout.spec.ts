@@ -13,6 +13,7 @@ import {
   selectAppLocaleThroughUi,
 } from './contracts';
 import { resolveLocaleContentE2EScenario } from './locale-capability-scenarios';
+import { withMobileNavigationDiagnostics } from './mobile-navigation-observer';
 import {
   assertResponsiveSurfaceClosure,
   RESPONSIVE_SURFACE_SCENARIO,
@@ -268,49 +269,51 @@ test('Every registry locale keeps the team layout operable across responsive the
   });
 
   await test.step('mobile ProLayout actions stay aligned and keyboard-operable', async () => {
-    const header = page.getByTestId('pro-layout-global-header');
-    const menuButton = header.locator('.tg-pro-layout-mobile-menu-action');
-    const languageButton = header.locator('.tg-global-language-action');
-    const avatarButton = header.locator('.tg-global-header-avatar-trigger');
+    await withMobileNavigationDiagnostics(page, async () => {
+      const header = page.getByTestId('pro-layout-global-header');
+      const menuButton = header.locator('.tg-pro-layout-mobile-menu-action');
+      const languageButton = header.locator('.tg-global-language-action');
+      const avatarButton = header.locator('.tg-global-header-avatar-trigger');
 
-    await expect(header).toBeVisible();
-    for (const action of [menuButton, languageButton, avatarButton]) {
-      await expect(action).toBeVisible();
-      await expect(action).toHaveAttribute('aria-label', /\S/u);
-      await expectElementInsideViewport(action, 390, 844);
-    }
+      await expect(header).toBeVisible();
+      for (const action of [menuButton, languageButton, avatarButton]) {
+        await expect(action).toBeVisible();
+        await expect(action).toHaveAttribute('aria-label', /\S/u);
+        await expectElementInsideViewport(action, 390, 844);
+      }
 
-    const logo = header.locator('.ant-pro-global-header-logo-mobile');
-    const [menuBox, logoBox] = await Promise.all([menuButton.boundingBox(), logo.boundingBox()]);
-    expect(menuBox).not.toBeNull();
-    expect(logoBox).not.toBeNull();
-    expect(menuBox!.x + menuBox!.width).toBeLessThanOrEqual(logoBox!.x + 1);
+      const logo = header.locator('.ant-pro-global-header-logo-mobile');
+      const [menuBox, logoBox] = await Promise.all([menuButton.boundingBox(), logo.boundingBox()]);
+      expect(menuBox).not.toBeNull();
+      expect(logoBox).not.toBeNull();
+      expect(menuBox!.x + menuBox!.width).toBeLessThanOrEqual(logoBox!.x + 1);
 
-    const backgroundBeforeHover = await menuButton.evaluate(
-      (element) => getComputedStyle(element).backgroundColor,
-    );
-    await menuButton.hover();
-    await expect
-      .poll(() => menuButton.evaluate((element) => getComputedStyle(element).backgroundColor))
-      .not.toBe(backgroundBeforeHover);
+      const backgroundBeforeHover = await menuButton.evaluate(
+        (element) => getComputedStyle(element).backgroundColor,
+      );
+      await menuButton.hover();
+      await expect
+        .poll(() => menuButton.evaluate((element) => getComputedStyle(element).backgroundColor))
+        .not.toBe(backgroundBeforeHover);
 
-    await menuButton.press('Enter');
-    const navigationDialog = page.getByRole('dialog').filter({ visible: true });
-    await expect(navigationDialog).toHaveCount(1);
-    await expect(navigationDialog).toBeVisible();
-    await page.keyboard.press('Escape');
-    await expect(navigationDialog).toBeHidden();
+      await menuButton.press('Enter');
+      const navigationDialog = page.getByRole('dialog').filter({ visible: true });
+      await expect(navigationDialog).toHaveCount(1);
+      await expect(navigationDialog).toBeVisible();
+      await page.keyboard.press('Escape');
+      await expect(navigationDialog).toBeHidden();
 
-    await avatarButton.hover();
-    const avatarMenu = page.getByRole('menu').filter({ visible: true });
-    await expect(avatarMenu).toHaveCount(1);
-    await expect.poll(() => avatarMenu.getByRole('menuitem').count()).toBeGreaterThan(0);
-    await page.mouse.move(0, 0);
-    await expect(avatarMenu).toBeHidden();
+      await avatarButton.hover();
+      const avatarMenu = page.getByRole('menu').filter({ visible: true });
+      await expect(avatarMenu).toHaveCount(1);
+      await expect.poll(() => avatarMenu.getByRole('menuitem').count()).toBeGreaterThan(0);
+      await page.mouse.move(0, 0);
+      await expect(avatarMenu).toBeHidden();
 
-    await avatarButton.press('Enter');
-    await expect(avatarMenu).toBeVisible();
-    await page.keyboard.press('Escape');
-    await expect(avatarMenu).toBeHidden();
+      await avatarButton.press('Enter');
+      await expect(avatarMenu).toBeVisible();
+      await page.keyboard.press('Escape');
+      await expect(avatarMenu).toBeHidden();
+    });
   });
 });
