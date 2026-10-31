@@ -72,5 +72,11 @@ patchedDependencies:
   '@rc-component/portal@2.2.1': patches/@rc-component__portal@2.2.1.patch
   axios@0.34.0: patches/axios@0.34.0.patch
   decode-uri-component@0.2.2: patches/decode-uri-component@0.2.2.patch
+  glob@10.5.0: patches/glob@10.5.0.patch
+  glob@13.0.6: patches/glob@13.0.6.patch
+  glob@9.3.5: patches/glob@9.3.5.patch
   http-cache-semantics@4.3.0: patches/http-cache-semantics@4.3.0.patch
+  minimatch@10.2.5: patches/minimatch@10.2.5.patch
+  minimatch@8.0.7: patches/minimatch@8.0.7.patch
+  minimatch@9.0.9: patches/minimatch@9.0.9.patch
   mockjs@1.1.0: patches/mockjs@1.1.0.patch

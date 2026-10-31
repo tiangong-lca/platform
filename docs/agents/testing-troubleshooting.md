@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 0cf171f2a80155b37a3a2d971b41dc0dae281aac
-lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0cf171f2a: retain MockJS, the Darwin Sparkplug mitigation, equivalent mobile-action extraction, passive schema 2 and generated locale evidence with the exact official Hono backport and approved Utoo percent-filename restriction. Preserve the five prior patches, unrelated graph/version/install policy and canonical actions, budgets and privacy; combined full/hosted qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
+lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
 ---
 
 # Testing Troubleshooting

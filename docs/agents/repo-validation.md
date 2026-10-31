@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 0cf171f2a80155b37a3a2d971b41dc0dae281aac
-lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0cf171f2a: retain MockJS, the Darwin Sparkplug mitigation, equivalent mobile-action extraction, passive schema 2 and generated locale evidence with the exact official Hono backport and approved Utoo percent-filename restriction. Preserve the five prior patches, unrelated graph/version/install policy and canonical actions, budgets and privacy; combined full/hosted qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
+lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -350,7 +350,7 @@ Exercise facade response modes, request/response interceptor order and ejection,
 
 Run `node --test tests/package-contracts/installedMockjsBrowser.contract.cjs` separately for actual Chromium/Firefox/WebKit execution of both distributed files under global and AMD shapes. Each case uses an offline context with all requests blocked, verifies ordinary Random/mock behavior and merge contracts, restores prototype descriptors, and closes its context/browser. `MOCKJS_CONTRACT_PACKAGE=<verified-official-package-directory>` and `MOCKJS_CONTRACT_BASELINE=true` select the finite vulnerable baseline controls for either native contract; never set those overrides for installed-candidate acceptance.
 
-Before accepting generated patch bytes, use the documented helper against the official SRI-verified archive and the reviewed utility source. Retain deterministic output, all unaffected module/source identities and complete old/new map validation separately from runtime/security proof. A frozen install must reconstruct the official 59-file package plus exactly the four-file delta and preserve unrelated graph/version/install-policy inputs and the five other maintained patches. Arbitrary hostile target callbacks and cyclic source objects remain outside this merge contract. Keep raw version-based audit visibility separate from the installed repair; the complete checked-push gate, exact Main Candidate/canonical hosted qualification, artifact/image/resource evidence, Main nonpublication, Dev reconciliation and root integration remain required.
+Before accepting generated patch bytes, use the documented helper against the official SRI-verified archive and the reviewed utility source. Retain deterministic output, all unaffected module/source identities and complete old/new map validation separately from runtime/security proof. A frozen install must reconstruct the official 59-file package plus exactly the four-file delta and preserve unrelated graph/version/install-policy inputs and the eleven other maintained patches. Arbitrary hostile target callbacks and cyclic source objects remain outside this merge contract. Keep raw version-based audit visibility separate from the installed repair; the complete checked-push gate, exact Main Candidate/canonical hosted qualification, artifact/image/resource evidence, Main nonpublication, Dev reconciliation and root integration remain required.
 
 ## Maintained Hono static middleware compatibility
 
