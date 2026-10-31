@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 162c450f3ee98d31285a21388589bb7e30da17c7
-lastReviewedNote: 'Reviewed Platform #1383 native locale audit/provenance regeneration after the equivalent mobile action extraction. The c26 baseline, catalogs, message IDs and assertions remain unchanged; only callsite coordinates, source census/input digest and dependent digest bindings refresh. Native diagnostic/runtime bytes remain retained; no canonical qualification is claimed.'
+lastReviewedCommit: 0cf171f2a80155b37a3a2d971b41dc0dae281aac
+lastReviewedNote: 'Reviewed Platform #1385 composition with qualified Main 0cf171f2a: retain MockJS, the Darwin Sparkplug mitigation, equivalent mobile-action extraction, passive schema 2 and generated locale evidence with the exact official Hono backport and approved Utoo percent-filename restriction. Preserve the five prior patches, unrelated graph/version/install policy and canonical actions, budgets and privacy; combined full/hosted qualification, Dev reconciliation and root integration remain pending.'
 ---
 
 # Development Bootstrap

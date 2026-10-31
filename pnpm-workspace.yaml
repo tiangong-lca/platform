@@ -68,6 +68,7 @@ minimumReleaseAgeExclude:
   - electron@44.1.0
 
 patchedDependencies:
+  '@hono/node-server@1.19.17': patches/@hono__node-server@1.19.17.patch
   '@rc-component/portal@2.2.1': patches/@rc-component__portal@2.2.1.patch
   axios@0.34.0: patches/axios@0.34.0.patch
   decode-uri-component@0.2.2: patches/decode-uri-component@0.2.2.patch
