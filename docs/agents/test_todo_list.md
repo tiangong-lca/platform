@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-10-31
-lastReviewedCommit: ead1fa1c6388c46684cafbf3ce5c4da48029cc18
-lastReviewedNote: 'Reviewed combined Platform #1372/#1381/#1383 Dev preparation: retain qualified Axios and Zod Main repairs, independent Dev business work and bounded qualification diagnostics. Original actions, assertions, budgets, privacy and all four patches remain; fresh combined qualification and causal diagnosis are not inferred.'
+lastReviewedCommit: 4c0606a0ffc879b7aa9d6f9203d255d62caa87ad
+lastReviewedNote: 'Reviewed Platform #1384 against qualified Main 0.0.147: preserve promoted business and bounded diagnostic contracts while adding the reviewed MockJS native repair and targeted Darwin Sparkplug mitigation. Existing versions, image pins, prior patches, full discovery/worker/coverage gates and privacy remain; fresh combined qualification is required and historical failure causes are not inferred.'
 ---
 
 # Testing Execution State
