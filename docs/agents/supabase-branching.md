@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: d062e20a756a5b9483b67686f394e6093615d1a8
+lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
 ---
 
 # Supabase Environment And Database Workflow

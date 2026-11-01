@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
-lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: d062e20a756a5b9483b67686f394e6093615d1a8
+lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -333,6 +333,8 @@ Maintained-patch image proof must exercise both generated build contexts, depend
 Native-browser qualification must consume that same installed ESM bundle and verify initial, push and replace query state with valid and malformed inputs, with no external requests and explicit browser/context cleanup. This isolated router proof does not replace the application's unchanged canonical semantic qualification, actual dependency-image patch inventory, full checked-push gate or fresh hosted artifacts. Record raw audit findings separately from installed-patch behavior, and retain the dependency-maintenance retirement conditions.
 
 ## Published result query proof
+
+For final Result v2, run service `finalResults.test.ts`, component `finalResultsPanel.test.tsx`, `PublishedResult/index.test.tsx` and the retained legacy `publishedResultsPanel.test.tsx`/`resultQuery.test.ts`. Cover explicit format dispatch, exact Result/source identity, multiple direct Results and source pagination, reader pins, cold limits, stale response cancellation, signed LCI, zero/missing LCIA, full units and short-lived authorized ZIPs. `published-final-query.spec.ts` uses the same closed synthetic original-Process browser harness as the v1 test. It exercises the selector, paged values, download denial/success, missing LCIA, changed-reader recovery and the independent authenticated Derived Result detail link with no source reads. This is consumer proof, not hosted JWT, S3 integrity or live publication proof. Run the unchanged full coverage gate/build and regenerate/check the four active locale artifacts when message keys change.
 
 For Platform #1378, focused service/component tests cover exact identities, publication pinning, bounded preparation, rejection, signed values, source-switch cancellation and cursor/filter resets. `playwright.result-preview.config.ts` selects the credential-free `published-query.spec.ts` rendered original-Process flow against the closed synthetic backend. This is browser consumer proof, not a live Worker/S3/Database qualification. The ordinary full pre-push coverage gate and four-locale artifact checks remain required.
 

@@ -1,4 +1,4 @@
-import PublishedResultsPanel from '@/pages/Processes/Components/publishedResultsPanel';
+import { LegacyPublishedResultsPanel as PublishedResultsPanel } from '@/pages/Processes/Components/publishedResultsPanel';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 const mockQuery = jest.fn();
 jest.mock('@/services/lcaReleases/resultQuery', () => ({

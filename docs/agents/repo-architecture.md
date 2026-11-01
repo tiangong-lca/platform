@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: e98d1d631d9895c49f0d6c02bed39206ac28df77
-lastReviewedNote: 'Reviewed Platform #1383 stateful native control and equivalent mobile action extraction against failed e98 source. Worktree component evidence omits services, routing and predecessor history; the closing popup is a controlled stimulus. Canonical inventory, timeouts, retries, privacy, dependency and Portal patch contracts remain; no historical cause, product repair or qualification is claimed.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: d062e20a756a5b9483b67686f394e6093615d1a8
+lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -250,9 +250,11 @@ Each readable Root or Reference row offers a view icon backed by the existing re
 
 ### Published numerical results on original Process details
 
-`publishedResultsPanel.tsx -> services/lcaReleases/resultQuery.ts -> lca_release_results (mode=query)` reads authenticated published LCI/LCIA for the exact original UUID/version. The query service owns HDF5; the browser receives bounded validated JSON, with frozen method/flow units and quantitative reference. This tab creates no dataset/catalog, starts no calculation and does not change state-120 eligibility. Existing calculation/package readers retain their distinct routes.
+The published-results tab first resolves exact source UUID/version through `services/lcaReleases/finalResults.ts` and Edge `source_results`. Only an explicit `legacy-four-zip.v1` publication selects the retained `resultQuery.ts` reader, pinned to that publication; v2 failures never fall back. Final Result publications list direct relations with bounded, publication-pinned source pagination and an exact Result selector. Derived ancestors are not original-source mappings. The authenticated, hidden-menu `#/published-results?resultId=<uuid>&resultVersion=<version>&publicationId=<uuid>` entry displays exact published Results independently, including a pure Derived Result without accessible ancestors. It validates all three unique parameters and uses `FinalResultDetails` directly, without a source lookup or a `processes` row. This is a detail link, not a new directory. Original-Process Result views expose the same link for sharing exact identities; stale publication links remain unavailable rather than silently switching publications.
 
-The first accepted response pins publication identity, including cold-cache responses. Source identity remounts the session; every view/page/filter change cancels the old request. Preparation retries at most four times per explicit load, then offers manual retry. Missing/revoked access, transport failure and preparation stay distinct. LCI uses 50-entry server cursors and a bounded metadata filter; zero entries are omitted by the completed sparse artifact, while search/pagination also hide unrelated nonzero entries. Signed/tiny values render without fixed-decimal rounding. Download expansion uses the overview's release run through the existing fresh-link panel, so a newly current release is not silently mixed with displayed results.
+V2 `final_query` replies preserve frozen quantitative reference, signed values, LCIA zero versus missing, full semantic unit identity and method versions. The first ready or cold reply pins runtime revision alongside publication. LCI uses 50-entry cursors and a bounded metadata filter; sparse zeros are omitted. Source/selection changes remount the reader; every page/filter/view change cancels stale I/O. Cold preparation retries at most four requests, then requires a manual retry. Withdrawal and runtime/publication changes hide prior values and offer selection reload. The browser never downloads HDF5/index files, materializes datasets or starts calculations.
+
+TIDAS/ILCD ZIP buttons call `final_download` afresh for the displayed publication. Edge/Database own complete-Candidate selection and support-data permissions. Unavailable full packages are explained explicitly. The client validates the exact filename/publication, hash/size metadata and short expiry before following the secure URL; it does not persist signed URLs or buffer a potentially 32 GiB ZIP into browser memory. As with legacy release-file downloads, native download transport does not independently attest file bytes; Release storage/full-GET qualification owns immutable object verification. Calculation Bundle byte-verifying downloads remain a separate interface. Existing state-120 calculation eligibility is unchanged.
 
 ### Calculation Bundle And Release Readback
 

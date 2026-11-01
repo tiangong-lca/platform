@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
-lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: d062e20a756a5b9483b67686f394e6093615d1a8
+lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
 ---
 
 # Testing Execution State

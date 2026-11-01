@@ -314,6 +314,12 @@ export default [
     component: './DataProcessing',
   },
   {
+    path: '/published-results',
+    hideInMenu: true,
+    wrappers: ['@/wrappers/AuthGuard'],
+    component: './PublishedResult',
+  },
+  {
     path: '/dataset-display-settings',
     name: 'datasetDisplaySettings',
     icon: 'SettingOutlined',
