@@ -327,22 +327,80 @@ it.each(['install', 'finish', 'page', 'console', 'publish', 'none'])(
   },
 );
 
-it('binds the actual installed control files and archived source, reserves before capture, and rejects drift/production admission', () => {
+function diagnosticRuntimeFixture() {
   const fixture = runtimeFixture();
+  for (const name of [
+    'tests/e2e/i18n/batch-allocation-observer.ts',
+    'scripts/e2e/batch-allocation-diagnostic.cjs',
+    'tests/e2e/i18n/process-allocation.spec.ts',
+  ]) {
+    const destination = path.join(fixture.root, name);
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.copyFileSync(path.join(process.cwd(), name), destination);
+  }
+  fs.symlinkSync(path.join(process.cwd(), 'node_modules'), path.join(fixture.root, 'node_modules'));
+  return fixture;
+}
+
+it('checks every installed admission input with exact spelling before case-folded filesystem reads', () => {
+  const fixture = diagnosticRuntimeFixture();
+  const id: Identity = {
+    browser: 'chromium',
+    project: 'chromium',
+    scope: 'qualification-diagnostic-only',
+    control: null,
+  };
   try {
-    for (const name of [
-      'tests/e2e/i18n/batch-allocation-observer.ts',
-      'scripts/e2e/batch-allocation-diagnostic.cjs',
-      'tests/e2e/i18n/process-allocation.spec.ts',
-    ]) {
-      const destination = path.join(fixture.root, name);
-      fs.mkdirSync(path.dirname(destination), { recursive: true });
-      fs.copyFileSync(path.join(process.cwd(), name), destination);
+    const read = jest.spyOn(fs, 'readFileSync');
+    let files: string[];
+    try {
+      validateRuntimeAdmission(fixture.env, fixture.root, id);
+      files = [...new Set(read.mock.calls.map(([file]) => String(file)))].filter((file) =>
+        file.includes(`${path.sep}node_modules${path.sep}`),
+      );
+    } finally {
+      read.mockRestore();
     }
-    fs.symlinkSync(
-      path.join(process.cwd(), 'node_modules'),
-      path.join(fixture.root, 'node_modules'),
+    // This is the admitted installed-source inventory, not a browser run.
+    expect(files).toHaveLength(19);
+    const button = files.find((file) => file.endsWith(`${path.sep}Button.js`))!;
+    const select = files.find((file) => file.endsWith(`${path.sep}SingleContent.js`))!;
+    expect(button).toBeDefined();
+    expect(select).toBeDefined();
+    for (const input of [...files, path.dirname(button), path.dirname(select)]) {
+      const parent = path.dirname(input);
+      const name = path.basename(input);
+      const readDirectory = fs.readdirSync;
+      let observed = false;
+      const listing = jest.spyOn(fs, 'readdirSync').mockImplementation(((directory, options) => {
+        const entries = Reflect.apply(readDirectory, fs, [directory, options]);
+        if (String(directory) !== parent) return entries;
+        observed = true;
+        // Leave lstat/realpath/readFile working. A case-insensitive lookup
+        // must still fail if the literal directory entry has another case.
+        return (entries as string[]).map((entry) => (entry === name ? entry.toUpperCase() : entry));
+      }) as typeof fs.readdirSync);
+      try {
+        expect(() => validateRuntimeAdmission(fixture.env, fixture.root, id)).toThrow(
+          'Batch allocation diagnostic contract is invalid.',
+        );
+        expect(observed).toBe(true);
+      } finally {
+        listing.mockRestore();
+      }
+    }
+    expect(validateRuntimeAdmission(fixture.env, fixture.root, id).source.mode).toBe(
+      'archived-candidate',
     );
+    expect(fs.readdirSync(fixture.outputDirectory)).toEqual([]);
+  } finally {
+    fs.rmSync(fixture.directory, { recursive: true, force: true });
+  }
+});
+
+it('binds the actual installed control files and archived source, reserves before capture, and rejects drift/production admission', () => {
+  const fixture = diagnosticRuntimeFixture();
+  try {
     const id: Identity = {
       browser: 'webkit',
       project: 'webkit',

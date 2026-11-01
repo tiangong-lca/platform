@@ -30,6 +30,19 @@ const FILES = Object.freeze([
   'tests/package-contracts/native-batch-allocation/control.spec.cjs',
   'tests/package-contracts/native-batch-allocation/config.cjs',
 ]);
+function exactInstalledPath(directory, relative) {
+  const parts = relative.split('/');
+  check(
+    parts.every((part) => part && part !== '.' && part !== '..'),
+    'source_file_invalid',
+  );
+  // Preserve anchor resolution, but never case-fold a declared relative input.
+  for (const part of parts) {
+    check(fs.readdirSync(directory).includes(part), 'source_file_invalid');
+    directory = path.join(directory, part);
+  }
+  return directory;
+}
 function fileHash(file, max = 16 * 1024 ** 2) {
   const s = fs.lstatSync(file);
   check(s.isFile() && s.size <= max, 'source_file_invalid');
@@ -119,14 +132,14 @@ function bindSources(root, head, tree) {
   ];
   const installed = {};
   for (const [name, version, dir] of packages) {
-    const file = path.join(dir, 'package.json');
+    const file = exactInstalledPath(dir, 'package.json');
     check(JSON.parse(fs.readFileSync(file)).version === version, 'installed_generation_changed');
     installed[name] = { version, packageSha256: fileHash(file), directory: fs.realpathSync(dir) };
     hashes[file] = installed[name].packageSha256;
   }
   const selected = {
     antd: [
-      'es/button/button.js',
+      'es/button/Button.js',
       'es/button/buttonHelpers.js',
       'es/alert/Alert.js',
       'es/_util/wave/index.js',
@@ -141,10 +154,17 @@ function bindSources(root, head, tree) {
   };
   for (const [name, files] of Object.entries(selected))
     for (const rel of files) {
-      const file = path.join(installed[name].directory, rel);
+      const file = exactInstalledPath(installed[name].directory, rel);
       hashes[file] = fileHash(file);
     }
   const runtime = require('./batch-allocation-native-runtime.cjs').inspectRuntimePackages(root);
+  const coreRoot = path.dirname(path.dirname(runtime.bundleFile));
+  for (const file of Object.keys(runtime.files)) {
+    const relative = path.relative(coreRoot, file);
+    if (!relative.startsWith('..' + path.sep) && !path.isAbsolute(relative))
+      exactInstalledPath(coreRoot, relative.split(path.sep).join('/'));
+    else exactInstalledPath(path.dirname(file), path.basename(file));
+  }
   Object.assign(hashes, runtime.files);
   return {
     mode: 'worktree-hashes-only',

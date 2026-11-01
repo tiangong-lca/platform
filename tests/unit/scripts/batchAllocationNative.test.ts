@@ -26,7 +26,7 @@ const {
   capacityDiagnostic,
   decodeProbeResult,
 } = require('../../../scripts/e2e/batch-allocation-native-probe.cjs');
-const { PRODUCT } = require('../../../scripts/e2e/batch-allocation-native-source.cjs');
+const { PRODUCT, bindSources } = require('../../../scripts/e2e/batch-allocation-native-source.cjs');
 const { emptyRuntimeProof } = require('../../../scripts/e2e/batch-allocation-native-runtime.cjs');
 const { Ownership } = require('../../../scripts/e2e/portal-native-resources.cjs');
 const {
@@ -560,6 +560,46 @@ describe('bounded native batch allocation policy without runtime allocation', ()
     expect(worker).toContain('previous_browser_tree_not_closed');
     expect(worker).not.toContain('waitForTimeout');
     expect(worker).not.toContain('screenshot');
+  });
+
+  it('checks every installed native source input with exact spelling before case-folded filesystem reads', () => {
+    const bind = () => bindSources(process.cwd(), 'a'.repeat(40), 'b'.repeat(40));
+    // Source hashing only: no compiler, browser cache, server or native control.
+    const binding = bind();
+    const files = Object.keys(binding.hashes).filter((file) =>
+      file.includes(`${path.sep}node_modules${path.sep}`),
+    );
+    expect(files).toHaveLength(24);
+    const button = files.find((file) => file.endsWith(`${path.sep}Button.js`))!;
+    const select = files.find((file) => file.endsWith(`${path.sep}SingleContent.js`))!;
+    const core = files.find((file) => file.endsWith(`${path.sep}coreBundle.js`))!;
+    expect(button).toBeDefined();
+    expect(select).toBeDefined();
+    expect(core).toBeDefined();
+    for (const input of [
+      ...files,
+      path.dirname(button),
+      path.dirname(select),
+      path.dirname(core),
+    ]) {
+      const parent = path.dirname(input);
+      const name = path.basename(input);
+      const readDirectory = fs.readdirSync;
+      let observed = false;
+      const listing = jest.spyOn(fs, 'readdirSync').mockImplementation(((directory, options) => {
+        const entries = Reflect.apply(readDirectory, fs, [directory, options]);
+        if (String(directory) !== parent) return entries;
+        observed = true;
+        return (entries as string[]).map((entry) => (entry === name ? entry.toUpperCase() : entry));
+      }) as typeof fs.readdirSync);
+      try {
+        expect(bind).toThrow('source_file_invalid');
+        expect(observed).toBe(true);
+      } finally {
+        listing.mockRestore();
+      }
+    }
+    expect(bind().hashes).toEqual(binding.hashes);
   });
 
   it('rejects raw-data extensions and a synthesized passing resource receipt', () => {

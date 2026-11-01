@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 3494da9730540a65beb07a63abfe97ec31814981
-lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness, pre-browser source admission and separate bounded native controls against Main 0351ddc0. Existing bootstrap, ownership, branch, product/dependency, canonical inventory/action/budget/privacy and full-gate boundaries remain intact; new runtime and delivery acceptance require their separate actual evidence.'
+lastReviewedCommit: 920a305710e5f73e109ebdf4ef001fb115b2518c
+lastReviewedNote: 'Reviewed Platform #1396 installed-source case correction after hosted 920 pre-browser ENOENT. Both admission paths require exact package-relative directory entries before canonicalization; AntD Button.js spelling and focused negative/positive source contracts are verified. Host-root aliases, regular/hash/size protections, canonical actions, privacy, dependency graph and full-gate boundaries are unchanged. Historical native349 and failed920 remain separate; new Linux qualification and delivery are pending.'
 ---
 
 # Development Bootstrap

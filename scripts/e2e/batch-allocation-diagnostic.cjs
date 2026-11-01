@@ -410,6 +410,17 @@ function regular(file, max = 8 * 1024 * 1024) {
     fail();
   return fs.readFileSync(file);
 }
+function exactInstalledPath(directory, relative) {
+  const parts = relative.split('/');
+  if (parts.some((part) => !part || part === '.' || part === '..')) fail();
+  // Check declared spelling before realpath can hide a case-folded lookup.
+  // The admitted package anchor retains the existing host/alias policy.
+  for (const part of parts) {
+    if (!fs.readdirSync(directory).includes(part)) fail();
+    directory = path.join(directory, part);
+  }
+  return directory;
+}
 function outputRoot(dir) {
   if (
     typeof dir !== 'string' ||
@@ -566,13 +577,14 @@ function inspectRuntimeBinding(env = process.env, root = process.cwd(), identity
   const antdRoot = path.dirname(req.resolve('antd/package.json'));
   const antdReq = createRequire(path.join(antdRoot, 'package.json'));
   const installed = [
-    path.join(antdRoot, 'package.json'),
-    path.join(antdRoot, 'es/button/button.js'),
-    path.join(antdRoot, 'es/button/buttonHelpers.js'),
-    path.join(antdRoot, 'es/alert/Alert.js'),
-    ...['index.js', 'useWave.js', 'WaveEffect.js', 'style.js'].map((file) =>
-      path.join(antdRoot, 'es/_util/wave', file),
-    ),
+    [antdRoot, 'package.json'],
+    [antdRoot, 'es/button/Button.js'],
+    [antdRoot, 'es/button/buttonHelpers.js'],
+    [antdRoot, 'es/alert/Alert.js'],
+    ...['index.js', 'useWave.js', 'WaveEffect.js', 'style.js'].map((file) => [
+      antdRoot,
+      `es/_util/wave/${file}`,
+    ]),
     ...[
       [
         '@rc-component/select',
@@ -583,9 +595,9 @@ function inspectRuntimeBinding(env = process.env, root = process.cwd(), identity
       ['@rc-component/table', ['es/Table.js', 'es/Body/BodyRow.js']],
     ].flatMap(([pkg, names]) => {
       const base = path.dirname(antdReq.resolve(`${pkg}/package.json`));
-      return [path.join(base, 'package.json'), ...names.map((name) => path.join(base, name))];
+      return [[base, 'package.json'], ...names.map((name) => [base, name])];
     }),
-  ].map((file) => fs.realpathSync(file));
+  ].map(([directory, relative]) => fs.realpathSync(exactInstalledPath(directory, relative)));
   source.installedControlsSha256 = hash(
     Buffer.from(
       JSON.stringify(
@@ -600,7 +612,10 @@ function inspectRuntimeBinding(env = process.env, root = process.cwd(), identity
   const testReq = createRequire(req.resolve('@playwright/test/package.json'));
   const playwrightReq = createRequire(testReq.resolve('playwright/package.json'));
   const browserFile = fs.realpathSync(
-    path.join(path.dirname(playwrightReq.resolve('playwright-core/package.json')), 'browsers.json'),
+    exactInstalledPath(
+      path.dirname(playwrightReq.resolve('playwright-core/package.json')),
+      'browsers.json',
+    ),
   );
   const browserRaw = regular(browserFile);
   files.push([browserFile, hash(browserRaw)]);

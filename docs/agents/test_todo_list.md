@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 3494da9730540a65beb07a63abfe97ec31814981
-lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness and separate bounded native controls against Main 0351ddc0. Preserve original canonical AST, inventory, actions, budgets, privacy and exact failures; source admission precedes browsers and only three browser-specific JSON diagnostics enter artifacts. Invocation ownership and installed Wave shape corrections are bound to issue evidence. Native, full/hosted, artifact and Main/Dev/root acceptance remain separate pending stages; no historical cause or product fix is claimed.'
+lastReviewedCommit: 920a305710e5f73e109ebdf4ef001fb115b2518c
+lastReviewedNote: 'Reviewed Platform #1396 installed-source case correction after hosted 920 pre-browser ENOENT. Both admission paths require exact package-relative directory entries before canonicalization; AntD Button.js spelling and focused negative/positive source contracts are verified. Host-root aliases, regular/hash/size protections, canonical actions, privacy, dependency graph and full-gate boundaries are unchanged. Historical native349 and failed920 remain separate; new Linux qualification and delivery are pending.'
 ---
 
 # Testing Execution State
