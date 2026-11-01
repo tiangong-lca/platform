@@ -22,7 +22,7 @@ const FILES = Object.freeze([
   'scripts/e2e/batch-allocation-native-source.cjs',
   'scripts/e2e/batch-allocation-native-worker.cjs',
   'scripts/e2e/batch-allocation-native-probe.cjs',
-  'scripts/e2e/batch-allocation-native-singleton.cjs',
+  'scripts/e2e/batch-allocation-native-runtime.cjs',
   'scripts/e2e/batch-allocation-diagnostic.cjs',
   'tests/e2e/i18n/batch-allocation-observer.ts',
   'tests/e2e/i18n/process-allocation.spec.ts',
@@ -144,6 +144,8 @@ function bindSources(root, head, tree) {
       const file = path.join(installed[name].directory, rel);
       hashes[file] = fileHash(file);
     }
+  const runtime = require('./batch-allocation-native-runtime.cjs').inspectRuntimePackages(root);
+  Object.assign(hashes, runtime.files);
   return {
     mode: 'worktree-hashes-only',
     head,

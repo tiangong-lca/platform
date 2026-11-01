@@ -27,6 +27,7 @@ const {
   decodeProbeResult,
 } = require('../../../scripts/e2e/batch-allocation-native-probe.cjs');
 const { PRODUCT } = require('../../../scripts/e2e/batch-allocation-native-source.cjs');
+const { emptyRuntimeProof } = require('../../../scripts/e2e/batch-allocation-native-runtime.cjs');
 const { Ownership } = require('../../../scripts/e2e/portal-native-resources.cjs');
 const {
   runControl,
@@ -218,7 +219,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
       freeBytes: LIMITS.diskBytes,
       availableMemory: LIMITS.rssBytes,
       diagnostic: null,
-      singleton: null,
+      runtime: null,
     });
     expect(capacityDiagnostic(value)).toBeNull();
     const input = {
@@ -227,7 +228,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
       freeBytes: LIMITS.diskBytes,
       availableMemory: LIMITS.rssBytes,
       diagnostic: null,
-      singleton: null,
+      runtime: null,
     };
     expect(capacityDiagnostic({ ...input, availableMemory: LIMITS.rssBytes - 1 })).toMatchObject({
       stage: 'capacity',
@@ -318,7 +319,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
           freeBytes: LIMITS.diskBytes,
           availableMemory: LIMITS.rssBytes,
           diagnostic: null,
-          singleton: null,
+          runtime: null,
         }),
         1,
         'protocol',
@@ -331,7 +332,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
           freeBytes: LIMITS.diskBytes,
           availableMemory: 1,
           diagnostic: null,
-          singleton: null,
+          runtime: null,
         }),
         0,
         'capacity',
@@ -565,7 +566,7 @@ describe('bounded native batch allocation policy without runtime allocation', ()
     expect(() => assertReceipt({ nativePass: true, rawDom: 'forbidden' })).toThrow();
     const { budget } = clock();
     const value = {
-      schema: 'platform.batch-allocation-native.v3',
+      schema: 'platform.batch-allocation-native.v4',
       limits: LIMITS,
       startMono: budget.start,
       workDeadlineMono: budget.workDeadline,
@@ -602,7 +603,7 @@ describe('bounded native batch allocation policy without runtime allocation', ()
       },
       nativePass: false,
       observedFailure: null,
-      singleton: { status: 'not-registered', inspections: 0, summary: null },
+      runtimeProof: emptyRuntimeProof(),
     };
     expect(assertReceipt(value)).toBe(value);
     for (const schema of [

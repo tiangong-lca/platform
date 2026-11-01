@@ -7,10 +7,9 @@ const { performance } = require('node:perf_hooks');
 const { check, deduplicateRoots } = require('./batch-allocation-native-policy.cjs');
 const { Ownership, readSnapshot, runtimeRemovable } = require('./portal-native-resources.cjs');
 const {
-  inspectTuple,
-  assertSummary,
-  CONDITIONS,
-} = require('./batch-allocation-native-singleton.cjs');
+  inspectRuntime,
+  assertRuntimeInspection,
+} = require('./batch-allocation-native-runtime.cjs');
 const STAGES = Object.freeze({
   root: ['resolution', 'root-limit'],
   traversal: ['read', 'entry-limit', 'entry-type', 'symlink-target', 'symlink-escape', 'deadline'],
@@ -19,7 +18,7 @@ const STAGES = Object.freeze({
   capacity: ['read', 'value', 'memory', 'charged-disk', 'free-disk'],
   parse: ['json', 'result'],
   protocol: ['helper-failure', 'helper-result', 'phase-admission'],
-  singleton: CONDITIONS,
+  runtime: ['binding', 'read', 'type', 'owner', 'race', 'count', 'unknown-link', 'unknown-socket'],
 });
 const ROOT_KINDS = Object.freeze(['source', 'browser-cache', 'output', 'unknown']);
 const ENTRY_KINDS = Object.freeze(['symlink', 'socket', 'file', 'directory', 'other', 'unknown']);
@@ -99,7 +98,7 @@ function assertProbeResult(value) {
     return value;
   }
   check(
-    exact(value, ['status', 'bytes', 'freeBytes', 'availableMemory', 'diagnostic', 'singleton']) &&
+    exact(value, ['status', 'bytes', 'freeBytes', 'availableMemory', 'diagnostic', 'runtime']) &&
       value.status === 'ok' &&
       value.diagnostic === null &&
       ['bytes', 'freeBytes', 'availableMemory'].every(
@@ -107,7 +106,7 @@ function assertProbeResult(value) {
       ),
     'resource_probe_result_invalid',
   );
-  if (value.singleton !== null) assertSummary(value.singleton);
+  if (value.runtime !== null) assertRuntimeInspection(value.runtime);
   return value;
 }
 function capacityDiagnostic(value) {
@@ -173,29 +172,29 @@ async function disk(roots, writeRoot, remainingMs, injected = {}) {
         },
       }),
     );
-  let tuple = null;
-  const seenTuple = new Set();
-  const singletonFailure = (error) => {
-    const condition = CONDITIONS.includes(error?.singletonCondition)
-      ? error.singletonCondition
-      : 'binding';
-    return diagnosticError(
-      diagnostic('singleton', condition, {
-        rootKind: 'output',
-        entryKind: ENTRY_KINDS.includes(error?.entryKind) ? error.entryKind : 'unknown',
-        error,
-      }),
+  let runtime = null;
+  const runtimeFailure = (error) =>
+    diagnosticError(
+      diagnostic(
+        'runtime',
+        STAGES.runtime.includes(error?.runtimeCondition) ? error.runtimeCondition : 'read',
+        {
+          rootKind: 'output',
+          entryKind: ENTRY_KINDS.includes(error?.entryKind) ? error.entryKind : 'unknown',
+          error,
+        },
+      ),
     );
-  };
-  if (injected.singletonBinding) {
+  if (injected.runtimeBinding) {
     try {
-      tuple = inspectTuple(injected.singletonBinding, {
-        ...injected.singletonPorts,
-        fs: io,
-        snapshot: inspect,
-      });
+      check(injected.runtimeBinding.parent === writeRoot, 'runtime_parent');
+      runtime = inspectRuntime(
+        injected.runtimeBinding,
+        io,
+        injected.uid === undefined ? process.getuid() : injected.uid,
+      );
     } catch (error) {
-      throw singletonFailure(error);
+      throw runtimeFailure(error);
     }
   }
   let admitted;
@@ -220,9 +219,22 @@ async function disk(roots, writeRoot, remainingMs, injected = {}) {
         dir === writeRoot || dir.startsWith(writeRoot + path.sep) ? 'output' : accountRootKind;
       let children;
       try {
+        if (
+          runtime &&
+          (dir === injected.runtimeBinding.path ||
+            dir.startsWith(injected.runtimeBinding.path + '/'))
+        )
+          runtime.directory(dir);
         children = io.readdirSync(dir, { withFileTypes: true });
+        if (
+          runtime &&
+          (dir === injected.runtimeBinding.path ||
+            dir.startsWith(injected.runtimeBinding.path + '/'))
+        )
+          runtime.directory(dir);
       } catch (error) {
         entryKind = 'directory';
+        if (error?.runtimeCondition) throw runtimeFailure(error);
         throw failure('traversal', 'read', error);
       }
       for (const entry of children) {
@@ -239,31 +251,20 @@ async function disk(roots, writeRoot, remainingMs, injected = {}) {
         const file = path.join(dir, entry.name);
         rootKind =
           file === writeRoot || file.startsWith(writeRoot + path.sep) ? 'output' : accountRootKind;
-        if (tuple?.entries.has(file)) {
-          if (seenTuple.has(file))
-            throw diagnosticError(
-              diagnostic('singleton', 'count', { rootKind: 'output', entryKind }),
-            );
+        if (
+          runtime &&
+          (file === injected.runtimeBinding.path ||
+            file.startsWith(injected.runtimeBinding.path + '/'))
+        ) {
           try {
-            tuple.assertEntry(file);
+            if (file === injected.runtimeBinding.path) {
+              runtime.directory(file);
+              queue.push(file);
+            } else if (runtime.entry(file) === 'directory') queue.push(file);
           } catch (error) {
-            throw singletonFailure(error);
+            throw runtimeFailure(error);
           }
-          seenTuple.add(file);
           continue;
-        }
-        if (tuple && file.startsWith(injected.singletonBinding.runtime.path + path.sep)) {
-          if (entry.isSymbolicLink())
-            throw diagnosticError(
-              diagnostic('singleton', 'unknown-link', { rootKind: 'output', entryKind: 'symlink' }),
-            );
-          if (entry.isSocket?.())
-            throw diagnosticError(
-              diagnostic('singleton', 'unknown-socket', {
-                rootKind: 'output',
-                entryKind: 'socket',
-              }),
-            );
         }
         if (entry.isSymbolicLink()) {
           let target;
@@ -354,21 +355,13 @@ async function disk(roots, writeRoot, remainingMs, injected = {}) {
     total += bytes;
     if (!Number.isSafeInteger(total)) throw failure('du', 'total');
   }
-  if (tuple) {
-    if (seenTuple.size !== 5)
-      throw diagnosticError(diagnostic('singleton', 'count', { rootKind: 'output' }));
-    let final;
+  let runtimeSummary = null;
+  if (runtime) {
     try {
-      final = inspectTuple(injected.singletonBinding, {
-        ...injected.singletonPorts,
-        fs: io,
-        snapshot: inspect,
-      });
+      runtimeSummary = runtime.finish();
     } catch (error) {
-      throw singletonFailure(error);
+      throw runtimeFailure(error);
     }
-    if (final.summary.tupleDigest !== tuple.summary.tupleDigest)
-      throw diagnosticError(diagnostic('singleton', 'race', { rootKind: 'output' }));
   }
   charged = total;
   rootKind = 'output';
@@ -397,7 +390,7 @@ async function disk(roots, writeRoot, remainingMs, injected = {}) {
     freeBytes: free,
     availableMemory: available,
     diagnostic: null,
-    singleton: tuple?.summary || null,
+    runtime: runtimeSummary,
   });
 }
 if (require.main === module) {
@@ -422,7 +415,7 @@ if (require.main === module) {
     const input = JSON.parse(process.argv[2]);
     disk(input.roots, input.writeRoot, input.remainingMs, {
       rootKinds: input.rootKinds,
-      singletonBinding: input.singletonBinding,
+      runtimeBinding: input.runtimeBinding,
     })
       .then((value) => process.stdout.write(JSON.stringify(value)))
       .catch((error) => {

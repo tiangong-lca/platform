@@ -13,9 +13,13 @@ const {
 } = require('./batch-allocation-native-policy.cjs');
 const { Ownership, readSnapshot } = require('./portal-native-resources.cjs');
 const {
-  VERSION: CHROMIUM_VERSION,
+  POLICY,
+  assertLaunchEnvironment,
+  admitDefaultBrowsers,
+  defaultLaunchOptions,
+  verifyDefaultLaunch,
   profileFromArgs,
-} = require('./batch-allocation-native-singleton.cjs');
+} = require('./batch-allocation-native-runtime.cjs');
 const {
   sha,
   fileHash,
@@ -151,24 +155,15 @@ async function closure() {
 }
 async function work() {
   const runInput = input;
+  assertLaunchEnvironment();
   const publishOwner = (token) => {
     observerOwner = token;
   };
   const head = await git(['rev-parse', 'HEAD']);
   check(head === runInput.expectedHead, 'head_changed');
   const binding = bindSources(root, head, await git(['rev-parse', 'HEAD^{tree}']));
+  const browserIdentities = admitDefaultBrowsers(root, runInput.browserCache);
   const browserTypes = req('@playwright/test');
-  check(req('@playwright/test/package.json').version === '1.62.1', 'playwright_generation');
-  const browserIdentities = {};
-  for (const name of BROWSERS) {
-    const executable = fs.realpathSync(browserTypes[name].executablePath());
-    check(executable.startsWith(runInput.browserCache + path.sep), 'browser_cache_escape');
-    browserIdentities[name] = {
-      executable,
-      sha256: fileHash(executable, 512 * 1024 ** 2),
-      cache: bindBrowserTree(runInput.browserCache, executable),
-    };
-  }
   write('source-binding.json', binding);
   write('browser-binding.json', browserIdentities);
   await checkpoint('phase', { phase: 'build' });
@@ -236,69 +231,52 @@ async function work() {
         browserIdentities[name].cache.sha256,
       'browser_cache_changed',
     );
-    browserServer = await browserTypes[name].launchServer({
-      headless: true,
-      host: '127.0.0.1',
-      executablePath: browserIdentities[name].executable,
-      timeout: Math.min(30000, runInput.workDeadline - now()),
-      env: { ...process.env },
-      downloadsPath: runInput.runtime.directories.downloads,
-      tracesDir: runInput.runtime.directories.traces,
-    });
-    check(
-      fs.realpathSync(browserServer.process().spawnfile) === browserIdentities[name].executable,
-      'executed_browser_identity',
+    browserServer = await browserTypes[name].launchServer(
+      defaultLaunchOptions(runInput.runtime, runInput.workDeadline - now()),
     );
+    const child = browserServer.process();
+    verifyDefaultLaunch(browserIdentities[name], child, runInput.browserCache);
+    const state = readSnapshot({ remainingMs: Math.min(1000, remaining()) }),
+      row = state.status === 'ok' && state.rows.get(child.pid),
+      record = owners.records.get(child.pid);
+    check(
+      row &&
+        record &&
+        row.start === record.start &&
+        row.pgid === record.pgid &&
+        row.ppid === process.pid,
+      'runtime_process_identity',
+    );
+    if (name === 'chromium') {
+      const profile = profileFromArgs(child.spawnargs, runInput.runtime.path),
+        ps = fs.lstatSync(profile);
+      check(
+        ps.isDirectory() &&
+          !ps.isSymbolicLink() &&
+          ps.dev === runInput.runtime.device &&
+          ps.uid === process.getuid() &&
+          (ps.mode & 0o7777) === 0o700,
+        'runtime_profile_identity',
+      );
+    }
+    await checkpoint('launched', {
+      browser: name,
+      binding: {
+        policy: POLICY,
+        pid: child.pid,
+        parentPid: process.pid,
+        start: row.start,
+        pgid: row.pgid,
+        executable: browserIdentities[name].executable,
+        executableSha256: browserIdentities[name].sha256,
+        cacheSha256: browserIdentities[name].cache.sha256,
+      },
+    });
     browser = await browserTypes[name].connect(browserServer.wsEndpoint(), {
       timeout: Math.min(30000, runInput.workDeadline - now()),
     });
-    if (name === 'chromium') {
-      check(browser.version() === CHROMIUM_VERSION, 'singleton_browser_version');
-      const child = browserServer.process(),
-        state = readSnapshot({ remainingMs: Math.min(1000, remaining()) }),
-        row = state.status === 'ok' && state.rows.get(child.pid),
-        record = owners.records.get(child.pid);
-      check(
-        row &&
-          record &&
-          row.start === record.start &&
-          row.pgid === record.pgid &&
-          row.ppid === process.pid,
-        'singleton_process_identity',
-      );
-      const profile = profileFromArgs(child.spawnargs, runInput.runtime.path),
-        ps = fs.lstatSync(profile),
-        rs = fs.lstatSync(runInput.runtime.path);
-      await checkpoint('singleton', {
-        binding: {
-          version: CHROMIUM_VERSION,
-          runtime: {
-            path: runInput.runtime.path,
-            parent: runInput.runtime.parent,
-            device: runInput.runtime.device,
-            inode: runInput.runtime.inode,
-            nonce: runInput.runtime.nonce,
-            uid: rs.uid,
-            mode: rs.mode & 0o7777,
-          },
-          profile: {
-            path: profile,
-            device: ps.dev,
-            inode: ps.ino,
-            uid: ps.uid,
-            mode: ps.mode & 0o7777,
-          },
-          process: {
-            pid: child.pid,
-            parentPid: process.pid,
-            start: row.start,
-            pgid: row.pgid,
-            executable: browserIdentities[name].executable,
-            executableSha256: browserIdentities[name].sha256,
-          },
-        },
-      });
-    }
+    if (name === 'chromium')
+      check(browser.version() === '151.0.7922.34', 'runtime_browser_version');
     for (const control of CONTROLS) {
       observerOwner = undefined;
       await checkpoint('begin', { browser: name, control });

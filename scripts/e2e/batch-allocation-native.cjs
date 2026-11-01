@@ -7,11 +7,17 @@ const fs = require('node:fs'),
   net = require('node:net');
 const { performance } = require('node:perf_hooks');
 const {
-  VERSION: CHROMIUM_VERSION,
-  COUNTS: SINGLETON_COUNTS,
-  assertBinding: assertSingletonBinding,
-  assertSummary: assertSingletonSummary,
-} = require('./batch-allocation-native-singleton.cjs');
+  POLICY,
+  PINS,
+  ENTRIES,
+  nativeChildEnvironment,
+  readRegular,
+  assertBrowserBindings,
+  assertLaunchBinding,
+  assertRuntimeProof,
+  emptyRuntimeProof,
+  runtimeProofComplete,
+} = require('./batch-allocation-native-runtime.cjs');
 const {
   diagnostic,
   assertDiagnostic,
@@ -36,167 +42,6 @@ const { bindSources, fileHash, sha } = require('./batch-allocation-native-source
 const root = path.resolve(__dirname, '../..');
 // Native runtime and receipt paths model a POSIX target; repository paths use host path.
 const posix = path.posix;
-const MAC_CHROMIUM_BUNDLE_ID = 'com.google.chrome.for.testing';
-// Chromium 151: chrome_main_mac.mm uses the outer app's bundle identifier;
-// file_util_posix.cc GetTempTemplate/FormatTemporaryFileName turn an empty
-// singleton prefix into <bundle-id>.XXXXXX, followed by /SingletonSocket.
-// process_singleton_posix.cc SetupSockAddr permits all 253 Mac path bytes,
-// explicitly without reserving a NUL. Other platforms have different limits.
-function macChromiumSocketPathBytes(tmp, bundleId = MAC_CHROMIUM_BUNDLE_ID) {
-  check(
-    typeof tmp === 'string' &&
-      posix.isAbsolute(tmp) &&
-      posix.resolve(tmp) === tmp &&
-      !tmp.includes('\0') &&
-      !tmp.includes('\\') &&
-      bundleId === MAC_CHROMIUM_BUNDLE_ID,
-    'mac_chromium_tmp_shape',
-  );
-  const bytes = Buffer.byteLength(posix.join(tmp, `${bundleId}.XXXXXX`, 'SingletonSocket'));
-  check(bytes <= 253, 'mac_chromium_socket_path_limit');
-  return bytes;
-}
-function macChromiumBundleIdentifier(bytes) {
-  check(Buffer.isBuffer(bytes) && bytes.length <= 128 * 1024, 'mac_chromium_bundle_shape');
-  const text = bytes.toString('utf8');
-  check(Buffer.from(text).equals(bytes), 'mac_chromium_bundle_shape');
-  const identifiers = [
-    ...text.matchAll(/<key>\s*CFBundleIdentifier\s*<\/key>\s*<string>([^<]*)<\/string>/gu),
-  ];
-  check(
-    [...text.matchAll(/<key>\s*CFBundleIdentifier\s*<\/key>/gu)].length === 1 &&
-      identifiers.length === 1 &&
-      identifiers[0][1] === MAC_CHROMIUM_BUNDLE_ID,
-    'mac_chromium_bundle_identity',
-  );
-  return identifiers[0][1];
-}
-function readNativeRegular(file, cap, io = fs) {
-  const before = io.lstatSync(file);
-  check(
-    before.isFile() &&
-      !before.isSymbolicLink() &&
-      Number.isSafeInteger(before.size) &&
-      before.size >= 0 &&
-      before.size <= cap,
-    'mac_chromium_binding_file',
-  );
-  const fd = io.openSync(file, fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0));
-  const unchanged = (stat) =>
-    stat.isFile() &&
-    stat.dev === before.dev &&
-    stat.ino === before.ino &&
-    stat.size === before.size &&
-    stat.mtimeMs === before.mtimeMs &&
-    stat.ctimeMs === before.ctimeMs;
-  try {
-    check(unchanged(io.fstatSync(fd)), 'mac_chromium_binding_changed');
-    const bytes = Buffer.alloc(before.size + 1);
-    let length = 0,
-      count;
-    while (
-      length < bytes.length &&
-      (count = io.readSync(fd, bytes, length, bytes.length - length, null))
-    )
-      length += count;
-    check(
-      length === before.size && unchanged(io.fstatSync(fd)) && unchanged(io.lstatSync(file)),
-      'mac_chromium_binding_changed',
-    );
-    return bytes.subarray(0, length);
-  } finally {
-    io.closeSync(fd);
-  }
-}
-function admitMacChromiumRuntime(runtime, cache, output, io = fs, uid = process.getuid()) {
-  const tmp = runtime.directories.tmp;
-  check(
-    tmp === posix.join(runtime.path, 'tmp') && io.realpathSync(tmp) === tmp,
-    'mac_chromium_tmp_shape',
-  );
-  const stat = io.lstatSync(tmp);
-  check(
-    stat.isDirectory() &&
-      !stat.isSymbolicLink() &&
-      stat.dev === runtime.device &&
-      stat.uid === uid &&
-      (stat.mode & 0o7777) === 0o700,
-    'mac_chromium_tmp_identity',
-  );
-  // The worker has already bound the selected executable and complete cache
-  // tree. Inspect that published binding before acknowledging browser launch;
-  // do not import Playwright or hash a browser binary on the supervisor loop.
-  const binding = JSON.parse(
-    readNativeRegular(posix.join(output, 'browser-binding.json'), 8 * 1024 ** 2, io),
-  );
-  const selected = binding?.chromium,
-    executable = selected?.executable;
-  check(
-    typeof executable === 'string' &&
-      executable.length <= 4096 &&
-      posix.isAbsolute(executable) &&
-      posix.resolve(executable) === executable &&
-      executable.startsWith(cache + posix.sep) &&
-      !executable.includes('\0') &&
-      !executable.includes('\\') &&
-      /^[a-f0-9]{64}$/u.test(selected.sha256) &&
-      selected.cache?.directory === posix.join(cache, 'chromium-1234') &&
-      selected.cache.files &&
-      typeof selected.cache.files === 'object' &&
-      sha(JSON.stringify(selected.cache.files)) === selected.cache.sha256,
-    'mac_chromium_bundle_identity',
-  );
-  const contents = posix.dirname(posix.dirname(executable));
-  check(
-    executable.startsWith(selected.cache.directory + posix.sep) &&
-      io.realpathSync(executable) === executable &&
-      posix.basename(executable) === 'Google Chrome for Testing' &&
-      posix.basename(posix.dirname(executable)) === 'MacOS' &&
-      posix.basename(contents) === 'Contents' &&
-      posix.basename(posix.dirname(contents)) === 'Google Chrome for Testing.app',
-    'mac_chromium_bundle_identity',
-  );
-  const plist = posix.join(contents, 'Info.plist'),
-    executableMeta = selected.cache.files[executable],
-    plistMeta = selected.cache.files[plist],
-    executableStat = io.lstatSync(executable);
-  check(
-    executableMeta?.type === 'file' &&
-      executableMeta.sha256 === selected.sha256 &&
-      executableStat.isFile() &&
-      !executableStat.isSymbolicLink() &&
-      executableStat.size === executableMeta.bytes &&
-      executableStat.size <= 512 * 1024 ** 2 &&
-      (executableStat.mode & 0o777) === executableMeta.mode &&
-      plistMeta?.type === 'file' &&
-      Number.isSafeInteger(plistMeta.bytes) &&
-      plistMeta.bytes <= 128 * 1024 &&
-      /^[a-f0-9]{64}$/u.test(plistMeta.sha256),
-    'mac_chromium_bundle_binding',
-  );
-  const bytes = readNativeRegular(plist, 128 * 1024, io);
-  check(
-    bytes.length === plistMeta.bytes && sha(bytes) === plistMeta.sha256,
-    'mac_chromium_bundle_binding',
-  );
-  macChromiumSocketPathBytes(tmp, macChromiumBundleIdentifier(bytes));
-}
-function nativeChildEnvironment(runtime, cache, host = process.env, platform = process.platform) {
-  if (!runtime) return { ...host };
-  const env = {
-    ...host,
-    ...runtime.env,
-    PLAYWRIGHT_BROWSERS_PATH: cache,
-    GOMAXPROCS: '2',
-    UV_THREADPOOL_SIZE: '2',
-    OMP_NUM_THREADS: '2',
-  };
-  if (platform === 'darwin') {
-    check(runtime.directories.tmp === posix.join(runtime.path, 'tmp'), 'mac_chromium_tmp_shape');
-    env.MAC_CHROMIUM_TMPDIR = runtime.directories.tmp;
-  }
-  return env;
-}
 function parse(args) {
   const result = { execute: false };
   for (let i = 0; i < args.length; i++) {
@@ -240,21 +85,13 @@ function plan(options) {
     source: bindSources(root, git('HEAD'), git('HEAD^{tree}')),
     limits: LIMITS,
     browserExecution: {
-      chromium: 'explicit-full-chrome-for-testing; supplemental-component-proof',
-      canonical: 'unchanged-default-headless-shell; complete-linux-99-case-qualification-required',
+      policy: POLICY,
+      entries: ENTRIES,
+      resolverPins: PINS,
+      launch: 'default-headless-without-channel-or-executable-override',
+      canonical: 'same-default-selection; separate-complete-linux-99-case-qualification-required',
+      runtimeEntries: 'regular-files-and-directories-only',
       macTemporaryDirectory: 'child-only-MAC_CHROMIUM_TMPDIR=owned-canonical-private-runtime/tmp',
-      macSocketPath: {
-        maximumBytes: 253,
-        temporaryName: `${MAC_CHROMIUM_BUNDLE_ID}.XXXXXX`,
-        endpoint: 'SingletonSocket',
-      },
-    },
-    singletonPolicy: {
-      browser: 'chromium',
-      version: CHROMIUM_VERSION,
-      counts: SINGLETON_COUNTS,
-      linkBytes: { lock: 512, cookie: 20, socket: 4096 },
-      scope: 'verified-disposable-runtime-only',
     },
     schedule: BROWSERS.flatMap((browser) => CONTROLS.map((control) => ({ browser, control }))),
     borrowedRetainedRoots: [root, browserCache()],
@@ -318,7 +155,7 @@ const list = (value, max) =>
 const uint = (value) => Number.isSafeInteger(value) && value >= 0;
 const PHASES = Object.freeze([
   'preparation',
-  'singleton-register',
+  'browser-register',
   'build',
   'server',
   'browser',
@@ -357,11 +194,11 @@ function assertReceipt(value) {
     'cleanup',
     'nativePass',
     'observedFailure',
-    'singleton',
+    'runtimeProof',
   ];
   check(exact(value, keys), 'resource_receipt_invalid');
   check(
-    value.schema === 'platform.batch-allocation-native.v3' &&
+    value.schema === 'platform.batch-allocation-native.v4' &&
       exact(value.limits, Object.keys(LIMITS)) &&
       Object.keys(LIMITS).every((k) => value.limits[k] === LIMITS[k]) &&
       [value.startMono, value.workDeadlineMono, value.hardDeadlineMono, value.elapsedMs].every(
@@ -510,29 +347,11 @@ function assertReceipt(value) {
     );
     assertDiagnostic(value.observedFailure.diagnostic);
   }
-  check(
-    exact(value.singleton, ['status', 'inspections', 'summary']) &&
-      ['not-registered', 'registered', 'verified', 'closed', 'invalid'].includes(
-        value.singleton.status,
-      ) &&
-      uint(value.singleton.inspections) &&
-      value.singleton.inspections <= 512,
-    'singleton_receipt_invalid',
-  );
-  if (value.singleton.summary !== null) assertSingletonSummary(value.singleton.summary);
-  check(
-    value.singleton.summary === null
-      ? value.singleton.inspections === 0 &&
-          !['verified', 'closed'].includes(value.singleton.status)
-      : value.singleton.inspections > 0 &&
-          !['not-registered', 'registered'].includes(value.singleton.status),
-    'singleton_receipt_invalid',
-  );
+  assertRuntimeProof(value.runtimeProof);
   check(
     !value.nativePass ||
       (c.verified &&
-        value.singleton.status === 'closed' &&
-        value.singleton.summary !== null &&
+        runtimeProofComplete(value.runtimeProof) &&
         value.observedFailure === null &&
         value.withinDeadline &&
         value.capacity === 'verified' &&
@@ -540,6 +359,20 @@ function assertReceipt(value) {
         !value.failures.length &&
         value.cases.every((item) => item.outcome === 'passed') &&
         value.ownership.every((item) => item.state === 'closed' && !item.captureUnknown) &&
+        value.runtimeProof.browsers.every(
+          (b) =>
+            value.ownership.some(
+              (o) =>
+                o.pid === b.owner.pid &&
+                o.start === b.owner.start &&
+                o.pgid === b.owner.pgid &&
+                o.state === 'closed' &&
+                !o.captureUnknown,
+            ) &&
+            value.ownership.some(
+              (o) => o.pid === b.owner.parentPid && o.state === 'closed' && !o.captureUnknown,
+            ),
+        ) &&
         value.samples.process > 0 &&
         value.samples.disk > 0 &&
         value.samples.peakRssBytes <= LIMITS.rssBytes &&
@@ -576,7 +409,8 @@ async function execute(options) {
     stopping = false,
     publication = true;
   let activePhase = 'preparation';
-  let singletonBinding = null;
+  let browserBindings = null;
+  let browserBindingSha256 = null;
   let browserIndex = 0,
     browserOpen = false;
   const failures = [],
@@ -585,7 +419,7 @@ async function execute(options) {
       if (failures.length < 128 && !failures.includes(code)) failures.push(code);
     };
   const receipt = {
-    schema: 'platform.batch-allocation-native.v3',
+    schema: 'platform.batch-allocation-native.v4',
     limits: LIMITS,
     startMono: budget.start,
     workDeadlineMono: budget.workDeadline,
@@ -613,7 +447,7 @@ async function execute(options) {
     cleanup: { verified: false, runtimeRetained: true, workerExited: false, portClosed: false },
     nativePass: false,
     observedFailure: null,
-    singleton: { status: 'not-registered', inspections: 0, summary: null },
+    runtimeProof: emptyRuntimeProof(),
   };
   const remaining = () => budget.remaining(true);
   const snapshot = () => readSnapshot({ remainingMs: Math.min(1000, remaining()) });
@@ -721,7 +555,15 @@ async function execute(options) {
                   ? 'output'
                   : 'unknown',
           ),
-          singletonBinding,
+          runtimeBinding: runtime
+            ? {
+                path: runtime.path,
+                parent: runtime.parent,
+                device: runtime.device,
+                inode: runtime.inode,
+                nonce: runtime.nonce,
+              }
+            : null,
           writeRoot: output,
           remainingMs: Math.min(LIMITS.diskProbeMs, budget.remaining()),
         }),
@@ -747,7 +589,6 @@ async function execute(options) {
             try {
               assertProbeResult(candidate);
               recordObservedFailure(receipt, failingPhase, candidate.diagnostic);
-              if (candidate.diagnostic.stage === 'singleton') receipt.singleton.status = 'invalid';
             } catch {
               recordObservedFailure(receipt, failingPhase, diagnostic('parse', 'result'));
             }
@@ -764,20 +605,17 @@ async function execute(options) {
         clearTimeout(timer);
         try {
           const value = decodeProbeResult(data, code);
-          if (value.singleton !== null) {
+          if (runtime) {
             check(
-              singletonBinding &&
-                value.singleton.owner.pid === singletonBinding.process.pid &&
-                value.singleton.owner.start === singletonBinding.process.start &&
-                value.singleton.owner.pgid === singletonBinding.process.pgid &&
-                value.singleton.owner.executableSha256 ===
-                  singletonBinding.process.executableSha256,
-              'singleton_probe_owner',
+              value.runtime !== null &&
+                value.runtime.device === runtime.device &&
+                value.runtime.inode === runtime.inode &&
+                value.runtime.uid === process.getuid(),
+              'runtime_probe_identity',
             );
-            receipt.singleton.inspections++;
-            receipt.singleton.status = 'verified';
-            receipt.singleton.summary = value.singleton;
-          } else check(singletonBinding === null, 'singleton_probe_missing');
+            receipt.runtimeProof.inspections++;
+            receipt.runtimeProof.lastInspection = value.runtime;
+          } else check(value.runtime === null, 'runtime_probe_unexpected');
           receipt.samples.maxDiskAgeMs = Math.max(
             receipt.samples.maxDiskAgeMs,
             budget.diskAt === null ? 0 : budget.now() - budget.diskAt,
@@ -797,7 +635,6 @@ async function execute(options) {
             observed = diagnostic('protocol', 'helper-failure');
           }
           recordObservedFailure(receipt, failingPhase, observed);
-          if (observed.stage === 'singleton') receipt.singleton.status = 'invalid';
           stop('disk-or-capacity-unknown');
           reject(Error('disk_unknown'));
         }
@@ -940,7 +777,7 @@ async function execute(options) {
           }
           return;
         }
-        if (!['phase', 'begin', 'ownership', 'singleton'].includes(message.type)) {
+        if (!['phase', 'begin', 'ownership', 'launched'].includes(message.type)) {
           stop('worker-protocol-invalid');
           return;
         }
@@ -956,73 +793,79 @@ async function execute(options) {
           try {
             check(!stopping, 'stopping');
             activePhase =
-              message.type === 'singleton'
-                ? 'singleton-register'
+              message.type === 'launched'
+                ? 'browser-register'
                 : message.type === 'begin'
                   ? 'begin'
                   : PHASES.includes(message.phase)
                     ? message.phase
                     : 'unknown';
             sampleProcess();
-            if (message.type === 'singleton') {
-              assertSingletonBinding(message.binding);
+            if (message.type === 'phase' && ['build', 'browser'].includes(message.phase)) {
+              const bytes = readRegular(path.join(output, 'browser-binding.json'), 8 * 1024 ** 2);
+              const binding = assertBrowserBindings(JSON.parse(bytes), browserCache());
+              if (browserBindingSha256 === null) {
+                browserBindingSha256 = sha(bytes);
+                browserBindings = binding;
+                receipt.runtimeProof.resolver = binding.resolver;
+                for (const item of receipt.runtimeProof.browsers)
+                  Object.assign(item, {
+                    status: 'admitted',
+                    expectedSha256: binding[item.browser].sha256,
+                    cacheSha256: binding[item.browser].cache.sha256,
+                  });
+              } else check(sha(bytes) === browserBindingSha256, 'runtime_binding_changed');
+            }
+
+            if (message.type === 'launched') {
               check(
-                browserOpen && BROWSERS[browserIndex] === 'chromium' && singletonBinding === null,
-                'singleton_registration',
+                browserOpen && message.browser === BROWSERS[browserIndex] && browserBindings,
+                'runtime_browser_registration',
               );
-              const candidate = message.binding,
-                proof = candidate.process,
-                registered = registry.records.get(proof.pid),
+              const expected = browserBindings[message.browser],
+                proof = assertLaunchBinding(message.binding),
+                recorded = receipt.runtimeProof.browsers[browserIndex],
                 view = snapshot(),
-                row = view.status === 'ok' && view.rows.get(proof.pid);
-              const expected = JSON.parse(
-                fs.readFileSync(path.join(output, 'browser-binding.json'), 'utf8'),
-              ).chromium;
+                row = view.status === 'ok' && view.rows.get(proof.pid),
+                registered = registry.records.get(proof.pid);
               check(
-                registered?.state === 'live' &&
+                recorded.status === 'admitted' &&
+                  proof.policy === POLICY &&
+                  proof.executable === expected.executable &&
+                  proof.executableSha256 === expected.sha256 &&
+                  proof.cacheSha256 === expected.cache.sha256 &&
+                  registered?.state === 'live' &&
                   registered.start === proof.start &&
                   registered.pgid === proof.pgid &&
                   row &&
                   row.start === proof.start &&
                   row.pgid === proof.pgid &&
                   row.ppid === worker.pid &&
-                  proof.parentPid === worker.pid &&
-                  proof.executable === expected.executable &&
-                  proof.executableSha256 === expected.sha256,
-                'singleton_process_registration',
+                  proof.parentPid === worker.pid,
+                'runtime_browser_identity',
               );
-              check(
-                candidate.runtime.path === runtime.path &&
-                  candidate.runtime.parent === runtime.parent &&
-                  candidate.runtime.device === runtime.device &&
-                  candidate.runtime.inode === runtime.inode &&
-                  candidate.runtime.nonce === runtime.nonce &&
-                  candidate.runtime.uid === process.getuid() &&
-                  candidate.runtime.mode === 0o700,
-                'singleton_runtime_registration',
-              );
-              singletonBinding = candidate;
-              receipt.singleton.status = 'registered';
-            }
-            if (
-              message.type === 'phase' &&
-              message.phase === 'browser-closed' &&
-              message.browser === 'chromium'
-            ) {
-              const state = registry.refresh(snapshot());
-              check(
-                singletonBinding &&
-                  state.status === 'ok' &&
-                  state.live.every((item) => item.pid === worker.pid),
-                'singleton_browser_closure',
-              );
-              singletonBinding = null;
-              receipt.singleton.status = 'closed';
+              Object.assign(recorded, {
+                status: 'launched',
+                observedSha256: proof.executableSha256,
+                owner: {
+                  pid: proof.pid,
+                  parentPid: proof.parentPid,
+                  start: proof.start,
+                  pgid: proof.pgid,
+                },
+              });
             }
             await disk();
             budget.freshness();
-            if (message.type === 'begin') budget.begin(message.browser, message.control);
-            else if (message.type !== 'singleton') {
+            if (message.type === 'begin') {
+              check(
+                browserOpen &&
+                  message.browser === BROWSERS[browserIndex] &&
+                  receipt.runtimeProof.browsers[browserIndex].status === 'launched',
+                'runtime_control_before_launch',
+              );
+              budget.begin(message.browser, message.control);
+            } else if (message.type !== 'launched') {
               check(
                 [
                   'build',
@@ -1041,8 +884,6 @@ async function execute(options) {
                     budget.remaining() >= LIMITS.caseMs + 1000,
                   'browser_budget_or_order',
                 );
-                if (process.platform === 'darwin' && message.browser === 'chromium')
-                  admitMacChromiumRuntime(runtime, browserCache(), output);
                 browserOpen = true;
               }
               if (message.phase === 'browser-closed') {
@@ -1054,13 +895,18 @@ async function execute(options) {
                     state.live.every((item) => item.pid === worker.pid),
                   'previous_browser_tree_not_closed',
                 );
+                check(
+                  receipt.runtimeProof.browsers[browserIndex].status === 'launched',
+                  'runtime_browser_not_registered',
+                );
+                receipt.runtimeProof.browsers[browserIndex].status = 'closed';
                 browserOpen = false;
                 browserIndex++;
               }
             }
             write('checkpoint.json', {
               phase: activePhase,
-              singleton: receipt.singleton,
+              runtimeProof: receipt.runtimeProof,
               cases: budget.cases,
               samples: receipt.samples,
               ownership: registry.evidence(),
@@ -1273,7 +1119,4 @@ module.exports = {
   execute,
   recordObservedFailure,
   nativeChildEnvironment,
-  macChromiumSocketPathBytes,
-  macChromiumBundleIdentifier,
-  admitMacChromiumRuntime,
 };
