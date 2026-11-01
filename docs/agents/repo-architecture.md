@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: e98d1d631d9895c49f0d6c02bed39206ac28df77
-lastReviewedNote: 'Reviewed Platform #1383 stateful native control and equivalent mobile action extraction against failed e98 source. Worktree component evidence omits services, routing and predecessor history; the closing popup is a controlled stimulus. Canonical inventory, timeouts, retries, privacy, dependency and Portal patch contracts remain; no historical cause, product repair or qualification is claimed.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: 68885c99d0a7e4f67eb6c421fcbdb9736d991d0a
+lastReviewedNote: 'Documented the historical Process predecessor in #1398, including how editor saves distinguish it from refreshable references.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -307,6 +307,8 @@ TIDAS Task Center retains backend start, finish and update timestamps through li
 ## ILCD-compatible editor data boundaries
 
 The seven dataset serializers preserve singleton and repeated classification systems, including system name, URI and raw named classes. Unnamed classifications retain the existing taxonomy selector. Process parameters, sublocations and completeness entries use absolute repeated field paths; Flow locations and LCI approaches accept multiple selections. Form saves read the complete Ant Design store (`getFieldsValue(true)`) so fields without a mounted editor remain present.
+
+A Process successor keeps its stored `administrativeInformation.publicationAndOwnership["common:referenceToPrecedingDataSetVersion"]` through hydration, Save, Data Check and the save before review submission. Reference refresh and language normalization leave this historical snapshot intact, including its singleton or ordered-array shape, UUID, type, preceding version, URI, sub-references and multilingual captions. Missing or empty legacy selectors stay absent. Other references to the same Process can still refresh.
 
 LifecycleModel graph saves merge stored instance metadata by internal ID before replacing graph-owned references and connections. Group declarations, instance parameters, groups and scaling fields remain data. Multiple Process reference-flow identities survive serialization; the existing exactly-one review and calculation policy remains consumer policy. Required documentation fields remain unchanged.
 

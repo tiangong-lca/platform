@@ -522,6 +522,144 @@ describe('ProcessEdit component', () => {
     });
   });
 
+  describe('exact Process predecessor preservation', () => {
+    const precedingKey = 'common:referenceToPrecedingDataSetVersion';
+    const precedingReference = {
+      '@refObjectId': '11111111-1111-4111-8111-111111111111',
+      '@type': 'process data set',
+      '@uri': '../processes/11111111-1111-4111-8111-111111111111_01.00.000.xml',
+      '@version': '01.00.000',
+      'common:shortDescription': [
+        { '@xml:lang': 'en', '#text': 'Historical predecessor description' },
+        { '@xml:lang': 'zh', '#text': '历史前序数据集说明' },
+      ],
+    };
+    const refreshedDescription = [{ '@xml:lang': 'en', '#text': 'Current referenced name' }];
+    const referenceUpdate = {
+      id: precedingReference['@refObjectId'],
+      type: precedingReference['@type'],
+      currentVersion: precedingReference['@version'],
+      newVersion: '02.00.000',
+      newDescription: refreshedDescription,
+    };
+
+    it.each([
+      ['singleton', 'Save'],
+      ['array', 'Data Check'],
+      ['singleton', 'Submit for Review'],
+      ['array', 'update'],
+      ['singleton', 'keep'],
+      ['array', 'no-new-version'],
+    ])('preserves %s predecessor metadata through %s', async (shape, action) => {
+      const predecessor =
+        shape === 'array' ? [JSON.parse(JSON.stringify(precedingReference))] : precedingReference;
+      const dataset = {
+        ...processDataset,
+        processInformation: {
+          ...processDataset.processInformation,
+          technology: {
+            referenceToIncludedProcesses: [JSON.parse(JSON.stringify(precedingReference))],
+          },
+        },
+        administrativeInformation: {
+          publicationAndOwnership: {
+            'common:dataSetVersion': '01.01.000',
+            [precedingKey]: predecessor,
+          },
+        },
+      };
+      mockGetProcessDetail.mockResolvedValue({
+        data: { json: { processDataSet: dataset }, stateCode: 10, ruleVerification: true },
+      });
+      mockGenProcessFromData.mockImplementation((data) => JSON.parse(JSON.stringify(data)));
+      mockUpdateRefsData.mockImplementation(
+        jest.requireActual('@/pages/Utils/updateReference').updateRefsData,
+      );
+      mockGetRefsOfCurrentVersion.mockResolvedValue({ oldRefs: [referenceUpdate] });
+      mockGetRefsOfNewVersion.mockResolvedValue({
+        oldRefs: [referenceUpdate],
+        newRefs: action === 'no-new-version' ? [] : [referenceUpdate],
+      });
+      mockUpdateProcess.mockImplementation(async (_id, _version, data) => ({
+        data: [
+          {
+            id: baseProps.id,
+            version: baseProps.version,
+            json: { processDataSet: JSON.parse(JSON.stringify(data)) },
+            state_code: 10,
+            rule_verification: true,
+          },
+        ],
+      }));
+
+      render(<ProcessEdit {...baseProps} />);
+      fireEvent.click(screen.getByRole('button'));
+      await waitFor(() =>
+        expect(
+          proFormApi?.getFieldValue(['administrativeInformation', 'publicationAndOwnership']),
+        ).toEqual(dataset.administrativeInformation.publicationAndOwnership),
+      );
+      await act(async () => {
+        latestProcessFormProps.onTabChange('administrativeInformation');
+      });
+      await act(async () => {
+        proFormApi.setFieldValue(
+          ['administrativeInformation', 'publicationAndOwnership', 'common:registrationNumber'],
+          'synthetic administrative edit',
+        );
+        triggerValuesChange?.({}, proFormApi.getFieldsValue());
+      });
+
+      const manualRefresh = ['update', 'keep', 'no-new-version'].includes(action);
+      if (manualRefresh) {
+        fireEvent.click(screen.getByRole('button', { name: 'Update Reference' }));
+        if (action !== 'no-new-version') {
+          await screen.findByTestId('refs-drawer');
+          fireEvent.click(
+            screen.getByRole('button', {
+              name: action === 'update' ? 'update-latest' : 'keep-current',
+            }),
+          );
+        }
+      } else {
+        fireEvent.click(screen.getByRole('button', { name: action }));
+      }
+      const completed = manualRefresh ? mockUpdateRefsData : mockUpdateProcess;
+      await waitFor(() => expect(completed).toHaveBeenCalled());
+
+      const result = manualRefresh
+        ? proFormApi.getFieldsValue()
+        : mockUpdateProcess.mock.calls[0][2];
+      expect(result.administrativeInformation.publicationAndOwnership[precedingKey]).toEqual(
+        predecessor,
+      );
+      expect(
+        result.administrativeInformation.publicationAndOwnership['common:registrationNumber'],
+      ).toBe('synthetic administrative edit');
+      expect(result.processInformation.technology.referenceToIncludedProcesses[0]).toEqual({
+        ...precedingReference,
+        '@version':
+          action === 'update' ? referenceUpdate.newVersion : precedingReference['@version'],
+        'common:shortDescription': refreshedDescription,
+      });
+      const discovery = manualRefresh ? mockGetRefsOfNewVersion : mockGetRefsOfCurrentVersion;
+      expect(
+        discovery.mock.calls[0][0].administrativeInformation.publicationAndOwnership,
+      ).not.toHaveProperty(precedingKey);
+      const checksData = action === 'Data Check' || action === 'Submit for Review';
+      await waitFor(() => {
+        const checkedPredecessors = mockValidateDatasetWithSdk.mock.calls.map(
+          ([, json]) =>
+            json.processDataSet.administrativeInformation.publicationAndOwnership[precedingKey],
+        );
+        expect(checkedPredecessors).toEqual(checksData ? [predecessor] : []);
+        expect(mockSubmitDatasetReview).toHaveBeenCalledTimes(
+          action === 'Submit for Review' ? 1 : 0,
+        );
+      });
+    });
+  });
+
   it.each(['exchanges', 'processInformation'])(
     'persists edited input/output amounts and derivation status when saving from %s',
     async (saveTab) => {

@@ -127,6 +127,42 @@ const cloneProcessData = (data?: FormProcessWithDatas) => {
   return JSON.parse(JSON.stringify(data)) as FormProcessWithDatas;
 };
 
+const precedingReferenceKey = 'common:referenceToPrecedingDataSetVersion';
+
+const withoutProcessPrecedingReference = (data: FormProcessWithDatas) => {
+  if (!data.administrativeInformation?.publicationAndOwnership) return data;
+
+  const publicationAndOwnership = { ...data.administrativeInformation.publicationAndOwnership };
+  delete publicationAndOwnership[precedingReferenceKey];
+  return {
+    ...data,
+    administrativeInformation: { ...data.administrativeInformation, publicationAndOwnership },
+  };
+};
+
+const updateProcessRefsData = (
+  data: FormProcessWithDatas,
+  refs: RefVersionItem[],
+  updateVersion: boolean,
+): FormProcessWithDatas => {
+  // A predecessor is historical provenance. Refresh ordinary references separately,
+  // including references to that same Process used elsewhere in the dataset.
+  const updatedData = updateRefsData(withoutProcessPrecedingReference(data), refs, updateVersion);
+  const predecessor =
+    data.administrativeInformation?.publicationAndOwnership?.[precedingReferenceKey];
+  if (predecessor === undefined) return updatedData;
+  return {
+    ...updatedData,
+    administrativeInformation: {
+      ...updatedData.administrativeInformation,
+      publicationAndOwnership: {
+        ...updatedData.administrativeInformation?.publicationAndOwnership,
+        [precedingReferenceKey]: predecessor,
+      },
+    },
+  };
+};
+
 export const normalizeQuantitativeReferenceSelection = (
   exchangeData: ProcessExchangeData[],
   selectedExchangeInternalId?: string,
@@ -444,7 +480,7 @@ const ProcessEdit: FC<Props> = ({
     if (!currentData) {
       return;
     }
-    const res = updateRefsData(currentData, newRefs, true) as FormProcessWithDatas;
+    const res = updateProcessRefsData(currentData, newRefs, true);
     const nextExchangeDataSource = await updateExchangeDataSource(
       (res?.exchanges?.exchange ?? []) as ProcessExchangeData[],
     );
@@ -460,7 +496,7 @@ const ProcessEdit: FC<Props> = ({
     if (!currentData) {
       return;
     }
-    const res = updateRefsData(currentData, refsOldList, false) as FormProcessWithDatas;
+    const res = updateProcessRefsData(currentData, refsOldList, false);
     const nextExchangeDataSource = await updateExchangeDataSource(
       (res?.exchanges?.exchange ?? []) as ProcessExchangeData[],
     );
@@ -478,14 +514,16 @@ const ProcessEdit: FC<Props> = ({
       setRefsLoading(false);
       return;
     }
-    const { newRefs, oldRefs } = await getRefsOfNewVersion(currentData);
+    const { newRefs, oldRefs } = await getRefsOfNewVersion(
+      withoutProcessPrecedingReference(currentData),
+    );
     setRefsNewList(newRefs);
     setRefsOldList(oldRefs);
     setRefsLoading(false);
     if (newRefs && newRefs.length) {
       setRefsDrawerVisible(true);
     } else {
-      const res = updateRefsData(currentData, oldRefs, false) as FormProcessWithDatas;
+      const res = updateProcessRefsData(currentData, oldRefs, false);
       const nextExchangeDataSource = await updateExchangeDataSource(
         (res?.exchanges?.exchange ?? []) as ProcessExchangeData[],
       );
@@ -498,8 +536,10 @@ const ProcessEdit: FC<Props> = ({
 
   const updateReferenceDescription = async (processData: FormProcessWithDatas) => {
     const currentData = cloneProcessData(processData) as FormProcessWithDatas;
-    const { oldRefs } = await getRefsOfCurrentVersion(currentData);
-    const res = updateRefsData(currentData, oldRefs, false) as FormProcessWithDatas;
+    const { oldRefs } = await getRefsOfCurrentVersion(
+      withoutProcessPrecedingReference(currentData),
+    );
+    const res = updateProcessRefsData(currentData, oldRefs, false);
     const nextExchangeDataSource = await updateExchangeDataSource(
       (res?.exchanges?.exchange ?? []) as ProcessExchangeData[],
     );

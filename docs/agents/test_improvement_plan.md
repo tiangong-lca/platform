@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 162c450f3ee98d31285a21388589bb7e30da17c7
-lastReviewedNote: 'Reviewed Platform #1383 native locale audit/provenance regeneration after the equivalent mobile action extraction. The c26 baseline, catalogs, message IDs and assertions remain unchanged; only callsite coordinates, source census/input digest and dependent digest bindings refresh. Native diagnostic/runtime bytes remain retained; no canonical qualification is claimed.'
+lastReviewedCommit: 68885c99d0a7e4f67eb6c421fcbdb9736d991d0a
+lastReviewedNote: 'Reviewed #1398 against the test strategy. The regression uses the existing component and service test layers.'
 ---
 
 # Testing Strategy
