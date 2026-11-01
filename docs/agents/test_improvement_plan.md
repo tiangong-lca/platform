@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 9b2fda9b1aa00f2989b514ea42c2d751348bfc69
-lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
+lastReviewedCommit: 920a305710e5f73e109ebdf4ef001fb115b2518c
+lastReviewedNote: 'Reviewed Platform #1396 installed-source case correction after hosted 920 pre-browser ENOENT. Both admission paths require exact package-relative directory entries before canonicalization; AntD Button.js spelling and focused negative/positive source contracts are verified. Host-root aliases, regular/hash/size protections, canonical actions, privacy, dependency graph and full-gate boundaries are unchanged. Historical native349 and failed920 remain separate; new Linux qualification and delivery are pending.'
 ---
 
 # Testing Strategy

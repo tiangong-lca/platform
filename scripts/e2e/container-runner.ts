@@ -27,6 +27,7 @@ import {
 } from './qualification-closure.cjs';
 import { verifyMaintainedPatches, type MaintainedPatchEntry } from './maintained-patches.cjs';
 import { handoffOutputOwnership } from './output-ownership.cjs';
+import { validateRuntimeAdmission } from './batch-allocation-diagnostic.cjs';
 
 type CheckStatus = 'failed' | 'passed' | 'skipped';
 
@@ -618,6 +619,19 @@ async function main(): Promise<number> {
       return { mode: outputStat.mode & 0o777, writable: true };
     });
     await check('candidate.identity', () => verifyCandidateIdentity(manifest!, environment));
+    if (process.env.E2E_QUALIFICATION === 'true') {
+      await check('candidate.batch-allocation-diagnostic', async () => {
+        for (const browser of PLAYWRIGHT_BROWSER_PROJECTS) {
+          validateRuntimeAdmission(process.env, process.cwd(), {
+            browser,
+            project: browser,
+            scope: 'qualification-diagnostic-only',
+            control: null,
+          });
+        }
+        return { admittedBrowsers: [...PLAYWRIGHT_BROWSER_PROJECTS] };
+      });
+    }
     await check('environment.browser-launch', launchEveryBrowser);
 
     phase = 'candidate-server';
