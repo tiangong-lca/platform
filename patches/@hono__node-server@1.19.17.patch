@@ -1,0 +1,76 @@
+diff --git a/README.md b/README.md
+index af0e9311a077b9b72fa2e368fa837598b8b36aaa..99624cede7fd6f667f78b4ce7bc20e8443de24f6 100644
+--- a/README.md
++++ b/README.md
+@@ -193,6 +193,17 @@ Notice that `root` here is not relative to `src/index.ts`, rather to `my-hono-pr
+ 
+ ### Options
+ 
++#### `allowPercentInPath`
++
++By default, `serveStatic` skips request paths that still contain `%` after routing. This prevents a second decoding step from serving a file under a different path than the one checked by route middleware. Set `allowPercentInPath: true` to keep the previous behavior when serving files whose names contain percent signs.
++
++If you restrict access to only some paths under `root` (for example, `/static/admin/*`), enabling this option may let requests bypass those restrictions. Apply access control to the same route pattern as `serveStatic` (for example, `/static/*`), before the static middleware:
++
++```ts
++app.use('/static/*', authMiddleware)
++app.use('/static/*', serveStatic({ root: './static', allowPercentInPath: true }))
++```
++
+ #### `rewriteRequestPath`
+ 
+ If you want to serve files in `./.foojs` with the request path `/__foo/*`, you can write like the following.
+diff --git a/dist/serve-static.d.mts b/dist/serve-static.d.mts
+index 9a1c83d6850162aeca9e8617c9bce9ff52f41026..5fc5bb304aa07e955b4b8329114de84c69067272 100644
+--- a/dist/serve-static.d.mts
++++ b/dist/serve-static.d.mts
+@@ -8,6 +8,8 @@ type ServeStaticOptions<E extends Env = Env> = {
+     path?: string;
+     index?: string;
+     precompressed?: boolean;
++    /** Allow percent signs in the routed request path. Defaults to false. */
++    allowPercentInPath?: boolean;
+     rewriteRequestPath?: (path: string, c: Context<E>) => string;
+     onFound?: (path: string, c: Context<E>) => void | Promise<void>;
+     onNotFound?: (path: string, c: Context<E>) => void | Promise<void>;
+diff --git a/dist/serve-static.d.ts b/dist/serve-static.d.ts
+index 9a1c83d6850162aeca9e8617c9bce9ff52f41026..5fc5bb304aa07e955b4b8329114de84c69067272 100644
+--- a/dist/serve-static.d.ts
++++ b/dist/serve-static.d.ts
+@@ -8,6 +8,8 @@ type ServeStaticOptions<E extends Env = Env> = {
+     path?: string;
+     index?: string;
+     precompressed?: boolean;
++    /** Allow percent signs in the routed request path. Defaults to false. */
++    allowPercentInPath?: boolean;
+     rewriteRequestPath?: (path: string, c: Context<E>) => string;
+     onFound?: (path: string, c: Context<E>) => void | Promise<void>;
+     onNotFound?: (path: string, c: Context<E>) => void | Promise<void>;
+diff --git a/dist/serve-static.js b/dist/serve-static.js
+index 4a58f95e16788299d00fd03512ddedb7315c210d..40ad33abdd62fb9a744ff8dde293bc458245215f 100644
+--- a/dist/serve-static.js
++++ b/dist/serve-static.js
+@@ -99,6 +99,9 @@ var serveStatic = (options = { root: "" }) => {
+       filename = optionPath;
+     } else {
+       try {
++        if (!options.allowPercentInPath && c.req.path.includes("%")) {
++          throw new Error();
++        }
+         filename = tryDecodeURI(c.req.path);
+         if (/(?:^|[\/\\])\.{1,2}(?:$|[\/\\])|[\/\\]{2,}|\\/.test(filename)) {
+           throw new Error();
+diff --git a/dist/serve-static.mjs b/dist/serve-static.mjs
+index d751e51fdb0a629479cf135d2dab48f92c325f9f..951d74d5474b9fa01a0ad9e9b5a9e13ff264a8bb 100644
+--- a/dist/serve-static.mjs
++++ b/dist/serve-static.mjs
+@@ -75,6 +75,9 @@ var serveStatic = (options = { root: "" }) => {
+       filename = optionPath;
+     } else {
+       try {
++        if (!options.allowPercentInPath && c.req.path.includes("%")) {
++          throw new Error();
++        }
+         filename = tryDecodeURI(c.req.path);
+         if (/(?:^|[\/\\])\.{1,2}(?:$|[\/\\])|[\/\\]{2,}|\\/.test(filename)) {
+           throw new Error();
