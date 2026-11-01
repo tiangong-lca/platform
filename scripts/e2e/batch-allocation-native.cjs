@@ -7,6 +7,12 @@ const fs = require('node:fs'),
   net = require('node:net');
 const { performance } = require('node:perf_hooks');
 const {
+  VERSION: CHROMIUM_VERSION,
+  COUNTS: SINGLETON_COUNTS,
+  assertBinding: assertSingletonBinding,
+  assertSummary: assertSingletonSummary,
+} = require('./batch-allocation-native-singleton.cjs');
+const {
   diagnostic,
   assertDiagnostic,
   assertProbeResult,
@@ -70,6 +76,13 @@ function plan(options) {
     mode: 'plan-only',
     source: bindSources(root, git('HEAD'), git('HEAD^{tree}')),
     limits: LIMITS,
+    singletonPolicy: {
+      browser: 'chromium',
+      version: CHROMIUM_VERSION,
+      counts: SINGLETON_COUNTS,
+      linkBytes: { lock: 512, cookie: 20, socket: 4096 },
+      scope: 'verified-disposable-runtime-only',
+    },
     schedule: BROWSERS.flatMap((browser) => CONTROLS.map((control) => ({ browser, control }))),
     borrowedRetainedRoots: [root, browserCache()],
     output: options['--output'] || null,
@@ -132,6 +145,7 @@ const list = (value, max) =>
 const uint = (value) => Number.isSafeInteger(value) && value >= 0;
 const PHASES = Object.freeze([
   'preparation',
+  'singleton-register',
   'build',
   'server',
   'browser',
@@ -170,10 +184,11 @@ function assertReceipt(value) {
     'cleanup',
     'nativePass',
     'observedFailure',
+    'singleton',
   ];
   check(exact(value, keys), 'resource_receipt_invalid');
   check(
-    value.schema === 'platform.batch-allocation-native.v2' &&
+    value.schema === 'platform.batch-allocation-native.v3' &&
       exact(value.limits, Object.keys(LIMITS)) &&
       Object.keys(LIMITS).every((k) => value.limits[k] === LIMITS[k]) &&
       [value.startMono, value.workDeadlineMono, value.hardDeadlineMono, value.elapsedMs].every(
@@ -323,8 +338,28 @@ function assertReceipt(value) {
     assertDiagnostic(value.observedFailure.diagnostic);
   }
   check(
+    exact(value.singleton, ['status', 'inspections', 'summary']) &&
+      ['not-registered', 'registered', 'verified', 'closed', 'invalid'].includes(
+        value.singleton.status,
+      ) &&
+      uint(value.singleton.inspections) &&
+      value.singleton.inspections <= 512,
+    'singleton_receipt_invalid',
+  );
+  if (value.singleton.summary !== null) assertSingletonSummary(value.singleton.summary);
+  check(
+    value.singleton.summary === null
+      ? value.singleton.inspections === 0 &&
+          !['verified', 'closed'].includes(value.singleton.status)
+      : value.singleton.inspections > 0 &&
+          !['not-registered', 'registered'].includes(value.singleton.status),
+    'singleton_receipt_invalid',
+  );
+  check(
     !value.nativePass ||
       (c.verified &&
+        value.singleton.status === 'closed' &&
+        value.singleton.summary !== null &&
         value.observedFailure === null &&
         value.withinDeadline &&
         value.capacity === 'verified' &&
@@ -368,6 +403,7 @@ async function execute(options) {
     stopping = false,
     publication = true;
   let activePhase = 'preparation';
+  let singletonBinding = null;
   let browserIndex = 0,
     browserOpen = false;
   const failures = [],
@@ -376,7 +412,7 @@ async function execute(options) {
       if (failures.length < 128 && !failures.includes(code)) failures.push(code);
     };
   const receipt = {
-    schema: 'platform.batch-allocation-native.v2',
+    schema: 'platform.batch-allocation-native.v3',
     limits: LIMITS,
     startMono: budget.start,
     workDeadlineMono: budget.workDeadline,
@@ -404,6 +440,7 @@ async function execute(options) {
     cleanup: { verified: false, runtimeRetained: true, workerExited: false, portClosed: false },
     nativePass: false,
     observedFailure: null,
+    singleton: { status: 'not-registered', inspections: 0, summary: null },
   };
   const remaining = () => budget.remaining(true);
   const snapshot = () => readSnapshot({ remainingMs: Math.min(1000, remaining()) });
@@ -520,6 +557,7 @@ async function execute(options) {
                   ? 'output'
                   : 'unknown',
           ),
+          singletonBinding,
           writeRoot: output,
           remainingMs: Math.min(LIMITS.diskProbeMs, budget.remaining()),
         }),
@@ -545,6 +583,7 @@ async function execute(options) {
             try {
               assertProbeResult(candidate);
               recordObservedFailure(receipt, failingPhase, candidate.diagnostic);
+              if (candidate.diagnostic.stage === 'singleton') receipt.singleton.status = 'invalid';
             } catch {
               recordObservedFailure(receipt, failingPhase, diagnostic('parse', 'result'));
             }
@@ -561,6 +600,20 @@ async function execute(options) {
         clearTimeout(timer);
         try {
           const value = decodeProbeResult(data, code);
+          if (value.singleton !== null) {
+            check(
+              singletonBinding &&
+                value.singleton.owner.pid === singletonBinding.process.pid &&
+                value.singleton.owner.start === singletonBinding.process.start &&
+                value.singleton.owner.pgid === singletonBinding.process.pgid &&
+                value.singleton.owner.executableSha256 ===
+                  singletonBinding.process.executableSha256,
+              'singleton_probe_owner',
+            );
+            receipt.singleton.inspections++;
+            receipt.singleton.status = 'verified';
+            receipt.singleton.summary = value.singleton;
+          } else check(singletonBinding === null, 'singleton_probe_missing');
           receipt.samples.maxDiskAgeMs = Math.max(
             receipt.samples.maxDiskAgeMs,
             budget.diskAt === null ? 0 : budget.now() - budget.diskAt,
@@ -580,6 +633,7 @@ async function execute(options) {
             observed = diagnostic('protocol', 'helper-failure');
           }
           recordObservedFailure(receipt, failingPhase, observed);
+          if (observed.stage === 'singleton') receipt.singleton.status = 'invalid';
           stop('disk-or-capacity-unknown');
           reject(Error('disk_unknown'));
         }
@@ -722,7 +776,7 @@ async function execute(options) {
           }
           return;
         }
-        if (!['phase', 'begin', 'ownership'].includes(message.type)) {
+        if (!['phase', 'begin', 'ownership', 'singleton'].includes(message.type)) {
           stop('worker-protocol-invalid');
           return;
         }
@@ -738,16 +792,73 @@ async function execute(options) {
           try {
             check(!stopping, 'stopping');
             activePhase =
-              message.type === 'begin'
-                ? 'begin'
-                : PHASES.includes(message.phase)
-                  ? message.phase
-                  : 'unknown';
+              message.type === 'singleton'
+                ? 'singleton-register'
+                : message.type === 'begin'
+                  ? 'begin'
+                  : PHASES.includes(message.phase)
+                    ? message.phase
+                    : 'unknown';
             sampleProcess();
+            if (message.type === 'singleton') {
+              assertSingletonBinding(message.binding);
+              check(
+                browserOpen && BROWSERS[browserIndex] === 'chromium' && singletonBinding === null,
+                'singleton_registration',
+              );
+              const candidate = message.binding,
+                proof = candidate.process,
+                registered = registry.records.get(proof.pid),
+                view = snapshot(),
+                row = view.status === 'ok' && view.rows.get(proof.pid);
+              const expected = JSON.parse(
+                fs.readFileSync(path.join(output, 'browser-binding.json'), 'utf8'),
+              ).chromium;
+              check(
+                registered?.state === 'live' &&
+                  registered.start === proof.start &&
+                  registered.pgid === proof.pgid &&
+                  row &&
+                  row.start === proof.start &&
+                  row.pgid === proof.pgid &&
+                  row.ppid === worker.pid &&
+                  proof.parentPid === worker.pid &&
+                  proof.executable === expected.executable &&
+                  proof.executableSha256 === expected.sha256,
+                'singleton_process_registration',
+              );
+              check(
+                candidate.runtime.path === runtime.path &&
+                  candidate.runtime.parent === runtime.parent &&
+                  candidate.runtime.device === runtime.device &&
+                  candidate.runtime.inode === runtime.inode &&
+                  candidate.runtime.nonce === runtime.nonce &&
+                  candidate.runtime.uid === process.getuid() &&
+                  candidate.runtime.mode === 0o700,
+                'singleton_runtime_registration',
+              );
+              singletonBinding = candidate;
+              receipt.singleton.status = 'registered';
+            }
+            if (
+              message.type === 'phase' &&
+              message.phase === 'browser-closed' &&
+              message.browser === 'chromium'
+            ) {
+              const state = registry.refresh(snapshot());
+              check(
+                singletonBinding &&
+                  state.status === 'ok' &&
+                  state.live.every((item) => item.pid === worker.pid),
+                'singleton_browser_closure',
+              );
+              singletonBinding = null;
+              receipt.singleton.status = 'closed';
+            }
             await disk();
             budget.freshness();
             if (message.type === 'begin') budget.begin(message.browser, message.control);
-            else {
+            else if (message.type !== 'singleton') {
               check(
                 [
                   'build',
@@ -783,6 +894,7 @@ async function execute(options) {
             }
             write('checkpoint.json', {
               phase: activePhase,
+              singleton: receipt.singleton,
               cases: budget.cases,
               samples: receipt.samples,
               ownership: registry.evidence(),

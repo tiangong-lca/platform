@@ -22,6 +22,7 @@ const FILES = Object.freeze([
   'scripts/e2e/batch-allocation-native-source.cjs',
   'scripts/e2e/batch-allocation-native-worker.cjs',
   'scripts/e2e/batch-allocation-native-probe.cjs',
+  'scripts/e2e/batch-allocation-native-singleton.cjs',
   'scripts/e2e/batch-allocation-diagnostic.cjs',
   'tests/e2e/i18n/batch-allocation-observer.ts',
   'tests/e2e/i18n/process-allocation.spec.ts',

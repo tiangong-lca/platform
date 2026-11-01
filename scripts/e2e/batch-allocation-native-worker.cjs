@@ -13,6 +13,10 @@ const {
 } = require('./batch-allocation-native-policy.cjs');
 const { Ownership, readSnapshot } = require('./portal-native-resources.cjs');
 const {
+  VERSION: CHROMIUM_VERSION,
+  profileFromArgs,
+} = require('./batch-allocation-native-singleton.cjs');
+const {
   sha,
   fileHash,
   bindSources,
@@ -248,6 +252,53 @@ async function work() {
     browser = await browserTypes[name].connect(browserServer.wsEndpoint(), {
       timeout: Math.min(30000, runInput.workDeadline - now()),
     });
+    if (name === 'chromium') {
+      check(browser.version() === CHROMIUM_VERSION, 'singleton_browser_version');
+      const child = browserServer.process(),
+        state = readSnapshot({ remainingMs: Math.min(1000, remaining()) }),
+        row = state.status === 'ok' && state.rows.get(child.pid),
+        record = owners.records.get(child.pid);
+      check(
+        row &&
+          record &&
+          row.start === record.start &&
+          row.pgid === record.pgid &&
+          row.ppid === process.pid,
+        'singleton_process_identity',
+      );
+      const profile = profileFromArgs(child.spawnargs, runInput.runtime.path),
+        ps = fs.lstatSync(profile),
+        rs = fs.lstatSync(runInput.runtime.path);
+      await checkpoint('singleton', {
+        binding: {
+          version: CHROMIUM_VERSION,
+          runtime: {
+            path: runInput.runtime.path,
+            parent: runInput.runtime.parent,
+            device: runInput.runtime.device,
+            inode: runInput.runtime.inode,
+            nonce: runInput.runtime.nonce,
+            uid: rs.uid,
+            mode: rs.mode & 0o7777,
+          },
+          profile: {
+            path: profile,
+            device: ps.dev,
+            inode: ps.ino,
+            uid: ps.uid,
+            mode: ps.mode & 0o7777,
+          },
+          process: {
+            pid: child.pid,
+            parentPid: process.pid,
+            start: row.start,
+            pgid: row.pgid,
+            executable: browserIdentities[name].executable,
+            executableSha256: browserIdentities[name].sha256,
+          },
+        },
+      });
+    }
     for (const control of CONTROLS) {
       observerOwner = undefined;
       await checkpoint('begin', { browser: name, control });

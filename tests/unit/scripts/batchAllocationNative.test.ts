@@ -198,6 +198,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
       freeBytes: LIMITS.diskBytes,
       availableMemory: LIMITS.rssBytes,
       diagnostic: null,
+      singleton: null,
     });
     expect(capacityDiagnostic(value)).toBeNull();
     const input = {
@@ -206,6 +207,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
       freeBytes: LIMITS.diskBytes,
       availableMemory: LIMITS.rssBytes,
       diagnostic: null,
+      singleton: null,
     };
     expect(capacityDiagnostic({ ...input, availableMemory: LIMITS.rssBytes - 1 })).toMatchObject({
       stage: 'capacity',
@@ -296,6 +298,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
           freeBytes: LIMITS.diskBytes,
           availableMemory: LIMITS.rssBytes,
           diagnostic: null,
+          singleton: null,
         }),
         1,
         'protocol',
@@ -308,6 +311,7 @@ describe('resource failure capsules with injected filesystem/helper ports only',
           freeBytes: LIMITS.diskBytes,
           availableMemory: 1,
           diagnostic: null,
+          singleton: null,
         }),
         0,
         'capacity',
@@ -511,7 +515,7 @@ describe('bounded native batch allocation policy without runtime allocation', ()
     expect(() => assertReceipt({ nativePass: true, rawDom: 'forbidden' })).toThrow();
     const { budget } = clock();
     const value = {
-      schema: 'platform.batch-allocation-native.v2',
+      schema: 'platform.batch-allocation-native.v3',
       limits: LIMITS,
       startMono: budget.start,
       workDeadlineMono: budget.workDeadline,
@@ -548,11 +552,14 @@ describe('bounded native batch allocation policy without runtime allocation', ()
       },
       nativePass: false,
       observedFailure: null,
+      singleton: { status: 'not-registered', inspections: 0, summary: null },
     };
     expect(assertReceipt(value)).toBe(value);
-    expect(() =>
-      assertReceipt({ ...value, schema: 'platform.batch-allocation-native.v1' }),
-    ).toThrow('resource_receipt_invalid');
+    for (const schema of [
+      'platform.batch-allocation-native.v1',
+      'platform.batch-allocation-native.v2',
+    ])
+      expect(() => assertReceipt({ ...value, schema })).toThrow('resource_receipt_invalid');
     expect(() => assertReceipt({ ...value, nativePass: true })).toThrow('false_native_pass');
     expect(() =>
       assertReceipt({ ...value, cleanup: { ...value.cleanup, rawDom: 'forbidden' } }),
