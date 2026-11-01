@@ -57,7 +57,7 @@ checkPaths:
   - .github/workflows/build.yml
   - package.json
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 0351ddc065eed13996e79f8250f8c5ab69062692
+lastReviewedCommit: 3494da9730540a65beb07a63abfe97ec31814981
 lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness and separate bounded native controls against Main 0351ddc0. Preserve original canonical AST, inventory, actions, budgets, privacy and exact failures; source admission precedes browsers and only three browser-specific JSON diagnostics enter artifacts. Invocation ownership and installed Wave shape corrections are bound to issue evidence. Native, full/hosted, artifact and Main/Dev/root acceptance remain separate pending stages; no historical cause or product fix is claimed.'
 baselineObservedAt: 2026-07-18
 related:

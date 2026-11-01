@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 0351ddc065eed13996e79f8250f8c5ab69062692
+lastReviewedCommit: 3494da9730540a65beb07a63abfe97ec31814981
 lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness, pre-browser source admission and separate bounded native controls against Main 0351ddc0. Existing bootstrap, ownership, branch, product/dependency, canonical inventory/action/budget/privacy and full-gate boundaries remain intact; new runtime and delivery acceptance require their separate actual evidence.'
 ---
 

@@ -490,6 +490,16 @@
       "reason": "Frozen German delivery evidence intentionally preserves its historical locale topology.",
       "status": "permanent-contract",
       "permanentContract": "frozen-german-delivery-evidence"
+    },
+    {
+      "ruleId": "language-default",
+      "path": "scripts/e2e/batch-allocation-native-worker.cjs",
+      "nodeTextDigest": "fcdfc12193489dc23c2190f0d381989dd2722d69e2af08553d0013b77633bd61",
+      "maxMatches": 1,
+      "ownerIssue": "#1396",
+      "reason": "The controlled native browser fixture uses fixed synthetic English translations and exact English control labels; this Playwright locale belongs only to that fixture and does not set a business-language default.",
+      "status": "permanent-contract",
+      "permanentContract": "controlled-native-batch-fixture-locale"
     }
   ]
 }
