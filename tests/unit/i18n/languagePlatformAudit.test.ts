@@ -601,4 +601,88 @@ describe('language platform audit', () => {
       fs.rmSync(root, { force: true, recursive: true });
     }
   });
+
+  describe('controlled native batch fixture locale contract', () => {
+    const workerPath = 'scripts/e2e/batch-allocation-native-worker.cjs';
+    const allowlistPath = 'scripts/i18n/language-hardcoding-allowlist.json';
+    const fixtureSource = "export const context = { locale: 'en-US' };\n";
+    const fixtureEntry = () => {
+      const document = JSON.parse(
+        fs.readFileSync(path.join(REPOSITORY_ROOT, allowlistPath), 'utf8'),
+      );
+      const entry = document.entries.find(
+        (candidate: Record<string, unknown>) =>
+          candidate.permanentContract === 'controlled-native-batch-fixture-locale',
+      );
+      expect(entry).toBeDefined();
+      return entry;
+    };
+    const writeAllowlist = (root: string, entry: Record<string, unknown>) =>
+      writeFixtureFile(
+        root,
+        allowlistPath,
+        JSON.stringify({
+          schemaVersion: 'tiangong.i18n-language-hardcoding-allowlist.v2',
+          entries: [entry],
+        }),
+      );
+
+    it('accepts only the exact single synthetic browser locale node', () => {
+      const root = initializeFixture();
+      try {
+        writeFixtureFile(root, workerPath, fixtureSource);
+        writeAllowlist(root, fixtureEntry());
+        const result = runAudit(root, ['--scope', 'hardcoding', '--check']);
+        const report = JSON.parse(result.stdout) as AuditReport;
+        expect(result.status).toBe(0);
+        expect(report.ok).toBe(true);
+        expect(report.findings).toEqual([
+          expect.objectContaining({ path: workerPath, ruleId: 'language-default' }),
+        ]);
+      } finally {
+        fs.rmSync(root, { force: true, recursive: true });
+      }
+    });
+
+    it.each([
+      ['owner', { ownerIssue: '#1397' }],
+      ['path', { path: 'scripts/e2e/other-native-worker.cjs' }],
+      ['rule', { ruleId: 'language-equality' }],
+      ['digest', { nodeTextDigest: '0'.repeat(64) }],
+      ['match count', { maxMatches: 2 }],
+    ])('rejects a changed permanent-contract %s', (_label, override) => {
+      const root = initializeFixture();
+      try {
+        writeFixtureFile(root, workerPath, fixtureSource);
+        writeAllowlist(root, { ...fixtureEntry(), ...override });
+        const result = runAudit(root, ['--scope', 'hardcoding', '--check']);
+        const report = JSON.parse(result.stdout) as AuditReport;
+        expect(result.status).toBe(1);
+        expect(report.violations.map(({ code }) => code)).toContain('invalid-allowlist-entry');
+      } finally {
+        fs.rmSync(root, { force: true, recursive: true });
+      }
+    });
+
+    it.each([
+      ['export const context = {};\n', 'unused-allowlist-entry'],
+      [
+        "export const contexts = [{ locale: 'en-US' }, { locale: 'en-US' }];\n",
+        'stale-allowlist-entry',
+      ],
+      ["export const context = { locale: 'zh-CN' };\n", 'unapproved-language-hardcoding'],
+    ])('rejects changed fixture node cardinality or language: %s', (source, violation) => {
+      const root = initializeFixture();
+      try {
+        writeFixtureFile(root, workerPath, source);
+        writeAllowlist(root, fixtureEntry());
+        const result = runAudit(root, ['--scope', 'hardcoding', '--check']);
+        const report = JSON.parse(result.stdout) as AuditReport;
+        expect(result.status).toBe(1);
+        expect(report.violations.map(({ code }) => code)).toContain(violation);
+      } finally {
+        fs.rmSync(root, { force: true, recursive: true });
+      }
+    });
+  });
 });

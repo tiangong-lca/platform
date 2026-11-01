@@ -75,11 +75,11 @@
     "capabilityMatrixDigest": "d8903f58f8b5582bb4a491a8724b9ba5b8adf93f5f48dcfc7c908bb4eaa5dcd7",
     "referenceResourceManifestDigest": "31fa7e3569f6434b60d2422953102180d19f010a5bbb2e16fa5037724bdd1fdb",
     "referenceResourceResolverDigest": "15ed3893a7f03969b1a83cc2c81921a994be891d16943da8a6784a84e09f08e1",
-    "hardcodingAllowlistDigest": "ccf0ec3cf64830f8608ac996bc503237f08628e1acd987eb786cdd24f7394a5a"
+    "hardcodingAllowlistDigest": "81a699a9c4ac3e236c0d39ab88b323a6abbeab1fc15c79028d0cbb2d3ebf051b"
   },
   "evidence": {
-    "contextDigest": "c269442236be9761b0c619d87c7dcc3ec00a0e600cac2a1f8aab78ef9da64721",
-    "qualityDigest": "086201fd0ee84d7ce88f3608283830068c24193d3a04a983c11cf282bf1bb3da",
+    "contextDigest": "b4eb3367150f7912d0c9652a5848659c2097f4c6994f5eabab61c63f20b1248b",
+    "qualityDigest": "953c0f09d00bbd89f22cb489aa872de1f2cc24a48b22b31a5e8a94fd34d28e8d",
     "correctionLedgerDigest": "0116c494387613a132f6cea85d8841edca9d5aba28d66ae61a40743370b040ba",
     "routeViewCoverageDigest": "3e6cc7250457b49ecc15c70a095024d6fa937412c6763e7e6026f5dbd286b4d5",
     "fallbackContractDigest": "94c88648a2bc4fa2b3e3dd2b1db476db5a182e8a5dd9dce2140f6faf2cceabe5",
@@ -125,5 +125,5 @@
       "ownerIssue": "#867"
     }
   ],
-  "activationDigest": "a2e2fb82ecee85cfd971192777781d90e87abd2445002d19bc08cbe630e54653"
+  "activationDigest": "cd358ed8a9fe11585cec1dbc627b4651007e9cdbcc7da29452d349ddd341024f"
 }

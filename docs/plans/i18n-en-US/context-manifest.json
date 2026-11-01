@@ -1312,8 +1312,8 @@
     "src/services/referenceResources/generatedManifest.ts": "d128e2d169a3fac3cd0b7542d8c553b0f8ea429623ead1cff736f83b01eb13a0",
     "scripts/reference-data/reference-resource-pipeline.mjs": "ca0651a7cc48d1489b955b94bb66caf1cdb420e2a9bff33edb13232bd33fb532",
     "src/services/referenceResources/resolver.ts": "15ed3893a7f03969b1a83cc2c81921a994be891d16943da8a6784a84e09f08e1",
-    "scripts/i18n/audit-language-platform.mjs": "baa14e921dcb502353b0bc53bdffdab5d9ca3406a46306236f281cf9219ab349",
-    "scripts/i18n/language-hardcoding-allowlist.json": "ccf0ec3cf64830f8608ac996bc503237f08628e1acd987eb786cdd24f7394a5a",
+    "scripts/i18n/audit-language-platform.mjs": "8f55cba8454246141dd7241b07a6c13f8699d8f36269910d3507f7baac2cd9e8",
+    "scripts/i18n/language-hardcoding-allowlist.json": "81a699a9c4ac3e236c0d39ab88b323a6abbeab1fc15c79028d0cbb2d3ebf051b",
     "src/components/ImportTidasPackage/reportContent.ts": "3b08a703edbbfd6312f863c6b70aae4289fe411d077d1d37b576b37eeb856c3c",
     "docs/plans/i18n-de-DE/dynamic-families.json": "f0b227ff0f1d01d46956576d26803aedb97db62498481ca741ced467384bc160",
     "docs/plans/i18n/route-view-coverage.json": "3e6cc7250457b49ecc15c70a095024d6fa937412c6763e7e6026f5dbd286b4d5",
@@ -1322,5 +1322,5 @@
     "docs/plans/i18n-en-US/style-guide.md": "be570ee8db2b034dde7274f774730575ad9b9226af7a5ac7ab35a45d1ef2620c"
   },
   "blockedContext": [],
-  "contextDigest": "6093eccf76c5c84bb8a4bd2664f16bab4c896e6efec4997c2082a5b0dbb04242"
+  "contextDigest": "be0ce6d655b918fae451b9e19a646c3d4f2e287591b2d10f9642353b490579ae"
 }
