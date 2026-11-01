@@ -1,8 +1,8 @@
 version: 1
 layout: repo
 lastReviewedAt: '2026-11-01'
-lastReviewedCommit: '162c450f3ee98d31285a21388589bb7e30da17c7'
-lastReviewedNote: 'Reviewed Platform #1383 native locale audit/provenance regeneration after the equivalent mobile action extraction. The c26 baseline, catalogs, message IDs and assertions remain unchanged; only callsite coordinates, source census/input digest and dependent digest bindings refresh. Native diagnostic/runtime bytes remain retained; no canonical qualification is claimed.'
+lastReviewedCommit: '9b2fda9b1aa00f2989b514ea42c2d751348bfc69'
+lastReviewedNote: 'Reviewed Platform #1390 composition with qualified Main 9b2fda9b: retain all six Main patches, MockJS, Hono percent-path policy, passive schema 2, mobile-action/locale evidence and Darwin mitigation alongside the six exact glob/minimatch backports. Preserve graph generations, product/runtime versions, install policy and canonical actions, budgets, privacy and coverage; combined full/hosted/artifact qualification, Dev reconciliation and root integration remain pending.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.
