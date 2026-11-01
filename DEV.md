@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: d062e20a756a5b9483b67686f394e6093615d1a8
+lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
 lastReviewedNote: 'Platform #1402: reviewed exact Result route, synthetic browser and locale artifact workflow; runtime, install, pre-push and promotion commands remain unchanged.'
 ---
 
