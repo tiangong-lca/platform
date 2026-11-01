@@ -1,5 +1,7 @@
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
+import fs from 'node:fs';
+import vm from 'node:vm';
 const {
   VERSION,
   COUNTS,
@@ -78,8 +80,8 @@ function fixture() {
     },
     readdirSync: (dir: string) =>
       [...nodes.entries()]
-        .filter(([file]) => file !== dir && path.dirname(file) === dir)
-        .map(([file, n]) => ({ name: path.basename(file), ...stat(n) })),
+        .filter(([file]) => file !== dir && path.posix.dirname(file) === dir)
+        .map(([file, n]) => ({ name: path.posix.basename(file), ...stat(n) })),
     statfsSync: () => ({ bavail: 12 * 1024 ** 3, bsize: 1 }),
   };
   const r = nodes.get(runtime),
@@ -183,6 +185,39 @@ function condition(fn: () => unknown, expected: string) {
 }
 
 describe('complete pinned Chromium singleton tuple with inert injected filesystem/process state', () => {
+  it('qualifies the actual POSIX tuple functions under a substituted win32 host path module', () => {
+    const filename = path.join(process.cwd(), 'scripts/e2e/batch-allocation-native-singleton.cjs');
+    const loaded = { exports: {} as any };
+    const context = vm.createContext({
+      module: loaded,
+      Buffer,
+      process,
+      require: (name: string) =>
+        name === 'node:path'
+          ? path.win32
+          : require(name.startsWith('.') ? path.resolve(path.dirname(filename), name) : name),
+    });
+    vm.runInContext(fs.readFileSync(filename, 'utf8'), context, { timeout: 1000 });
+    // Parse the binding in the module's realm, preserving its strict prototype checks.
+    const inspect = vm.runInContext(
+      '(binding, ports) => module.exports.inspectTuple(JSON.parse(binding), ports)',
+      context,
+    );
+    const f = fixture();
+    expect(inspect(JSON.stringify(f.binding), f.ports).summary.counts).toEqual(COUNTS);
+    expect(loaded.exports.profileFromArgs(['--user-data-dir=' + f.profile], f.runtime)).toBe(
+      f.profile,
+    );
+    condition(
+      () => loaded.exports.profileFromArgs(['--user-data-dir=C:\\outside'], f.runtime),
+      'profile',
+    );
+    const link = f.nodes.get(f.profile + '/SingletonSocket');
+    link.target = '/foreign/SingletonSocket';
+    link.size = Buffer.byteLength(link.target);
+    condition(() => inspect(JSON.stringify(f.binding), f.ports), 'target');
+  });
+
   it('admits exactly four bounded links plus one private socket and exposes only approved identities', () => {
     const f = fixture(),
       value = inspectTuple(f.binding, f.ports);
@@ -389,7 +424,7 @@ describe('complete pinned Chromium singleton tuple with inert injected filesyste
     for (const directory of [newProfile, newSocket]) {
       let at = '/';
       for (const part of directory.split('/').filter(Boolean)) {
-        at = path.join(at, part);
+        at = path.posix.join(at, part);
         if (!f.nodes.has(at)) f.add(at, 'directory');
       }
     }

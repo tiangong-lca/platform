@@ -1,7 +1,8 @@
 // Exact Chromium 151 process-singleton accounting. No connection, target follow,
 // deletion, generic symlink exception, or retained scalar/hostname/argv data.
 const fs = require('node:fs');
-const path = require('node:path');
+// The inspected Chromium runtime is POSIX, independently of the inert test host.
+const path = require('node:path').posix;
 const os = require('node:os');
 const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');

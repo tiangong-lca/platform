@@ -32,6 +32,26 @@ const {
   runControl,
 } = require('../../../tests/package-contracts/native-batch-allocation/control.spec.cjs');
 const source = (file: string) => fs.readFileSync(path.join(process.cwd(), file), 'utf8');
+function withWin32HostPath(file: string) {
+  const filename = path.join(process.cwd(), file),
+    loaded = { exports: {} as any };
+  vm.runInNewContext(
+    source(file),
+    {
+      module: loaded,
+      process,
+      Buffer,
+      setTimeout,
+      clearTimeout,
+      require: (name: string) =>
+        name === 'node:path'
+          ? path.win32
+          : require(name.startsWith('.') ? path.resolve(path.dirname(filename), name) : name),
+    },
+    { timeout: 1000 },
+  );
+  return loaded.exports;
+}
 function probePorts({
   entries = [] as any[],
   entryRoot = '/output',
@@ -331,6 +351,36 @@ describe('resource failure capsules with injected filesystem/helper ports only',
 });
 
 describe('bounded native batch allocation policy without runtime allocation', () => {
+  it('keeps actual POSIX root deduplication and probe containment under a win32 host path module', async () => {
+    const policy = withWin32HostPath('scripts/e2e/batch-allocation-native-policy.cjs');
+    expect(
+      policy.deduplicateRoots(
+        ['/source', '/source/child', '/source-other', '/output'],
+        (p: string) => p,
+      ),
+    ).toEqual(['/source', '/output', '/source-other']);
+    expect(() => policy.deduplicateRoots(['/a', '/b', '/c', '/d'], (p: string) => p)).toThrow(
+      'disk_root_limit',
+    );
+    const probe = withWin32HostPath('scripts/e2e/batch-allocation-native-probe.cjs');
+    const ports = probePorts({ entries: [entry('symlink')] });
+    const positive = await probe.disk(['/source', '/cache', '/output'], '/output', 15000, ports);
+    expect(positive.status).toBe('ok');
+    expect(positive.bytes).toBe(3072);
+    ports.fs.realpathSync = (file: string) =>
+      file.endsWith('/private-entry') ? '/output-foreign/private-entry' : file;
+    await expect(
+      probe.disk(['/source', '/cache', '/output'], '/output', 15000, ports),
+    ).rejects.toMatchObject({
+      resourceDiagnostic: {
+        stage: 'traversal',
+        rootKind: 'output',
+        entryKind: 'symlink',
+        condition: 'symlink-escape',
+      },
+    });
+  });
+
   it('abort cleanup uses the admitted observer export and owner token without importing retained output', async () => {
     const worker = source('scripts/e2e/batch-allocation-native-worker.cjs');
     const begin = worker.indexOf('async function closure()');

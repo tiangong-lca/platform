@@ -32,8 +32,171 @@ const {
   createRuntime,
   runtimeRemovable,
 } = require('./portal-native-resources.cjs');
-const { bindSources, fileHash } = require('./batch-allocation-native-source.cjs');
+const { bindSources, fileHash, sha } = require('./batch-allocation-native-source.cjs');
 const root = path.resolve(__dirname, '../..');
+// Native runtime and receipt paths model a POSIX target; repository paths use host path.
+const posix = path.posix;
+const MAC_CHROMIUM_BUNDLE_ID = 'com.google.chrome.for.testing';
+// Chromium 151: chrome_main_mac.mm uses the outer app's bundle identifier;
+// file_util_posix.cc GetTempTemplate/FormatTemporaryFileName turn an empty
+// singleton prefix into <bundle-id>.XXXXXX, followed by /SingletonSocket.
+// process_singleton_posix.cc SetupSockAddr permits all 253 Mac path bytes,
+// explicitly without reserving a NUL. Other platforms have different limits.
+function macChromiumSocketPathBytes(tmp, bundleId = MAC_CHROMIUM_BUNDLE_ID) {
+  check(
+    typeof tmp === 'string' &&
+      posix.isAbsolute(tmp) &&
+      posix.resolve(tmp) === tmp &&
+      !tmp.includes('\0') &&
+      !tmp.includes('\\') &&
+      bundleId === MAC_CHROMIUM_BUNDLE_ID,
+    'mac_chromium_tmp_shape',
+  );
+  const bytes = Buffer.byteLength(posix.join(tmp, `${bundleId}.XXXXXX`, 'SingletonSocket'));
+  check(bytes <= 253, 'mac_chromium_socket_path_limit');
+  return bytes;
+}
+function macChromiumBundleIdentifier(bytes) {
+  check(Buffer.isBuffer(bytes) && bytes.length <= 128 * 1024, 'mac_chromium_bundle_shape');
+  const text = bytes.toString('utf8');
+  check(Buffer.from(text).equals(bytes), 'mac_chromium_bundle_shape');
+  const identifiers = [
+    ...text.matchAll(/<key>\s*CFBundleIdentifier\s*<\/key>\s*<string>([^<]*)<\/string>/gu),
+  ];
+  check(
+    [...text.matchAll(/<key>\s*CFBundleIdentifier\s*<\/key>/gu)].length === 1 &&
+      identifiers.length === 1 &&
+      identifiers[0][1] === MAC_CHROMIUM_BUNDLE_ID,
+    'mac_chromium_bundle_identity',
+  );
+  return identifiers[0][1];
+}
+function readNativeRegular(file, cap, io = fs) {
+  const before = io.lstatSync(file);
+  check(
+    before.isFile() &&
+      !before.isSymbolicLink() &&
+      Number.isSafeInteger(before.size) &&
+      before.size >= 0 &&
+      before.size <= cap,
+    'mac_chromium_binding_file',
+  );
+  const fd = io.openSync(file, fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW || 0));
+  const unchanged = (stat) =>
+    stat.isFile() &&
+    stat.dev === before.dev &&
+    stat.ino === before.ino &&
+    stat.size === before.size &&
+    stat.mtimeMs === before.mtimeMs &&
+    stat.ctimeMs === before.ctimeMs;
+  try {
+    check(unchanged(io.fstatSync(fd)), 'mac_chromium_binding_changed');
+    const bytes = Buffer.alloc(before.size + 1);
+    let length = 0,
+      count;
+    while (
+      length < bytes.length &&
+      (count = io.readSync(fd, bytes, length, bytes.length - length, null))
+    )
+      length += count;
+    check(
+      length === before.size && unchanged(io.fstatSync(fd)) && unchanged(io.lstatSync(file)),
+      'mac_chromium_binding_changed',
+    );
+    return bytes.subarray(0, length);
+  } finally {
+    io.closeSync(fd);
+  }
+}
+function admitMacChromiumRuntime(runtime, cache, output, io = fs, uid = process.getuid()) {
+  const tmp = runtime.directories.tmp;
+  check(
+    tmp === posix.join(runtime.path, 'tmp') && io.realpathSync(tmp) === tmp,
+    'mac_chromium_tmp_shape',
+  );
+  const stat = io.lstatSync(tmp);
+  check(
+    stat.isDirectory() &&
+      !stat.isSymbolicLink() &&
+      stat.dev === runtime.device &&
+      stat.uid === uid &&
+      (stat.mode & 0o7777) === 0o700,
+    'mac_chromium_tmp_identity',
+  );
+  // The worker has already bound the selected executable and complete cache
+  // tree. Inspect that published binding before acknowledging browser launch;
+  // do not import Playwright or hash a browser binary on the supervisor loop.
+  const binding = JSON.parse(
+    readNativeRegular(posix.join(output, 'browser-binding.json'), 8 * 1024 ** 2, io),
+  );
+  const selected = binding?.chromium,
+    executable = selected?.executable;
+  check(
+    typeof executable === 'string' &&
+      executable.length <= 4096 &&
+      posix.isAbsolute(executable) &&
+      posix.resolve(executable) === executable &&
+      executable.startsWith(cache + posix.sep) &&
+      !executable.includes('\0') &&
+      !executable.includes('\\') &&
+      /^[a-f0-9]{64}$/u.test(selected.sha256) &&
+      selected.cache?.directory === posix.join(cache, 'chromium-1234') &&
+      selected.cache.files &&
+      typeof selected.cache.files === 'object' &&
+      sha(JSON.stringify(selected.cache.files)) === selected.cache.sha256,
+    'mac_chromium_bundle_identity',
+  );
+  const contents = posix.dirname(posix.dirname(executable));
+  check(
+    executable.startsWith(selected.cache.directory + posix.sep) &&
+      io.realpathSync(executable) === executable &&
+      posix.basename(executable) === 'Google Chrome for Testing' &&
+      posix.basename(posix.dirname(executable)) === 'MacOS' &&
+      posix.basename(contents) === 'Contents' &&
+      posix.basename(posix.dirname(contents)) === 'Google Chrome for Testing.app',
+    'mac_chromium_bundle_identity',
+  );
+  const plist = posix.join(contents, 'Info.plist'),
+    executableMeta = selected.cache.files[executable],
+    plistMeta = selected.cache.files[plist],
+    executableStat = io.lstatSync(executable);
+  check(
+    executableMeta?.type === 'file' &&
+      executableMeta.sha256 === selected.sha256 &&
+      executableStat.isFile() &&
+      !executableStat.isSymbolicLink() &&
+      executableStat.size === executableMeta.bytes &&
+      executableStat.size <= 512 * 1024 ** 2 &&
+      (executableStat.mode & 0o777) === executableMeta.mode &&
+      plistMeta?.type === 'file' &&
+      Number.isSafeInteger(plistMeta.bytes) &&
+      plistMeta.bytes <= 128 * 1024 &&
+      /^[a-f0-9]{64}$/u.test(plistMeta.sha256),
+    'mac_chromium_bundle_binding',
+  );
+  const bytes = readNativeRegular(plist, 128 * 1024, io);
+  check(
+    bytes.length === plistMeta.bytes && sha(bytes) === plistMeta.sha256,
+    'mac_chromium_bundle_binding',
+  );
+  macChromiumSocketPathBytes(tmp, macChromiumBundleIdentifier(bytes));
+}
+function nativeChildEnvironment(runtime, cache, host = process.env, platform = process.platform) {
+  if (!runtime) return { ...host };
+  const env = {
+    ...host,
+    ...runtime.env,
+    PLAYWRIGHT_BROWSERS_PATH: cache,
+    GOMAXPROCS: '2',
+    UV_THREADPOOL_SIZE: '2',
+    OMP_NUM_THREADS: '2',
+  };
+  if (platform === 'darwin') {
+    check(runtime.directories.tmp === posix.join(runtime.path, 'tmp'), 'mac_chromium_tmp_shape');
+    env.MAC_CHROMIUM_TMPDIR = runtime.directories.tmp;
+  }
+  return env;
+}
 function parse(args) {
   const result = { execute: false };
   for (let i = 0; i < args.length; i++) {
@@ -53,7 +216,7 @@ function parse(args) {
     }
   }
   check(/^[a-f0-9]{40}$/u.test(result['--expected-head'] || ''), 'exact_head_required');
-  check(!result.execute || path.isAbsolute(result['--output'] || ''), 'absolute_output_required');
+  check(!result.execute || posix.isAbsolute(result['--output'] || ''), 'absolute_output_required');
   return result;
 }
 const browserCache = () =>
@@ -76,6 +239,16 @@ function plan(options) {
     mode: 'plan-only',
     source: bindSources(root, git('HEAD'), git('HEAD^{tree}')),
     limits: LIMITS,
+    browserExecution: {
+      chromium: 'explicit-full-chrome-for-testing; supplemental-component-proof',
+      canonical: 'unchanged-default-headless-shell; complete-linux-99-case-qualification-required',
+      macTemporaryDirectory: 'child-only-MAC_CHROMIUM_TMPDIR=owned-canonical-private-runtime/tmp',
+      macSocketPath: {
+        maximumBytes: 253,
+        temporaryName: `${MAC_CHROMIUM_BUNDLE_ID}.XXXXXX`,
+        endpoint: 'SingletonSocket',
+      },
+    },
     singletonPolicy: {
       browser: 'chromium',
       version: CHROMIUM_VERSION,
@@ -212,8 +385,8 @@ function assertReceipt(value) {
         (item) =>
           exact(item, ['path', 'disposition']) &&
           typeof item.path === 'string' &&
-          item.path === path.resolve(item.path) &&
-          item.path !== path.parse(item.path).root &&
+          item.path === posix.resolve(item.path) &&
+          item.path !== posix.parse(item.path).root &&
           item.path.length <= 4096 &&
           ['borrowed-retained', 'owned-retained-including-disposable-runtime'].includes(
             item.disposition,
@@ -468,16 +641,7 @@ async function execute(options) {
     const child = cp.spawn(process.execPath, [file, ...args], {
       cwd: root,
       detached: true,
-      env: runtime
-        ? {
-            ...process.env,
-            ...runtime.env,
-            PLAYWRIGHT_BROWSERS_PATH: browserCache(),
-            GOMAXPROCS: '2',
-            UV_THREADPOOL_SIZE: '2',
-            OMP_NUM_THREADS: '2',
-          }
-        : { ...process.env },
+      env: nativeChildEnvironment(runtime, runtime ? browserCache() : undefined),
       stdio: ['ignore', 'pipe', 'pipe', ...(ipc ? ['ipc'] : [])],
     });
     check(child.pid, 'child_pid_missing');
@@ -877,6 +1041,8 @@ async function execute(options) {
                     budget.remaining() >= LIMITS.caseMs + 1000,
                   'browser_budget_or_order',
                 );
+                if (process.platform === 'darwin' && message.browser === 'chromium')
+                  admitMacChromiumRuntime(runtime, browserCache(), output);
                 browserOpen = true;
               }
               if (message.phase === 'browser-closed') {
@@ -1100,4 +1266,14 @@ if (require.main === module)
     console.error('Batch allocation native admission failed.');
     process.exitCode = 1;
   });
-module.exports = { parse, plan, assertReceipt, execute, recordObservedFailure };
+module.exports = {
+  parse,
+  plan,
+  assertReceipt,
+  execute,
+  recordObservedFailure,
+  nativeChildEnvironment,
+  macChromiumSocketPathBytes,
+  macChromiumBundleIdentifier,
+  admitMacChromiumRuntime,
+};

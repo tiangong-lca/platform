@@ -110,7 +110,9 @@ function deduplicateRoots(roots, realpath) {
     (item, index) =>
       !paths
         .slice(0, index)
-        .some((parent) => item === parent || item.startsWith(parent + require('node:path').sep)),
+        .some(
+          (parent) => item === parent || item.startsWith(parent + require('node:path').posix.sep),
+        ),
   );
   check(admitted.length <= 3, 'disk_root_limit');
   return admitted;

@@ -1,6 +1,6 @@
 // Separate bounded accounting process: a cold filesystem walk cannot block RSS supervision.
 const fs = require('node:fs'),
-  path = require('node:path'),
+  path = require('node:path').posix,
   cp = require('node:child_process'),
   os = require('node:os');
 const { performance } = require('node:perf_hooks');
