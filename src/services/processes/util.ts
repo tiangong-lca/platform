@@ -66,6 +66,18 @@ const hasReviewReportReference = (value: unknown): boolean => {
   return Object.values(value).some((field) => field !== undefined);
 };
 
+const predecessorKey = 'common:referenceToPrecedingDataSetVersion';
+
+function preservePredecessorSnapshot(source: any, cleaned: any) {
+  const publication = cleaned.administrativeInformation?.publicationAndOwnership;
+  if (publication?.[predecessorKey] !== undefined) {
+    // Empty selectors are already gone. Inside a supplied reference even an empty caption is data.
+    publication[predecessorKey] = JSON.parse(
+      JSON.stringify(source.administrativeInformation.publicationAndOwnership[predecessorKey]),
+    );
+  }
+}
+
 export function genProcessJsonOrdered(id: string, data: any) {
   let quantitativeReference = {};
   const exchangeList = jsonToList(data?.exchanges?.exchange);
@@ -149,7 +161,7 @@ export function genProcessJsonOrdered(id: string, data: any) {
     };
   });
 
-  return removeEmptyObjects({
+  const ordered = removeEmptyObjects({
     processDataSet: {
       // '@xmlns:common': oldData.processDataSet?.['@xmlns:common'] ?? {},
       // '@xmlns': oldData.processDataSet?.['@xmlns'] ?? {},
@@ -749,6 +761,8 @@ export function genProcessJsonOrdered(id: string, data: any) {
           'common:dataSetVersion':
             data?.administrativeInformation?.publicationAndOwnership?.['common:dataSetVersion'] ??
             {},
+          [predecessorKey]:
+            data?.administrativeInformation?.publicationAndOwnership?.[predecessorKey],
           'common:permanentDataSetURI': `https://lcdn.tiangong.earth/datasetdetail/process.xhtml?uuid=${id}&version=${data?.administrativeInformation?.publicationAndOwnership?.['common:dataSetVersion']}`,
           'common:workflowAndPublicationStatus':
             data?.administrativeInformation?.publicationAndOwnership?.[
@@ -868,6 +882,8 @@ export function genProcessJsonOrdered(id: string, data: any) {
       },
     },
   });
+  preservePredecessorSnapshot(data, ordered.processDataSet);
+  return ordered;
 }
 
 export function genProcessFromData(data: any): FormProcess {
@@ -1437,6 +1453,8 @@ export function genProcessFromData(data: any): FormProcess {
           'common:dataSetVersion':
             data?.administrativeInformation?.publicationAndOwnership?.['common:dataSetVersion'] ??
             {},
+          [predecessorKey]:
+            data?.administrativeInformation?.publicationAndOwnership?.[predecessorKey],
           'common:permanentDataSetURI':
             data?.administrativeInformation?.publicationAndOwnership?.[
               'common:permanentDataSetURI'
@@ -1646,13 +1664,15 @@ export function genProcessFromData(data: any): FormProcess {
       },
     },
   } as any);
-  return removeEmptyObjects({
+  const form = removeEmptyObjects({
     processInformation: process.processDataSet.processInformation,
     exchanges: process.processDataSet.exchanges,
     LCIAResults: process.processDataSet.LCIAResults,
     modellingAndValidation: process.processDataSet.modellingAndValidation,
     administrativeInformation: process.processDataSet.administrativeInformation,
   });
+  preservePredecessorSnapshot(data, form);
+  return form;
 }
 
 export function genProcessExchangeTableData(data: any, lang: string) {

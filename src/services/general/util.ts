@@ -737,6 +737,14 @@ async function normalizeLangNode(
     translatedPaths: string[];
   },
 ): Promise<any> {
+  // The predecessor is a historical reference snapshot, including its supplied languages.
+  if (
+    path ===
+    'processDataSet.administrativeInformation.publicationAndOwnership.common:referenceToPrecedingDataSetVersion'
+  ) {
+    return value;
+  }
+
   if (value === null || value === undefined) {
     return value;
   }
