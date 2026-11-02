@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
-lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
+lastReviewedAt: 2026-11-02
+lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 ---
 
 # Testing Execution State
@@ -65,6 +65,8 @@ lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection
 This is a checked-in reference, not a per-PR execution ledger. A delivery's post-commit, hook-owned full-gate result belongs in its PR validation evidence; update this section when the reference counts, coverage policy, or queue state materially changes.
 
 ## Current State
+
+- Issue #1396 owns the qualification-only batch allocation witness and separate bounded native controls. Its authorized continuation also owns evidence-supported closing-popup Escape admission and login-feedback ordering corrections; each new candidate retains independent regression and complete qualification obligations. It preserves the historical failed source, complete original canonical actions and budgets, and the distinction between public observations and private handler state. Implementation, inert checks, one reviewed native set, exact canonical/hosted artifacts and subsequent Main/Dev/root delivery are separate evidence stages; actual outcomes and remaining work belong on the Issue. No historical cause, product fix or qualification pass follows from adding the observer.
 
 - Issue #1358 owns the separately reproduced Portal commit-lifecycle repair, maintained-patch image input closure and exact Main semantic admission. Acceptance requires installed-package, native ESM/default-container/focus, current-source canonical semantic and normal complete-gate evidence; actual executions and remaining work are recorded on that Issue/PR. Package versions and unrelated dependency resolutions remain intact. Successful new evidence does not establish #1354's historical failure cause or independently authorize publication.
 

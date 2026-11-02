@@ -22,6 +22,12 @@ const PERMANENT_ALLOWLIST_CONTRACTS = {
     entry.ownerIssue === '#606' && entry.path === 'scripts/i18n/locale-delivery.mjs',
   'standalone-icu-canonical-default': (entry) =>
     entry.ownerIssue === '#633' && entry.path === 'scripts/i18n/icu-message-parser.cjs',
+  'controlled-native-batch-fixture-locale': (entry) =>
+    entry.ownerIssue === '#1396' &&
+    entry.path === 'scripts/e2e/batch-allocation-native-worker.cjs' &&
+    entry.ruleId === 'language-default' &&
+    entry.nodeTextDigest === 'fcdfc12193489dc23c2190f0d381989dd2722d69e2af08553d0013b77633bd61' &&
+    entry.maxMatches === 1,
 };
 
 const PLATFORM_MODULES = {

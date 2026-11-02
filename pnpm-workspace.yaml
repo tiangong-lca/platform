@@ -70,6 +70,7 @@ minimumReleaseAgeExclude:
 patchedDependencies:
   '@hono/node-server@1.19.17': patches/@hono__node-server@1.19.17.patch
   '@rc-component/portal@2.2.1': patches/@rc-component__portal@2.2.1.patch
+  '@rc-component/trigger@3.10.1': patches/@rc-component__trigger@3.10.1.patch
   axios@0.34.0: patches/axios@0.34.0.patch
   decode-uri-component@0.2.2: patches/decode-uri-component@0.2.2.patch
   glob@10.5.0: patches/glob@10.5.0.patch

@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
-lastReviewedNote: 'Platform #1402: reviewed exact Result route, synthetic browser and locale artifact workflow; runtime, install, pre-push and promotion commands remain unchanged.'
+lastReviewedAt: 2026-11-02
+lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 ---
 
 # Development Bootstrap
@@ -303,7 +303,7 @@ Both release commands default to read-only planning when `--apply` is omitted. `
 - use `pnpm start:main` only when the task explicitly requires the `main` environment
 - direct semantic E2E development is configured by `playwright.config.ts`, runs from `tests/e2e/i18n/**`, and serves the local worktree with `pnpm start:main`; `E2E_BASE_URL` must remain a loopback URL
 - release E2E accepts only a clean committed Next candidate, exports it with `git archive`, builds one production bundle in the digest-pinned Playwright image, serves that immutable bundle internally, and never mounts `lca-workspace`, `.git`, unrelated submodules, host dependencies, or browser profiles
-- release preflight verifies the environment/candidate identities, writable isolated storage, all three browser launches, bundle/login readiness, production backend target, optional role-neutral login, recovery-ledger safety, and Playwright discovery before production fixture intent/create
+- release preflight verifies the environment/candidate identities, writable isolated storage, qualification-only batch-diagnostic source admission before any browser, all three browser launches, bundle/login readiness, production backend target, optional role-neutral login, recovery-ledger safety, and Playwright discovery before production fixture intent/create
 - only one install/run/resume/clean invocation may mutate project-owned E2E state at a time; a dead owner lock is recovered automatically, while a live owner fails early instead of racing shared build/runtime/ledger state
 - a failed build, server, or preflight phase may activate one ignored one-hour HMAC-bound continuation receipt; argument-free `pnpm e2e:release:resume` revalidates the exact commit/tree/lock/environment/source/image/arguments and reruns preflight, while browser results and production-fixture phases are never reused
 - race diagnosis may add `--project <browser> --spec <path>` or `--grep <pattern> --repeat-each <1-5>`; repeat is accepted only for a focused read-only scope and cannot write verified evidence

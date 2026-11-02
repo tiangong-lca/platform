@@ -305,8 +305,9 @@ async function execute(options, binding) {
           // Controlled condition only: wait for the popup to finish, not before Escape.
           receipt.step = `${name}:${scenario}:assert-popup-hidden`;
           await expect(page.locator('.fixture-competing-popup')).toBeHidden();
-          receipt.step = `${name}:${scenario}:assert-navigation-retained`;
-          await expect(navigation).toBeVisible();
+          receipt.step = `${name}:${scenario}:assert-navigation-hidden`;
+          await expect(navigation).toBeHidden({ timeout: 45000 });
+          await expect(menuButton).toBeFocused();
         }
         receipt.step = `${name}:${scenario}:validate-capture`;
         const observed = await snapshot();
@@ -320,8 +321,8 @@ async function execute(options, binding) {
           check(observed.navigationOpenCount === 0 && observed.navigationVisibleCount === 0 && observed.restoredOpener, 'navigation_hide_or_restore_failed');
           check(observed.collapseCalls.includes(false) && observed.collapseCalls.slice(observed.collapseCalls.indexOf(false) + 1).includes(true), 'native_state_chain_unproved');
         } else {
-          check(!escapes[0].popupOpen && escapes[0].popupClosingCount === 1 && escapes[0].popupMotionCount > 0 && observed.navigationOpenCount === 1, 'controlled_closing_condition_unproved');
-          check(!observed.collapseCalls.slice(observed.collapseCalls.indexOf(false) + 1).includes(true), 'competing_popup_did_not_retain_escape');
+          check(!escapes[0].popupOpen && escapes[0].popupClosingCount === 1 && escapes[0].popupMotionCount > 0 && observed.navigationOpenCount === 0 && observed.navigationVisibleCount === 0 && observed.restoredOpener, 'controlled_closing_condition_unproved');
+          check(observed.collapseCalls.slice(observed.collapseCalls.indexOf(false) + 1).includes(true), 'closing_popup_blocked_navigation_escape');
         }
         caseResult.outcome = 'passed';
         } catch (error) {

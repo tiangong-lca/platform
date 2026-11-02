@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
-lastReviewedNote: 'Platform #1402: exact Result detail adds one authenticated route and one locale assertion; schema, route inventory and proof counts remain exact with no language or authority changes.'
+lastReviewedAt: 2026-11-02
+lastReviewedCommit: 6e0c3d41ec05ad00cdff1d71be571e619c760b6c
+lastReviewedNote: 'Platform #1396: separate logical popup Escape admission from exit-motion DOM retention with exact Portal/Trigger patches. Native closing-popup navigation and installed Portal regressions pass; canonical actions, assertions, retries, timeouts, IME and publication boundaries remain unchanged. Historical failures remain retained; full candidate qualification is separate.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

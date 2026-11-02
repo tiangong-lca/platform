@@ -1,5 +1,6 @@
 import { signInViaUi } from './auth';
 import { routeToCandidateUrl, selectAppLocaleThroughUi } from './contracts';
+import { withBatchAllocationDiagnostics } from './batch-allocation-observer';
 import { expect, test, type Locator } from './fixtures';
 import { makeMinimalProcessJson, readProductionDataLedger } from './production-data-ledger';
 
@@ -8,7 +9,8 @@ import { makeMinimalProcessJson, readProductionDataLedger } from './production-d
 test('Process allocation survives deletion, batch editing and save/reopen', async ({
   page,
   baseURL,
-}) => {
+  browserName,
+}, testInfo) => {
   test.skip(
     process.env.E2E_QUALIFICATION !== 'true',
     'Requires the hermetic qualification backend.',
@@ -212,13 +214,15 @@ test('Process allocation survives deletion, batch editing and save/reopen', asyn
     includeHidden: true,
   });
   await waitForDialogReady(batch);
-  await batch.getByRole('row').filter({ hasText: 'Raw material' }).getByRole('checkbox').check();
-  await batch.getByRole('button', { name: 'Add product allocation', exact: true }).click();
-  await batch.getByRole('combobox', { name: 'Target product' }).click();
-  await page.getByText('Product B (#2)', { exact: true }).last().click();
-  await batch.getByRole('spinbutton').fill('100');
-  await batch.getByRole('button', { name: 'OK', exact: true }).click();
-  await expect(batch).toBeHidden();
+  await withBatchAllocationDiagnostics(page, batch, testInfo, browserName, async () => {
+    await batch.getByRole('row').filter({ hasText: 'Raw material' }).getByRole('checkbox').check();
+    await batch.getByRole('button', { name: 'Add product allocation', exact: true }).click();
+    await batch.getByRole('combobox', { name: 'Target product' }).click();
+    await page.getByText('Product B (#2)', { exact: true }).last().click();
+    await batch.getByRole('spinbutton').fill('100');
+    await batch.getByRole('button', { name: 'OK', exact: true }).click();
+    await expect(batch).toBeHidden();
+  });
   await drawer.getByRole('button', { name: 'Save', exact: true }).click();
   await expect.poll(() => writes.length).toBe(1);
   const saved = writes[0].jsonOrdered.processDataSet.exchanges.exchange;

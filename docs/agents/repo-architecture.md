@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
-lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
+lastReviewedAt: 2026-11-02
+lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -101,7 +101,7 @@ Use this default read path:
 
 `route -> page/component -> service -> backend or static resource`
 
-The Umi-global Ant Design configuration keeps Message feedback non-modal: its public `styles.listContent` semantic style uses `pointerEvents: none` so the transparent full-width list does not intercept header input. Incoming message configuration and object/function styles remain composed; individual notices retain native pointer interaction and dismissal. Notification configuration is unchanged, including its upstream hover/timer behavior.
+The Umi-global Ant Design configuration keeps Message feedback non-modal: its public `styles.listContent` semantic style uses `pointerEvents: none` so the transparent full-width list does not intercept header input. Incoming message configuration and object/function styles remain composed; individual notices retain native pointer interaction and dismissal. Notification configuration is unchanged, including its upstream hover/timer behavior. Login success feedback starts after the existing user-info loading step and safe redirect request, so waiting for membership access does not consume its native display lifetime. The global contextual App API and default duration remain unchanged; requesting navigation does not imply that all destination rendering has completed.
 
 `/dataset-display-settings` is a first-level menu restricted to `data_product_manager`, immediately after Data Processing. It lists every exact version of the seven business dataset types through a dedicated candidate RPC, with name/UUID search in the native table toolbar, dataset-type/visibility filters, a classification selector when one dataset type is selected, and reversible batch show/hide. Its table uses the shared six base columns and 50-row default described below; it exposes no AI recommendation or reference lookup. It never reads raw cross-owner tables. Failed commands retain selection for retry; filter, page and locale changes clear selection. The latest candidate-load failure opens a context-aware error dialog and clears table rows, total and selection; stale or unmounted completions do not notify or update the table. Search and filter values remain available for retry. The Process-only publisher and old `/tgdata/published-processes` route are removed without redirect.
 

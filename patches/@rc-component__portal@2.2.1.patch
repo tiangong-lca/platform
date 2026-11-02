@@ -1,5 +1,18 @@
+diff --git a/es/Portal.d.ts b/es/Portal.d.ts
+index 13d5bca4283386eb7a4f47c283e107ca4d0a33b1..cad77700e23ec7d2448954dfaf368d552c459fe3 100644
+--- a/es/Portal.d.ts
++++ b/es/Portal.d.ts
+@@ -11,6 +11,8 @@ export interface PortalProps {
+     children?: React.ReactNode;
+     /** Show the portal children */
+     open?: boolean;
++    /** Logical Escape participation; defaults to open independently of exit-motion retention. */
++    escapeActive?: boolean;
+     /** Remove `children` when `open` is `false`. Set `false` will not handle remove process */
+     autoDestroy?: boolean;
+     /** Lock screen scroll when open */
 diff --git a/es/Portal.js b/es/Portal.js
-index 3a2b35a068cb81e1df55899afa93e504c3b220ef..187f5f07719f38bcfc4ccd3082f02ab018681c1a 100644
+index 3a2b35a068cb81e1df55899afa93e504c3b220ef..a08b10f76228f3eb1e93bc6e81358e73d336b57c 100644
 --- a/es/Portal.js
 +++ b/es/Portal.js
 @@ -5,7 +5,7 @@ import OrderContext from "./Context";
@@ -11,16 +24,24 @@ index 3a2b35a068cb81e1df55899afa93e504c3b220ef..187f5f07719f38bcfc4ccd3082f02ab0
  const getPortalContainer = getContainer => {
    if (getContainer === false) {
      return false;
-@@ -64,7 +64,7 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
+@@ -24,6 +24,7 @@ const getPortalContainer = getContainer => {
+ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
+   const {
+     open,
++    escapeActive = open,
+     autoLock,
+     getContainer,
+     debug,
+@@ -64,7 +65,7 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
    useScrollLocker(autoLock && open && canUseDom() && (mergedContainer === defaultContainer || mergedContainer === document.body));
  
    // ========================= Esc Keydown ==========================
 -  useEscKeyDown(open, onEsc);
-+  const escapeNode = useEscKeyDown(open, onEsc);
++  const escapeNode = useEscKeyDown(open && escapeActive, onEsc);
  
    // =========================== Ref ===========================
    let childRef = null;
-@@ -88,9 +88,9 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
+@@ -88,9 +89,9 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
        ref: mergedRef
      });
    }
@@ -58,7 +79,7 @@ index ab462d1082a21f4b382fd4c222cfeac1d4568ff6..ca964717604c804f6a4b6d217d9ff645
 +export declare const _test: null | (() => { stack: EscapeNode[]; reset: () => void });
 +export default function useEscKeyDown(open: boolean, onEsc?: EscCallback): EscapeNode;
 diff --git a/es/useEscKeyDown.js b/es/useEscKeyDown.js
-index 90c0bece9c4acc3dbeccda2d74f8a7855c80c882..3ce2916281ffe52659d84a0f667e5a8c9b4ad552 100644
+index 90c0bece9c4acc3dbeccda2d74f8a7855c80c882..358963872da841d288da9dbb22105600016a62d2 100644
 --- a/es/useEscKeyDown.js
 +++ b/es/useEscKeyDown.js
 @@ -1,78 +1,101 @@
@@ -223,20 +244,42 @@ index 90c0bece9c4acc3dbeccda2d74f8a7855c80c882..3ce2916281ffe52659d84a0f667e5a8c
 +  }, [open, parent, onEsc]);
 +  return node;
  }
+\ No newline at end of file
+diff --git a/lib/Portal.d.ts b/lib/Portal.d.ts
+index 13d5bca4283386eb7a4f47c283e107ca4d0a33b1..cad77700e23ec7d2448954dfaf368d552c459fe3 100644
+--- a/lib/Portal.d.ts
++++ b/lib/Portal.d.ts
+@@ -11,6 +11,8 @@ export interface PortalProps {
+     children?: React.ReactNode;
+     /** Show the portal children */
+     open?: boolean;
++    /** Logical Escape participation; defaults to open independently of exit-motion retention. */
++    escapeActive?: boolean;
+     /** Remove `children` when `open` is `false`. Set `false` will not handle remove process */
+     autoDestroy?: boolean;
+     /** Lock screen scroll when open */
 diff --git a/lib/Portal.js b/lib/Portal.js
-index ce4c0fc5010746cdc41525198490d7fe48a2815b..5b8efd40c4822030d90d674206adcd954d7bea0f 100644
+index ce4c0fc5010746cdc41525198490d7fe48a2815b..1b0eda9da3509ac2fe9dbc758b4a8d3996b8f689 100644
 --- a/lib/Portal.js
 +++ b/lib/Portal.js
-@@ -73,7 +73,7 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
+@@ -33,6 +33,7 @@ const getPortalContainer = getContainer => {
+ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
+   const {
+     open,
++    escapeActive = open,
+     autoLock,
+     getContainer,
+     debug,
+@@ -73,7 +74,7 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
    (0, _useScrollLocker.default)(autoLock && open && (0, _util.canUseDom)() && (mergedContainer === defaultContainer || mergedContainer === document.body));
  
    // ========================= Esc Keydown ==========================
 -  (0, _useEscKeyDown.default)(open, onEsc);
-+  const escapeNode = (0, _useEscKeyDown.default)(open, onEsc);
++  const escapeNode = (0, _useEscKeyDown.default)(open && escapeActive, onEsc);
  
    // =========================== Ref ===========================
    let childRef = null;
-@@ -97,9 +97,9 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
+@@ -97,9 +98,9 @@ const Portal = /*#__PURE__*/React.forwardRef((props, ref) => {
        ref: mergedRef
      });
    }
@@ -274,7 +317,7 @@ index ab462d1082a21f4b382fd4c222cfeac1d4568ff6..ca964717604c804f6a4b6d217d9ff645
 +export declare const _test: null | (() => { stack: EscapeNode[]; reset: () => void });
 +export default function useEscKeyDown(open: boolean, onEsc?: EscCallback): EscapeNode;
 diff --git a/lib/useEscKeyDown.js b/lib/useEscKeyDown.js
-index 7955ae5510d78b248bda8f8237aef1e267da0f5a..17a3045c14ee92de0bb00c471acfbf62348896e1 100644
+index 7955ae5510d78b248bda8f8237aef1e267da0f5a..2d6c2bc21454707fcc6ccf04fddd0ca360e2765d 100644
 --- a/lib/useEscKeyDown.js
 +++ b/lib/useEscKeyDown.js
 @@ -3,83 +3,116 @@
