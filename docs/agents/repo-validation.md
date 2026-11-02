@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-02
-lastReviewedCommit: 6e0c3d41ec05ad00cdff1d71be571e619c760b6c
-lastReviewedNote: 'Platform #1396: separate logical popup Escape admission from exit-motion DOM retention with exact Portal/Trigger patches. Native closing-popup navigation and installed Portal regressions pass; canonical actions, assertions, retries, timeouts, IME and publication boundaries remain unchanged. Historical failures remain retained; full candidate qualification is separate.'
+lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -371,3 +371,7 @@ Before accepting generated patch bytes, use the documented helper against the of
 Actual native Utoo CJS/ESM and Umi bundler fixtures must cover compiler outputs, non-root public paths, HTTP proxy ordering, lazy activation and stable aliases, HMR handshake/messages/close, readiness and rejected startup, HTTP(S) and owned signal/IPC-disconnect cleanup. Test-only certificates require no runtime CLI/provider. Unix runs send actual OS signals; Windows uses the owned IPC command to exercise the installed cleanup handlers because Windows does not deliver POSIX signals. Neither path is evidence for another host platform. Wrapper termination must close the fork IPC channel and the child must dispose or exit rather than orphaning a server. Verify the listening port is closed after parent loss.
 
 The actual Utoo percent-output differential retains the [user-approved restriction](https://github.com/tiangong-lca/platform/issues/1385#issuecomment-6542920653): baseline emits/serves `100%.js` with status 200, while the unchanged official default guard rejects its encoded URL with status 404 and Utoo offers no opt-in. Assert both outcomes; this is an intentional restriction, not equivalent behavior. Keep ordinary assets, Unicode/spaces, proxy/HMR and HTTP(S) proof, and do not relax the guard or enable a caller-wide opt-in. Preserve unfiltered audit/native records and all existing patch inventory, full gate, canonical source-bound browser/artifact/resource and Main/Dev/root requirements.
+
+## Login feedback ordering
+
+For the Platform #1396 continuation, hold user hydration in the Login regression and prove that success feedback has not started; after release, verify the existing safe redirect precedes the single contextual success message. A bounded rendered control holds the actual membership RPC beyond the native toast lifetime and checks that feedback is visible after release and the account remains operable. Keep the unchanged session-race canonical case, default toast duration, authentication/identity fencing and hosted resource/artifact gates. The controlled mechanism does not identify a historical run's unobserved timing.

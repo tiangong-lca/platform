@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-02
-lastReviewedCommit: 6e0c3d41ec05ad00cdff1d71be571e619c760b6c
-lastReviewedNote: 'Platform #1396: separate logical popup Escape admission from exit-motion DOM retention with exact Portal/Trigger patches. Native closing-popup navigation and installed Portal regressions pass; canonical actions, assertions, retries, timeouts, IME and publication boundaries remain unchanged. Historical failures remain retained; full candidate qualification is separate.'
+lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 ---
 
 # Development Bootstrap
