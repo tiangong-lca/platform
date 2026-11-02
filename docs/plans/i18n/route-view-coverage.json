@@ -452,7 +452,7 @@
       "schemaVersion": "tiangong.i18n-semantic-e2e-evidence.v2",
       "schemaPath": "docs/plans/i18n/semantic-e2e-evidence.schema.json",
       "evidencePath": ".local/e2e-release/semantic-e2e-evidence.json",
-      "requiredAssertionCount": 60,
+      "requiredAssertionCount": 61,
       "requiredLocales": ["zh-CN", "en-US", "de-DE", "fr-FR"],
       "requiredBrowsers": ["chromium", "firefox", "webkit"],
       "browserCoverage": {
@@ -1804,6 +1804,24 @@
       "boundary": {
         "selector": "[data-testid='access-denied']",
         "messageIds": ["pages.accessDenied.message"]
+      }
+    },
+    "rv.published-results.localized": {
+      "kind": "localized-view",
+      "localeTransition": "storage-reload",
+      "requiredScenarios": ["route"],
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/published-results",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/published-results",
+        "hashQuery": {}
+      },
+      "visible": {
+        "kind": "locale-messages",
+        "messageIds": ["pages.publishedResults.invalidLink"]
       }
     }
   },
@@ -3333,6 +3351,56 @@
         "plannedBrowserAssertions": [
           "anonymous unknown pathname reaches /user/login without rendering the 404",
           "authenticated unknown pathname renders the localized 404 and Back Home action"
+        ]
+      },
+      "unownedStaticContent": 0,
+      "blockedContext": 0
+    },
+    {
+      "route": "/published-results",
+      "viewState": "exact-result-link",
+      "executableAssertionId": "rv.published-results.localized",
+      "trigger": "Open a published Result link; absent or invalid exact identity shows a localized error.",
+      "component": "src/pages/PublishedResult/index.tsx",
+      "accessContext": "authenticated-session-required; exact publication and Result identity, independent of source Process visibility",
+      "copySources": {
+        "sourcePaths": [
+          "src/pages/PublishedResult/index.tsx",
+          "src/pages/Processes/Components/finalResultsPanel.tsx"
+        ],
+        "localeMessageIds": ["pages.publishedResults.invalidLink"],
+        "localeMessageIdPrefixes": ["pages.publishedResults."],
+        "declaredFallbacks": []
+      },
+      "visibleStates": [
+        "default",
+        "loading",
+        "ready",
+        "error",
+        "pagination",
+        "retry",
+        "empty",
+        "disabled",
+        "search",
+        "filter",
+        "selection",
+        "download"
+      ],
+      "targetCoverage": {
+        "localeScope": "all-registry-locales",
+        "ownership": "shared locale catalog",
+        "structureAudit": "Exact-link errors and Result detail share the four active locale catalogs; no result directory is added.",
+        "missingContent": 0
+      },
+      "proof": {
+        "requiredEvidenceScope": "internal-localization",
+        "focusedTests": [
+          "tests/unit/pages/PublishedResult/index.test.tsx",
+          "tests/unit/pages/Processes/Components/finalResultsPanel.test.tsx"
+        ],
+        "plannedBrowserAssertions": [
+          "invalid identity renders the localized error",
+          "exact Derived Result reads without source lookup; frozen units and values stay intact"
         ]
       },
       "unownedStaticContent": 0,

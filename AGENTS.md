@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-01
-lastReviewedCommit: 920a305710e5f73e109ebdf4ef001fb115b2518c
-lastReviewedNote: 'Reviewed Platform #1396 installed-source case correction after hosted 920 pre-browser ENOENT. Both admission paths require exact package-relative directory entries before canonicalization; AntD Button.js spelling and focused negative/positive source contracts are verified. Host-root aliases, regular/hash/size protections, canonical actions, privacy, dependency graph and full-gate boundaries are unchanged. Historical native349 and failed920 remain separate; new Linux qualification and delivery are pending.'
+lastReviewedCommit: d35fcf85d8ce597ad28c9dff29a653f873cbb107
+lastReviewedNote: "Platform #1396: reconciled current Dev #1403 with Main witness #1397. Both final Result behavior and canonical failure diagnostics are preserved; Escape correction and fresh qualification remain pending."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
