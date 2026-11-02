@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-10-31
-lastReviewedCommit: 4bc2f118a5b11b9b534ecf0b1ed968f56d1aa5b5
-lastReviewedNote: 'Reviewed Platform #1383 passive schema 2 against 4bc2f118a: five bounded detail slots, one unawaited optional frame, unknown composition prehistory, exact rejection precedence and independent cleanup. Actual serialized native controls remain separate from canonical qualification; inventory, actions, budgets, dependency/Portal contracts and historical failure remain unchanged.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
+lastReviewedNote: 'Platform #1402: exact Result detail adds one authenticated route and one locale assertion; schema, route inventory and proof counts remain exact with no language or authority changes.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

@@ -41,6 +41,22 @@ test('original process browses frozen HDF5 result pages without downloading matr
     const body = route.request().postDataJSON();
     expect(new URL(route.request().url()).origin).toBe('https://semantic-harness.invalid');
     requests.push(body);
+    if (body.mode === 'source_results')
+      return route.fulfill({
+        json: {
+          ok: true,
+          mode: 'source_results',
+          data: {
+            publication: {
+              publicationId,
+              releaseVersion: '2026.11.1',
+              format: 'legacy-four-zip.v1',
+            },
+            results: [],
+            nextResultKey: null,
+          },
+        },
+      });
     if (body.mode !== 'query') return route.fulfill({ status: 404, json: { ok: false } });
     const source = { id: body.processId, version: body.processVersion };
     const process = {
@@ -58,7 +74,7 @@ test('original process browses frozen HDF5 result pages without downloading matr
       publicationId,
       source,
     };
-    if (requests.length === 1)
+    if (requests.filter((r) => r.mode === 'query').length === 1)
       return route.fulfill({
         status: 202,
         json: { ok: true, data: { ...common, status: 'preparing' } },

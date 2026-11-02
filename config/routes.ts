@@ -321,6 +321,12 @@ export default [
     component: './DatasetDisplaySettings',
   },
   {
+    path: '/published-results',
+    hideInMenu: true,
+    wrappers: ['@/wrappers/AuthGuard'],
+    component: './PublishedResult',
+  },
+  {
     name: 'displayedDatasets',
     path: '/displayed-datasets',
     component: './DisplayedDatasets',
