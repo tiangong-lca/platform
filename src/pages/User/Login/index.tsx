@@ -148,10 +148,10 @@ const Login: React.FC = () => {
             id: 'pages.login.success',
             defaultMessage: 'Login successful!',
           });
-          messageApi.success(defaultLoginSuccessMessage);
           await fetchUserInfo();
           const urlParams = new URLSearchParams(location.search);
           history.push(resolveSafeLoginRedirect(urlParams.get('redirect')));
+          messageApi.success(defaultLoginSuccessMessage);
           return;
         }
         // 如果失败去设置用户错误信息

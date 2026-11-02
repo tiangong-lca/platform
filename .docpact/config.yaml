@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-11-01"
-lastReviewedCommit: "920a305710e5f73e109ebdf4ef001fb115b2518c"
-lastReviewedNote: "Reviewed Platform #1396 installed-source case correction after hosted 920 pre-browser ENOENT. Both admission paths require exact package-relative directory entries before canonicalization; AntD Button.js spelling and focused negative/positive source contracts are verified. Host-root aliases, regular/hash/size protections, canonical actions, privacy, dependency graph and full-gate boundaries are unchanged. Historical native349 and failed920 remain separate; new Linux qualification and delivery are pending."
+lastReviewedAt: "2026-11-02"
+lastReviewedCommit: "b659f5aa8b90ff0d2f29f4758fe7fb70e05b039a"
+lastReviewedNote: "Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence."
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.

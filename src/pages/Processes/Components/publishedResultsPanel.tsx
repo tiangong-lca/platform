@@ -8,12 +8,23 @@ import {
 import { Alert, Button, Collapse, Descriptions, Input, Space, Spin, Table, Tabs } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
+import FinalSourceResults from './finalResultsPanel';
 
-function ResultSession({ id, version, lang }: { id: string; version: string; lang: string }) {
+function ResultSession({
+  id,
+  version,
+  lang,
+  publicationId,
+}: {
+  id: string;
+  version: string;
+  lang: string;
+  publicationId?: string;
+}) {
   const [kind, setKind] = useState<'lci' | 'lcia'>('lcia');
   const [filter, setFilter] = useState('');
   const [cursor, setCursor] = useState<string | null>(null);
-  const pinnedPublication = useRef<string | undefined>(undefined);
+  const pinnedPublication = useRef<string | undefined>(publicationId);
   const intl = useIntl();
   const [overview, setOverview] = useState<PublishedResult>();
   const [result, setResult] = useState<PublishedResult>();
@@ -337,10 +348,30 @@ function ResultSession({ id, version, lang }: { id: string; version: string; lan
 }
 
 /** Remounting at source identity change also clears publication/cursor state synchronously. */
+export function LegacyPublishedResultsPanel(props: {
+  id: string;
+  version: string;
+  lang: string;
+  publicationId?: string;
+}) {
+  return (
+    <ResultSession key={`${props.id}@${props.version}/${props.publicationId ?? ''}`} {...props} />
+  );
+}
+
 export default function PublishedResultsPanel(props: {
   id: string;
   version: string;
   lang: string;
 }) {
-  return <ResultSession key={`${props.id}@${props.version}`} {...props} />;
+  return (
+    <FinalSourceResults
+      key={`${props.id}@${props.version}`}
+      id={props.id}
+      version={props.version}
+      legacy={(publicationId) => (
+        <LegacyPublishedResultsPanel {...props} publicationId={publicationId} />
+      )}
+    />
+  );
 }

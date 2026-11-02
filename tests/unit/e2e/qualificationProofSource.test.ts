@@ -128,7 +128,7 @@ it('round-trips a synthetic current report through producer receipt, private pro
   const written = JSON.parse(fs.readFileSync(proof, 'utf8'));
   expect(written.assertionBrowsers['rv.login.password-forgot']).toEqual(['chromium']);
   expect(written.assertionBrowsers['rv.login.password-reset']).toEqual(['chromium']);
-  expect(written.assertionIds).toHaveLength(60);
+  expect(written.assertionIds).toHaveLength(61);
   expect(written.diagnostics.qualificationReportSha256).toBe(
     createHash('sha256').update(currentReport).digest('hex'),
   );

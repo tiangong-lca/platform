@@ -60,6 +60,24 @@ function Pending({ signal }) { signal.rendered++; throw signal.promise; }
 function signal() { return { rendered: 0, promise: new Promise(() => {}) }; }
 class Boundary extends React.Component { constructor(props) { super(props); this.state = { failed: false }; } static getDerivedStateFromError() { return { failed: true }; } render() { return this.state.failed ? h('i') : this.props.children; } }
 const cases = {
+  async 'closing-render-retained'() {
+    const tree = active => h(P, { name: 'parent' }, h(P, { name: 'popup', open: true, escapeActive: active }));
+    const e = await mount(tree(true));
+    await esc(); take([['popup', true], ['parent', false]]);
+    await update(e, tree(false));
+    assert.ok(commits.has('popup'), 'Exit animation DOM must remain mounted');
+    await esc(); take([['parent', true]]);
+    await update(e, tree(true));
+    await esc(); take([['popup', true], ['parent', false]]);
+  },
+  async 'aborted-escape-close'() {
+    const pending = signal();
+    const tree = closing => h(React.Suspense, { fallback: h('b') }, h(P, { name: 'parent' },
+      h(P, { name: 'popup', open: true, escapeActive: !closing }), closing && h(Pending, { signal: pending })));
+    const e = await mount(tree(false)); await transition(e, tree(true));
+    assert.ok(pending.rendered);
+    await esc(); take([['popup', true], ['parent', false]]);
+  },
   async 'ordered-fanout'() { await mount(h(React.Fragment, null, keyed('A'), keyed('B'), keyed('C'))); await esc(); assert.deepEqual(calls.splice(0), [['C', true], ['B', false], ['A', false]]); },
   async 'strict-isolated-replay'() { assert.ok(React.Activity, 'Activity is required for state-preserving effect replay'); const count = { a: 0, b: 0 }; function Count({ name }) { React.useLayoutEffect(() => { count[name]++; }, []); return null; } const tree = mode => h(React.StrictMode, null, h(React.Activity, { mode }, h(P, { name: 'A' }, h(Count, { name: 'a' })))); const a = await mount(tree('visible')); await mount(h(P, { name: 'B' }, h(Count, { name: 'b' }))); const before = { ...count }; await update(a, tree('hidden')); await update(a, tree('visible')); assert.ok(count.a > before.a); assert.equal(count.b, before.b); await esc(); take([['B', true], ['A', false]]); },
   async 'aborted-reparent'() { const nodes = {}, pending = signal(); function Capture({ name }) { const node = React.useContext(hook.EscapeContext); React.useLayoutEffect(() => { nodes[name] = node; }); return null; } const tree = (parent, aOpen, suspend = false) => h(React.Fragment, null, h(P, { name: 'A', key: 'A', open: aOpen }, h(Capture, { name: 'A' })), h(P, { name: 'B', key: 'B' }, h(Capture, { name: 'B' })), parent && h(React.Suspense, { fallback: h('b'), key: 'pending' }, h(React.Fragment, null, h(hook.EscapeContext.Provider, { value: nodes[parent] }, keyed('child')), suspend && h(Pending, { signal: pending })))); const e = await mount(tree(null, true)); await update(e, tree('A', true)); await update(e, tree('A', false)); await update(e, tree('A', true)); await transition(e, tree('B', true, true)); assert.ok(pending.rendered); await esc(); take([['child', true], ['A', false], ['B', false]]); },

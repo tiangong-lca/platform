@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "a18f90ff9bcb82c654af904db07beed7f3c72367d06d5c619df9b714b9ad43d2",
+    "auditedInputDigest": "3c971817e5de5ffee2e0b3cf5150d42ae0dafad43b525e9393cf2a230bbef666",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -69,13 +69,13 @@
   "summary": {
     "localeCount": 4,
     "localeLeafModuleCounts": { "en-US": 31, "zh-CN": 31, "de-DE": 31, "fr-FR": 31 },
-    "localeUniqueKeyCounts": { "en-US": 3638, "zh-CN": 3638, "de-DE": 3638, "fr-FR": 3638 },
-    "canonicalCandidateKeyCount": 3638,
-    "activeStaticKeyCount": 2434,
+    "localeUniqueKeyCounts": { "en-US": 3654, "zh-CN": 3654, "de-DE": 3654, "fr-FR": 3654 },
+    "canonicalCandidateKeyCount": 3654,
+    "activeStaticKeyCount": 2435,
     "activeDynamicKeyCount": 323,
-    "reservedKeyCount": 881,
-    "productionSourceFileCount": 518,
-    "literalReferenceCount": 4461,
+    "reservedKeyCount": 896,
+    "productionSourceFileCount": 521,
+    "literalReferenceCount": 4463,
     "dynamicCallsiteCount": 38,
     "dynamicCallsiteSummaryCount": 38,
     "registeredDynamicCallsiteCount": 38,
@@ -231749,7 +231749,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 227,
+          "line": 238,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Amount",
@@ -231758,7 +231758,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 292,
+          "line": 303,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Amount",
@@ -231773,13 +231773,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 227,
+              "line": 238,
               "column": 17,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 292,
+              "line": 303,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -231847,7 +231847,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 114,
+          "line": 125,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Reference quantity",
@@ -231862,13 +231862,190 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 114,
+              "line": 125,
               "column": 17,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.changed",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "The publication or result reader changed. Reload the result selection.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 956,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "发布内容或查询服务已变化，请重新加载结果选择。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 953,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Die Veröffentlichung oder der Ergebnisdienst hat sich geändert. Laden Sie die Ergebnisauswahl neu.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 956,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "La publication ou le service de résultats a changé. Rechargez la sélection des résultats.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 955,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.publishedResults.derived",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Derived result",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 959,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "派生结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 956,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Abgeleitetes Ergebnis",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 959,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Résultat dérivé",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 958,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.publishedResults.direct",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Direct result",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 960,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "直接结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 957,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Direktes Ergebnis",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 960,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Résultat direct",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 959,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.direction",
@@ -231930,7 +232107,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 269,
+          "line": 280,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Direction",
@@ -231945,13 +232122,190 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 269,
+              "line": 280,
               "column": 19,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.downloadError",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "The download link could not be refreshed. Please retry.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 966,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "无法刷新下载链接，请重试。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 963,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Der Download-Link konnte nicht erneuert werden. Bitte versuchen Sie es erneut.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 966,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Le lien de téléchargement n’a pas pu être renouvelé. Veuillez réessayer.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 965,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.publishedResults.downloadIlcd",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Download ILCD ZIP",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 964,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "下载 ILCD ZIP",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 961,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "ILCD-ZIP herunterladen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 964,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Télécharger le ZIP ILCD",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 963,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.publishedResults.downloadTidas",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Download TIDAS ZIP",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 963,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "下载 TIDAS ZIP",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 960,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "TIDAS-ZIP herunterladen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 963,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Télécharger le ZIP TIDAS",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 962,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.downloads",
@@ -232013,7 +232367,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 318,
+          "line": 329,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Release files",
@@ -232028,7 +232382,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 318,
+              "line": 329,
               "column": 17,
               "kind": "FormattedMessage"
             }
@@ -232096,7 +232450,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 194,
+          "line": 205,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "Published results could not be loaded. Please retry.",
@@ -232111,7 +232465,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 194,
+              "line": 205,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -232179,7 +232533,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 304,
+          "line": 315,
           "column": 16,
           "symbol": "ResultSession",
           "defaultMessage": "First page",
@@ -232194,7 +232548,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 304,
+              "line": 315,
               "column": 16,
               "kind": "FormattedMessage"
             }
@@ -232262,7 +232616,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 257,
+          "line": 268,
           "column": 24,
           "symbol": "ResultSession",
           "defaultMessage": "Flow",
@@ -232277,13 +232631,72 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 257,
+              "line": 268,
               "column": 24,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.functionType",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Function type",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 962,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "功能类型",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 959,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Funktionstyp",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 962,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Type de fonction",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 961,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.input",
@@ -232345,7 +232758,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 276,
+          "line": 287,
           "column": 21,
           "symbol": "ResultSession",
           "defaultMessage": "Input",
@@ -232360,9 +232773,92 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 276,
+              "line": 287,
               "column": 21,
               "kind": "FormattedMessage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pages.publishedResults.invalidLink",
+      "category": "active-static",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "This result link is incomplete or invalid.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 970,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "此结果链接不完整或无效。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 967,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Dieser Ergebnislink ist unvollständig oder ungültig.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 970,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Ce lien de résultat est incomplet ou invalide.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 969,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/PublishedResult/index.tsx",
+          "line": 17,
+          "column": 16,
+          "symbol": "PublishedResultPage",
+          "defaultMessage": "This result link is incomplete or invalid.",
+          "defaultMessageExpression": null
+        }
+      ],
+      "defaultMessages": [
+        {
+          "value": "This result link is incomplete or invalid.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "locations": [
+            {
+              "path": "src/pages/PublishedResult/index.tsx",
+              "line": 17,
+              "column": 16,
+              "kind": "formatMessage"
             }
           ]
         }
@@ -232428,7 +232924,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 140,
+          "line": 151,
           "column": 20,
           "symbol": "ResultSession",
           "defaultMessage": "LCI",
@@ -232443,7 +232939,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 140,
+              "line": 151,
               "column": 20,
               "kind": "FormattedMessage"
             }
@@ -232511,7 +233007,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 135,
+          "line": 146,
           "column": 20,
           "symbol": "ResultSession",
           "defaultMessage": "LCIA",
@@ -232526,7 +233022,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 135,
+              "line": 146,
               "column": 20,
               "kind": "FormattedMessage"
             }
@@ -232594,7 +233090,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 283,
+          "line": 294,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Location",
@@ -232609,7 +233105,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 283,
+              "line": 294,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -232677,7 +233173,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 212,
+          "line": 223,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Impact category",
@@ -232692,13 +233188,72 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 212,
+              "line": 223,
               "column": 17,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.moreResults",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Load more results",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 968,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "加载更多结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 965,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Weitere Ergebnisse laden",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 968,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Charger plus de résultats",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 967,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.next",
@@ -232760,7 +233315,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 307,
+          "line": 318,
           "column": 16,
           "symbol": "ResultSession",
           "defaultMessage": "Next page",
@@ -232775,13 +233330,72 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 307,
+              "line": 318,
               "column": 16,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.noLcia",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "This result has no LCIA data.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 961,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "此结果没有 LCIA 数据。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 958,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Für dieses Ergebnis liegen keine LCIA-Daten vor.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 961,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Ce résultat ne contient pas de données LCIA.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 960,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.nonzero",
@@ -232843,7 +233457,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 243,
+          "line": 254,
           "column": 15,
           "symbol": "ResultSession",
           "defaultMessage": "Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.",
@@ -232858,13 +233472,72 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 243,
+              "line": 254,
               "column": 15,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.openResult",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Open result link",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 971,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "打开结果链接",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 968,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Ergebnislink öffnen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 971,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Ouvrir le lien du résultat",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 970,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.output",
@@ -232926,7 +233599,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 278,
+          "line": 289,
           "column": 21,
           "symbol": "ResultSession",
           "defaultMessage": "Output",
@@ -232941,13 +233614,72 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 278,
+              "line": 289,
               "column": 21,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.packageUnavailable",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "A complete ZIP is not available for this publication and your access permissions.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 965,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "当前发布范围和您的访问权限不支持下载完整 ZIP 包。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 962,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Für diese Veröffentlichung und Ihre Zugriffsrechte ist kein vollständiges ZIP-Paket verfügbar.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 965,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Aucun ZIP complet n’est disponible pour cette publication avec vos droits d’accès.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 964,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.preparing",
@@ -233009,7 +233741,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 170,
+          "line": 181,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "Preparing published results. Please retry shortly.",
@@ -233024,13 +233756,131 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 170,
+              "line": 181,
               "column": 13,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.refreshSelection",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Refresh results",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 969,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "刷新结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 966,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Ergebnisse aktualisieren",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 969,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Actualiser les résultats",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 968,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.publishedResults.relation",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Result relationship",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 958,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "结果关系",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 955,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Ergebnisbeziehung",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 958,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Relation du résultat",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 957,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.release",
@@ -233092,7 +233942,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 94,
+          "line": 105,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Published release",
@@ -233107,13 +233957,72 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 94,
+              "line": 105,
               "column": 17,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.resultIdentity",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Result dataset",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 957,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "结果数据集",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 954,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Ergebnisdatensatz",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 957,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Jeu de données de résultat",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 956,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.retry",
@@ -233175,7 +234084,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 81,
+          "line": 92,
           "column": 8,
           "symbol": "refresh",
           "defaultMessage": "Retry",
@@ -233190,7 +234099,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 81,
+              "line": 92,
               "column": 8,
               "kind": "FormattedMessage"
             }
@@ -233258,7 +234167,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 149,
+          "line": 160,
           "column": 23,
           "symbol": "ResultSession",
           "defaultMessage": "Search inventory",
@@ -233267,7 +234176,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 154,
+          "line": 165,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "Search inventory",
@@ -233282,19 +234191,78 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 149,
+              "line": 160,
               "column": 23,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 154,
+              "line": 165,
               "column": 13,
               "kind": "FormattedMessage"
             }
           ]
         }
       ]
+    },
+    {
+      "id": "pages.publishedResults.selectResult",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_process"],
+        "zh-CN": ["pages_process"],
+        "de-DE": ["pages_process"],
+        "fr-FR": ["pages_process"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Select a published result",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_process.ts",
+            "line": 967,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "zh-CN": {
+          "value": "选择已发布结果",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_process.ts",
+            "line": 964,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "de-DE": {
+          "value": "Veröffentlichtes Ergebnis auswählen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_process.ts",
+            "line": 967,
+            "column": 3,
+            "module": "pages_process"
+          }
+        },
+        "fr-FR": {
+          "value": "Sélectionner un résultat publié",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_process.ts",
+            "line": 966,
+            "column": 3,
+            "module": "pages_process"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
     },
     {
       "id": "pages.publishedResults.source",
@@ -233356,7 +234324,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 104,
+          "line": 115,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Source process",
@@ -233371,7 +234339,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 104,
+              "line": 115,
               "column": 17,
               "kind": "FormattedMessage"
             }
@@ -233444,6 +234412,15 @@
           "symbol": "tabList",
           "defaultMessage": "Published results",
           "defaultMessageExpression": null
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/PublishedResult/index.tsx",
+          "line": 25,
+          "column": 14,
+          "symbol": "PublishedResultPage",
+          "defaultMessage": "Published results",
+          "defaultMessageExpression": null
         }
       ],
       "defaultMessages": [
@@ -233457,6 +234434,12 @@
               "line": 190,
               "column": 9,
               "kind": "FormattedMessage"
+            },
+            {
+              "path": "src/pages/PublishedResult/index.tsx",
+              "line": 25,
+              "column": 14,
+              "kind": "formatMessage"
             }
           ]
         }
@@ -233522,7 +234505,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 182,
+          "line": 193,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "No published results are available for this exact version.",
@@ -233537,7 +234520,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 182,
+              "line": 193,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -233605,7 +234588,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 232,
+          "line": 243,
           "column": 22,
           "symbol": "ResultSession",
           "defaultMessage": "Unit",
@@ -233614,7 +234597,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 297,
+          "line": 308,
           "column": 24,
           "symbol": "ResultSession",
           "defaultMessage": "Unit",
@@ -233629,13 +234612,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 232,
+              "line": 243,
               "column": 22,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 297,
+              "line": 308,
               "column": 24,
               "kind": "FormattedMessage"
             }
@@ -233703,7 +234686,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 221,
+          "line": 232,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Version",
@@ -233712,7 +234695,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 263,
+          "line": 274,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Version",
@@ -233727,13 +234710,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 221,
+              "line": 232,
               "column": 17,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 263,
+              "line": 274,
               "column": 19,
               "kind": "FormattedMessage"
             }

@@ -14,6 +14,8 @@ const expectedPortalRoot = fs.realpathSync(
   path.dirname(drawerRequire.resolve('@rc-component/portal/package.json')),
 );
 const cases = [
+  'closing-render-retained',
+  'aborted-escape-close',
   'siblings',
   'ordered-fanout',
   'strict-isolated-replay',

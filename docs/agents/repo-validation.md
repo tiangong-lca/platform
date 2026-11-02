@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: 0351ddc065eed13996e79f8250f8c5ab69062692
-lastReviewedNote: 'Reviewed Platform #1396 qualification-only batch witness and separate bounded native controls against Main 0351ddc0. Preserve original canonical AST, inventory, actions, budgets, privacy and exact failures; source admission precedes browsers and only three browser-specific JSON diagnostics enter artifacts. Invocation ownership and installed Wave shape corrections are bound to issue evidence. Native, full/hosted, artifact and Main/Dev/root acceptance remain separate pending stages; no historical cause or product fix is claimed.'
+lastReviewedAt: 2026-11-02
+lastReviewedCommit: b659f5aa8b90ff0d2f29f4758fe7fb70e05b039a
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -344,6 +344,8 @@ Native-browser qualification must consume that same installed ESM bundle and ver
 
 ## Published result query proof
 
+For final Result v2, run service `finalResults.test.ts`, component `finalResultsPanel.test.tsx`, `PublishedResult/index.test.tsx` and the retained legacy `publishedResultsPanel.test.tsx`/`resultQuery.test.ts`. Cover explicit format dispatch, exact Result/source identity, multiple direct Results and source pagination, reader pins, cold limits, stale response cancellation, signed LCI, zero/missing LCIA, full units and short-lived authorized ZIPs. `published-final-query.spec.ts` uses the same closed synthetic original-Process browser harness as the v1 test. It exercises the selector, paged values, download denial/success, missing LCIA, changed-reader recovery and the independent authenticated Derived Result detail link with no source reads. This is consumer proof, not hosted JWT, S3 integrity or live publication proof. Run the unchanged full coverage gate/build and regenerate/check the four active locale artifacts when message keys change.
+
 For Platform #1378, focused service/component tests cover exact identities, publication pinning, bounded preparation, rejection, signed values, source-switch cancellation and cursor/filter resets. `playwright.result-preview.config.ts` selects the credential-free `published-query.spec.ts` rendered original-Process flow against the closed synthetic backend. This is browser consumer proof, not a live Worker/S3/Database qualification. The ordinary full pre-push coverage gate and four-locale artifact checks remain required.
 
 ## Maintained Axios request compatibility
@@ -369,3 +371,7 @@ Before accepting generated patch bytes, use the documented helper against the of
 Actual native Utoo CJS/ESM and Umi bundler fixtures must cover compiler outputs, non-root public paths, HTTP proxy ordering, lazy activation and stable aliases, HMR handshake/messages/close, readiness and rejected startup, HTTP(S) and owned signal/IPC-disconnect cleanup. Test-only certificates require no runtime CLI/provider. Unix runs send actual OS signals; Windows uses the owned IPC command to exercise the installed cleanup handlers because Windows does not deliver POSIX signals. Neither path is evidence for another host platform. Wrapper termination must close the fork IPC channel and the child must dispose or exit rather than orphaning a server. Verify the listening port is closed after parent loss.
 
 The actual Utoo percent-output differential retains the [user-approved restriction](https://github.com/tiangong-lca/platform/issues/1385#issuecomment-6542920653): baseline emits/serves `100%.js` with status 200, while the unchanged official default guard rejects its encoded URL with status 404 and Utoo offers no opt-in. Assert both outcomes; this is an intentional restriction, not equivalent behavior. Keep ordinary assets, Unicode/spaces, proxy/HMR and HTTP(S) proof, and do not relax the guard or enable a caller-wide opt-in. Preserve unfiltered audit/native records and all existing patch inventory, full gate, canonical source-bound browser/artifact/resource and Main/Dev/root requirements.
+
+## Login feedback ordering
+
+For the Platform #1396 continuation, hold user hydration in the Login regression and prove that success feedback has not started; after release, verify the existing safe redirect precedes the single contextual success message. A bounded rendered control holds the actual membership RPC beyond the native toast lifetime and checks that feedback is visible after release and the account remains operable. Keep the unchanged session-race canonical case, default toast duration, authentication/identity fencing and hosted resource/artifact gates. The controlled mechanism does not identify a historical run's unobserved timing.

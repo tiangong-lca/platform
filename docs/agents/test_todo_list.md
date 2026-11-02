@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: 920a305710e5f73e109ebdf4ef001fb115b2518c
-lastReviewedNote: 'Reviewed Platform #1396 installed-source case correction after hosted 920 pre-browser ENOENT. Both admission paths require exact package-relative directory entries before canonicalization; AntD Button.js spelling and focused negative/positive source contracts are verified. Host-root aliases, regular/hash/size protections, canonical actions, privacy, dependency graph and full-gate boundaries are unchanged. Historical native349 and failed920 remain separate; new Linux qualification and delivery are pending.'
+lastReviewedAt: 2026-11-02
+lastReviewedCommit: b659f5aa8b90ff0d2f29f4758fe7fb70e05b039a
+lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 ---
 
 # Testing Execution State
@@ -66,7 +66,7 @@ This is a checked-in reference, not a per-PR execution ledger. A delivery's post
 
 ## Current State
 
-- Issue #1396 owns the qualification-only batch allocation witness and separate bounded native controls. It preserves the historical failed source, complete original canonical actions and budgets, and the distinction between public observations and private handler state. Implementation, inert checks, one reviewed native set, exact canonical/hosted artifacts and subsequent Main/Dev/root delivery are separate evidence stages; actual outcomes and remaining work belong on the Issue. No historical cause, product fix or qualification pass follows from adding the observer.
+- Issue #1396 owns the qualification-only batch allocation witness and separate bounded native controls. Its authorized continuation also owns evidence-supported closing-popup Escape admission and login-feedback ordering corrections; each new candidate retains independent regression and complete qualification obligations. It preserves the historical failed source, complete original canonical actions and budgets, and the distinction between public observations and private handler state. Implementation, inert checks, one reviewed native set, exact canonical/hosted artifacts and subsequent Main/Dev/root delivery are separate evidence stages; actual outcomes and remaining work belong on the Issue. No historical cause, product fix or qualification pass follows from adding the observer.
 
 - Issue #1358 owns the separately reproduced Portal commit-lifecycle repair, maintained-patch image input closure and exact Main semantic admission. Acceptance requires installed-package, native ESM/default-container/focus, current-source canonical semantic and normal complete-gate evidence; actual executions and remaining work are recorded on that Issue/PR. Package versions and unrelated dependency resolutions remain intact. Successful new evidence does not establish #1354's historical failure cause or independently authorize publication.
 

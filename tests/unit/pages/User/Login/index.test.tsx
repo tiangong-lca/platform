@@ -398,6 +398,29 @@ describe('Login page', () => {
     });
   });
 
+  it('preserves the success feedback lifetime until user hydration and redirect', async () => {
+    let resolveUserInfo: (value: { name: string }) => void;
+    mockUseModelState.initialState.fetchUserInfo.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveUserInfo = resolve;
+      }),
+    );
+    render(<LoginPage />);
+    fireEvent.click(screen.getByTestId('login-submit'));
+
+    await waitFor(() => expect(mockUseModelState.initialState.fetchUserInfo).toHaveBeenCalled());
+    expect(mockMessageApi.success).not.toHaveBeenCalled();
+    expect(mockHistory.push).not.toHaveBeenCalled();
+
+    resolveUserInfo({ name: 'Delayed User' });
+    await waitFor(() => expect(mockMessageApi.success).toHaveBeenCalledWith('Login successful!'));
+    expect(mockHistory.push).toHaveBeenCalledWith('/');
+    expect(mockHistory.push.mock.invocationCallOrder[0]).toBeLessThan(
+      mockMessageApi.success.mock.invocationCallOrder[0],
+    );
+    expect(mockMessageApi.success).toHaveBeenCalledTimes(1);
+  });
+
   it('redirects to the redirect query parameter after a successful login', async () => {
     window.history.pushState({}, '', '/login?redirect=%2Ftedata%2Fprocesses');
     mockLocation = { pathname: '/login', search: '?redirect=%2Ftedata%2Fprocesses' };

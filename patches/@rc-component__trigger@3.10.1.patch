@@ -1,0 +1,24 @@
+diff --git a/es/Popup/index.js b/es/Popup/index.js
+index d46737876ee315610a5edc654292046f83da07d4..a96b5c04016b9d965236945bb9c093f36531e896 100644
+--- a/es/Popup/index.js
++++ b/es/Popup/index.js
+@@ -119,6 +119,7 @@ const Popup = /*#__PURE__*/React.forwardRef((props, ref) => {
+   }
+   return /*#__PURE__*/React.createElement(Portal, {
+     open: forceRender || isNodeVisible,
++    escapeActive: open,
+     getContainer: getPopupContainer && (() => getPopupContainer(target)),
+     autoDestroy: autoDestroy,
+     onEsc: onEsc
+diff --git a/lib/Popup/index.js b/lib/Popup/index.js
+index 8e801d58a596c07c83c332ca3b53907d2284ed5e..90a8615196255c92f5bc66444a2acec80a94a468 100644
+--- a/lib/Popup/index.js
++++ b/lib/Popup/index.js
+@@ -127,6 +127,7 @@ const Popup = /*#__PURE__*/React.forwardRef((props, ref) => {
+   }
+   return /*#__PURE__*/React.createElement(Portal, {
+     open: forceRender || isNodeVisible,
++    escapeActive: open,
+     getContainer: getPopupContainer && (() => getPopupContainer(target)),
+     autoDestroy: autoDestroy,
+     onEsc: onEsc

@@ -27,9 +27,9 @@ checkPaths:
   - src/services/processes/api.ts
   - .github/workflows/ci.yml
   - .github/workflows/build.yml
-lastReviewedAt: 2026-10-30
-lastReviewedCommit: 1c3851aedd44e795cffc84b852fa2f5a55ce38e2
-lastReviewedNote: 'Platform #1378: reviewed authenticated exact-version published HDF5 query consumption, frozen metadata, bounded preparation/cursors, source-switch cancellation and pinned release downloads. Existing locale, coverage, backend authority and promotion gates remain applicable; runtime proof is recorded in the task.'
+lastReviewedAt: 2026-11-01
+lastReviewedCommit: d062e20a756a5b9483b67686f394e6093615d1a8
+lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
 ---
 
 # LCIA Method Bundle and Calculation Evidence Contract
@@ -106,3 +106,5 @@ Data Processing opens process results from the result list using an exact proces
 ## Published numerical artifact view
 
 The original Process published-results tab consumes the exact release-bound query envelope. Its units, names, method versions and reference quantity come from frozen artifact metadata, never the current static method catalog. It does not reinterpret the persisted numeric evidence as a new calculation input. LCIA zero, negative and small finite values remain numeric; sparse LCI omits exact zero without conflating filtering/pagination with scientific absence.
+
+Release-owned v2 publication selects exact processed Result identities separately from source processes. Only direct relations appear under an original source; lineage is not a permission grant. The Result view uses its own frozen resultingAmount reference, never parent-Bundle or live-source values. Unit metadata preserves flow-property/version, unit-group/version and internal unit ID even when labels match. Missing LCIA is explicitly unavailable, while a present zero is displayed. Publication/runtime-pinned pagination and live backend checks prevent mixing changed publications; raw query artifacts remain server-side. ZIPs are available only when the whole prebuilt Candidate is authorized.
