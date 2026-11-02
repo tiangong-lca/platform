@@ -47,7 +47,7 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-02
-lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
+lastReviewedCommit: b659f5aa8b90ff0d2f29f4758fe7fb70e05b039a
 lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
 ---
 
