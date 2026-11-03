@@ -18,8 +18,8 @@ checkPaths:
   - tests/unit/pages/Study/**
   - tests/unit/services/study/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 3f59d44a753e871f6962329f06e1c027624dfb39
+lastReviewedNote: 'Platform #1419: reviewed canonical locale regeneration after bounded source/test changes, exact 64-assertion inventory and staged export-authority test synchronization; shipped runtime and single checked-push full-gate ownership remain unchanged.'
 related:
   - repo-architecture.md
   - repo-validation.md

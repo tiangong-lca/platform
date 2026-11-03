@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
-lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
+lastReviewedCommit: 3f59d44a753e871f6962329f06e1c027624dfb39
+lastReviewedNote: 'Platform #1419: reviewed canonical locale regeneration after bounded source/test changes, exact 64-assertion inventory and staged export-authority test synchronization; shipped runtime and single checked-push full-gate ownership remain unchanged.'
 ---
 
 # Testing Troubleshooting

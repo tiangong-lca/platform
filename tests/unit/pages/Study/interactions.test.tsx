@@ -1022,12 +1022,16 @@ it('refreshes current report authority and downloads only after exact export act
   mockActions = ['export.download'];
   render(<ReportPage />);
   await waitForReport();
-  fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.refresh' })[0]);
+  await act(async () =>
+    fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.refresh' })[0]),
+  );
   await waitFor(() => expect(requestCalls('report.view')).toHaveLength(2));
   await waitForReport();
-  fireEvent.change(screen.getByLabelText('pages.study.exportId'), {
-    target: { value: 'export-explicit' },
-  });
+  await act(async () =>
+    fireEvent.change(screen.getByLabelText('pages.study.exportId'), {
+      target: { value: 'export-explicit' },
+    }),
+  );
   await waitFor(() =>
     expect(screen.getByRole('button', { name: 'pages.study.download' })).toBeEnabled(),
   );
@@ -1035,7 +1039,9 @@ it('refreshes current report authority and downloads only after exact export act
     operation: 'resource.actions',
     resource: { type: 'export', id: 'export-explicit' },
   });
-  fireEvent.click(screen.getByRole('button', { name: 'pages.study.download' }));
+  await act(async () =>
+    fireEvent.click(screen.getByRole('button', { name: 'pages.study.download' })),
+  );
   await waitFor(() => expect(mockDownload).toHaveBeenCalledWith('export', 'export-explicit'));
 });
 
@@ -1429,4 +1435,53 @@ it('keeps unrelated recovered Study writes inspectable without inventing light e
   expect(screen.getByRole('button', { name: 'pages.study.run' })).toBeDisabled();
   expect(coreCalls('scenario.read')).toHaveLength(0);
   expect(mockWriteCounter).toBe(0);
+});
+
+it('waits for both current export authority and exact report binding before enabling download', async () => {
+  mockSearch = selectedReportSearch();
+  let allowActions!: (value: unknown) => void, allowExport!: (value: unknown) => void;
+  const actions = new Promise((resolve) => {
+    allowActions = resolve;
+  });
+  const exported = new Promise((resolve) => {
+    allowExport = resolve;
+  });
+  const base = mockReview.getMockImplementation()!;
+  mockReview.mockImplementation(async (request) =>
+    request.operation === 'resource.actions' && request.resource.type === 'export'
+      ? actions
+      : request.operation === 'export.read'
+        ? exported
+        : base(request),
+  );
+  render(<ReportPage />);
+  await waitForReport();
+  await act(async () =>
+    fireEvent.change(screen.getByLabelText('pages.study.exportId'), {
+      target: { value: 'export-explicit' },
+    }),
+  );
+  expect(screen.getByRole('button', { name: 'pages.study.download' })).toBeDisabled();
+  expect(requestCalls('export.read')).toHaveLength(0);
+  await act(async () => allowActions({ type: 'actions', actions: ['export.download'] }));
+  expect(requestCalls('export.read')).toEqual([
+    { operation: 'export.read', exportId: 'export-explicit' },
+  ]);
+  expect(screen.getByRole('button', { name: 'pages.study.download' })).toBeDisabled();
+  expect(mockDownload).not.toHaveBeenCalled();
+  await act(async () =>
+    allowExport({
+      type: 'export',
+      value: {
+        exportId: 'export-explicit',
+        reportRevisionId: view.report.reportRevisionId,
+        reportContentHash: view.report.contentHash,
+      },
+    }),
+  );
+  expect(screen.getByRole('button', { name: 'pages.study.download' })).toBeEnabled();
+  await act(async () =>
+    fireEvent.click(screen.getByRole('button', { name: 'pages.study.download' })),
+  );
+  expect(mockDownload).toHaveBeenCalledWith('export', 'export-explicit');
 });
