@@ -5,6 +5,10 @@ import userEvent from '@testing-library/user-event';
 
 let proFormApi: any = null;
 
+jest.mock('@/pages/Review/Components/validateComment', () => ({
+  validateCommentApproval: jest.fn((json: unknown) => ({ valid: true, json })),
+}));
+
 jest.mock('@/components/TidasRepeatedField', () => ({
   __esModule: true,
   default: ({ name, children, onChange }: any) => (
@@ -316,6 +320,7 @@ jest.mock('@ant-design/pro-components', () => {
           valuesRef.current = setNestedValue(valuesRef.current, namePath, value);
         }),
         getFieldsValue: jest.fn(() => valuesRef.current),
+        setFields: jest.fn(),
         setFieldsValue: jest.fn((next: any) => {
           valuesRef.current = { ...valuesRef.current, ...(next ?? {}) };
         }),
@@ -710,6 +715,28 @@ describe('ReviewLifeCycleModelToolbarViewInfo', () => {
     expect(mockSubmitReviewCommentApi).toHaveBeenCalledTimes(1);
   });
 
+  it('stops invalid model review metadata before reference checks or submission', async () => {
+    renderComponent();
+    await userEvent.click(screen.getByRole('button', { name: /info/i }));
+    jest
+      .requireMock('@/pages/Review/Components/validateComment')
+      .validateCommentApproval.mockImplementationOnce(
+        (_json: unknown, _kind: unknown, _root: unknown, _intl: unknown, showFields: any) => {
+          showFields('validation', [
+            { name: ['modellingAndValidation', 'validation'], errors: ['Invalid review'] },
+          ]);
+          return { valid: false };
+        },
+      );
+    const submittedFormApi = proFormApi;
+    await userEvent.click(screen.getByRole('button', { name: /^Save$/i }));
+    expect(submittedFormApi.setFields).toHaveBeenCalledWith([
+      { name: ['modellingAndValidation', 'validation'], errors: ['Invalid review'] },
+    ]);
+    expect(mockGetAllRefObj).not.toHaveBeenCalled();
+    expect(mockSubmitReviewCommentApi).not.toHaveBeenCalled();
+  });
+
   it('submits the review when reference checks pass', async () => {
     const { actionRef } = renderComponent();
 
@@ -718,14 +745,19 @@ describe('ReviewLifeCycleModelToolbarViewInfo', () => {
 
     await waitFor(() => expect(mockGetAllRefObj).toHaveBeenCalled());
     await waitFor(() => expect(mockGetUserTeamId).toHaveBeenCalled());
-    expect(mockSubmitReviewCommentApi).toHaveBeenCalledWith('review-1', {
-      modellingAndValidation: {
-        complianceDeclarations: {
-          compliance: [{ id: 'compliance-1' }],
+    expect(mockSubmitReviewCommentApi).toHaveBeenCalledWith(
+      'review-1',
+      {
+        modellingAndValidation: {
+          complianceDeclarations: {
+            compliance: [{ id: 'compliance-1' }],
+          },
+          validation: {},
         },
-        validation: {},
       },
-    });
+      1,
+      'lifeCycleModel',
+    );
     expect(mockMessage.success).toHaveBeenCalledWith('Review submitted successfully');
     expect(actionRef.current.reload).toHaveBeenCalled();
   });
@@ -811,14 +843,19 @@ describe('ReviewLifeCycleModelToolbarViewInfo', () => {
     await userEvent.click(screen.getByRole('button', { name: /^Save$/i }));
 
     await waitFor(() => expect(mockCheckReferences).toHaveBeenCalled());
-    expect(mockSubmitReviewCommentApi).toHaveBeenCalledWith('review-1', {
-      modellingAndValidation: {
-        complianceDeclarations: {
-          compliance: [{ id: 'compliance-1' }],
+    expect(mockSubmitReviewCommentApi).toHaveBeenCalledWith(
+      'review-1',
+      {
+        modellingAndValidation: {
+          complianceDeclarations: {
+            compliance: [{ id: 'compliance-1' }],
+          },
+          validation: {},
         },
-        validation: {},
       },
-    });
+      1,
+      'lifeCycleModel',
+    );
     expect(mockMessage.success).toHaveBeenCalledWith('Review submitted successfully');
     expect(actionRef.current.reload).toHaveBeenCalled();
   });

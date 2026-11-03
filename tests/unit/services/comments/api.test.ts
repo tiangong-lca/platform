@@ -117,6 +117,70 @@ describe('Comments API service (src/services/comments/api.ts)', () => {
     });
   });
 
+  it('normalizes drafts and rejected comments without blocking incomplete metadata', async () => {
+    const json = {
+      modellingAndValidation: {
+        validation: {
+          review: [
+            {
+              '@type': 'Independent external review',
+              'common:referenceToCompleteReviewReport': { 'common:shortDescription': [] },
+            },
+          ],
+        },
+      },
+    };
+    const cleaned = {
+      modellingAndValidation: {
+        validation: { review: [{ '@type': 'Independent external review' }] },
+      },
+    };
+    await saveReviewCommentDraftApi('review-123', json);
+    await submitReviewCommentApi('review-123', json, -3);
+    expect(mockInvokeDatasetCommand).toHaveBeenNthCalledWith(1, 'app_review_save_comment_draft', {
+      reviewId: 'review-123',
+      json: cleaned,
+    });
+    expect(mockInvokeDatasetCommand).toHaveBeenNthCalledWith(2, 'app_review_submit_comment', {
+      reviewId: 'review-123',
+      json: cleaned,
+      commentState: -3,
+    });
+  });
+
+  it('blocks malformed approval metadata before invoking the command', async () => {
+    await expect(
+      submitReviewCommentApi('review-123', {
+        modellingAndValidation: {
+          validation: {
+            review: {
+              '@type': 'Independent external review',
+              'common:scope': { '@name': '单一操作单元过程' },
+            },
+          },
+        },
+      }),
+    ).rejects.toThrow('REVIEW_METADATA_INVALID');
+    expect(mockInvokeDatasetCommand).not.toHaveBeenCalled();
+  });
+
+  it('submits cleaned valid approval metadata', async () => {
+    await submitReviewCommentApi('review-123', {
+      modellingAndValidation: {
+        validation: {
+          review: {
+            '@type': 'Not reviewed',
+            'common:referenceToCompleteReviewReport': { 'common:shortDescription': [] },
+          },
+        },
+      },
+    });
+    expect(mockInvokeDatasetCommand).toHaveBeenCalledWith('app_review_submit_comment', {
+      reviewId: 'review-123',
+      json: { modellingAndValidation: { validation: { review: { '@type': 'Not reviewed' } } } },
+    });
+  });
+
   describe('legacy mutations', () => {
     it('returns a structured deprecation error from addCommentApi', async () => {
       const result = await addCommentApi({

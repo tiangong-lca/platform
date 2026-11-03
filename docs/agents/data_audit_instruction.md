@@ -18,9 +18,9 @@ checkPaths:
   - docs/agents/data_audit_instruction.md
   - src/pages/Review/**
   - src/pages/ManageSystem/**
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: 28f4fea0bc9829316938ff85fe3ac6a3ce7a7ce6
-lastReviewedNote: 'Reviewed Platform #1355: Review and All Teams reuse dataset-list presentation with responsive tabs, preserved workflow handlers, lazy column translation initialization and a bounded join-team modal. Query, permission, dependency, release and gate contracts remain unchanged. Actual validation and review evidence belong to the Issue/PR; no release qualification is claimed.'
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
+lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
 ---
 
 # Audit Status Reference
@@ -100,7 +100,7 @@ Review Member outcomes are advisory. Review Admin final approval requires at lea
 - The confirmation lists each inapplicable Review by its loaded dataset name or Review ID and a localized reason. For an already-submitted Review Member opinion, the UI reads that member's Comment to distinguish approval (`1`) from rejection (`-3`); if the read fails, it shows an unknown outcome rather than inferring one from aggregate opinion counts. These are advisory opinions, not the Review Admin's final decision.
 - Batch actions reuse the same state transitions, authorization, rejection-reason rules, and Process/Lifecycle Model metadata requirements as the corresponding single-item command.
 
-Process and Lifecycle Model Root Reviews retain their existing metadata form and metadata writeback. Contact, Source, Unit Group, Flow Property, Flow, and every Reference Review use only approve/reject actions: approve requires no opinion; reject requires a reason.
+Process and Lifecycle Model Root Reviews retain their metadata form and metadata writeback. Shared comment commands remove recursively empty optional fields for drafts and submissions. Approval submission validates the supplied review/compliance sections against the installed TIDAS SDK, without applying dataset defaults to the saved comment or requiring unrelated dataset fields. Both forms validate before reference checks and display field-level issues. Partial references and noncanonical enum values must be corrected; drafts and rejection opinions remain editable without approval validation. Database #900 owns the authoritative submission/writeback guard. Contact, Source, Unit Group, Flow Property, Flow, and every Reference Review use only approve/reject actions: approve requires no opinion; reject requires a reason.
 
 ## Review Admin Quality Diagnostic
 
