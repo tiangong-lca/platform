@@ -190,9 +190,9 @@ const selectedReportSearch = () =>
   `?id=${view.report.reportRevisionId}&hash=${view.report.contentHash}`;
 const choose = async (label: string, option: string) => {
   const input = await screen.findByRole('combobox', { name: `pages.study.${label}` });
-  fireEvent.mouseDown(input.closest('.ant-select-selector') ?? input);
+  await act(async () => fireEvent.mouseDown(input.closest('.ant-select-selector') ?? input));
   const choice = await screen.findByText(option, { selector: '.ant-select-item-option-content' });
-  fireEvent.click(choice);
+  await act(async () => fireEvent.click(choice));
 };
 const waitForReport = () => screen.findByTitle('pages.study.preview');
 const completeWrite = async (operation: string) => {
@@ -1177,4 +1177,256 @@ it('keeps export download disabled for a foreign report binding even when that e
   await act(async () => {});
   expect(screen.getByRole('button', { name: 'pages.study.download' })).toBeDisabled();
   expect(mockDownload).not.toHaveBeenCalled();
+});
+
+it.each([
+  ['scenario.create', 'header'],
+  ['scenario.create', 'card'],
+  ['model.prepare', 'header'],
+  ['model.prepare', 'card'],
+] as const)(
+  'resumes the light edit controls after same-tab reload and explicit recovery of %s from its %s',
+  async (operation, entry) => {
+    mockSearch = '?id=study-a&view=model';
+    const overrides = [scenario.overrides[1], { path: scenario.overrides[0].path, value: 2.5 }];
+    const exactScenario = { ...createdScenario, overrides };
+    const source = {
+      type: 'scenarioRevision',
+      scenarioRevisionId: 'scenario-new',
+      expectedRevision: 1,
+      contentHash: hash('f'),
+    };
+    const request =
+      operation === 'scenario.create'
+        ? {
+            schemaVersion: 'lca.study-api.v2',
+            requestId: 'original-request',
+            idempotencyKey: 'original-key',
+            operation,
+            studyRevisionId: 'revision-a',
+            parentScenarioRevisionId: 'scenario-before',
+            overrides,
+          }
+        : {
+            schemaVersion: 'lca.study-api.v2',
+            requestId: 'original-request',
+            idempotencyKey: 'original-key',
+            operation,
+            studyId: 'study-a',
+            source,
+            profileId: preparation.profileId,
+            calculationContractRef: contract,
+          };
+    let pending = true;
+    const changed = new Set<() => void>();
+    mockReadPending.mockImplementation(async () =>
+      pending
+        ? { pending: true, raw: JSON.stringify(request), request }
+        : { pending: false, raw: null },
+    );
+    mockSubscribePending.mockImplementation((listener) => {
+      changed.add(listener);
+      return () => changed.delete(listener);
+    });
+    mockRecoverPending.mockImplementation(async () => {
+      pending = false;
+      changed.forEach((listener) => listener());
+      return operation === 'scenario.create'
+        ? { type: 'scenarioRevision', value: exactScenario }
+        : { type: 'modelPreparation', value: { ...preparedScenario, source } };
+    });
+    const base = mockCore.getMockImplementation()!;
+    mockCore.mockImplementation(async (body) =>
+      body.operation === 'scenario.read'
+        ? { type: 'scenarioRevision', value: exactScenario }
+        : base(body),
+    );
+    render(<StudyPage />);
+    await choose('preparation', 'preparation-a / completed');
+    await screen.findByRole('region', { name: 'pages.study.model' });
+    fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.edit' })[1]);
+    const editCard = screen
+      .getByRole('spinbutton', { name: 'pages.study.amount' })
+      .closest('.ant-card')!;
+    fireEvent.click(
+      entry === 'header'
+        ? screen.getAllByRole('button', { name: 'pages.study.retry' })[0]
+        : await within(editCard as HTMLElement).findByRole('button', { name: 'pages.study.retry' }),
+    );
+    await waitFor(() => expect(mockRecoverPending).toHaveBeenCalledTimes(1));
+    // Header recovery refreshes/remounts the model tab; the admitted Workbench retains the handoff.
+    if (entry === 'header') {
+      await choose('preparation', 'preparation-a / completed');
+      await screen.findByRole('region', { name: 'pages.study.model' });
+      fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.edit' })[1]);
+    }
+    const nextStage = operation === 'scenario.create' ? 'prepare' : 'freeze';
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: `pages.study.${nextStage}` })).toBeEnabled(),
+    );
+    await waitFor(() =>
+      expect(screen.getByRole('spinbutton', { name: 'pages.study.amount' })).toHaveValue('2.5'),
+    );
+    expect(mockRecoverPending).toHaveBeenCalledWith('study:study-a');
+    expect(mockWriteCounter).toBe(0);
+    expect(coreCalls('scenario.create')).toHaveLength(0);
+    expect(coreCalls('model.prepare')).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: `pages.study.${nextStage}` }));
+    await waitFor(() =>
+      expect(
+        coreCalls(operation === 'scenario.create' ? 'model.prepare' : 'scenario.freeze'),
+      ).toHaveLength(1),
+    );
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', {
+          name: operation === 'scenario.create' ? 'pages.study.freeze' : 'pages.study.run',
+        }),
+      ).toBeEnabled(),
+    );
+    if (operation === 'scenario.create')
+      fireEvent.click(screen.getByRole('button', { name: 'pages.study.freeze' }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'pages.study.run' })).toBeEnabled(),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'pages.study.run' }));
+    await waitFor(() => expect(coreCalls('run.submit')).toHaveLength(1));
+    expect(coreCalls('run.submit')[0]).toMatchObject({
+      scenarioRevisionId: 'scenario-new',
+      expectedInputHash: hash('9'),
+    });
+  },
+);
+
+const arrangePreparationRecovery = () => {
+  mockSearch = '?id=study-a&view=model';
+  const source = {
+    type: 'scenarioRevision',
+    scenarioRevisionId: 'scenario-new',
+    expectedRevision: 1,
+    contentHash: hash('f'),
+  };
+  const request = {
+    schemaVersion: 'lca.study-api.v2',
+    requestId: 'original-request',
+    idempotencyKey: 'original-key',
+    operation: 'model.prepare',
+    studyId: 'study-a',
+    source,
+    profileId: preparation.profileId,
+    calculationContractRef: contract,
+  };
+  const changed = new Set<() => void>();
+  let pending = true;
+  mockReadPending.mockImplementation(async () =>
+    pending
+      ? { pending: true, raw: JSON.stringify(request), request }
+      : { pending: false, raw: null },
+  );
+  mockSubscribePending.mockImplementation((listener) => {
+    changed.add(listener);
+    return () => changed.delete(listener);
+  });
+  mockRecoverPending.mockImplementation(async () => {
+    pending = false;
+    changed.forEach((listener) => listener());
+    return { type: 'modelPreparation', value: { ...preparedScenario, source } };
+  });
+  return {
+    ...createdScenario,
+    overrides: [scenario.overrides[1], { path: scenario.overrides[0].path, value: 2.5 }],
+  };
+};
+const openRecoveredEdit = async () => {
+  await choose('preparation', 'preparation-a / completed');
+  await screen.findByRole('region', { name: 'pages.study.model' });
+  fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.edit' })[1]);
+  const editCard = screen
+    .getByRole('spinbutton', { name: 'pages.study.amount' })
+    .closest('.ant-card')!;
+  const retry = await within(editCard as HTMLElement).findByRole('button', {
+    name: 'pages.study.retry',
+  });
+  await act(async () => fireEvent.click(retry));
+};
+
+it('keeps continuation disabled on a failed recovered-ID read and retries that read without replay or a new key', async () => {
+  const recoveredScenario = arrangePreparationRecovery();
+  const base = mockCore.getMockImplementation()!;
+  let rejected = false;
+  mockCore.mockImplementation(async (request) => {
+    if (request.operation !== 'scenario.read') return base(request);
+    if (!rejected) {
+      rejected = true;
+      throw new StudyRequestError('FORBIDDEN', false);
+    }
+    return { type: 'scenarioRevision', value: recoveredScenario };
+  });
+  render(<StudyPage />);
+  await openRecoveredEdit();
+  expect(await screen.findByText('FORBIDDEN')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'pages.study.freeze' })).toBeDisabled();
+  const error = screen.getByText('FORBIDDEN').closest('.ant-alert')!;
+  await act(async () =>
+    fireEvent.click(
+      within(error as HTMLElement).getByRole('button', { name: 'pages.study.refresh' }),
+    ),
+  );
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: 'pages.study.freeze' })).toBeEnabled(),
+  );
+  expect(mockRecoverPending).toHaveBeenCalledTimes(1);
+  expect(coreCalls('scenario.read')).toHaveLength(2);
+  expect(coreCalls('model.prepare')).toHaveLength(0);
+  expect(mockWriteCounter).toBe(0);
+});
+
+it.each(['resolve', 'reject'] as const)(
+  'ignores a recovered-ID read that %s after the edit route unmounts',
+  async (outcome) => {
+    const recoveredScenario = arrangePreparationRecovery();
+    let resolve!: (value: unknown) => void, reject!: (error: unknown) => void;
+    const delayed = new Promise((yes, no) => {
+      resolve = yes;
+      reject = no;
+    });
+    const base = mockCore.getMockImplementation()!;
+    mockCore.mockImplementation(async (request) =>
+      request.operation === 'scenario.read' ? delayed : base(request),
+    );
+    const mounted = render(<StudyPage />);
+    await openRecoveredEdit();
+    await waitFor(() => expect(coreCalls('scenario.read')).toHaveLength(1));
+    mounted.unmount();
+    await act(async () =>
+      outcome === 'resolve'
+        ? resolve({ type: 'scenarioRevision', value: recoveredScenario })
+        : reject(new StudyRequestError('FORBIDDEN', false)),
+    );
+    expect(coreCalls('model.prepare')).toHaveLength(0);
+    expect(coreCalls('scenario.freeze')).toHaveLength(0);
+    expect(mockWriteCounter).toBe(0);
+  },
+);
+
+it('keeps unrelated recovered Study writes inspectable without inventing light edit state', async () => {
+  arrangePreparationRecovery();
+  const request = {
+    schemaVersion: 'lca.study-api.v2',
+    requestId: 'original-request',
+    idempotencyKey: 'original-key',
+    operation: 'study.archive',
+    target: { type: 'study', id: 'study-a', expectedRevision: 4 },
+  };
+  mockReadPending.mockResolvedValue({ pending: true, raw: JSON.stringify(request), request });
+  mockRecoverPending.mockResolvedValue({ type: 'study', value: study });
+  render(<StudyPage />);
+  await openRecoveredEdit();
+  await waitFor(() => expect(mockRecoverPending).toHaveBeenCalledTimes(1));
+  await act(async () => {});
+  expect(screen.getByRole('button', { name: 'pages.study.prepare' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'pages.study.freeze' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'pages.study.run' })).toBeDisabled();
+  expect(coreCalls('scenario.read')).toHaveLength(0);
+  expect(mockWriteCounter).toBe(0);
 });

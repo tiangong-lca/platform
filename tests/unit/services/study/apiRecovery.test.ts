@@ -21,7 +21,8 @@ import {
 
 const mockGetSession = jest.fn(),
   mockGetClaims = jest.fn(),
-  mockInvoke = jest.fn();
+  mockInvoke = jest.fn(),
+  mockOnAuthStateChange = jest.fn();
 let mockGeneration = 0;
 jest.mock('@/services/auth/taskCenters', () => ({
   getTaskCenterIdentityGeneration: () => mockGeneration,
@@ -31,6 +32,7 @@ jest.mock('@/services/supabase', () => ({
   supabase: {
     auth: {
       getSession: (...args: unknown[]) => mockGetSession(...args),
+      onAuthStateChange: (...args: unknown[]) => mockOnAuthStateChange(...args),
       getClaims: (...args: unknown[]) => mockGetClaims(...args),
     },
     functions: { invoke: (...args: unknown[]) => mockInvoke(...args) },
@@ -130,6 +132,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   sessionStorage.clear();
   mockGeneration = 0;
+  mockOnAuthStateChange.mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } });
   mockGetSession.mockResolvedValue(session());
   mockGetClaims.mockResolvedValue(claims());
   mockInvoke.mockImplementation(async (_name, { body: request }) => ({
@@ -553,3 +556,53 @@ it.each(['actor', 'client', 'generation'] as const)(
     expect(sessionStorage.length).toBe(1);
   },
 );
+
+it.each(['actor', 'client', 'bearer', 'admission', 'away-and-back'] as const)(
+  'never moves the original recovery request to a changed %s while reading its journal',
+  async (change) => {
+    await prepareJournal(identity(), storedRequest(), 'report:report-a');
+    let notify!: (event: string, value: any) => void;
+    const unsubscribe = jest.fn();
+    mockOnAuthStateChange.mockImplementation((listener) => {
+      notify = listener;
+      return { data: { subscription: { unsubscribe } } };
+    });
+    const nativeDigest = crypto.subtle.digest.bind(crypto.subtle);
+    jest.spyOn(crypto.subtle, 'digest').mockImplementationOnce(async (...args) => {
+      if (change === 'actor') mockGetSession.mockResolvedValue(session('actor-b'));
+      if (change === 'client') mockGetClaims.mockResolvedValue(claims('client-b'));
+      if (change === 'bearer')
+        mockGetSession.mockResolvedValue({
+          data: { session: { ...session().data.session, access_token: 'different-bearer' } },
+        });
+      if (change === 'admission') mockGeneration += 1;
+      if (change === 'away-and-back') {
+        notify('SIGNED_IN', session('actor-b').data.session);
+        notify('SIGNED_IN', session().data.session);
+      }
+      return nativeDigest(...args);
+    });
+    await expect(recoverPendingStudyWrite('report:report-a')).rejects.toMatchObject({
+      code: 'AUTH_REQUIRED',
+    });
+    expect(mockInvoke).not.toHaveBeenCalled();
+    expect(sessionStorage.length).toBe(1);
+    expect((await readJournal(identity(), 'report:report-a'))?.request).toEqual(storedRequest());
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+  },
+);
+
+it('rejects a bearer switch while the recovery claims check is pending, including the final dispatch check', async () => {
+  await prepareJournal(identity(), storedRequest(), 'report:report-a');
+  mockGetClaims.mockResolvedValueOnce(claims()).mockImplementationOnce(async () => {
+    mockGetSession.mockResolvedValue({
+      data: { session: { ...session().data.session, access_token: 'changed-during-claims' } },
+    });
+    return claims();
+  });
+  await expect(recoverPendingStudyWrite('report:report-a')).rejects.toMatchObject({
+    code: 'AUTH_REQUIRED',
+  });
+  expect(mockInvoke).not.toHaveBeenCalled();
+  expect(sessionStorage.length).toBe(1);
+});

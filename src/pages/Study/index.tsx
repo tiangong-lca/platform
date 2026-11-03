@@ -28,7 +28,7 @@ import {
   Tag,
   Typography,
 } from 'antd';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, history, useLocation } from '@umijs/max';
 import {
   ExactRecord,
@@ -41,6 +41,7 @@ import {
 } from './shared';
 import styles from './index.less';
 import StudyTaskProgress from './TaskProgress';
+import { resumeLightEdit, type EditRecovery } from './recovery';
 
 const reportHref = (id: string, hash: string) =>
   `/study-report?id=${encodeURIComponent(id)}&hash=${encodeURIComponent(hash)}`;
@@ -216,8 +217,12 @@ function LightEdit({
   scenarios,
   preparation,
   canWrite,
+  recovery,
+  onRecovery,
 }: {
   row: ExchangeRow;
+  recovery?: EditRecovery;
+  onRecovery: (value: EditRecovery) => void;
   studyId: string;
   scenarios: Scenario[];
   preparation: Preparation;
@@ -238,13 +243,55 @@ function LightEdit({
       : undefined,
   );
   const currentPreparation = query.data ?? prepared;
-  const write = useStudyWrite(query.refresh, `study:${studyId}`);
+  const write = useStudyWrite(query.refresh, `study:${studyId}`, (request, result) =>
+    onRecovery({ request, result: result as CoreData }),
+  );
+  const [recovering, setRecovering] = useState(false);
+  const [recoveryRevision, setRecoveryRevision] = useState(0);
+  const [recoveryError, setRecoveryError] = useState<unknown>();
+  const adoptedRecovery = useRef<EditRecovery>(undefined);
+  useEffect(() => {
+    if (!recovery || adoptedRecovery.current === recovery) return;
+    let active = true;
+    setRecovering(true);
+    setRecoveryError(undefined);
+    resumeLightEdit({
+      request: recovery.request,
+      result: recovery.result,
+      studyId,
+      preparation,
+      path: row.path,
+      scenarios,
+    }).then(
+      (restored) => {
+        if (!active) return;
+        adoptedRecovery.current = recovery;
+        if (restored) {
+          setCreated(restored.created);
+          setPrepared(restored.prepared);
+          setPredecessorId(restored.predecessorId);
+          setAmount(restored.amount);
+          setResult(recovery.result);
+        }
+        setRecovering(false);
+      },
+      (error: unknown) => {
+        if (active) {
+          setRecoveryError(error);
+          setRecovering(false);
+        }
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, [recovery, studyId, preparation, row.path, scenarios, recoveryRevision]);
   const frozen = scenarios.filter(
     (scenario) =>
       scenario.status === 'frozen' && scenario.modelPreparationId === preparation.preparationId,
   );
   const predecessor = frozen.find((scenario) => scenario.scenarioRevisionId === predecessorId);
-  const available = canWrite && !write.pending && !write.busy;
+  const available = canWrite && !write.pending && !write.busy && !recovering && !recoveryError;
   const execute = (body: CoreRequest, apply: (value: Awaited<ReturnType<typeof core>>) => void) => {
     const exact = { ...body, idempotencyKey: newWriteKey() };
     write.run(async () => {
@@ -375,6 +422,11 @@ function LightEdit({
           {t('run')}
         </Button>
       </Space>
+      <QueryState
+        loading={recovering}
+        error={recoveryError}
+        retry={() => setRecoveryRevision((value) => value + 1)}
+      />
       <WriteState write={write} />
       {currentPreparation && <ExactRecord value={currentPreparation} />}
       {prepared && (
@@ -396,8 +448,12 @@ function FrozenModel({
   preparations,
   scenarios,
   canWrite,
+  recovery,
+  onRecovery,
 }: {
   studyId: string;
+  recovery?: EditRecovery;
+  onRecovery: (value: EditRecovery) => void;
   preparations: Preparation[];
   scenarios: Scenario[];
   canWrite: boolean;
@@ -491,6 +547,8 @@ function FrozenModel({
                   <LightEdit
                     key={`${preparationId}:${edit.key}`}
                     row={edit}
+                    recovery={recovery}
+                    onRecovery={onRecovery}
                     studyId={studyId}
                     scenarios={scenarios}
                     preparation={query.data.preparation}
@@ -711,7 +769,10 @@ function Workbench({ id, tab }: { id: string; tab: string }) {
     ]);
     return { actions, capabilities, study, revision, preparations, scenarios };
   });
-  const write = useStudyWrite(query.refresh, `study:${id}`);
+  const [editRecovery, setEditRecovery] = useState<EditRecovery>();
+  const write = useStudyWrite(query.refresh, `study:${id}`, (request, result) =>
+    setEditRecovery({ request, result: result as CoreData }),
+  );
   const data = query.data;
   const canWrite = Boolean(
     data?.actions.corePermissions.write &&
@@ -856,6 +917,8 @@ function Workbench({ id, tab }: { id: string; tab: string }) {
                 children: (
                   <FrozenModel
                     studyId={id}
+                    recovery={editRecovery}
+                    onRecovery={setEditRecovery}
                     preparations={data.preparations.items
                       .filter((item) => item.type === 'modelPreparation')
                       .map((item) => item.value)}

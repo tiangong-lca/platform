@@ -1,10 +1,24 @@
+import { parseExportBundle } from '../../../../vendor/study-contract/v4/index.mjs';
 import { createHash, webcrypto } from 'node:crypto';
 import { downloadStudyExport } from '@/services/study/download';
 import { StudyRequestError } from '@/services/study/api';
 
-const mockReview = jest.fn();
+const mockReview = jest.fn(),
+  mockGetSession = jest.fn(),
+  mockGetClaims = jest.fn(),
+  mockAuth = jest.fn();
+let mockGeneration = 0;
+jest.mock('@/services/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: (...args: unknown[]) => mockGetSession(...args),
+      getClaims: (...args: unknown[]) => mockGetClaims(...args),
+      onAuthStateChange: (...args: unknown[]) => mockAuth(...args),
+    },
+  },
+}));
 jest.mock('@/services/auth/taskCenters', () => ({
-  getTaskCenterIdentityGeneration: () => 0,
+  getTaskCenterIdentityGeneration: () => mockGeneration,
   subscribeTaskCenterIdentity: () => () => {},
 }));
 jest.mock('@/services/study/api', () => ({
@@ -12,10 +26,42 @@ jest.mock('@/services/study/api', () => ({
   review: (...args: unknown[]) => mockReview(...args),
 }));
 
-const payload = Uint8Array.from([0x50, 0x4b, 0x03, 0x04, 0x00, 0xff, 0x80, 0x41]);
+const bundle = {
+  schemaVersion: 'lca.study-export-bundle.v2',
+  manifestBase64: Buffer.from('{}').toString('base64'),
+  receipt: {
+    schemaVersion: 'lca.study-export-receipt.v2',
+    manifestHash: 'a'.repeat(64),
+    keyId: 'synthetic-key',
+    algorithm: 'Ed25519',
+    signature: 'A'.repeat(86),
+  },
+  files: [
+    {
+      path: 'report.html',
+      encoding: 'base64',
+      bytes: Buffer.from('<!doctype html><p>Synthetic report</p>').toString('base64'),
+    },
+    { path: 'projection.json', encoding: 'base64', bytes: Buffer.from('{}').toString('base64') },
+  ],
+};
+const canonical = (value: any): any =>
+  Array.isArray(value)
+    ? value.map(canonical)
+    : value && typeof value === 'object'
+      ? Object.fromEntries(
+          Object.keys(value)
+            .sort()
+            .map((key) => [key, canonical(value[key])]),
+        )
+      : value;
+const payload = Buffer.from(JSON.stringify(canonical(bundle)), 'utf8');
 const digest = createHash('sha256').update(payload).digest('hex');
-const bundleRef = { byteSize: payload.length, contentHash: digest };
-const response = (kind: 'export' | 'share', reference = bundleRef) => ({
+const bundleRef = { byteSize: payload.length, contentHash: digest, mediaType: 'application/json' };
+const response = (
+  kind: 'export' | 'share',
+  reference: { byteSize: number; contentHash: string; mediaType?: string } = bundleRef,
+) => ({
   type: kind === 'share' ? 'download' : 'exportDownload',
   ...(kind === 'share'
     ? { share: { bundleRef: reference } }
@@ -36,6 +82,12 @@ beforeAll(() => {
 });
 beforeEach(() => {
   jest.clearAllMocks();
+  mockGeneration = 0;
+  mockGetSession.mockResolvedValue({
+    data: { session: { user: { id: 'actor-a' }, access_token: 'token-a' } },
+  });
+  mockGetClaims.mockResolvedValue({ data: { claims: { sub: 'actor-a' } } });
+  mockAuth.mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } });
   (URL.createObjectURL as jest.Mock).mockReturnValue('blob:exact-frozen-export');
 });
 
@@ -51,10 +103,15 @@ it.each(['export', 'share'] as const)(
         : { operation: 'export.download', exportId: 'selected-id' },
     );
     const blob = (URL.createObjectURL as jest.Mock).mock.calls[0][0] as Blob;
-    expect(blob.type).toBe('application/zip');
-    expect(new Uint8Array(await readBlob(blob))).toEqual(payload);
+    expect(blob.type).toBe('application/json');
+    expect(Array.from(new Uint8Array(await readBlob(blob)))).toEqual(Array.from(payload));
+    expect(JSON.parse(Buffer.from(await readBlob(blob)).toString('utf8'))).toEqual(bundle);
+    expect(
+      parseExportBundle(new Uint8Array(await readBlob(blob))).files.map((file) => file.path),
+    ).toEqual(['report.html', 'projection.json']);
+    // Parsing the persisted container makes no signature or receipt authenticity claim.
     const anchor = click.mock.instances[0] as unknown as HTMLAnchorElement;
-    expect(anchor.download).toBe(`study-${kind}-selected-id.zip`);
+    expect(anchor.download).toBe(`study-${kind}-selected-id.json`);
     expect(anchor.href).toBe('blob:exact-frozen-export');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:exact-frozen-export');
     click.mockRestore();
@@ -104,4 +161,72 @@ it('releases the object URL even when the browser download action throws', async
   );
   expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:exact-frozen-export');
   click.mockRestore();
+});
+
+it.each(['actor', 'client', 'bearer', 'admission', 'away-and-back'] as const)(
+  'blocks the final download effect if %s changes while SHA-256 is pending',
+  async (change) => {
+    mockReview.mockResolvedValue(response('export'));
+    const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    let notify!: (event: string, value: any) => void;
+    const unsubscribe = jest.fn();
+    mockAuth.mockImplementation((listener) => {
+      notify = listener;
+      return { data: { subscription: { unsubscribe } } };
+    });
+    const nativeDigest = crypto.subtle.digest.bind(crypto.subtle);
+    const digestSpy = jest
+      .spyOn(crypto.subtle, 'digest')
+      .mockImplementationOnce(async (...args) => {
+        if (change === 'admission') mockGeneration += 1;
+        else if (change === 'client')
+          mockGetClaims.mockResolvedValue({
+            data: { claims: { sub: 'actor-a', client_id: 'client-b' } },
+          });
+        else if (change === 'away-and-back') {
+          notify('SIGNED_IN', { user: { id: 'actor-b' }, access_token: 'token-b' });
+          notify('SIGNED_IN', { user: { id: 'actor-a' }, access_token: 'token-a' });
+        } else
+          mockGetSession.mockResolvedValue({
+            data: {
+              session: {
+                user: { id: change === 'actor' ? 'actor-b' : 'actor-a' },
+                access_token: 'token-b',
+              },
+            },
+          });
+        return nativeDigest(...args);
+      });
+    await expect(downloadStudyExport('export', 'selected-id')).rejects.toMatchObject({
+      code: 'AUTH_REQUIRED',
+    });
+    expect(click).not.toHaveBeenCalled();
+    expect(URL.createObjectURL).not.toHaveBeenCalled();
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    click.mockRestore();
+    digestSpy.mockRestore();
+  },
+);
+
+it('checks synchronous identity invalidation immediately before clicking and still releases its URL', async () => {
+  mockReview.mockResolvedValue(response('export'));
+  (URL.createObjectURL as jest.Mock).mockImplementationOnce(() => {
+    mockGeneration += 1;
+    return 'blob:exact-frozen-export';
+  });
+  const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  await expect(downloadStudyExport('export', 'selected-id')).rejects.toMatchObject({
+    code: 'AUTH_REQUIRED',
+  });
+  expect(click).not.toHaveBeenCalled();
+  expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:exact-frozen-export');
+  click.mockRestore();
+});
+
+it('refuses non-JSON media metadata rather than labeling it as a bundle', async () => {
+  mockReview.mockResolvedValue(response('export', { ...bundleRef, mediaType: 'application/zip' }));
+  await expect(downloadStudyExport('export', 'selected-id')).rejects.toMatchObject({
+    code: 'REFERENCE_MISMATCH',
+  });
+  expect(URL.createObjectURL).not.toHaveBeenCalled();
 });

@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
-lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification after SDK 0.6.0 adoption; full local gate and release authority remain unchanged.'
+lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
+lastReviewedNote: 'Platform #1419: reviewed focused recovery/download proof and unchanged bootstrap, runtime pins and single checked-push full-gate ownership.'
 ---
 
 # Development Bootstrap

@@ -6,6 +6,7 @@ import {
   recoverPendingStudyWrite,
   subscribePendingStudyWrites,
   retirePendingStudyWrite,
+  type Request,
 } from '@/services/study/api';
 import { Alert, Button, Space, Spin } from 'antd';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
@@ -87,7 +88,13 @@ export function QueryState({
 }
 
 /** Explicit same-tab recovery; exact parsed mutations are journaled before service dispatch. */
-export function useStudyWrite(refresh: () => void, workflow: string = 'directory:studies') {
+export function useStudyWrite(
+  refresh: () => void,
+  workflow: string = 'directory:studies',
+  onRecovered?: (request: Request, result: unknown) => void,
+) {
+  const recoveryListener = useRef(onRecovered);
+  recoveryListener.current = onRecovered;
   const [localPending, setPending] = useState<(() => Promise<unknown>) | null>(null);
   const [journal, setJournal] = useState<Awaited<ReturnType<typeof readPendingStudyWrite>>>({
     pending: false,
@@ -179,12 +186,17 @@ export function useStudyWrite(refresh: () => void, workflow: string = 'directory
       if (journalReady && !pending && !locked.current) void execute(command);
     },
     retry: () => {
-      if (pending && !locked.current)
+      if (pending && !locked.current) {
+        const originalRequest = journal.request;
         void execute(async () => {
           const result = await pending();
-          if (alive.current && !localPending) setRecovered(result);
+          if (alive.current && !localPending) {
+            setRecovered(result);
+            if (originalRequest) recoveryListener.current?.(originalRequest, result);
+          }
           return result;
         });
+      }
     },
   };
 }

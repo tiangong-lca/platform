@@ -62,6 +62,52 @@ async function writeIdentity(session: {
   };
 }
 
+/** Ephemeral identity fence across asynchronous work and its final synchronous effect. */
+export async function withStudyIdentity<T>(
+  effect: (guard: {
+    session: { user: { id: string }; access_token: string };
+    identity: WriteIdentity;
+    generation: number;
+    assertCurrent: () => Promise<void>;
+    assertUnchanged: () => void;
+  }) => Promise<T>,
+): Promise<T> {
+  const generation = getTaskCenterIdentityGeneration();
+  const current = (await supabase.auth.getSession()).data.session;
+  if (!current) throw new StudyRequestError('AUTH_REQUIRED', false);
+  const session = { user: { id: current.user.id }, access_token: current.access_token };
+  let changed = false;
+  const matches = (value: typeof session | null) =>
+    value?.user.id === session.user.id && value?.access_token === session.access_token;
+  const { data } = supabase.auth.onAuthStateChange((_event, next) => {
+    if (!matches(next)) changed = true;
+  });
+  const assertUnchanged = () => {
+    if (changed || generation !== getTaskCenterIdentityGeneration())
+      throw new StudyRequestError('AUTH_REQUIRED', false);
+  };
+  try {
+    const identity = await writeIdentity(session);
+    assertUnchanged();
+    const assertCurrent = async () => {
+      assertUnchanged();
+      const fresh = (await supabase.auth.getSession()).data.session;
+      if (!matches(fresh)) throw new StudyRequestError('AUTH_REQUIRED', false);
+      const verified = await writeIdentity(session);
+      if (verified.actorId !== identity.actorId || verified.clientId !== identity.clientId)
+        throw new StudyRequestError('AUTH_REQUIRED', false);
+      // Claims verification is asynchronous too. Recheck the bearer after it settles.
+      if (!matches((await supabase.auth.getSession()).data.session))
+        throw new StudyRequestError('AUTH_REQUIRED', false);
+      assertUnchanged();
+    };
+    return await effect({ session, identity, generation, assertCurrent, assertUnchanged });
+  } finally {
+    data.subscription.unsubscribe();
+  }
+}
+type IdentityGuard = Parameters<Parameters<typeof withStudyIdentity>[0]>[0];
+
 export async function readPendingStudyWrite(workflow: string): Promise<{
   pending: boolean;
   raw: string | null;
@@ -97,18 +143,23 @@ function defaultWorkflow(request: Request): string {
 }
 
 /** Capture current session and admission; every mutation is journaled before dispatch. */
-async function invoke(version: 'v2' | 'v3' | 'v4', body: unknown, workflow?: string) {
+async function invoke(
+  version: 'v2' | 'v3' | 'v4',
+  body: unknown,
+  workflow?: string,
+  guard?: IdentityGuard,
+) {
   const codec = { v2, v3, v4 }[version];
   let request = codec.parseRequest({
     ...(body as object),
     schemaVersion: `lca.study-api.${version}`,
     requestId: crypto.randomUUID(),
   });
-  const generation = getTaskCenterIdentityGeneration(),
-    before = await supabase.auth.getSession(),
-    session = before.data.session;
+  const generation = guard?.generation ?? getTaskCenterIdentityGeneration(),
+    session = guard?.session ?? (await supabase.auth.getSession()).data.session;
   if (!session) throw new StudyRequestError('AUTH_REQUIRED', false);
-  const identity = 'idempotencyKey' in request ? await writeIdentity(session) : null;
+  const identity =
+    'idempotencyKey' in request ? (guard?.identity ?? (await writeIdentity(session))) : null;
   const intent = identity
     ? await prepareJournal(identity, request, workflow ?? defaultWorkflow(request))
     : null;
@@ -117,6 +168,10 @@ async function invoke(version: 'v2' | 'v3' | 'v4', body: unknown, workflow?: str
   try {
     if (generation !== getTaskCenterIdentityGeneration())
       throw new StudyRequestError('AUTH_REQUIRED', false);
+    if (guard) {
+      await guard.assertCurrent();
+      guard.assertUnchanged();
+    }
     const { data, error } = await supabase.functions.invoke('app_lca_study', {
       body: request,
       headers: { Authorization: `Bearer ${session.access_token}` },
@@ -168,6 +223,7 @@ async function invoke(version: 'v2' | 'v3' | 'v4', body: unknown, workflow?: str
         throw new StudyRequestError('AUTH_REQUIRED', false);
       await completeJournal(identity, intent);
     }
+    guard?.assertUnchanged();
     return response.data;
   } catch (failure) {
     if (identity && intent && !knownFailure) {
@@ -189,14 +245,17 @@ export const review = (body: ReviewRequest, workflow?: string) =>
   invoke('v4', body, workflow) as Promise<ReviewData>;
 
 export async function recoverPendingStudyWrite(workflow: string) {
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session) throw new StudyRequestError('AUTH_REQUIRED', false);
-  const intent = await readJournal(await writeIdentity(session), workflow);
-  if (!intent) throw new StudyRequestError('RECOVERY_REQUIRED', false);
-  const version = { 'lca.study-api.v2': 'v2', 'lca.study-api.v3': 'v3', 'lca.study-api.v4': 'v4' }[
-    intent.request.schemaVersion
-  ] as 'v2' | 'v3' | 'v4';
-  return invoke(version, intent.request, workflow);
+  return withStudyIdentity(async (guard) => {
+    const intent = await readJournal(guard.identity, workflow);
+    guard.assertUnchanged();
+    if (!intent) throw new StudyRequestError('RECOVERY_REQUIRED', false);
+    const version = {
+      'lca.study-api.v2': 'v2',
+      'lca.study-api.v3': 'v3',
+      'lca.study-api.v4': 'v4',
+    }[intent.request.schemaVersion] as 'v2' | 'v3' | 'v4';
+    return invoke(version, intent.request, workflow, guard);
+  });
 }
 
 /** Explicit local retirement after fresh current-target read; no server cancel/undo is implied. */
