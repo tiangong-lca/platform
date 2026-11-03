@@ -73,7 +73,7 @@ pnpm docpact:gate
 pnpm prepush:gate
 ```
 
-The full gate runs LCIA verification, `pnpm reference-data:check`, lint/type checks, complete coverage, and the unchanged 100% coverage assertion in that order. Reference-data verification fails before the expensive suite when the source manifest, evidence, content-addressed filenames, generated registry, or gzip outputs drift.
+The full gate runs LCIA verification, `pnpm reference-data:check`, lint/type checks, dependency-free Study renderer package proof, complete coverage, and the unchanged 100% coverage assertion in that order. Reference-data verification fails before the expensive suite when the source manifest, evidence, content-addressed filenames, generated registry, or gzip outputs drift.
 
 `pnpm prepush:gate:agent` enables the same gate with compact agent output. Jest writes its complete stdout/stderr and structured result JSON under `.local/test-logs/**`; the console contains only stage starts, failed suites/assertions, and final summaries. The reusable Release Gate enables this mode and uploads those files as a seven-day CI artifact even on failure, so compact output does not discard diagnostic evidence.
 

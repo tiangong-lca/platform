@@ -12,6 +12,7 @@ module.exports = async () => {
 
   return {
     ...config,
+    resolver: '<rootDir>/scripts/study-report/jest-resolver.cjs',
     clearMocks: true,
     openHandlesTimeout: 5000,
     testEnvironmentOptions: {

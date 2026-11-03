@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "types": [],
+    "lib": ["ES2022", "DOM"],
+    "rootDir": "../../src/standalone/studyReport",
+    "outDir": "../../dist-study-report/package"
+  },
+  "include": ["../../src/standalone/studyReport/**/*.ts"]
+}

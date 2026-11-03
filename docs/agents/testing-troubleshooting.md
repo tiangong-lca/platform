@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
-lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
+lastReviewedCommit: 2f965bd77ecf8aa5c1ac3915b38ff52326701748
+lastReviewedNote: 'Platform #1413 W10: reviewed standalone fixture/package/browser proof against existing bootstrap, closed coverage and scoped gate policies; complete integrated gate remains separate evidence.'
 ---
 
 # Testing Troubleshooting

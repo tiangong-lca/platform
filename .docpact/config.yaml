@@ -2,7 +2,7 @@ version: 1
 layout: repo
 lastReviewedAt: 2026-11-03
 lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
-lastReviewedNote: "Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR."
+lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.
@@ -90,6 +90,7 @@ ownership:
           - scripts/qualification/**
           - scripts/i18n/**
           - scripts/reference-data/**
+          - scripts/study-report/**
       ownerRepo: next
 
 coverage:
@@ -115,6 +116,7 @@ coverage:
     - docs/agents/model-modeling-and-calculation.md
     - docs/plans/model-product-demand.md
     - docs/agents/lcia-calculation-evidence.md
+    - docs/agents/study-report-renderer-contract.md
     - docs/agents/team_management.md
     - docs/agents/data_audit_instruction.md
     - docs/plans/i18n/**
@@ -167,6 +169,7 @@ coverage:
     - scripts/qualification/**
     - scripts/i18n/**
     - scripts/reference-data/**
+    - scripts/study-report/**
   exclude:
     - node_modules/**
     - dist/**
@@ -182,6 +185,13 @@ freshness:
 
 routing:
   intents:
+    study-report:
+      paths:
+        - src/standalone/studyReport/**
+        - scripts/study-report/**
+        - tests/unit/standalone/**
+        - tests/fixtures/study-report/**
+        - docs/agents/study-report-renderer-contract.md
     dependency-maintenance:
       paths:
         - .github/dependabot.yml
@@ -440,6 +450,30 @@ repo:
   runtime: node
 
 rules:
+  - id: next-study-report-renderer-contract
+    scope: repo
+    repo: next
+    triggers:
+      - path: src/standalone/studyReport/**
+        kind: standalone-view-runtime
+      - path: scripts/study-report/**
+        kind: standalone-package-proof
+      - path: tests/unit/standalone/**
+        kind: standalone-view-tests
+      - path: tests/fixtures/study-report/**
+        kind: standalone-view-fixtures
+      - path: docs/agents/study-report-renderer-contract.md
+        kind: standalone-view-contract
+    requiredDocs:
+      - path: docs/agents/study-report-renderer-contract.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+    reason: Standalone report view, disclosure/trust limits and independent packed artifact proof must remain aligned without importing SPA or backend authority.
   - id: next-dependency-monitoring-contract
     scope: repo
     repo: next

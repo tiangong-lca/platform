@@ -178,6 +178,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `DEV.md` and `docs/agents/repo-
 - exact-candidate local release E2E: `pnpm e2e:env:install`, `pnpm e2e:env:doctor`, then `pnpm e2e:release`
 - exact-candidate scope-closure proof: `pnpm test:qualification:scope-closure:browser --output <result.json> --run-id <uuid>` with the documented non-production confirmation and loopback backend environment
 - build when shipped behavior, branding/package surfaces, or static assets change: `pnpm build`
+- standalone Study report view/package: `pnpm study-report:build`, `pnpm study-report:test:package`, and separately selected `pnpm study-report:test:browser`; [renderer contract](docs/agents/study-report-renderer-contract.md) owns view/trust/release limits
 - protected-branch parity gate: `pnpm prepush:gate`
 - static release preflight: `pnpm release:static-preflight` (`release:preflight` is a compatibility alias); this validates tracked locale/reference contracts but does not claim browser execution
 - optional content-addressed browser qualification: dispatch `.github/workflows/i18n-semantic-e2e.yml` for the chosen business-PR ref, or run `pnpm e2e:qualification:key` then `pnpm e2e:qualify --proof .local/e2e-release/qualification-proof.json`; verify with `pnpm release:proof:verify --proof <path>`

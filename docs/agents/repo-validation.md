@@ -375,3 +375,7 @@ The actual Utoo percent-output differential retains the [user-approved restricti
 ## Login feedback ordering
 
 For the Platform #1396 continuation, hold user hydration in the Login regression and prove that success feedback has not started; after release, verify the existing safe redirect precedes the single contextual success message. A bounded rendered control holds the actual membership RPC beyond the native toast lifetime and checks that feedback is visible after release and the account remains operable. Keep the unchanged session-race canonical case, default toast duration, authentication/identity fencing and hosted resource/artifact gates. The controlled mechanism does not identify a historical run's unobserved timing.
+
+## Standalone Study report renderer
+
+[The renderer contract](study-report-renderer-contract.md) owns W10 schema, precision, receipt/trust and release limits. Run the focused standalone Jest suite, `pnpm study-report:test:package`, and `pnpm study-report:test:browser` when changing view/runtime/package behavior. Package proof is part of pre-push; browser proof remains separately selected, synthetic, credential-free and source-bound. It checks actual packed HTML in fresh online/offline desktop/mobile contexts with request/API-attempt/CSP monitoring, keyboard controls and narrow layout. Artifacts stay ignored in `.local/study-report`. Existing app lint/build, coverage and localization gates remain required. A fixture pass does not prove W09 signing/disclosure, installed CLI integration, production rollout or P2 completion.
