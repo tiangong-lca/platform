@@ -3,6 +3,11 @@ import { supabase } from '@/services/supabase';
 import { getUserId } from '@/services/users/api';
 import type { SortOrder } from 'antd/es/table/interface';
 import { resolveTableSort } from '../general/tableSort';
+import {
+  normalizeReviewCommentPayload,
+  prepareReviewCommentApproval,
+  type ReviewDatasetKind,
+} from './reviewPayload';
 
 type ReviewCommentCommandFunctionName =
   'app_review_save_comment_draft' | 'app_review_submit_comment';
@@ -121,16 +126,24 @@ export async function saveReviewCommentDraftApi<
 >(reviewId: string, json: unknown) {
   return invokeReviewCommentCommand<Row>('app_review_save_comment_draft', {
     reviewId,
-    json,
+    json: normalizeReviewCommentPayload(json),
   });
 }
 
 export async function submitReviewCommentApi<
   Row extends Record<string, unknown> = Record<string, unknown>,
->(reviewId: string, json: unknown, commentState: 1 | -3 = 1) {
+>(
+  reviewId: string,
+  json: unknown,
+  commentState: 1 | -3 = 1,
+  datasetKind: ReviewDatasetKind = 'process',
+) {
   return invokeReviewCommentCommand<Row>('app_review_submit_comment', {
     reviewId,
-    json,
+    json:
+      commentState === 1
+        ? prepareReviewCommentApproval(json, datasetKind)
+        : normalizeReviewCommentPayload(json),
     ...(commentState === 1 ? {} : { commentState }),
   });
 }

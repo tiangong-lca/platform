@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-01
-lastReviewedCommit: fa6d9b68bee07bc15c95c1ebc70d9247ac38e28f
-lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
+lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
 ---
 
 # Supabase Environment And Database Workflow

@@ -33,6 +33,7 @@ import ComplianceItemView from '../../../Compliance/view';
 import ReveiwItemForm from '../../../ReviewForm/form';
 import ReviewItemView from '../../../ReviewForm/view';
 import RejectReview from '../../../RejectReview';
+import { validateCommentApproval } from '../../../validateComment';
 
 import { RefCheckContext, RefCheckType } from '@/contexts/refCheckContext';
 import { ReffPath, checkReferences, getAllRefObj, refDataType } from '@/pages/Utils/review';
@@ -1859,10 +1860,34 @@ const ToolbarViewInfo: FC<Props> = ({
                       },
                     };
                     setSpinning(true);
-                    const isRefCheck = await updateCommentJsonRefsToUnderReview(submitData);
+                    const prepared = validateCommentApproval(
+                      submitData,
+                      'lifeCycleModel',
+                      {
+                        '@type': 'lifeCycleModel data set',
+                        '@refObjectId':
+                          data.lifeCycleModelInformation?.dataSetInformation?.['common:UUID'],
+                        '@version':
+                          data.administrativeInformation?.publicationAndOwnership?.[
+                            'common:dataSetVersion'
+                          ],
+                      },
+                      intl,
+                      (tabName, fields) => {
+                        setActiveTabKey(tabName);
+                        formRef.current?.setFields(fields);
+                      },
+                    );
+                    if (!prepared.valid) return false;
+                    const isRefCheck = await updateCommentJsonRefsToUnderReview(prepared.json);
                     if (!isRefCheck) return false;
 
-                    const result = await submitReviewCommentApi(reviewId, submitData);
+                    const result = await submitReviewCommentApi(
+                      reviewId,
+                      prepared.json,
+                      1,
+                      'lifeCycleModel',
+                    );
                     if (result.error) throw result.error;
                     message.success(
                       intl.formatMessage({

@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-02
-lastReviewedCommit: f07d883dd6d084dc00b99b5e745b9762fb1ee5db
-lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
+lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

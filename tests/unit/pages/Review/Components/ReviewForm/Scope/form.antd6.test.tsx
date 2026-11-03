@@ -23,22 +23,6 @@ jest.mock('@/pages/Utils', () => ({
   getRules: () => [],
 }));
 
-jest.mock('@/pages/Processes/processes_schema.json', () => ({
-  processDataSet: {
-    modellingAndValidation: {
-      validation: {
-        review: {
-          'common:scope': {
-            'common:method': {
-              '@name': { rules: [] },
-            },
-          },
-        },
-      },
-    },
-  },
-}));
-
 describe('ReviewFormScopeForm with Ant Design 6', () => {
   it('submits every registered Form.List child through the real antd form store', async () => {
     const onFinish = jest.fn();
