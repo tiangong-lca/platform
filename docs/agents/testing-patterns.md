@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
-lastReviewedNote: 'Platform #1413: reviewed owned smoke intent/CID/daemon identity, bounded secretless cleanup telemetry and validated support-image removal order; original hosted failure remains preserved and fresh canonical/resource qualification is required.'
+lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Testing Patterns Reference
@@ -301,3 +301,5 @@ Image-input tests should bind declared patch bytes before cache lookup, then cov
 Passive mobile diagnostics use five fixed schema-2 detail slots and one optional unawaited frame under the original record/byte caps. Normal cancellation is explicit evidence, never a reason to wait or retry the product action. Observe only selected DOM predicates and window composition counts with unknown prehistory; preserve exact original rejection identity and independent cleanup. The owning wire/lifecycle contract is in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics).
 
 Resource lifecycle tests must model actual staged discovery, including a prepared dependency observed before its candidate. Use native disposable subprocesses for timeout/nonzero/partial effects and a strict synthetic Docker map for creation intent, CID, inspected identity and exact-ID recovery; never target unrelated real containers. Unknown CID/profile, changed source or failed mutation stays explicit. Preserve finite budgets and assert no prune, image force or foreign resource deletion.
+
+A resource guard must be tested between mutations, beyond an initially valid snapshot or a later failing verify. For composite filesystem cleanup, assert each exact effect and its readback independently: successful unlink does not grant rmdir authority after new entries, identity change, source/daemon drift or deadline expiry.

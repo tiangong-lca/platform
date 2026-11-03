@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
-lastReviewedNote: 'Platform #1413: reviewed owned smoke intent/CID/daemon identity, bounded secretless cleanup telemetry and validated support-image removal order; original hosted failure remains preserved and fresh canonical/resource qualification is required.'
+lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Testing Strategy

@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
-lastReviewedNote: 'Platform #1413: reviewed owned smoke intent/CID/daemon identity, bounded secretless cleanup telemetry and validated support-image removal order; original hosted failure remains preserved and fresh canonical/resource qualification is required.'
+lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -383,3 +383,5 @@ For the Platform #1396 continuation, hold user hydration in the Login regression
 `study-report.yml` supplies actual PR CI for those standalone inputs on Dev/Main: clean exact-head release build, focused protocol/CI tests, independent package consumption and actual Chromium. It binds uploaded archive/manifest bytes and browser evidence to the same source identity before upload. Its job uses the current frozen Node/pnpm graph and read-only permissions, with no full-gate duplication or operational side effects. Inspect the executed job and downloaded artifact for the exact PR head; a workflow definition or skipped release job is insufficient evidence.
 
 For the W10 hosted resource repair, run `tests/unit/e2e/environmentSmoke.test.ts`, `tests/unit/config/supabaseBrowserResources.test.ts`, `tests/unit/e2e/releaseE2ERunner.test.ts` and `tests/unit/config/supabaseBrowserWorkflow.test.ts` together. Native child-process controls preserve timeout/exit/signal and partial effects without raw output; synthetic Docker controls exercise intent/CID/inspection-before-start, exact-ID cancellation recovery, changed/unknown resources, dependency-first discovery and dependent-first cleanup. These controls do not replace fresh hosted Docker/canonical/resource evidence or qualify the historical failed cleanup.
+
+The resource mutation-boundary regression must switch daemon/source between successful cleanup effects and prove that later image/filesystem effects are never called. Stale-lock controls use real temporary-file unlink/rmdir, including native ENOTEMPTY after unlink, budget exhaustion before rmdir and file/directory inode replacement; failed effects preserve typed errno and partial readback without recursive lock removal.

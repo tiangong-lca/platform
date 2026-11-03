@@ -69,6 +69,9 @@ function fixture() {
   let logicalClock = Date.now();
   let expireRead = false;
   let controllerProcess: any = null;
+  let afterCommand: { operation: string; callback: () => void } | null = null;
+  const filesystemCalls: string[] = [];
+  const filesystemActions: Record<string, (file: string) => void> = {};
   let failure: { operation: string; error: any } | null = null;
   const invoke = (program: string, args: string[]) => {
     if (program === 'pnpm') return '11.24.0\n';
@@ -122,6 +125,16 @@ function fixture() {
       assert.ok(store.has(actual[2]), 'fake Docker inspect requires an existing exact ID');
       return JSON.stringify([store.get(actual[2])]);
     }
+    if (actual[1] === 'stop') {
+      const selected = actual[actual.length - 1];
+      containers.get(selected).State.Running = false;
+      if (afterCommand?.operation === 'container:stop') {
+        const action = afterCommand;
+        afterCommand = null;
+        action.callback();
+      }
+      return selected;
+    }
     if (actual[1] === 'rm') {
       const selected = actual[actual.length - 1];
       assert.ok(
@@ -129,6 +142,11 @@ function fixture() {
         'fake Docker only removes image/container IDs',
       );
       if (!ignoreRemoval) store.delete(selected);
+      if (afterCommand?.operation === `${actual[0]}:${actual[1]}`) {
+        const action = afterCommand;
+        afterCommand = null;
+        action.callback();
+      }
       return selected;
     }
     throw new Error('Unexpected fake Docker command');
@@ -141,6 +159,16 @@ function fixture() {
     source: () => JSON.parse(JSON.stringify(source)),
     now: () => logicalClock,
     command: invoke,
+    filesystem: {
+      unlink: (file: string) => {
+        filesystemCalls.push('unlink');
+        return (filesystemActions.unlink ?? fs.unlinkSync)(file);
+      },
+      rmdir: (file: string) => {
+        filesystemCalls.push('rmdir');
+        return (filesystemActions.rmdir ?? fs.rmdirSync)(file);
+      },
+    },
     processInfo: () => controllerProcess,
     capacity: () => ({ bavail: 100, bsize: 4096 }),
   };
@@ -194,6 +222,7 @@ function fixture() {
       Id: id('e'),
       Image: image.Id,
       Config: { Labels: { [CANDIDATE]: 'true' }, Env: ['SYNTHETIC_SECRET=must-not-appear'] },
+      State: { Running: false },
       Mounts: [
         {
           Type: 'bind',
@@ -257,6 +286,41 @@ function fixture() {
     containers.set(container.Id, container);
     return { image, dependency, container, folder, manifest, text };
   }
+  function staleLock() {
+    const directory = path.join(root, '.local/e2e-release/invocation.lock');
+    const file = path.join(directory, 'owner.json');
+    fs.mkdirSync(directory);
+    const raw = JSON.stringify({
+      command: 'qualify',
+      hostname: os.hostname(),
+      nonce: crypto.randomUUID(),
+      pid: 1234,
+      startedAt: new Date(logicalClock).toISOString(),
+    });
+    fs.writeFileSync(file, raw);
+    const receipt = manager.read();
+    receipt.controller = null;
+    manager.save(receipt);
+    const smokeParent = path.join(root, '.local/e2e-release/smoke');
+    for (const nonce of fs.readdirSync(smokeParent)) {
+      const smokeFile = path.join(smokeParent, nonce, 'receipt.json');
+      const smoke = JSON.parse(fs.readFileSync(smokeFile, 'utf8'));
+      smoke.controller.lockSha256 = digest(raw);
+      fs.writeFileSync(smokeFile, JSON.stringify(smoke));
+    }
+    controllerProcess = {
+      pid: 1234,
+      parent: 1,
+      group: 1234,
+      start: '100',
+      cwd: root,
+      argvSha256: id('8'),
+      canonicalQualifier: true,
+    };
+    manager.observe();
+    controllerProcess = null;
+    return { directory, file };
+  }
   return {
     root,
     state,
@@ -264,6 +328,14 @@ function fixture() {
     options,
     manager,
     candidate,
+    staleLock,
+    filesystemCalls,
+    setFilesystem: (name: string, action: (file: string) => void) => {
+      filesystemActions[name] = action;
+    },
+    afterNext: (operation: string, callback: () => void) => {
+      afterCommand = { operation, callback };
+    },
     images,
     containers,
     commands,
@@ -574,7 +646,9 @@ it('preserves typed timeout evidence and unknown mutation effect without deletin
   const failed = f.manager.finish();
   expect(failed.complete).toBe(false);
   expect(failed.errors).toContain('RESOURCE_COMMAND_TIMEOUT');
-  expect(failed.commands.at(-1)).toMatchObject({
+  expect(
+    failed.commands.filter((entry: any) => entry.operation === 'image:rm').at(-1),
+  ).toMatchObject({
     phase: 'image-removal',
     operation: 'image:rm',
     resourceId: owned.image.Id,
@@ -686,3 +760,217 @@ it.each([false, true])(
     expect(f.commands.some((args) => args[1] === 'rm' || args[1] === 'stop')).toBe(false);
   },
 );
+
+it.each(['daemon', 'source'])('stops all later effects after a mid-cleanup %s switch', (kind) => {
+  const f = fixture();
+  f.manager.start();
+  const owned = f.candidate();
+  f.manager.observe();
+  f.afterNext('container:rm', () => {
+    const actions = {
+      daemon: f.driftContext,
+      source: () => {
+        f.source.head = 'd'.repeat(40);
+      },
+    };
+    actions[kind as 'daemon' | 'source']();
+  });
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain(
+    kind === 'daemon' ? 'DOCKER_CONTEXT_DRIFT' : 'SOURCE_IDENTITY_DRIFT',
+  );
+  expect(f.commands.filter((args) => args[0] === 'image' && args[1] === 'rm')).toHaveLength(0);
+  expect(f.images.has(owned.image.Id)).toBe(true);
+  expect(f.images.has(owned.dependency.Id)).toBe(true);
+  expect(fs.existsSync(owned.folder)).toBe(true);
+  expect(
+    result.commands.filter((event: any) => event.operation === 'image:rm').at(-1),
+  ).toMatchObject({ mutationStarted: false, effect: 'not-started', outcome: 'failed' });
+});
+
+it('does not remove the support image or filesystem after daemon changes following candidate removal', () => {
+  const f = fixture();
+  f.manager.start();
+  const owned = f.candidate();
+  f.manager.observe();
+  f.afterNext('image:rm', f.driftContext);
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(f.commands.filter((args) => args[0] === 'image' && args[1] === 'rm')).toEqual([
+    ['image', 'rm', owned.image.Id],
+  ]);
+  expect(f.images.has(owned.dependency.Id)).toBe(true);
+  expect(fs.existsSync(owned.folder)).toBe(true);
+});
+
+it('journals separately owned lock unlink and nonrecursive rmdir', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const lock = f.staleLock();
+  const result = f.manager.finish();
+  expect(result.complete).toBe(true);
+  expect(f.filesystemCalls).toEqual(['unlink', 'rmdir']);
+  const effects = result.commands.filter(
+    (entry: any) =>
+      entry.operation === 'filesystem:unlink' || entry.operation === 'filesystem:rmdir',
+  );
+  expect(
+    effects.map((entry: any) => [entry.phase, entry.operation, entry.outcome, entry.effect]),
+  ).toEqual([
+    ['invocation-lock-unlink', 'filesystem:unlink', 'passed', 'verified-absent'],
+    ['invocation-lock-rmdir', 'filesystem:rmdir', 'passed', 'verified-absent'],
+  ]);
+  expect(
+    effects.every(
+      (entry: any) =>
+        entry.mutationStarted && entry.remainingBudgetMs > 0 && entry.readback.exists === false,
+    ),
+  ).toBe(true);
+  expect(fs.existsSync(lock.directory)).toBe(false);
+  expect(f.manager.verify().complete).toBe(true);
+});
+
+it('preserves native ENOTEMPTY and the successful unlink when a new directory entry appears during rmdir', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const lock = f.staleLock();
+  f.setFilesystem('rmdir', (directory) => {
+    fs.writeFileSync(path.join(directory, 'private-foreign-entry'), 'retain');
+    fs.rmdirSync(directory);
+  });
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(f.filesystemCalls).toEqual(['unlink', 'rmdir']);
+  const effects = result.commands.filter(
+    (entry: any) =>
+      entry.operation === 'filesystem:unlink' || entry.operation === 'filesystem:rmdir',
+  );
+  expect(effects[0]).toMatchObject({ outcome: 'passed', readback: { exists: false } });
+  expect(effects[1]).toMatchObject({
+    outcome: 'failed',
+    errorCode: 'ENOTEMPTY',
+    mutationStarted: true,
+    effect: 'unknown',
+    readback: { exists: true, entryCount: 1 },
+  });
+  expect(fs.existsSync(path.join(lock.directory, 'private-foreign-entry'))).toBe(true);
+  expect(f.commands.some((args) => args[1] === 'rm')).toBe(false);
+  expect(JSON.stringify(result)).not.toContain('private-foreign-entry');
+});
+
+it('admits no lock directory removal after budget expires following a successful unlink', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const lock = f.staleLock();
+  f.setFilesystem('unlink', (file) => {
+    fs.unlinkSync(file);
+    f.expireNextRead();
+  });
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain('CLEANUP_BUDGET_EXHAUSTED');
+  expect(f.filesystemCalls).toEqual(['unlink']);
+  const rmdir = result.commands.find((entry: any) => entry.operation === 'filesystem:rmdir');
+  expect(rmdir).toMatchObject({
+    outcome: 'failed',
+    mutationStarted: false,
+    effect: 'not-started',
+    errorCode: 'CLEANUP_BUDGET_EXHAUSTED',
+  });
+  expect(fs.existsSync(lock.file)).toBe(false);
+  expect(fs.existsSync(lock.directory)).toBe(true);
+});
+
+it('preserves a replaced lock directory after unlink without recursively clearing new entries', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const lock = f.staleLock();
+  f.setFilesystem('unlink', (file) => {
+    fs.unlinkSync(file);
+    fs.renameSync(lock.directory, lock.directory + '-previous');
+    fs.mkdirSync(lock.directory);
+    fs.writeFileSync(path.join(lock.directory, 'foreign-keep'), 'keep');
+  });
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain('INVOCATION_LOCK_IDENTITY_DRIFT');
+  expect(f.filesystemCalls).toEqual(['unlink']);
+  expect(fs.existsSync(path.join(lock.directory, 'foreign-keep'))).toBe(true);
+  expect(f.commands.some((args) => args[1] === 'rm')).toBe(false);
+});
+
+it('refuses an owner-file inode replacement before either lock effect', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const lock = f.staleLock();
+  const raw = fs.readFileSync(lock.file);
+  fs.renameSync(lock.file, lock.file + '-previous');
+  fs.writeFileSync(lock.file, raw);
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain('INVOCATION_LOCK_IDENTITY_DRIFT');
+  expect(f.filesystemCalls).toEqual([]);
+  expect(fs.existsSync(lock.file)).toBe(true);
+  expect(fs.existsSync(lock.file + '-previous')).toBe(true);
+});
+
+it.each(['stop', 'rm'])(
+  'revalidates daemon during exact-CID smoke recovery after %s',
+  (operation) => {
+    const f = fixture();
+    f.manager.start();
+    const owned = f.candidate();
+    const folder = path.join(
+      f.root,
+      '.local/e2e-release/smoke',
+      '00000000-0000-4000-8000-000000000001',
+    );
+    const file = path.join(folder, 'receipt.json');
+    const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+    record.cleanupComplete = false;
+    fs.writeFileSync(file, JSON.stringify(record));
+    const probeId = record.id;
+    f.containers.set(probeId, {
+      Id: probeId,
+      Image: owned.dependency.Id,
+      Name: `/tiangong-smoke-${record.nonce}`,
+      Config: { Labels: smokeLabels(record), Cmd: ['node', '-e', SMOKE_SOURCE], Entrypoint: null },
+      Mounts: [],
+      HostConfig: { NetworkMode: 'none', IpcMode: 'host', Init: true, AutoRemove: false },
+      State: { Running: operation === 'stop' },
+    });
+    f.manager.observe();
+    f.afterNext(`container:${operation}`, f.driftContext);
+    const result = f.manager.finish();
+    expect(result.complete).toBe(false);
+    expect(result.errors).toContain('DOCKER_CONTEXT_DRIFT');
+    expect(f.commands.filter((args) => args[0] === 'container' && args[1] === 'rm')).toEqual(
+      operation === 'rm' ? [['container', 'rm', probeId]] : [],
+    );
+    expect(f.containers.has(owned.container.Id)).toBe(true);
+    expect(f.commands.filter((args) => args[0] === 'image' && args[1] === 'rm')).toEqual([]);
+  },
+);
+
+it('revalidates daemon before rmdir after a previously valid unlink', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const lock = f.staleLock();
+  f.setFilesystem('unlink', (file) => {
+    fs.unlinkSync(file);
+    f.driftContext();
+  });
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain('DOCKER_CONTEXT_DRIFT');
+  expect(f.filesystemCalls).toEqual(['unlink']);
+  expect(fs.existsSync(lock.directory)).toBe(true);
+  expect(f.commands.some((args) => args[1] === 'rm')).toBe(false);
+});
