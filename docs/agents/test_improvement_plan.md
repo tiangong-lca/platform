@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
+lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
 ---
 
 # Testing Strategy
@@ -120,3 +120,5 @@ The strategy is working when:
 - full closure remains intact
 - test additions track real product risk
 - current-state docs stay small because the queue stays closed
+
+Resource validation must separate command completion, verified effects and artifact acceptance. Creation intent plus immutable IDs precede mutation; retained partial/timeout evidence and exact-ID recovery remain necessary even when browser behavior passes.

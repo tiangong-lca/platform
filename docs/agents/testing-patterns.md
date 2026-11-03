@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
+lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
 ---
 
 # Testing Patterns Reference
@@ -299,3 +299,7 @@ Run real package lifecycle contracts in isolated Node children with development/
 Image-input tests should bind declared patch bytes before cache lookup, then cover both dependency and candidate contexts and every manifest consumer, including the Git-free evidence reporter. Use a patch-free control and explicit path/hash/index/schema failures. Resource observer fixtures canonicalize their owned temporary root before deriving paths so macOS aliases do not replace the intended ownership assertions with an unrelated setup failure.
 
 Passive mobile diagnostics use five fixed schema-2 detail slots and one optional unawaited frame under the original record/byte caps. Normal cancellation is explicit evidence, never a reason to wait or retry the product action. Observe only selected DOM predicates and window composition counts with unknown prehistory; preserve exact original rejection identity and independent cleanup. The owning wire/lifecycle contract is in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics).
+
+Resource lifecycle tests must model actual staged discovery, including a prepared dependency observed before its candidate. Use native disposable subprocesses for timeout/nonzero/partial effects and a strict synthetic Docker map for creation intent, CID, inspected identity and exact-ID recovery; never target unrelated real containers. Unknown CID/profile, changed source or failed mutation stays explicit. Preserve finite budgets and assert no prune, image force or foreign resource deletion.
+
+A resource guard must be tested between mutations, beyond an initially valid snapshot or a later failing verify. For composite filesystem cleanup, assert each exact effect and its readback independently: successful unlink does not grant rmdir authority after new entries, identity change, source/daemon drift or deadline expiry.

@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
+lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
 ---
 
 # Testing Troubleshooting
@@ -217,3 +217,7 @@ The macOS Jest launcher adds `--no-sparkplug` to its existing direct Node flags.
 [Node's upstream fix](https://github.com/nodejs/node/commit/fb0d0ca28993802d67360edc84d467fe3ccdc20b) backports V8's dispatch-register/linkage correction for the matching GC signature. The official24.22.2 tagged source contains it, and the changelog first lists it in24.22.0. Latest verified stable Node24 metadata at this review is24.22.2; neither it nor a new runtime/image baseline is adopted by this workaround. Retire the temporary Sparkplug flag only after the owning tracked runtime task qualifies an upstream-fixed supported Node24 baseline, its exact executable/image identities, installed worker/consumer compatibility and unchanged complete local/hosted qualification. Keep the existing optimizer flags unless their separate retirement is supported.
 
 Do not substitute serialization, smaller pools, lower coverage, retries or excluded suites for the mitigation or its proof. The existing runner suite exercises real parent-bound Jest-worker children and a missing-flag negative control with normal process closure. Preserve full source collection, all existing suites/assertions, the25% unit pool, two coverage workers,512MB recycle boundaries and every100% threshold. A recurrence after the mitigation requires new PID/runtime/argv/native-stack evidence and diagnosis; one focused pass or a later green aggregate cannot retrospectively qualify the earlier failed push. Linux/Windows flags and all exact Node/pnpm/image/dependency/product pins stay unchanged.
+
+For a hosted resource-boundary failure, inspect receipt v2 command phase/operation/resource ID and native status/signal/errorCode before another execution. A timed-out CLI may have changed daemon state; recover only from prior exact owned identity, never from absence or a generic image/label match. Historical v1 ERR_ASSERTION cannot establish the exact Docker cause. Canonical/browser success and resource closure remain separate required evidence.
+
+For partial invocation-lock cleanup, inspect each filesystem:unlink/filesystem:rmdir event, its captured binding, mutationStarted flag, typed errno and readback. Preserve new/replaced entries and the original failure; owner-file absence alone cannot authorize directory removal. Source or daemon drift after any completed effect stops later cleanup.

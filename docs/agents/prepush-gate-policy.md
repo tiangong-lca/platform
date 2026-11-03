@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
+lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
 ---
 
 # Pre-Push Gate Policy
@@ -176,3 +176,5 @@ The dispatch default `publication_scope=full` preserves full release recovery. E
 - make draft creation single-writer before parallel Electron publication, fail closed when more than one release uses the tag, and verify the exact cross-platform asset set after every matrix run
 - reproduce Umi-generating focused tests, coverage commands, and `pnpm prepush:gate` serially on one workstation when they are needed; the full gate already contains the complete test inventory and unchanged 100% `src/**` coverage
 - keep `100%` coverage on every tracked file, and treat any direct-collection exclusions as a reviewed exception rather than a default pattern
+
+Hosted resource-controller changes keep canonical browser qualification and independently verified resource closure as separate conditions. Local lifecycle/timeout controls and the ordinary checked-push gate do not waive a failed hosted cleanup receipt. The resource and budget contract lives in [dependency maintenance](dependency-maintenance.md).

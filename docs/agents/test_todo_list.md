@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
+lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
 ---
 
 # Testing Execution State
@@ -65,6 +65,8 @@ lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final do
 This is a checked-in reference, not a per-PR execution ledger. A delivery's post-commit, hook-owned full-gate result belongs in its PR validation evidence; update this section when the reference counts, coverage policy, or queue state materially changes.
 
 ## Current State
+
+- Issue #1413 also owns the observed hosted cleanup failure: original exact-source canonical success remains historical evidence; bounded operation telemetry and explicit smoke identity/cleanup require fresh hosted resource closure. No source coverage queue or production authority is opened.
 
 - Issue #1413 adds a narrow standalone Study renderer PR qualification for exact-source package/Chromium evidence. It preserves the full-coverage queue and existing release gates; executed results and artifact acceptance belong on the Issue/PR.
 

@@ -7,14 +7,30 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { spawn, spawnSync } = require('node:child_process');
+const { spawn } = require('node:child_process');
+
+const {
+  resourceCommand,
+  QUICK_READ_MS,
+  IMAGE_REMOVE_MS,
+  CONTAINER_REMOVE_MS,
+  CLEANUP_TOTAL_MS,
+  commandFailure,
+} = require('../e2e/resource-command.cjs');
+const {
+  SMOKE,
+  validateReceipt: validateSmokeReceipt,
+  cleanupSmoke,
+  validateSmoke,
+  readCid,
+} = require('../e2e/environment-smoke.cjs');
 
 const { readMaintainedPatches } = require('../e2e/maintained-patches.cjs');
 
 const PREFIX = 'org.tiangong.lca.next.';
 const CANDIDATE = `${PREFIX}release-e2e`;
 const DEPENDENCY = `${PREFIX}release-e2e-environment`;
-const SCHEMA = 'platform.supabase-browser-resources.v1';
+const SCHEMA = 'platform.supabase-browser-resources.v2';
 const IMAGE_ID = /^sha256:[a-f0-9]{64}$/u;
 const CONTAINER_ID = /^[a-f0-9]{64}$/u;
 const sha = (value) => crypto.createHash('sha256').update(value).digest('hex');
@@ -28,12 +44,14 @@ const stable = (value) =>
       )
     : value;
 const check = (condition, code) => assert.ok(condition, code);
-const failureCode = (error) =>
-  /^[A-Z0-9_:]+$/u.test(error.message ?? '')
-    ? error.message
-    : /^[A-Z0-9_]+$/u.test(error.code ?? '')
+const failureCode = (error) => {
+  const firstLine = String(error.message ?? '').split(/\r?\n/u)[0];
+  return /^[A-Z0-9_:]{1,96}$/u.test(firstLine)
+    ? firstLine
+    : /^[A-Z0-9_]{1,64}$/u.test(error.code ?? '')
       ? error.code
       : 'RESOURCE_BOUNDARY_FAILED';
+};
 
 function privateJson(file, value) {
   const temporary = `${file}.${process.pid}.tmp`;
@@ -55,22 +73,19 @@ function noSymlinks(file, boundary) {
 }
 
 function command(program, args, options = {}) {
-  const result = spawnSync(program, args, {
-    encoding: 'utf8',
-    timeout: 15_000,
-    maxBuffer: 8 * 1024 * 1024,
-    ...options,
-  });
-  // Do not publish command stderr, environment, inspect Config.Env or credentials.
-  check(!result.error && result.status === 0, `RESOURCE_COMMAND_FAILED:${program}`);
-  return result.stdout;
+  return resourceCommand(program, args, options);
 }
 
-function sourceIdentity(root, head) {
+function sourceIdentity(root, head, budget = {}) {
+  const capture = (program, args, options = {}) => {
+    const timeout = budget.remaining ? Math.min(QUICK_READ_MS, budget.remaining()) : QUICK_READ_MS;
+    check(timeout > 0, 'CLEANUP_BUDGET_EXHAUSTED');
+    return command(program, args, { ...options, timeout });
+  };
   const env = { ...process.env };
   for (const key of Object.keys(env)) if (key.startsWith('GIT_')) delete env[key];
   const git = (...args) =>
-    command('git', ['--no-optional-locks', '-C', root, ...args], { env }).trim();
+    capture('git', ['--no-optional-locks', '-C', root, ...args], { env }).trim();
   check(/^[a-f0-9]{40}$/u.test(head) && git('rev-parse', 'HEAD') === head, 'HEAD_MISMATCH');
   check(git('status', '--porcelain=v1', '--untracked-files=all') === '', 'SOURCE_NOT_CLEAN');
   const maintainedPatches = readMaintainedPatches(root);
@@ -86,7 +101,7 @@ function sourceIdentity(root, head) {
     noSymlinks(path.join(root, name), root);
     files[name] = sha(fs.readFileSync(path.join(root, name)));
     check(
-      files[name] === sha(command('git', ['-C', root, 'show', `${head}:${name}`], { env })),
+      files[name] === sha(capture('git', ['-C', root, 'show', `${head}:${name}`], { env })),
       'TRACKED_INPUT_DRIFT',
     );
   }
@@ -256,6 +271,10 @@ function validateImage(image, source, manifests) {
     image.RepoTags?.includes(expectedImageTag(source, 'candidate')),
     'CANDIDATE_IMAGE_TAG_MISMATCH',
   );
+  check(
+    IMAGE_ID.test(labels[`${PREFIX}dependency-image-id`] ?? ''),
+    'CANDIDATE_DEPENDENCY_ID_MISSING',
+  );
   return 'candidate';
 }
 
@@ -323,18 +342,103 @@ function createManager(options) {
   check(contained(runnerTemp, state) && !contained(root, state), 'STATE_ROOT_NOT_OWNED');
   noSymlinks(state, runnerTemp);
   const clock = options.now ?? Date.now;
-  const source = options.source ?? (() => sourceIdentity(root, options.head));
+  const source =
+    options.source ??
+    (() =>
+      sourceIdentity(root, options.head, {
+        remaining: () => (cleanupDeadline === null ? QUICK_READ_MS : cleanupDeadline - clock()),
+      }));
   const processInfo = options.processInfo ?? processIdentity;
   const groupInfo = options.processGroup ?? processGroup;
   const invoke = options.command ?? command;
-  const docker = (args) =>
-    invoke('docker', [
-      '--config',
-      path.join(state, 'docker-config'),
-      '--context',
-      'default',
-      ...args,
-    ]);
+  const filesystem = {
+    unlink: fs.unlinkSync,
+    rmdir: fs.rmdirSync,
+    remove: (folder) => fs.rmSync(folder, { recursive: true }),
+    ...(options.filesystem ?? {}),
+  };
+  let cleanupReceipt = null;
+  let cleanupDeadline = null;
+  let cleanupPhase = 'preflight';
+  const docker = (args, requestedTimeout) => {
+    const id =
+      [...args].reverse().find((value) => IMAGE_ID.test(value) || CONTAINER_ID.test(value)) ?? null;
+    const timeout =
+      requestedTimeout ??
+      (args[0] === 'image' && args[1] === 'rm'
+        ? IMAGE_REMOVE_MS
+        : args[0] === 'container' && ['rm', 'stop'].includes(args[1])
+          ? CONTAINER_REMOVE_MS
+          : QUICK_READ_MS);
+    let event;
+    let remaining =
+      cleanupDeadline === null ? timeout : Math.min(timeout, cleanupDeadline - clock());
+    if (cleanupReceipt) {
+      check(cleanupReceipt.commands.length < 256, 'CLEANUP_COMMAND_CAP');
+      event = {
+        phase: cleanupPhase,
+        operation: `${args[0]}:${args[1] ?? 'read'}`,
+        resourceId: id,
+        startedAt: clock(),
+        timeoutMs: Math.max(0, remaining),
+        outcome: 'pending',
+        mutation: ['rm', 'stop'].includes(args[1]),
+        effect: ['rm', 'stop'].includes(args[1]) ? 'not-started' : 'read-only',
+        mutationStarted: false,
+      };
+      cleanupReceipt.commands.push(event);
+      save(cleanupReceipt);
+    }
+    try {
+      check(remaining > 0, 'CLEANUP_BUDGET_EXHAUSTED');
+      if (cleanupReceipt && ['rm', 'stop'].includes(args[1])) {
+        beforeDockerMutation(args, id);
+        remaining = Math.min(timeout, cleanupDeadline - clock());
+        check(remaining > 0, 'CLEANUP_BUDGET_EXHAUSTED');
+        Object.assign(event, {
+          boundaryVerifiedAt: clock(),
+          commandStartedAt: clock(),
+          timeoutMs: remaining,
+          mutationStarted: true,
+          effect: 'unknown',
+        });
+        save(cleanupReceipt);
+      }
+      const output = invoke(
+        'docker',
+        ['--config', path.join(state, 'docker-config'), '--context', 'default', ...args],
+        { timeout: remaining },
+      );
+      if (event) {
+        Object.assign(event, {
+          outcome: 'passed',
+          finishedAt: clock(),
+          status: 0,
+          signal: null,
+          errorCode: null,
+        });
+        save(cleanupReceipt);
+      }
+      return output;
+    } catch (error) {
+      error.resourceOperation = {
+        phase: cleanupPhase,
+        operation: `${args[0]}:${args[1] ?? 'read'}`,
+        resourceId: id,
+        timeoutMs: Math.max(0, remaining),
+        ...commandFailure(error),
+      };
+      if (event) {
+        Object.assign(event, {
+          outcome: 'failed',
+          finishedAt: clock(),
+          ...commandFailure(error),
+        });
+        save(cleanupReceipt);
+      }
+      throw error;
+    }
+  };
   const read = () => JSON.parse(fs.readFileSync(path.join(state, 'resources.json'), 'utf8'));
   const save = (receipt) => privateJson(path.join(state, 'resources.json'), receipt);
   const list = (kind) => {
@@ -405,6 +509,99 @@ function createManager(options) {
     check(json(source()) === json(receipt.source), 'SOURCE_IDENTITY_DRIFT');
     check(json(context()) === json(receipt.docker), 'DOCKER_CONTEXT_DRIFT');
   }
+  function mutationBoundary(receipt, finalContext = true) {
+    check(cleanupDeadline !== null && clock() < cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+    bound(receipt);
+    if (receipt.controller) {
+      const current = processInfo(receipt.controller.pid);
+      check(
+        !current,
+        sameProcess(current, receipt.controller)
+          ? 'CONTROLLER_PROCESS_STILL_LIVE'
+          : 'CONTROLLER_PROCESS_IDENTITY_DRIFT',
+      );
+    }
+    check(
+      json(list('volume')) === json(receipt.baseline.volumes) &&
+        json(list('network')) === json(receipt.baseline.networks),
+      'UNATTRIBUTED_VOLUME_OR_NETWORK_DRIFT',
+    );
+    if (finalContext) check(json(context()) === json(receipt.docker), 'DOCKER_CONTEXT_DRIFT');
+    check(clock() < cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+  }
+  function beforeDockerMutation(args, id) {
+    const receipt = cleanupReceipt;
+    mutationBoundary(receipt, false);
+    if (args[0] === 'image') {
+      const entry = receipt.images.find((value) => value.id === id);
+      check(entry && !receipt.baseline.images.includes(id), 'IMAGE_NOT_OWNED');
+      const image = inspect('image', id);
+      validateImage(image, receipt.source, receipt.manifests);
+      const labels = Object.fromEntries(
+        Object.entries(image.Config.Labels ?? {}).filter(([key]) => key.startsWith(PREFIX)),
+      );
+      check(
+        json(image.RepoTags ?? []) === json(entry.tags) &&
+          json(labels) === json(entry.labels) &&
+          entry.tags.length === 1,
+        'IMAGE_SHARED_OR_CHANGED',
+      );
+      if (entry.kind === 'dependency') {
+        const present = list('image');
+        check(
+          !receipt.images.some(
+            (candidate) =>
+              candidate.kind === 'candidate' &&
+              candidate.labels[`${PREFIX}dependency-image-id`] === id &&
+              present.includes(candidate.id),
+          ),
+          'IMAGE_DEPENDENT_RETAINED',
+        );
+      }
+      for (const containerId of list('container'))
+        check(inspect('container', containerId).Image !== id, 'IMAGE_STILL_REFERENCED');
+    } else {
+      const container = inspect('container', id);
+      const entry = receipt.containers.find((value) => value.id === id);
+      if (entry) {
+        check(
+          json(
+            validateContainer(
+              container,
+              receipt.source,
+              receipt.manifests,
+              [inspect('image', entry.imageId)],
+              receipt.baseline,
+            ),
+          ) === json(entry),
+          'CONTAINER_CHANGED_BEFORE_REMOVAL',
+        );
+      } else {
+        const smoke = receipt.smokes.find((value) => value.record.id === id && value.record.bound);
+        check(smoke, 'CONTAINER_NOT_OWNED');
+        const folder = path.join(root, '.local/e2e-release/smoke', smoke.nonce);
+        const file = path.join(folder, 'receipt.json');
+        const cid = path.join(folder, 'container.cid');
+        noSymlinks(file, root);
+        noSymlinks(cid, root);
+        const stat = fs.statSync(folder);
+        const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+        check(
+          stat.ino === smoke.inode &&
+            stat.dev === smoke.device &&
+            json(record) === json(smoke.record) &&
+            readCid(cid) === id,
+          'SMOKE_RECEIPT_DRIFT',
+        );
+        validateSmokeReceipt(record, receipt.source, receipt.controller, receipt.docker.id);
+        validateSmoke(container, record);
+      }
+      if (args[1] === 'rm') check(container.State?.Running === false, 'CONTAINER_STILL_RUNNING');
+    }
+    // Context can also change while inspecting an otherwise identical portable image.
+    check(json(context()) === json(receipt.docker), 'DOCKER_CONTEXT_DRIFT');
+    check(clock() < cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+  }
   function captureManifests(receipt) {
     const directory = path.join(root, '.local/e2e-release/build');
     if (!fs.existsSync(directory)) return;
@@ -459,7 +656,56 @@ function createManager(options) {
       if (!old) receipt.manifests.push(entry);
     }
   }
+  function captureSmokes(receipt, strict = false) {
+    const parent = path.join(root, '.local/e2e-release/smoke');
+    if (!fs.existsSync(parent)) return;
+    noSymlinks(parent, root);
+    for (const nonce of fs.readdirSync(parent)) {
+      check(/^[a-f0-9-]{36}$/u.test(nonce), 'SMOKE_DIRECTORY_MISMATCH');
+      const folder = path.join(parent, nonce);
+      noSymlinks(folder, root);
+      const file = path.join(folder, 'receipt.json');
+      noSymlinks(file, root);
+      if (!fs.existsSync(file)) {
+        check(!strict, 'SMOKE_RECEIPT_MISSING');
+        continue;
+      }
+      const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (record.id) {
+        const cid = path.join(folder, 'container.cid');
+        noSymlinks(cid, root);
+        check(readCid(cid) === record.id, 'SMOKE_CID_DRIFT');
+      }
+      validateSmokeReceipt(record, receipt.source, receipt.controller, receipt.docker.id);
+      check(
+        record.nonce === nonce && record.createdAt >= receipt.startedAt,
+        'SMOKE_INTENT_NOT_FRESH',
+      );
+      const image = receipt.images.find(
+        (entry) => entry.id === record.imageId && entry.kind === 'dependency',
+      );
+      check(image, 'SMOKE_DEPENDENCY_NOT_OBSERVED');
+      const stat = fs.statSync(folder);
+      const selected = { nonce, inode: stat.ino, device: stat.dev, record };
+      const index = receipt.smokes.findIndex((entry) => entry.nonce === nonce);
+      if (index >= 0) {
+        const old = receipt.smokes[index];
+        check(
+          old.inode === selected.inode &&
+            ['root', 'head', 'tree', 'imageId', 'inputSha256', 'createdAt', 'controller'].every(
+              (key) => json(old.record[key]) === json(record[key]),
+            ) &&
+            old.device === selected.device &&
+            (!old.record.id || old.record.id === record.id) &&
+            (!old.record.bound || record.bound),
+          'SMOKE_IDENTITY_DRIFT',
+        );
+        receipt.smokes[index] = selected;
+      } else receipt.smokes.push(selected);
+    }
+  }
   function observe(receipt = read()) {
+    if (!cleanupReceipt) cleanupPhase = 'observation';
     bound(receipt);
     captureManifests(receipt);
     const lockFile = path.join(root, '.local/e2e-release/invocation.lock/owner.json');
@@ -483,6 +729,18 @@ function createManager(options) {
           'CONTROLLER_PROCESS_DRIFT',
         );
         receipt.controller = entry;
+        const fileStat = fs.lstatSync(lockFile);
+        const directoryStat = fs.lstatSync(path.dirname(lockFile));
+        check(fileStat.isFile() && directoryStat.isDirectory(), 'INVOCATION_LOCK_TYPE_MISMATCH');
+        const selected = {
+          owner: { inode: fileStat.ino, device: fileStat.dev, sha256: sha(raw) },
+          directory: { inode: directoryStat.ino, device: directoryStat.dev },
+        };
+        check(
+          !receipt.invocationLock || json(receipt.invocationLock) === json(selected),
+          'INVOCATION_LOCK_IDENTITY_DRIFT',
+        );
+        receipt.invocationLock = selected;
       }
     }
     const current = inventory();
@@ -535,10 +793,17 @@ function createManager(options) {
       check(!old || json(old) === json(selected), 'IMAGE_IDENTITY_DRIFT');
       if (!old) receipt.images.push(selected);
     }
+    captureSmokes(receipt);
     for (const id of current.containers) {
       if (receipt.baseline.containers.includes(id)) continue;
       const container = inspectPresent('container', id);
       if (!container) continue;
+      if (container.Config?.Labels?.[SMOKE] === 'true') {
+        const owned = receipt.smokes.find((entry) => entry.record.id === id && entry.record.bound);
+        if (owned) validateSmoke(container, owned.record);
+        else receipt.ambiguousContainers = [...new Set([...receipt.ambiguousContainers, id])];
+        continue;
+      }
       if (container.Config?.Labels?.[CANDIDATE] !== 'true') {
         if (images.some((image) => image.Id === container.Image))
           receipt.ambiguousContainers = [...new Set([...receipt.ambiguousContainers, id])];
@@ -577,7 +842,7 @@ function createManager(options) {
       const identity = source();
       check(identity.head === options.head && identity.root === root, 'HEAD_MISMATCH');
       const runtime = path.join(root, '.local/e2e-release');
-      for (const name of ['runs', 'build', 'environment-build', 'invocation.lock']) {
+      for (const name of ['runs', 'build', 'environment-build', 'invocation.lock', 'smoke']) {
         const file = path.join(runtime, name);
         noSymlinks(file, root);
         check(
@@ -636,6 +901,9 @@ function createManager(options) {
         containers: [],
         manifests: [],
         ambiguousContainers: [],
+        smokes: [],
+        commands: [],
+        invocationLock: null,
         observations: 0,
         errors: [],
         complete: false,
@@ -655,73 +923,266 @@ function createManager(options) {
         schema: SCHEMA,
         phase: 'preflight',
         code: failureCode(error),
+        operation: error.resourceOperation ?? null,
         at: clock(),
       });
       throw error;
     }
   }
+  function pathReadback(file) {
+    try {
+      const stat = fs.lstatSync(file);
+      const value = {
+        exists: true,
+        inode: stat.ino,
+        device: stat.dev,
+        kind: stat.isSymbolicLink()
+          ? 'symlink'
+          : stat.isDirectory()
+            ? 'directory'
+            : stat.isFile()
+              ? 'file'
+              : 'other',
+      };
+      if (stat.isDirectory() && !stat.isSymbolicLink())
+        value.entryCount = fs.readdirSync(file).length;
+      return value;
+    } catch (error) {
+      return error.code === 'ENOENT'
+        ? { exists: false }
+        : { exists: null, errorCode: failureCode(error) };
+    }
+  }
+  function filesystemEffect(operation, resourceId, file, validate, execute, binding = null) {
+    check(cleanupReceipt.commands.length < 256, 'CLEANUP_COMMAND_CAP');
+    const event = {
+      phase: cleanupPhase,
+      operation: `filesystem:${operation}`,
+      resourceId,
+      resourceBinding: binding,
+      startedAt: clock(),
+      remainingBudgetMs: Math.max(0, cleanupDeadline - clock()),
+      outcome: 'pending',
+      mutation: true,
+      mutationStarted: false,
+      effect: 'not-started',
+    };
+    cleanupReceipt.commands.push(event);
+    save(cleanupReceipt);
+    try {
+      mutationBoundary(cleanupReceipt);
+      validate();
+      check(clock() < cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+      Object.assign(event, {
+        boundaryVerifiedAt: clock(),
+        commandStartedAt: clock(),
+        remainingBudgetMs: cleanupDeadline - clock(),
+        mutationStarted: true,
+        effect: 'unknown',
+      });
+      save(cleanupReceipt);
+      execute();
+      event.readback = pathReadback(file);
+      if (binding && operation === 'unlink') {
+        event.parentReadback = pathReadback(path.dirname(file));
+        check(
+          event.parentReadback.exists === true &&
+            event.parentReadback.inode === binding.directory.inode &&
+            event.parentReadback.device === binding.directory.device,
+          'INVOCATION_LOCK_IDENTITY_DRIFT',
+        );
+      }
+      check(event.readback.exists === false, 'FILESYSTEM_EFFECT_NOT_VERIFIED');
+      check(clock() <= cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+      Object.assign(event, {
+        outcome: 'passed',
+        effect: 'verified-absent',
+        finishedAt: clock(),
+        status: 0,
+        signal: null,
+        errorCode: null,
+      });
+      save(cleanupReceipt);
+    } catch (error) {
+      Object.assign(event, {
+        outcome: 'failed',
+        readback: pathReadback(file),
+        parentReadback: binding ? pathReadback(path.dirname(file)) : null,
+        finishedAt: clock(),
+        status: null,
+        signal: null,
+        errorCode: failureCode(error),
+      });
+      error.resourceOperation = {
+        phase: cleanupPhase,
+        operation: event.operation,
+        resourceId,
+        remainingBudgetMs: Math.max(0, cleanupDeadline - clock()),
+        status: null,
+        signal: null,
+        errorCode: failureCode(error),
+      };
+      save(cleanupReceipt);
+      throw error;
+    }
+  }
+  function removeFilesystem(folder, resourceId, validate) {
+    filesystemEffect(
+      'remove',
+      resourceId,
+      folder,
+      () => {
+        noSymlinks(folder, root);
+        validate();
+      },
+      () => filesystem.remove(folder),
+    );
+  }
+  function cleanupInvocationLock(receipt) {
+    const directory = path.join(root, '.local/e2e-release/invocation.lock');
+    const ownerFile = path.join(directory, 'owner.json');
+    if (!fs.existsSync(directory)) return;
+    const binding = receipt.invocationLock;
+    const directoryMatches = () => {
+      noSymlinks(directory, root);
+      check(binding, 'UNOBSERVED_CONTROLLER_LOCK_RETAINED');
+      const stat = fs.lstatSync(directory);
+      check(
+        stat.isDirectory() &&
+          stat.ino === binding.directory.inode &&
+          stat.dev === binding.directory.device,
+        'INVOCATION_LOCK_IDENTITY_DRIFT',
+      );
+    };
+    const unlinked = () =>
+      receipt.commands.some(
+        (entry) =>
+          entry.operation === 'filesystem:unlink' &&
+          entry.resourceId === 'invocation.lock/owner.json' &&
+          entry.outcome === 'passed' &&
+          json(entry.resourceBinding) === json(binding),
+      );
+    cleanupPhase = 'invocation-lock-unlink';
+    if (fs.existsSync(ownerFile))
+      filesystemEffect(
+        'unlink',
+        'invocation.lock/owner.json',
+        ownerFile,
+        () => {
+          directoryMatches();
+          noSymlinks(ownerFile, root);
+          const stat = fs.lstatSync(ownerFile);
+          const raw = fs.readFileSync(ownerFile);
+          check(
+            stat.isFile() &&
+              stat.ino === binding.owner.inode &&
+              stat.dev === binding.owner.device &&
+              sha(raw) === binding.owner.sha256 &&
+              receipt.controller?.lockSha256 === binding.owner.sha256,
+            'INVOCATION_LOCK_IDENTITY_DRIFT',
+          );
+          check(!processInfo(JSON.parse(raw).pid), 'CONTROLLER_PROCESS_STILL_LIVE');
+          check(
+            json(fs.readdirSync(directory).sort()) === json(['owner.json']),
+            'INVOCATION_LOCK_NEW_ENTRIES',
+          );
+        },
+        () => filesystem.unlink(ownerFile),
+        binding,
+      );
+    cleanupPhase = 'invocation-lock-rmdir';
+    filesystemEffect(
+      'rmdir',
+      'invocation.lock',
+      directory,
+      () => {
+        directoryMatches();
+        check(unlinked(), 'INVOCATION_LOCK_UNLINK_NOT_VERIFIED');
+        check(
+          !fs.existsSync(ownerFile) && fs.readdirSync(directory).length === 0,
+          'INVOCATION_LOCK_NEW_ENTRIES',
+        );
+      },
+      () => filesystem.rmdir(directory),
+      binding,
+    );
+  }
   function finish() {
     let receipt = read();
+    cleanupReceipt = receipt;
+    cleanupDeadline = clock() + CLEANUP_TOTAL_MS;
+    cleanupPhase = 'cleanup-observation';
     try {
       receipt = observe(receipt);
-      const lock = path.join(root, '.local/e2e-release/invocation.lock/owner.json');
-      if (fs.existsSync(lock)) {
+      if (receipt.controller) {
+        const currentController = processInfo(receipt.controller.pid);
         check(
-          !processInfo(JSON.parse(fs.readFileSync(lock, 'utf8')).pid),
-          'CONTROLLER_PROCESS_STILL_LIVE',
+          !currentController,
+          sameProcess(currentController, receipt.controller)
+            ? 'CONTROLLER_PROCESS_STILL_LIVE'
+            : 'CONTROLLER_PROCESS_IDENTITY_DRIFT',
         );
-        check(
-          receipt.controller?.lockSha256 === sha(fs.readFileSync(lock)),
-          'UNOBSERVED_CONTROLLER_LOCK_RETAINED',
-        );
-        noSymlinks(lock, root);
-        fs.unlinkSync(lock);
-        fs.rmdirSync(path.dirname(lock));
       }
+      cleanupInvocationLock(receipt);
       const current = inventory();
-      check(
-        !receipt.ambiguousContainers.some((id) => current.containers.includes(id)),
-        'UNATTRIBUTABLE_CONTAINER_RETAINED',
-      );
       receipt.removed = { containers: [], images: [], buildContexts: [] };
+      captureSmokes(receipt, true);
+      for (const entry of receipt.smokes) {
+        cleanupPhase = 'smoke-recovery';
+        if (!entry.record.cleanupComplete) {
+          const file = path.join(root, '.local/e2e-release/smoke', entry.nonce, 'receipt.json');
+          const cidFile = path.join(path.dirname(file), 'container.cid');
+          noSymlinks(cidFile, root);
+          if (fs.existsSync(cidFile)) {
+            const id = readCid(cidFile);
+            check(!entry.record.id || entry.record.id === id, 'SMOKE_CID_DRIFT');
+            entry.record.id = id;
+          }
+          cleanupSmoke(entry.record, docker, () => {
+            privateJson(file, entry.record);
+            save(receipt);
+          });
+        }
+        check(entry.record.cleanupComplete, 'SMOKE_CLEANUP_NOT_VERIFIED');
+      }
+      check(
+        receipt.ambiguousContainers.every(
+          (id) =>
+            receipt.containers.some((entry) => entry.id === id) ||
+            receipt.smokes.some((entry) => entry.record.id === id && entry.record.bound),
+        ),
+        'UNATTRIBUTABLE_CONTAINER_OBSERVED',
+      );
+      cleanupPhase = 'container-removal';
       for (const entry of receipt.containers) {
         if (!current.containers.includes(entry.id)) continue;
         const container = inspectPresent('container', entry.id);
         if (!container) continue;
-        const images = [inspect('image', entry.imageId)];
-        check(
-          json(
-            validateContainer(
-              container,
-              receipt.source,
-              receipt.manifests,
-              images,
-              receipt.baseline,
-            ),
-          ) === json(entry),
-          'CONTAINER_CHANGED_BEFORE_REMOVAL',
-        );
-        docker(['container', 'rm', '-f', entry.id]);
+        if (container.State?.Running) {
+          docker(['container', 'stop', '--time', '5', entry.id]);
+          if (!inspectPresent('container', entry.id)) continue;
+        }
+        docker(['container', 'rm', entry.id]);
         receipt.removed.containers.push(entry.id);
         save(receipt);
       }
-      for (const entry of receipt.images) {
+      const orderedImages = [...receipt.images].sort(
+        (left, right) => Number(left.kind === 'dependency') - Number(right.kind === 'dependency'),
+      );
+      for (const entry of orderedImages.filter((value) => value.kind === 'candidate'))
+        check(
+          receipt.images.some(
+            (dependency) =>
+              dependency.kind === 'dependency' &&
+              dependency.id === entry.labels[`${PREFIX}dependency-image-id`],
+          ),
+          'IMAGE_DEPENDENCY_NOT_OBSERVED',
+        );
+      for (const entry of orderedImages) {
+        cleanupPhase = 'image-preflight';
         if (receipt.baseline.images.includes(entry.id) || !inventory().images.includes(entry.id))
           continue;
-        const image = inspect('image', entry.id);
-        validateImage(image, receipt.source, receipt.manifests);
-        const labels = Object.fromEntries(
-          Object.entries(image.Config.Labels ?? {}).filter(([key]) => key.startsWith(PREFIX)),
-        );
-        check(
-          json(image.RepoTags ?? []) === json(entry.tags) &&
-            json(labels) === json(entry.labels) &&
-            entry.tags.length === 1,
-          'IMAGE_SHARED_OR_CHANGED',
-        );
-        for (const id of inventory().containers)
-          check(inspect('container', id).Image !== entry.id, 'IMAGE_STILL_REFERENCED');
-        // No force: Docker must also refuse any independently retained reference.
+        cleanupPhase = 'image-removal';
         docker(['image', 'rm', entry.id]);
         receipt.removed.images.push(entry.id);
         save(receipt);
@@ -729,41 +1190,46 @@ function createManager(options) {
       for (const entry of receipt.manifests) {
         const folder = path.join(root, '.local/e2e-release/build', entry.runId);
         if (!fs.existsSync(folder)) continue;
-        noSymlinks(folder, root);
-        const stat = fs.statSync(folder);
-        check(
-          stat.ino === entry.inode &&
-            stat.dev === entry.device &&
-            sha(fs.readFileSync(path.join(folder, 'candidate-manifest.json'))) === entry.sha256,
-          'BUILD_CONTEXT_CHANGED',
-        );
-        fs.rmSync(folder, { recursive: true });
+        cleanupPhase = 'build-context-removal';
+        removeFilesystem(folder, entry.runId, () => {
+          const stat = fs.statSync(folder);
+          check(
+            stat.ino === entry.inode &&
+              stat.dev === entry.device &&
+              sha(fs.readFileSync(path.join(folder, 'candidate-manifest.json'))) === entry.sha256,
+            'BUILD_CONTEXT_CHANGED',
+          );
+        });
         receipt.removed.buildContexts.push(entry.runId);
       }
       const environmentBuild = path.join(root, '.local/e2e-release/environment-build');
       if (fs.existsSync(environmentBuild)) {
-        for (const [file, expected] of Object.entries({
-          'package.json': receipt.source.files['package.json'],
-          'pnpm-lock.yaml': receipt.source.files['pnpm-lock.yaml'],
-          'pnpm-workspace.yaml': receipt.source.files['pnpm-workspace.yaml'],
-          Dockerfile: receipt.source.files['docker/e2e/Dockerfile'],
-          ...Object.fromEntries(
-            receipt.source.maintainedPatches.map((entry) => [entry.path, entry.sha256]),
-          ),
-        })) {
-          noSymlinks(path.join(environmentBuild, file), root);
-          check(
-            sha(fs.readFileSync(path.join(environmentBuild, file))) === expected,
-            'DEPENDENCY_CONTEXT_CHANGED',
-          );
-        }
-        fs.rmSync(environmentBuild, { recursive: true });
+        cleanupPhase = 'environment-context-removal';
+        removeFilesystem(environmentBuild, 'environment-build', () => {
+          for (const [file, expected] of Object.entries({
+            'package.json': receipt.source.files['package.json'],
+            'pnpm-lock.yaml': receipt.source.files['pnpm-lock.yaml'],
+            'pnpm-workspace.yaml': receipt.source.files['pnpm-workspace.yaml'],
+            Dockerfile: receipt.source.files['docker/e2e/Dockerfile'],
+            ...Object.fromEntries(
+              receipt.source.maintainedPatches.map((entry) => [entry.path, entry.sha256]),
+            ),
+          })) {
+            noSymlinks(path.join(environmentBuild, file), root);
+            check(
+              sha(fs.readFileSync(path.join(environmentBuild, file))) === expected,
+              'DEPENDENCY_CONTEXT_CHANGED',
+            );
+          }
+        });
       }
       const remainingBuild = path.join(root, '.local/e2e-release/build');
       check(
         !fs.existsSync(remainingBuild) || fs.readdirSync(remainingBuild).length === 0,
         'UNATTRIBUTED_BUILD_CONTEXT_RETAINED',
       );
+      cleanupPhase = 'cleanup-verification';
+      bound(receipt);
       receipt.finalInventory = inventory();
       check(
         !receipt.containers.some((entry) => receipt.finalInventory.containers.includes(entry.id)),
@@ -782,10 +1248,19 @@ function createManager(options) {
           json(receipt.finalInventory.networks) === json(receipt.baseline.networks),
         'UNATTRIBUTED_VOLUME_OR_NETWORK_DRIFT',
       );
+      bound(receipt);
       receipt.complete = true;
     } catch (error) {
       receipt.errors.push(failureCode(error));
+      receipt.failure = {
+        phase: cleanupPhase,
+        code: failureCode(error),
+        operation: error.resourceOperation ?? null,
+        at: clock(),
+      };
     }
+    cleanupReceipt = null;
+    cleanupDeadline = null;
     receipt.finishedAt = clock();
     save(receipt);
     return receipt;
@@ -802,6 +1277,26 @@ function createManager(options) {
         receipt.images.some((entry) => entry.kind === 'candidate') &&
         receipt.images.some((entry) => entry.kind === 'dependency'),
       'ACTUAL_RUNTIME_OBSERVATION_MISSING',
+    );
+    for (const entry of receipt.smokes) {
+      const folder = path.join(root, '.local/e2e-release/smoke', entry.nonce);
+      const file = path.join(folder, 'receipt.json');
+      noSymlinks(file, root);
+      const stat = fs.statSync(folder);
+      const cid = path.join(folder, 'container.cid');
+      noSymlinks(cid, root);
+      check(readCid(cid) === entry.record.id, 'SMOKE_CID_DRIFT');
+      check(
+        stat.ino === entry.inode &&
+          stat.dev === entry.device &&
+          json(JSON.parse(fs.readFileSync(file, 'utf8'))) === json(entry.record),
+        'SMOKE_RECEIPT_DRIFT',
+      );
+    }
+    check(
+      receipt.smokes.length > 0 &&
+        receipt.smokes.every((entry) => entry.record.cleanupComplete && entry.record.bound),
+      'SMOKE_LIFECYCLE_MISSING',
     );
     check(!receipt.observer || !processInfo(receipt.observer.pid), 'OBSERVER_STILL_LIVE');
     check(
@@ -916,6 +1411,12 @@ async function main(argv) {
       } catch (error) {
         const current = manager.read();
         current.errors.push(failureCode(error));
+        current.failure = {
+          phase: 'observation',
+          code: failureCode(error),
+          operation: error.resourceOperation ?? null,
+          at: Date.now(),
+        };
         manager.save(current);
       }
       await wait(500);

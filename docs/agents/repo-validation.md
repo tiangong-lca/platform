@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: 7acc2943a5233b4655b8bd1c7522d162d76f8aa7
+lastReviewedNote: 'Platform #1419: reviewed composition of exact-identity recovery, verified edit continuation and JSON downloads from 7acc294 with separately reviewed P2 resource cleanup 34b59b0. Shipped UI/renderer bytes stay unchanged; actual owned-stack, hosted qualification and final qualified Dev lineage remain required.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -381,6 +381,10 @@ For the Platform #1396 continuation, hold user hydration in the Login regression
 [The renderer contract](study-report-renderer-contract.md) owns W10 schema, precision, receipt/trust and release limits. Run the focused standalone Jest suite, `pnpm study-report:test:package`, and `pnpm study-report:test:browser` when changing view/runtime/package behavior. Package proof is part of pre-push; browser proof remains separately selected, synthetic, credential-free and source-bound. It checks actual packed HTML in fresh online/offline desktop/mobile contexts with request/API-attempt/CSP monitoring, keyboard controls and narrow layout. Artifacts stay ignored in `.local/study-report`. Existing app lint/build, coverage and localization gates remain required. A fixture pass does not prove W09 signing/disclosure, installed CLI integration, production rollout or P2 completion.
 
 `study-report.yml` supplies actual PR CI for those standalone inputs on Dev/Main: clean exact-head release build, focused protocol/CI tests, independent package consumption and actual Chromium. It binds uploaded archive/manifest bytes and browser evidence to the same source identity before upload. Its job uses the current frozen Node/pnpm graph and read-only permissions, with no full-gate duplication or operational side effects. Inspect the executed job and downloaded artifact for the exact PR head; a workflow definition or skipped release job is insufficient evidence.
+
+For the W10 hosted resource repair, run `tests/unit/e2e/environmentSmoke.test.ts`, `tests/unit/config/supabaseBrowserResources.test.ts`, `tests/unit/e2e/releaseE2ERunner.test.ts` and `tests/unit/config/supabaseBrowserWorkflow.test.ts` together. Native child-process controls preserve timeout/exit/signal and partial effects without raw output; synthetic Docker controls exercise intent/CID/inspection-before-start, exact-ID cancellation recovery, changed/unknown resources, dependency-first discovery and dependent-first cleanup. These controls do not replace fresh hosted Docker/canonical/resource evidence or qualify the historical failed cleanup.
+
+The resource mutation-boundary regression must switch daemon/source between successful cleanup effects and prove that later image/filesystem effects are never called. Stale-lock controls use real temporary-file unlink/rmdir, including native ENOTEMPTY after unlink, budget exhaustion before rmdir and file/directory inode replacement; failed effects preserve typed errno and partial readback without recursive lock removal.
 
 ## Study workbench proof
 
