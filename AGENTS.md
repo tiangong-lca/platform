@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: 7b4f633d7c12c0ad0672ae610c46eb2a94d8f812
+lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
 lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
 related:
   - .docpact/config.yaml
