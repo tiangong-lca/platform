@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -379,3 +379,5 @@ For the Platform #1396 continuation, hold user hydration in the Login regression
 ## Standalone Study report renderer
 
 [The renderer contract](study-report-renderer-contract.md) owns W10 schema, precision, receipt/trust and release limits. Run the focused standalone Jest suite, `pnpm study-report:test:package`, and `pnpm study-report:test:browser` when changing view/runtime/package behavior. Package proof is part of pre-push; browser proof remains separately selected, synthetic, credential-free and source-bound. It checks actual packed HTML in fresh online/offline desktop/mobile contexts with request/API-attempt/CSP monitoring, keyboard controls and narrow layout. Artifacts stay ignored in `.local/study-report`. Existing app lint/build, coverage and localization gates remain required. A fixture pass does not prove W09 signing/disclosure, installed CLI integration, production rollout or P2 completion.
+
+`study-report.yml` supplies actual PR CI for those standalone inputs on Dev/Main: clean exact-head release build, focused protocol/CI tests, independent package consumption and actual Chromium. It binds uploaded archive/manifest bytes and browser evidence to the same source identity before upload. Its job uses the current frozen Node/pnpm graph and read-only permissions, with no full-gate duplication or operational side effects. Inspect the executed job and downloaded artifact for the exact PR head; a workflow definition or skipped release job is insufficient evidence.

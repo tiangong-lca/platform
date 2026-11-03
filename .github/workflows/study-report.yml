@@ -1,0 +1,99 @@
+name: Study report validation
+
+on:
+  pull_request:
+    branches: [dev, main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - src/standalone/studyReport/**
+      - src/services/general/localeRegistry.ts
+      - scripts/study-report/**
+      - tests/unit/standalone/**
+      - tests/unit/config/studyReportWorkflow.test.ts
+      - tests/fixtures/study-report/**
+      - docs/agents/study-report-renderer-contract.md
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .npmrc
+      - .nvmrc
+      - .github/workflows/study-report.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: study-report-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  study-report:
+    name: Standalone renderer package and Chromium
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out exact renderer candidate
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up pinned pnpm and Node.js
+        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+        with:
+          version: 11.24.0
+          runtime: node@24.19.0
+          cache: true
+          install: false
+      - name: Install frozen dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build clean portable renderer
+        run: pnpm study-report:build --release
+      - name: Verify standalone protocol and CI boundaries
+        run: pnpm test:ci --runInBand --runTestsByPath tests/unit/standalone/studyReport.test.ts tests/unit/config/studyReportWorkflow.test.ts --no-coverage
+      - name: Verify packed independent consumer
+        run: pnpm study-report:test:package
+      - name: Install the lockfile-selected Chromium and system dependencies
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Qualify actual packed HTML online and offline
+        run: pnpm study-report:test:browser
+      - name: Bind browser and package evidence to the exact candidate
+        env:
+          EXPECTED_HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { createHash } from 'node:crypto';
+          import { readFileSync } from 'node:fs';
+          const read = (path) => JSON.parse(readFileSync(path, 'utf8'));
+          const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
+          const archive = read('dist-study-report/archive.json');
+          const manifestBytes = readFileSync('dist-study-report/package/manifest.json');
+          const manifest = JSON.parse(manifestBytes);
+          const browser = read('.local/study-report/browser-proof.json');
+          assert.match(process.env.EXPECTED_HEAD, /^[a-f0-9]{40}$/u);
+          for (const record of [archive, manifest, browser]) {
+            assert.equal(record.sourceCommit, process.env.EXPECTED_HEAD);
+            assert.equal(record.sourceDirty, false);
+          }
+          assert.equal(archive.archiveName, 'study-report-renderer-1.0.0.tgz');
+          assert.equal(archive.sha256, sha(readFileSync('dist-study-report/' + archive.archiveName)));
+          assert.equal(archive.manifestSha256, sha(manifestBytes));
+          assert.equal(browser.archiveSha256, archive.sha256);
+          assert.equal(browser.manifestSha256, archive.manifestSha256);
+          assert.equal(browser.sourceDigest, manifest.sourceDigest);
+          assert.equal(browser.schemaVersion, 'lca.study-renderer-browser-proof.v1');
+          assert.ok(Array.isArray(browser.records) && browser.records.length > 0);
+          JS
+      - name: Preserve exact renderer and browser evidence
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: study-report-pr-${{ github.event.pull_request.head.sha }}-${{ github.run_attempt }}
+          path: |
+            dist-study-report/*.tgz
+            dist-study-report/archive.json
+            dist-study-report/package/manifest.json
+            .local/study-report/browser-proof.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7

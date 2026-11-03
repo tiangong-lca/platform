@@ -16,9 +16,11 @@ checkPaths:
   - tests/unit/standalone/**
   - tests/fixtures/study-report/**
   - .github/workflows/build.yml
+  - .github/workflows/study-report.yml
+  - tests/unit/config/studyReportWorkflow.test.ts
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: 2f965bd77ecf8aa5c1ac3915b38ff52326701748
-lastReviewedNote: 'Platform #1413 W10: standalone fixture renderer and artifact build; actual W09 signed projection and installed CLI integration remain separate qualification.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 related:
   - repo-architecture.md
   - repo-validation.md
@@ -53,6 +55,8 @@ HTML is self-contained, with no automatic requests, remote fonts/images, scripts
 `pnpm study-report:build` emits `dist-study-report/package`, an independent dependency-free ESM/types/static-resource package, its file size/SHA-256 manifest, deterministic ustar/gzip archive and detached archive digest receipt. Manifest files exclude the manifest itself; the detached archive receipt binds it. Source commit, dirty state and source digest are explicit. `--release` rejects a dirty checkout. A checksum/local build alone does not establish release provenance.
 
 The canonical Build/release workflow builds from its exact qualified source and preserves the archive/manifest as a bounded Actions artifact. It neither npm publishes this private application nor attaches a public release asset. Public distribution still requires an owner-approved immutable release attachment and CLI pinning of independently obtained source/archive/manifest identities. CLI bundles those qualified bytes, without sibling source imports or runtime code download. Real W09/installed-CLI acceptance remains required; fixture package proof must never be reported as completed P2 delivery.
+
+The dedicated `study-report.yml` PR workflow qualifies relevant renderer, package, fixture, locale-registry and dependency inputs for Dev/Main. It checks out the exact PR head with read-only permissions, installs the existing frozen dependency graph, builds in clean release mode, runs focused protocol/workflow and independent-package tests, and executes the packed-HTML Chromium suite. Before upload, it verifies actual archive/manifest bytes and binds the browser proof to the same clean source, source digest and artifact hashes. The seven-day artifact contains only that package/manifest/receipt and synthetic browser proof. This workflow grants no deployment, publication or production-operation authority and leaves the existing full pre-push and release gates intact.
 
 ## Proof
 

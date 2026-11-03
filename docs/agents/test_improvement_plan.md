@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: faedeb792eb55e9ab6705e90aa5419da929eb2c7
-lastReviewedNote: 'Platform #1413 W10: preserved standalone renderer and latest Dev SDK 0.6.0/version 0.0.150; reviewed metadata conflicts without changing runtime or release authority.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 ---
 
 # Testing Strategy
@@ -79,6 +79,7 @@ lastReviewedNote: 'Platform #1413 W10: preserved standalone renderer and latest 
 - proof should be risk-proportional and scoped-first: micro-edits use focused checks, coherent batches use subsystem audits, and the repository full gate runs once for the final committed controlled checkpoint
 - documentation screenshot capture is a separate, on-demand product-evidence workflow: Next supplies only the source-bound product profile and stable locators, while workspace owns profile compilation, plan/security/access, run-scoped base-origin logic, and the synthetic Chromium canary outside the semantic localization proof and release matrix
 - gate ownership should prevent duplicate work: a normal delivery uses the push hook as the single full-gate owner, while a no-push handoff may run it manually instead
+- separately selected standalone-artifact PR qualification should prove the actual portable package and browser consumer with source-bound evidence; it must preserve the ordinary full-gate owner and release authority
 - gate eligibility should be decided before gate execution: exact current-branch and `HEAD` source spellings may proceed, raw deletion/no-update shapes spend no test budget, and invalid checked ref shapes fail before Docpact or the full suite
 - release-risk gates should be split by repair cost: operator-selected browser evidence runs while the business PR is still open, so failures stay on that PR; the generated release-candidate push runs only structural/static proof, and the exact dev Release PR runs the non-browser static/full gate. A successful dev Release PR emits proof bound to the main/dev bases, candidate head/tree/version, PR, run attempt, and artifact; immutable promotion/main stages verify it instead of repeating the gate
 - deterministic release orchestration should fail before transport on version scope, cumulative Docpact review, and composed-candidate static preflight; it must not generate browser proof. Release-line proof accepts direct ancestry or only a tree-identical two-parent promotion whose second parent remains in `dev`, while promotion retains the exact merged `dev` SHA and the original main baseline

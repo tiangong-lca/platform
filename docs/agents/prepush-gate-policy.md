@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 ---
 
 # Pre-Push Gate Policy
@@ -74,6 +74,8 @@ pnpm prepush:gate
 ```
 
 The full gate runs LCIA verification, `pnpm reference-data:check`, lint/type checks, dependency-free Study renderer package proof, complete coverage, and the unchanged 100% coverage assertion in that order. Reference-data verification fails before the expensive suite when the source manifest, evidence, content-addressed filenames, generated registry, or gzip outputs drift.
+
+The narrowly selected `study-report.yml` PR job adds standalone renderer/package/Chromium evidence for relevant Dev/Main inputs. It retains read-only permissions and the existing frozen runtime, verifies exact-source artifact bindings, and does not run another aggregate gate or change release/publication authority. [The renderer contract](study-report-renderer-contract.md) owns its input and evidence boundary.
 
 `pnpm prepush:gate:agent` enables the same gate with compact agent output. Jest writes its complete stdout/stderr and structured result JSON under `.local/test-logs/**`; the console contains only stage starts, failed suites/assertions, and final summaries. The reusable Release Gate enables this mode and uploads those files as a seven-day CI artifact even on failure, so compact output does not discard diagnostic evidence.
 

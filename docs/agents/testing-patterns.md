@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: faedeb792eb55e9ab6705e90aa5419da929eb2c7
-lastReviewedNote: 'Platform #1413 W10: preserved standalone renderer and latest Dev SDK 0.6.0/version 0.0.150; reviewed metadata conflicts without changing runtime or release authority.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 ---
 
 # Testing Patterns Reference
@@ -283,6 +283,8 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 - related testing docs updated if workflow rules changed
 
 ## Workflow guard fixtures (platform #1055)
+
+The standalone Study PR contract checks trigger/runtime/permission/order boundaries and executes the actual inline evidence-binding script against isolated files. Its positive control uses matching source/archive/manifest/browser identities; negative controls substitute source, dirty state, digests, empty records and archive bytes. These controls prove admission behavior, while the hosted package/Chromium job supplies actual execution evidence.
 
 Inline release-admission guards stay workflow-owned. Focused tests extract the exact `run:` block from the workflow file and execute it against fixture git remotes (insteadOf-mapped bare upstream, fixture `GITHUB_*` environment) instead of re-implementing the shell logic; see `tests/unit/scripts/buildReleaseContextGuard.test.ts`.
 

@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: faedeb792eb55e9ab6705e90aa5419da929eb2c7
-lastReviewedNote: 'Platform #1413 W10: preserved standalone renderer and latest Dev SDK 0.6.0/version 0.0.150; reviewed metadata conflicts without changing runtime or release authority.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 ---
 
 # Testing Troubleshooting
@@ -78,6 +78,7 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 
 | Symptom | Likely cause | First action |
 | --- | --- | --- |
+| standalone Study PR has no executed package/browser check | no relevant path selected, stale PR head, or only a release workflow was inspected | inspect `study-report.yml` branch/path selection and the exact PR-head job; verify its downloaded package/browser evidence rather than treating a skipped release job as qualification |
 | timeout or maximum update depth | loop in effect, stale mock, unresolved async state | narrow to one file, then inspect effect triggers and mocked promises |
 | auth or session flow failing | missing provider, missing auth mock, stale route state | reuse existing auth wrapper and compare against nearby passing tests |
 | `pnpm start` or `pnpm start:dev` returns production `feature_disabled` for a Dev OAuth authorization that succeeds through the Dev SDK | Umi populated `process.env` from main `.env` before the Dev config selected `.env.development` | run `pnpm test:ci tests/unit/config/supabaseEnv.test.ts --runInBand --no-coverage`, verify the rendered bundle targets the Dev project, and repair exact main-default decontamination without weakening distinct explicit overrides or enabling OAuth in the wrong project |
