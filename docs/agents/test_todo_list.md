@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
-lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
+lastReviewedNote: 'Platform #1413: reviewed owned smoke intent/CID/daemon identity, bounded secretless cleanup telemetry and validated support-image removal order; original hosted failure remains preserved and fresh canonical/resource qualification is required.'
 ---
 
 # Testing Execution State
@@ -65,6 +65,8 @@ lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR p
 This is a checked-in reference, not a per-PR execution ledger. A delivery's post-commit, hook-owned full-gate result belongs in its PR validation evidence; update this section when the reference counts, coverage policy, or queue state materially changes.
 
 ## Current State
+
+- Issue #1413 also owns the observed hosted cleanup failure: original exact-source canonical success remains historical evidence; bounded operation telemetry and explicit smoke identity/cleanup require fresh hosted resource closure. No source coverage queue or production authority is opened.
 
 - Issue #1413 adds a narrow standalone Study renderer PR qualification for exact-source package/Chromium evidence. It preserves the full-coverage queue and existing release gates; executed results and artifact acceptance belong on the Issue/PR.
 

@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { runOwnedSmoke } = require('./environment-smoke.cjs');
 const {
   loadQualificationClosureContract,
   qualificationAssertionFailures,
@@ -885,49 +886,23 @@ function ensureDependencyImage(environment, options = {}) {
   return { imageId: built.Id, imageTag: identity.tag, reused: false };
 }
 
-function runEnvironmentBrowserSmoke(imageTag) {
-  const source = [
-    "const { chromium, firefox, webkit } = require('@playwright/test');",
-    '(async () => {',
-    '  const versions = {};',
-    '  for (const [name, browserType] of Object.entries({ chromium, firefox, webkit })) {',
-    '    const browser = await browserType.launch();',
-    '    try { versions[name] = browser.version(); } finally { await browser.close(); }',
-    '  }',
-    '  process.stdout.write(JSON.stringify(versions));',
-    '})().catch((error) => { console.error(error); process.exitCode = 1; });',
-  ].join('\n');
-  const result = runCapture(
-    'docker',
-    ['run', '--rm', '--init', '--ipc=host', '--network=none', imageTag, 'node', '-e', source],
-    { allowFailure: true, maxBuffer: 16 * 1024 * 1024 },
-  );
-  if (result.status !== 0) {
-    throw new ReleaseE2EError('The pinned environment could not launch every browser.', {
-      cause: new Error(result.stderr.trim() || 'browser smoke container failed'),
-      exitCode: EXIT.ENVIRONMENT,
-      failureCode: 'E2E_ENVIRONMENT_BROWSER_LAUNCH_FAILED',
-      phase: 'environment',
-      retryable: true,
-      nextCommand: 'pnpm e2e:env:install',
-    });
-  }
+function runEnvironmentBrowserSmoke(dependencyImage) {
   try {
-    const versions = JSON.parse(result.stdout);
-    if (
-      !versions ||
-      ['chromium', 'firefox', 'webkit'].some((browserName) => !versions[browserName])
-    ) {
-      throw new Error('browser version inventory is incomplete');
-    }
-    return versions;
+    return runOwnedSmoke({
+      root: REPOSITORY_ROOT,
+      head: git(['rev-parse', 'HEAD']),
+      tree: git(['rev-parse', 'HEAD^{tree}']),
+      imageId: dependencyImage.imageId,
+    });
   } catch (error) {
-    throw new ReleaseE2EError('The browser smoke result was not valid JSON.', {
-      cause: error,
+    throw new ReleaseE2EError('The owned environment smoke lifecycle did not qualify.', {
       exitCode: EXIT.ENVIRONMENT,
-      failureCode: 'E2E_ENVIRONMENT_BROWSER_RESULT_INVALID',
-      phase: 'environment',
-      nextCommand: 'pnpm e2e:env:install',
+      failureCode: /^(?:SMOKE|RESOURCE)_[A-Z0-9_]+$/u.test(error.code ?? '')
+        ? error.code
+        : 'E2E_ENVIRONMENT_SMOKE_FAILED',
+      phase: 'environment-smoke',
+      nextCommand:
+        'Inspect the exact owned receipt under .local/e2e-release/smoke before another invocation.',
     });
   }
 }
@@ -1098,7 +1073,9 @@ function candidateImageMatches(image, context) {
   return (
     labels[IMAGE_LABEL] === 'true' &&
     labels['org.tiangong.lca.next.candidate-tree'] === context.manifest.candidate.tree &&
-    labels['org.tiangong.lca.next.manifest-sha256'] === context.manifestSha256
+    labels['org.tiangong.lca.next.manifest-sha256'] === context.manifestSha256 &&
+    (!context.dependencyImageId ||
+      labels['org.tiangong.lca.next.dependency-image-id'] === context.dependencyImageId)
   );
 }
 
@@ -1126,6 +1103,8 @@ function ensureCandidateImage(context, environment, options = {}) {
     `org.tiangong.lca.next.candidate-tree=${context.manifest.candidate.tree}`,
     '--label',
     `org.tiangong.lca.next.manifest-sha256=${context.manifestSha256}`,
+    '--label',
+    `org.tiangong.lca.next.dependency-image-id=${context.dependencyImageId}`,
     '--build-arg',
     `PLAYWRIGHT_IMAGE=${environment.contract.playwrightImage}`,
     '--build-arg',
@@ -1766,11 +1745,12 @@ function runRelease(options, state = {}) {
   }
   const baseImage = ensureBaseImage(environment, { offline: options.offline });
   const dependencyImage = ensureDependencyImage(environment, { offline: options.offline });
-  const environmentBrowsers = runEnvironmentBrowserSmoke(dependencyImage.imageTag);
+  const environmentBrowsers = runEnvironmentBrowserSmoke(dependencyImage);
   const runId = makeRunId(candidate);
   let context;
   try {
     context = createCandidateBuildContext(candidate, environment, runId, options);
+    context.dependencyImageId = dependencyImage.imageId;
   } catch (error) {
     fs.rmSync(path.join(BUILD_ROOT, runId), { recursive: true, force: true });
     throw error;
@@ -2047,7 +2027,7 @@ function runDoctor(options) {
   const environment = loadEnvironmentContractFromWorkingTree();
   const image = ensureBaseImage(environment, { readOnly: true });
   const dependencyImage = ensureDependencyImage(environment, { readOnly: true });
-  const browserVersions = runEnvironmentBrowserSmoke(dependencyImage.imageTag);
+  const browserVersions = runEnvironmentBrowserSmoke(dependencyImage);
   return {
     checks: [
       { id: 'host.git', status: 'passed', summary: prerequisites.gitVersion },
@@ -2083,7 +2063,7 @@ function runInstall(options) {
   const environment = loadEnvironmentContractFromWorkingTree();
   const image = ensureBaseImage(environment, { offline: options.offline });
   const dependencyImage = ensureDependencyImage(environment, { offline: options.offline });
-  const browserVersions = runEnvironmentBrowserSmoke(dependencyImage.imageTag);
+  const browserVersions = runEnvironmentBrowserSmoke(dependencyImage);
   const manifest = {
     kind: 'tiangong-next-release-e2e-installed-environment',
     schemaVersion: 1,

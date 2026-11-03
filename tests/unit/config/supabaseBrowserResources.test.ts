@@ -16,6 +16,12 @@ const {
   canonicalDigestReference,
 } = require('../../../scripts/qualification/supabase-browser-resources.cjs');
 
+const {
+  SMOKE_SOURCE,
+  smokeIdentity,
+  smokeLabels,
+} = require('../../../scripts/e2e/environment-smoke.cjs');
+
 const digest = (text: string) => crypto.createHash('sha256').update(text).digest('hex');
 const id = (letter: string) => letter.repeat(64);
 const prefix = 'org.tiangong.lca.next.';
@@ -60,6 +66,10 @@ function fixture() {
   const commands: string[][] = [];
   let serverId = 'owned-daemon';
   let ignoreRemoval = false;
+  let logicalClock = Date.now();
+  let expireRead = false;
+  let controllerProcess: any = null;
+  let failure: { operation: string; error: any } | null = null;
   const invoke = (program: string, args: string[]) => {
     if (program === 'pnpm') return '11.24.0\n';
     expect(program).toBe('docker');
@@ -71,6 +81,15 @@ function fixture() {
     ]);
     const actual = args.slice(4);
     commands.push(actual);
+    if (expireRead) {
+      logicalClock += 300001;
+      expireRead = false;
+    }
+    if (failure?.operation === `${actual[0]}:${actual[1]}`) {
+      const selected = failure;
+      failure = null;
+      throw selected.error;
+    }
     if (actual[0] === 'version')
       return JSON.stringify({ Client: { Version: '28.0.0' }, Server: { Version: '28.0.0' } });
     if (actual[0] === 'info')
@@ -120,8 +139,9 @@ function fixture() {
     runnerTemp,
     head: source.head,
     source: () => JSON.parse(JSON.stringify(source)),
+    now: () => logicalClock,
     command: invoke,
-    processInfo: () => null,
+    processInfo: () => controllerProcess,
     capacity: () => ({ bavail: 100, bsize: 4096 }),
   };
   const manager = createManager(options);
@@ -158,6 +178,7 @@ function fixture() {
           [CANDIDATE]: 'true',
           [`${prefix}candidate-tree`]: source.tree,
           [`${prefix}manifest-sha256`]: digest(text),
+          [`${prefix}dependency-image-id`]: `sha256:${id('d')}`,
         },
       },
       RepoTags: [expectedImageTag(source, 'candidate')],
@@ -182,8 +203,57 @@ function fixture() {
         },
       ],
     };
-    images.set(image.Id, image);
+    // Actual hosted discovery observes dependency image before candidate image.
     images.set(dependency.Id, dependency);
+    images.set(image.Id, image);
+    const receipt = manager.read();
+    receipt.controller ??= {
+      pid: 1234,
+      lockSha256: id('9'),
+      start: '100',
+      cwd: root,
+      argvSha256: id('8'),
+    };
+    manager.save(receipt);
+    const nonce = '00000000-0000-4000-8000-000000000001';
+    const smokeFolder = path.join(root, '.local/e2e-release/smoke', nonce);
+    fs.mkdirSync(smokeFolder, { recursive: true });
+    const smoke = {
+      schema: 'platform.environment-smoke.v1',
+      nonce,
+      root,
+      head: source.head,
+      tree: source.tree,
+      imageId: dependency.Id,
+      dockerDaemonId: 'owned-daemon',
+      inputSha256: digest(SMOKE_SOURCE),
+      controller: {
+        pid: receipt.controller.pid,
+        hostname: os.hostname(),
+        lockSha256: receipt.controller.lockSha256,
+      },
+      createdAt: receipt.startedAt,
+      id: id('9'),
+      bound: true,
+      identity: null,
+      createAttempted: true,
+      passed: true,
+      cleanupComplete: true,
+      commands: [],
+      errors: [],
+    };
+    const probe = {
+      Id: smoke.id,
+      Image: smoke.imageId,
+      Name: `/tiangong-smoke-${nonce}`,
+      Config: { Labels: smokeLabels(smoke), Cmd: ['node', '-e', SMOKE_SOURCE], Entrypoint: null },
+      Mounts: [],
+      HostConfig: { NetworkMode: 'none', IpcMode: 'host', Init: true, AutoRemove: false },
+    };
+    smoke.identity = smokeIdentity(probe, smoke);
+    fs.writeFileSync(path.join(smokeFolder, 'receipt.json'), JSON.stringify(smoke));
+    fs.writeFileSync(path.join(smokeFolder, 'container.cid'), smoke.id);
+
     containers.set(container.Id, container);
     return { image, dependency, container, folder, manifest, text };
   }
@@ -201,6 +271,15 @@ function fixture() {
     networks,
     driftContext: () => {
       serverId = 'another-daemon';
+    },
+    setControllerProcess: (value: any) => {
+      controllerProcess = value;
+    },
+    expireNextRead: () => {
+      expireRead = true;
+    },
+    failNext: (operation: string, error: any) => {
+      failure = { operation, error };
     },
     ignoreRemoval: () => {
       ignoreRemoval = true;
@@ -226,7 +305,7 @@ it('captures identities early, removes only exact fresh IDs, preserves baseline/
   expect(f.manager.verify().retained.buildkitCache).toContain('retained');
   expect(f.images.has(shared.Id)).toBe(true);
   expect(f.commands.filter((args) => args[1] === 'rm')).toEqual([
-    ['container', 'rm', '-f', owned.container.Id],
+    ['container', 'rm', owned.container.Id],
     ['image', 'rm', owned.image.Id],
     ['image', 'rm', owned.dependency.Id],
   ]);
@@ -451,3 +530,159 @@ it('rejects retained schema-5 candidate manifests before adopting or deleting re
   expect(() => f.manager.observe()).toThrow('MANIFEST_KIND_MISMATCH');
   expect(f.commands.some((args) => args[1] === 'rm')).toBe(false);
 });
+
+it('uses actual dependency-first discovery but removes the validated dependent before its dependency', () => {
+  const f = fixture();
+  f.manager.start();
+  const owned = f.candidate();
+  f.images.delete(owned.image.Id);
+  f.containers.delete(owned.container.Id);
+  f.manager.observe();
+  f.images.set(owned.image.Id, owned.image);
+  f.containers.set(owned.container.Id, owned.container);
+  expect(f.manager.observe().images.map((entry: any) => entry.kind)).toEqual([
+    'dependency',
+    'candidate',
+  ]);
+  const finished = f.manager.finish();
+  expect(finished.complete).toBe(true);
+  expect(finished.removed.images).toEqual([owned.image.Id, owned.dependency.Id]);
+  const removals = finished.commands.filter((entry: any) => entry.operation === 'image:rm');
+  expect(removals.map((entry: any) => entry.timeoutMs)).toEqual([120000, 120000]);
+  expect(
+    removals.every((entry: any) => entry.phase === 'image-removal' && entry.outcome === 'passed'),
+  ).toBe(true);
+});
+
+it('preserves typed timeout evidence and unknown mutation effect without deleting another resource', () => {
+  const f = fixture();
+  f.manager.start();
+  const owned = f.candidate();
+  f.manager.observe();
+  f.failNext(
+    'image:rm',
+    Object.assign(new Error('private-secret-must-not-appear'), {
+      code: 'RESOURCE_COMMAND_TIMEOUT',
+      resourceDiagnostic: {
+        status: null,
+        signal: 'SIGKILL',
+        errorCode: 'ETIMEDOUT',
+        timedOut: true,
+      },
+    }),
+  );
+  const failed = f.manager.finish();
+  expect(failed.complete).toBe(false);
+  expect(failed.errors).toContain('RESOURCE_COMMAND_TIMEOUT');
+  expect(failed.commands.at(-1)).toMatchObject({
+    phase: 'image-removal',
+    operation: 'image:rm',
+    resourceId: owned.image.Id,
+    timeoutMs: 120000,
+    outcome: 'failed',
+    effect: 'unknown',
+    errorCode: 'ETIMEDOUT',
+  });
+  expect(f.images.has(owned.dependency.Id)).toBe(true);
+  expect(JSON.stringify(failed)).not.toContain('private-secret');
+  expect(() => f.manager.verify()).toThrow('CLEANUP_NOT_VERIFIED');
+});
+
+it('does not accept disappearance as attribution for an unknown transient', () => {
+  const f = fixture();
+  f.manager.start();
+  const owned = f.candidate();
+  f.containers.set(id('f'), {
+    Id: id('f'),
+    Image: owned.dependency.Id,
+    Config: { Labels: {} },
+    Mounts: [],
+  });
+  f.manager.observe();
+  f.containers.delete(id('f'));
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain('UNATTRIBUTABLE_CONTAINER_OBSERVED');
+  expect(f.images.has(owned.image.Id)).toBe(true);
+});
+
+it('rejects mutated CID proof even after a previously complete owned smoke', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  const observed = f.manager.observe();
+  const nonce = observed.smokes[0].nonce;
+  fs.writeFileSync(path.join(f.root, '.local/e2e-release/smoke', nonce, 'container.cid'), id('8'));
+  expect(f.manager.finish().complete).toBe(false);
+  expect(f.commands.some((args) => args[1] === 'rm')).toBe(false);
+});
+
+it.each([true, false])(
+  'recovers a stopped controller probe only with its exact CID (%s)',
+  (hasCid) => {
+    const f = fixture();
+    f.manager.start();
+    const owned = f.candidate();
+    const folder = path.join(
+      f.root,
+      '.local/e2e-release/smoke',
+      '00000000-0000-4000-8000-000000000001',
+    );
+    const file = path.join(folder, 'receipt.json');
+    const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+    record.id = null;
+    record.bound = false;
+    record.identity = null;
+    record.passed = false;
+    record.cleanupComplete = false;
+    fs.writeFileSync(file, JSON.stringify(record));
+    if (!hasCid) fs.unlinkSync(path.join(folder, 'container.cid'));
+    const probeId = id('9');
+    f.containers.set(probeId, {
+      Id: probeId,
+      Image: owned.dependency.Id,
+      Name: `/tiangong-smoke-${record.nonce}`,
+      Config: { Labels: smokeLabels(record), Cmd: ['node', '-e', SMOKE_SOURCE], Entrypoint: null },
+      Mounts: [],
+      HostConfig: { NetworkMode: 'none', IpcMode: 'host', Init: true, AutoRemove: false },
+      State: { Running: false },
+    });
+    f.manager.observe();
+    const result = f.manager.finish();
+    expect(result.complete).toBe(hasCid);
+    expect(f.containers.has(probeId)).toBe(!hasCid);
+    const verified = hasCid ? f.manager.verify().complete : false;
+    expect(verified).toBe(hasCid);
+    expect(f.commands.some((args) => args[1] === 'rm')).toBe(hasCid);
+  },
+);
+
+it('admits no removal once the total cleanup deadline expires', () => {
+  const f = fixture();
+  f.manager.start();
+  f.candidate();
+  f.manager.observe();
+  f.expireNextRead();
+  const result = f.manager.finish();
+  expect(result.complete).toBe(false);
+  expect(result.errors).toContain('CLEANUP_BUDGET_EXHAUSTED');
+  expect(f.commands.some((args) => args[1] === 'rm')).toBe(false);
+  expect(result.failure.operation.timeoutMs).toBe(0);
+});
+
+it.each([false, true])(
+  'does not clean while the prior controller PID is live or reused (%s)',
+  (reused) => {
+    const f = fixture();
+    f.manager.start();
+    f.candidate();
+    const observed = f.manager.observe();
+    f.setControllerProcess({ ...observed.controller, start: reused ? '101' : '100' });
+    const result = f.manager.finish();
+    expect(result.complete).toBe(false);
+    expect(result.errors).toContain(
+      reused ? 'CONTROLLER_PROCESS_IDENTITY_DRIFT' : 'CONTROLLER_PROCESS_STILL_LIVE',
+    );
+    expect(f.commands.some((args) => args[1] === 'rm' || args[1] === 'stop')).toBe(false);
+  },
+);

@@ -43,9 +43,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
-lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
+lastReviewedNote: 'Platform #1413: reviewed owned smoke intent/CID/daemon identity, bounded secretless cleanup telemetry and validated support-image removal order; original hosted failure remains preserved and fresh canonical/resource qualification is required.'
 ---
 
 # Testing Troubleshooting
@@ -217,3 +217,5 @@ The macOS Jest launcher adds `--no-sparkplug` to its existing direct Node flags.
 [Node's upstream fix](https://github.com/nodejs/node/commit/fb0d0ca28993802d67360edc84d467fe3ccdc20b) backports V8's dispatch-register/linkage correction for the matching GC signature. The official24.22.2 tagged source contains it, and the changelog first lists it in24.22.0. Latest verified stable Node24 metadata at this review is24.22.2; neither it nor a new runtime/image baseline is adopted by this workaround. Retire the temporary Sparkplug flag only after the owning tracked runtime task qualifies an upstream-fixed supported Node24 baseline, its exact executable/image identities, installed worker/consumer compatibility and unchanged complete local/hosted qualification. Keep the existing optimizer flags unless their separate retirement is supported.
 
 Do not substitute serialization, smaller pools, lower coverage, retries or excluded suites for the mitigation or its proof. The existing runner suite exercises real parent-bound Jest-worker children and a missing-flag negative control with normal process closure. Preserve full source collection, all existing suites/assertions, the25% unit pool, two coverage workers,512MB recycle boundaries and every100% threshold. A recurrence after the mitigation requires new PID/runtime/argv/native-stack evidence and diagnosis; one focused pass or a later green aggregate cannot retrospectively qualify the earlier failed push. Linux/Windows flags and all exact Node/pnpm/image/dependency/product pins stay unchanged.
+
+For a hosted resource-boundary failure, inspect receipt v2 command phase/operation/resource ID and native status/signal/errorCode before another execution. A timed-out CLI may have changed daemon state; recover only from prior exact owned identity, never from absence or a generic image/label match. Historical v1 ERR_ASSERTION cannot establish the exact Docker cause. Canonical/browser success and resource closure remain separate required evidence.

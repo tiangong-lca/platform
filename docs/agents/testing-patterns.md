@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
-lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
+lastReviewedNote: 'Platform #1413: reviewed owned smoke intent/CID/daemon identity, bounded secretless cleanup telemetry and validated support-image removal order; original hosted failure remains preserved and fresh canonical/resource qualification is required.'
 ---
 
 # Testing Patterns Reference
@@ -299,3 +299,5 @@ Run real package lifecycle contracts in isolated Node children with development/
 Image-input tests should bind declared patch bytes before cache lookup, then cover both dependency and candidate contexts and every manifest consumer, including the Git-free evidence reporter. Use a patch-free control and explicit path/hash/index/schema failures. Resource observer fixtures canonicalize their owned temporary root before deriving paths so macOS aliases do not replace the intended ownership assertions with an unrelated setup failure.
 
 Passive mobile diagnostics use five fixed schema-2 detail slots and one optional unawaited frame under the original record/byte caps. Normal cancellation is explicit evidence, never a reason to wait or retry the product action. Observe only selected DOM predicates and window composition counts with unknown prehistory; preserve exact original rejection identity and independent cleanup. The owning wire/lifecycle contract is in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics).
+
+Resource lifecycle tests must model actual staged discovery, including a prepared dependency observed before its candidate. Use native disposable subprocesses for timeout/nonzero/partial effects and a strict synthetic Docker map for creation intent, CID, inspected identity and exact-ID recovery; never target unrelated real containers. Unknown CID/profile, changed source or failed mutation stays explicit. Preserve finite budgets and assert no prune, image force or foreign resource deletion.

@@ -7,14 +7,30 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { spawn, spawnSync } = require('node:child_process');
+const { spawn } = require('node:child_process');
+
+const {
+  resourceCommand,
+  QUICK_READ_MS,
+  IMAGE_REMOVE_MS,
+  CONTAINER_REMOVE_MS,
+  CLEANUP_TOTAL_MS,
+  commandFailure,
+} = require('../e2e/resource-command.cjs');
+const {
+  SMOKE,
+  validateReceipt: validateSmokeReceipt,
+  cleanupSmoke,
+  validateSmoke,
+  readCid,
+} = require('../e2e/environment-smoke.cjs');
 
 const { readMaintainedPatches } = require('../e2e/maintained-patches.cjs');
 
 const PREFIX = 'org.tiangong.lca.next.';
 const CANDIDATE = `${PREFIX}release-e2e`;
 const DEPENDENCY = `${PREFIX}release-e2e-environment`;
-const SCHEMA = 'platform.supabase-browser-resources.v1';
+const SCHEMA = 'platform.supabase-browser-resources.v2';
 const IMAGE_ID = /^sha256:[a-f0-9]{64}$/u;
 const CONTAINER_ID = /^[a-f0-9]{64}$/u;
 const sha = (value) => crypto.createHash('sha256').update(value).digest('hex');
@@ -28,12 +44,14 @@ const stable = (value) =>
       )
     : value;
 const check = (condition, code) => assert.ok(condition, code);
-const failureCode = (error) =>
-  /^[A-Z0-9_:]+$/u.test(error.message ?? '')
-    ? error.message
-    : /^[A-Z0-9_]+$/u.test(error.code ?? '')
+const failureCode = (error) => {
+  const firstLine = String(error.message ?? '').split(/\r?\n/u)[0];
+  return /^[A-Z0-9_:]{1,96}$/u.test(firstLine)
+    ? firstLine
+    : /^[A-Z0-9_]{1,64}$/u.test(error.code ?? '')
       ? error.code
       : 'RESOURCE_BOUNDARY_FAILED';
+};
 
 function privateJson(file, value) {
   const temporary = `${file}.${process.pid}.tmp`;
@@ -55,15 +73,7 @@ function noSymlinks(file, boundary) {
 }
 
 function command(program, args, options = {}) {
-  const result = spawnSync(program, args, {
-    encoding: 'utf8',
-    timeout: 15_000,
-    maxBuffer: 8 * 1024 * 1024,
-    ...options,
-  });
-  // Do not publish command stderr, environment, inspect Config.Env or credentials.
-  check(!result.error && result.status === 0, `RESOURCE_COMMAND_FAILED:${program}`);
-  return result.stdout;
+  return resourceCommand(program, args, options);
 }
 
 function sourceIdentity(root, head) {
@@ -256,6 +266,10 @@ function validateImage(image, source, manifests) {
     image.RepoTags?.includes(expectedImageTag(source, 'candidate')),
     'CANDIDATE_IMAGE_TAG_MISMATCH',
   );
+  check(
+    IMAGE_ID.test(labels[`${PREFIX}dependency-image-id`] ?? ''),
+    'CANDIDATE_DEPENDENCY_ID_MISSING',
+  );
   return 'candidate';
 }
 
@@ -327,14 +341,74 @@ function createManager(options) {
   const processInfo = options.processInfo ?? processIdentity;
   const groupInfo = options.processGroup ?? processGroup;
   const invoke = options.command ?? command;
-  const docker = (args) =>
-    invoke('docker', [
-      '--config',
-      path.join(state, 'docker-config'),
-      '--context',
-      'default',
-      ...args,
-    ]);
+  let cleanupReceipt = null;
+  let cleanupDeadline = null;
+  let cleanupPhase = 'preflight';
+  const docker = (args, requestedTimeout) => {
+    const id =
+      [...args].reverse().find((value) => IMAGE_ID.test(value) || CONTAINER_ID.test(value)) ?? null;
+    const timeout =
+      requestedTimeout ??
+      (args[0] === 'image' && args[1] === 'rm'
+        ? IMAGE_REMOVE_MS
+        : args[0] === 'container' && ['rm', 'stop'].includes(args[1])
+          ? CONTAINER_REMOVE_MS
+          : QUICK_READ_MS);
+    let event;
+    const remaining =
+      cleanupDeadline === null ? timeout : Math.min(timeout, cleanupDeadline - clock());
+    if (cleanupReceipt) {
+      check(cleanupReceipt.commands.length < 256, 'CLEANUP_COMMAND_CAP');
+      event = {
+        phase: cleanupPhase,
+        operation: `${args[0]}:${args[1] ?? 'read'}`,
+        resourceId: id,
+        startedAt: clock(),
+        timeoutMs: Math.max(0, remaining),
+        outcome: 'pending',
+        mutation: ['rm', 'stop'].includes(args[1]),
+        effect: ['rm', 'stop'].includes(args[1]) ? 'unknown' : 'read-only',
+      };
+      cleanupReceipt.commands.push(event);
+      save(cleanupReceipt);
+    }
+    try {
+      check(remaining > 0, 'CLEANUP_BUDGET_EXHAUSTED');
+      const output = invoke(
+        'docker',
+        ['--config', path.join(state, 'docker-config'), '--context', 'default', ...args],
+        { timeout: remaining },
+      );
+      if (event) {
+        Object.assign(event, {
+          outcome: 'passed',
+          finishedAt: clock(),
+          status: 0,
+          signal: null,
+          errorCode: null,
+        });
+        save(cleanupReceipt);
+      }
+      return output;
+    } catch (error) {
+      error.resourceOperation = {
+        phase: cleanupPhase,
+        operation: `${args[0]}:${args[1] ?? 'read'}`,
+        resourceId: id,
+        timeoutMs: Math.max(0, remaining),
+        ...commandFailure(error),
+      };
+      if (event) {
+        Object.assign(event, {
+          outcome: 'failed',
+          finishedAt: clock(),
+          ...commandFailure(error),
+        });
+        save(cleanupReceipt);
+      }
+      throw error;
+    }
+  };
   const read = () => JSON.parse(fs.readFileSync(path.join(state, 'resources.json'), 'utf8'));
   const save = (receipt) => privateJson(path.join(state, 'resources.json'), receipt);
   const list = (kind) => {
@@ -459,7 +533,56 @@ function createManager(options) {
       if (!old) receipt.manifests.push(entry);
     }
   }
+  function captureSmokes(receipt, strict = false) {
+    const parent = path.join(root, '.local/e2e-release/smoke');
+    if (!fs.existsSync(parent)) return;
+    noSymlinks(parent, root);
+    for (const nonce of fs.readdirSync(parent)) {
+      check(/^[a-f0-9-]{36}$/u.test(nonce), 'SMOKE_DIRECTORY_MISMATCH');
+      const folder = path.join(parent, nonce);
+      noSymlinks(folder, root);
+      const file = path.join(folder, 'receipt.json');
+      noSymlinks(file, root);
+      if (!fs.existsSync(file)) {
+        check(!strict, 'SMOKE_RECEIPT_MISSING');
+        continue;
+      }
+      const record = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (record.id) {
+        const cid = path.join(folder, 'container.cid');
+        noSymlinks(cid, root);
+        check(readCid(cid) === record.id, 'SMOKE_CID_DRIFT');
+      }
+      validateSmokeReceipt(record, receipt.source, receipt.controller, receipt.docker.id);
+      check(
+        record.nonce === nonce && record.createdAt >= receipt.startedAt,
+        'SMOKE_INTENT_NOT_FRESH',
+      );
+      const image = receipt.images.find(
+        (entry) => entry.id === record.imageId && entry.kind === 'dependency',
+      );
+      check(image, 'SMOKE_DEPENDENCY_NOT_OBSERVED');
+      const stat = fs.statSync(folder);
+      const selected = { nonce, inode: stat.ino, device: stat.dev, record };
+      const index = receipt.smokes.findIndex((entry) => entry.nonce === nonce);
+      if (index >= 0) {
+        const old = receipt.smokes[index];
+        check(
+          old.inode === selected.inode &&
+            ['root', 'head', 'tree', 'imageId', 'inputSha256', 'createdAt', 'controller'].every(
+              (key) => json(old.record[key]) === json(record[key]),
+            ) &&
+            old.device === selected.device &&
+            (!old.record.id || old.record.id === record.id) &&
+            (!old.record.bound || record.bound),
+          'SMOKE_IDENTITY_DRIFT',
+        );
+        receipt.smokes[index] = selected;
+      } else receipt.smokes.push(selected);
+    }
+  }
   function observe(receipt = read()) {
+    if (!cleanupReceipt) cleanupPhase = 'observation';
     bound(receipt);
     captureManifests(receipt);
     const lockFile = path.join(root, '.local/e2e-release/invocation.lock/owner.json');
@@ -535,10 +658,17 @@ function createManager(options) {
       check(!old || json(old) === json(selected), 'IMAGE_IDENTITY_DRIFT');
       if (!old) receipt.images.push(selected);
     }
+    captureSmokes(receipt);
     for (const id of current.containers) {
       if (receipt.baseline.containers.includes(id)) continue;
       const container = inspectPresent('container', id);
       if (!container) continue;
+      if (container.Config?.Labels?.[SMOKE] === 'true') {
+        const owned = receipt.smokes.find((entry) => entry.record.id === id && entry.record.bound);
+        if (owned) validateSmoke(container, owned.record);
+        else receipt.ambiguousContainers = [...new Set([...receipt.ambiguousContainers, id])];
+        continue;
+      }
       if (container.Config?.Labels?.[CANDIDATE] !== 'true') {
         if (images.some((image) => image.Id === container.Image))
           receipt.ambiguousContainers = [...new Set([...receipt.ambiguousContainers, id])];
@@ -577,7 +707,7 @@ function createManager(options) {
       const identity = source();
       check(identity.head === options.head && identity.root === root, 'HEAD_MISMATCH');
       const runtime = path.join(root, '.local/e2e-release');
-      for (const name of ['runs', 'build', 'environment-build', 'invocation.lock']) {
+      for (const name of ['runs', 'build', 'environment-build', 'invocation.lock', 'smoke']) {
         const file = path.join(runtime, name);
         noSymlinks(file, root);
         check(
@@ -636,6 +766,8 @@ function createManager(options) {
         containers: [],
         manifests: [],
         ambiguousContainers: [],
+        smokes: [],
+        commands: [],
         observations: 0,
         errors: [],
         complete: false,
@@ -655,15 +787,66 @@ function createManager(options) {
         schema: SCHEMA,
         phase: 'preflight',
         code: failureCode(error),
+        operation: error.resourceOperation ?? null,
         at: clock(),
       });
       throw error;
     }
   }
+  function removeFilesystem(folder, resourceId) {
+    check(clock() < cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+    check(cleanupReceipt.commands.length < 256, 'CLEANUP_COMMAND_CAP');
+    const event = {
+      phase: cleanupPhase,
+      operation: 'filesystem:remove',
+      resourceId,
+      startedAt: clock(),
+      outcome: 'pending',
+      mutation: true,
+      effect: 'unknown',
+    };
+    cleanupReceipt.commands.push(event);
+    save(cleanupReceipt);
+    try {
+      fs.rmSync(folder, { recursive: true });
+      check(!fs.existsSync(folder), 'BUILD_CONTEXT_RETAINED');
+      check(clock() <= cleanupDeadline, 'CLEANUP_BUDGET_EXHAUSTED');
+      Object.assign(event, {
+        outcome: 'passed',
+        finishedAt: clock(),
+        status: 0,
+        signal: null,
+        errorCode: null,
+      });
+      save(cleanupReceipt);
+    } catch (error) {
+      Object.assign(event, {
+        outcome: 'failed',
+        finishedAt: clock(),
+        status: null,
+        signal: null,
+        errorCode: failureCode(error),
+      });
+      save(cleanupReceipt);
+      throw error;
+    }
+  }
   function finish() {
     let receipt = read();
+    cleanupReceipt = receipt;
+    cleanupDeadline = clock() + CLEANUP_TOTAL_MS;
+    cleanupPhase = 'cleanup-observation';
     try {
       receipt = observe(receipt);
+      if (receipt.controller) {
+        const currentController = processInfo(receipt.controller.pid);
+        check(
+          !currentController,
+          sameProcess(currentController, receipt.controller)
+            ? 'CONTROLLER_PROCESS_STILL_LIVE'
+            : 'CONTROLLER_PROCESS_IDENTITY_DRIFT',
+        );
+      }
       const lock = path.join(root, '.local/e2e-release/invocation.lock/owner.json');
       if (fs.existsSync(lock)) {
         check(
@@ -679,11 +862,35 @@ function createManager(options) {
         fs.rmdirSync(path.dirname(lock));
       }
       const current = inventory();
-      check(
-        !receipt.ambiguousContainers.some((id) => current.containers.includes(id)),
-        'UNATTRIBUTABLE_CONTAINER_RETAINED',
-      );
       receipt.removed = { containers: [], images: [], buildContexts: [] };
+      captureSmokes(receipt, true);
+      for (const entry of receipt.smokes) {
+        cleanupPhase = 'smoke-recovery';
+        if (!entry.record.cleanupComplete) {
+          const file = path.join(root, '.local/e2e-release/smoke', entry.nonce, 'receipt.json');
+          const cidFile = path.join(path.dirname(file), 'container.cid');
+          noSymlinks(cidFile, root);
+          if (fs.existsSync(cidFile)) {
+            const id = readCid(cidFile);
+            check(!entry.record.id || entry.record.id === id, 'SMOKE_CID_DRIFT');
+            entry.record.id = id;
+          }
+          cleanupSmoke(entry.record, docker, () => {
+            privateJson(file, entry.record);
+            save(receipt);
+          });
+        }
+        check(entry.record.cleanupComplete, 'SMOKE_CLEANUP_NOT_VERIFIED');
+      }
+      check(
+        receipt.ambiguousContainers.every(
+          (id) =>
+            receipt.containers.some((entry) => entry.id === id) ||
+            receipt.smokes.some((entry) => entry.record.id === id && entry.record.bound),
+        ),
+        'UNATTRIBUTABLE_CONTAINER_OBSERVED',
+      );
+      cleanupPhase = 'container-removal';
       for (const entry of receipt.containers) {
         if (!current.containers.includes(entry.id)) continue;
         const container = inspectPresent('container', entry.id);
@@ -701,11 +908,42 @@ function createManager(options) {
           ) === json(entry),
           'CONTAINER_CHANGED_BEFORE_REMOVAL',
         );
-        docker(['container', 'rm', '-f', entry.id]);
+        if (container.State?.Running) {
+          docker(['container', 'stop', '--time', '5', entry.id]);
+          const stopped = inspectPresent('container', entry.id);
+          if (!stopped) continue;
+          check(
+            json(
+              validateContainer(
+                stopped,
+                receipt.source,
+                receipt.manifests,
+                images,
+                receipt.baseline,
+              ),
+            ) === json(entry),
+            'CONTAINER_CHANGED_BEFORE_REMOVAL',
+          );
+          check(stopped.State?.Running === false, 'CONTAINER_STILL_RUNNING');
+        }
+        docker(['container', 'rm', entry.id]);
         receipt.removed.containers.push(entry.id);
         save(receipt);
       }
-      for (const entry of receipt.images) {
+      const orderedImages = [...receipt.images].sort(
+        (left, right) => Number(left.kind === 'dependency') - Number(right.kind === 'dependency'),
+      );
+      for (const entry of orderedImages.filter((value) => value.kind === 'candidate'))
+        check(
+          receipt.images.some(
+            (dependency) =>
+              dependency.kind === 'dependency' &&
+              dependency.id === entry.labels[`${PREFIX}dependency-image-id`],
+          ),
+          'IMAGE_DEPENDENCY_NOT_OBSERVED',
+        );
+      for (const entry of orderedImages) {
+        cleanupPhase = 'image-preflight';
         if (receipt.baseline.images.includes(entry.id) || !inventory().images.includes(entry.id))
           continue;
         const image = inspect('image', entry.id);
@@ -722,6 +960,7 @@ function createManager(options) {
         for (const id of inventory().containers)
           check(inspect('container', id).Image !== entry.id, 'IMAGE_STILL_REFERENCED');
         // No force: Docker must also refuse any independently retained reference.
+        cleanupPhase = 'image-removal';
         docker(['image', 'rm', entry.id]);
         receipt.removed.images.push(entry.id);
         save(receipt);
@@ -737,7 +976,8 @@ function createManager(options) {
             sha(fs.readFileSync(path.join(folder, 'candidate-manifest.json'))) === entry.sha256,
           'BUILD_CONTEXT_CHANGED',
         );
-        fs.rmSync(folder, { recursive: true });
+        cleanupPhase = 'build-context-removal';
+        removeFilesystem(folder, entry.runId);
         receipt.removed.buildContexts.push(entry.runId);
       }
       const environmentBuild = path.join(root, '.local/e2e-release/environment-build');
@@ -757,7 +997,8 @@ function createManager(options) {
             'DEPENDENCY_CONTEXT_CHANGED',
           );
         }
-        fs.rmSync(environmentBuild, { recursive: true });
+        cleanupPhase = 'environment-context-removal';
+        removeFilesystem(environmentBuild, 'environment-build');
       }
       const remainingBuild = path.join(root, '.local/e2e-release/build');
       check(
@@ -785,7 +1026,15 @@ function createManager(options) {
       receipt.complete = true;
     } catch (error) {
       receipt.errors.push(failureCode(error));
+      receipt.failure = {
+        phase: cleanupPhase,
+        code: failureCode(error),
+        operation: error.resourceOperation ?? null,
+        at: clock(),
+      };
     }
+    cleanupReceipt = null;
+    cleanupDeadline = null;
     receipt.finishedAt = clock();
     save(receipt);
     return receipt;
@@ -802,6 +1051,26 @@ function createManager(options) {
         receipt.images.some((entry) => entry.kind === 'candidate') &&
         receipt.images.some((entry) => entry.kind === 'dependency'),
       'ACTUAL_RUNTIME_OBSERVATION_MISSING',
+    );
+    for (const entry of receipt.smokes) {
+      const folder = path.join(root, '.local/e2e-release/smoke', entry.nonce);
+      const file = path.join(folder, 'receipt.json');
+      noSymlinks(file, root);
+      const stat = fs.statSync(folder);
+      const cid = path.join(folder, 'container.cid');
+      noSymlinks(cid, root);
+      check(readCid(cid) === entry.record.id, 'SMOKE_CID_DRIFT');
+      check(
+        stat.ino === entry.inode &&
+          stat.dev === entry.device &&
+          json(JSON.parse(fs.readFileSync(file, 'utf8'))) === json(entry.record),
+        'SMOKE_RECEIPT_DRIFT',
+      );
+    }
+    check(
+      receipt.smokes.length > 0 &&
+        receipt.smokes.every((entry) => entry.record.cleanupComplete && entry.record.bound),
+      'SMOKE_LIFECYCLE_MISSING',
     );
     check(!receipt.observer || !processInfo(receipt.observer.pid), 'OBSERVER_STILL_LIVE');
     check(
@@ -916,6 +1185,12 @@ async function main(argv) {
       } catch (error) {
         const current = manager.read();
         current.errors.push(failureCode(error));
+        current.failure = {
+          phase: 'observation',
+          code: failureCode(error),
+          operation: error.resourceOperation ?? null,
+          at: Date.now(),
+        };
         manager.save(current);
       }
       await wait(500);
