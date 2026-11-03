@@ -19,22 +19,6 @@ jest.mock('@/pages/Processes/Components/optiondata', () => ({
   methodNameOptions: [{ value: 'review-method', label: 'Review method' }],
 }));
 
-jest.mock('@/pages/Processes/processes_schema.json', () => ({
-  processDataSet: {
-    modellingAndValidation: {
-      validation: {
-        review: {
-          'common:scope': {
-            'common:method': {
-              '@name': { rules: [] },
-            },
-          },
-        },
-      },
-    },
-  },
-}));
-
 jest.mock('@/pages/Utils', () => ({
   __esModule: true,
   getRules: () => [],
