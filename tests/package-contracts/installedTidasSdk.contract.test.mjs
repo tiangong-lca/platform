@@ -49,7 +49,7 @@ function assertStableErrorEnvelope(result, factoryName) {
 
 test('loads the exact released SDK from the installed package graph', () => {
   assert.equal(installedManifest.name, '@tiangong-lca/tidas-sdk');
-  assert.equal(installedManifest.version, '0.5.0');
+  assert.equal(installedManifest.version, '0.6.0');
   assert.match(resolvedCoreEntry, /node_modules/u);
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "tiangong-lca-next",
-  "version": "0.0.149",
+  "version": "0.0.150",
   "packageManager": "pnpm@11.24.0",
   "private": true,
   "description": "An out-of-box LCA Data solution",
@@ -152,7 +152,7 @@
     "@antv/x6-react-shape": "^3.0.1",
     "@dagrejs/dagre": "^3.1.1",
     "@supabase/supabase-js": "^2.118.0",
-    "@tiangong-lca/tidas-sdk": "0.5.0",
+    "@tiangong-lca/tidas-sdk": "0.6.0",
     "antd": "6.6.6",
     "bignumber.js": "^11.1.5",
     "d3-geo": "^3.1.1",
