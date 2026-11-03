@@ -11,6 +11,8 @@ _roadhog-api-doc
 /dist-edgeone
 /dist-electron
 /dist-package
+/dist-study-report
+/.local/study-report/
 
 # misc
 .DS_Store

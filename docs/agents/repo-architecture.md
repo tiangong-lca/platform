@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
-lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
+lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -53,6 +53,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `src/pages/**` | route-level product pages |
 | `src/pages/*/sdkValidation.ts`, `src/pages/Utils/validation/**` | page-level SDK-code adapters plus shared localized validation messages, detail mapping, and form-support helpers |
 | `src/components/**` | shared UI and reusable flows |
+| `src/standalone/studyReport/**`, `scripts/study-report/**` | dependency-free versioned report view and separate artifact build; [renderer contract](study-report-renderer-contract.md) owns strict projection, offline, receipt and release boundaries |
 | `src/components/DataNavigation/navigation.ts` | native ProLayout menu shaping and scope-link destinations; preserves the received route/access metadata |
 | `src/services/**` | app-side Supabase/API access, ordered-dataset shaping, typed locale normalization and runtime fallback for Node-loaded services, explicit anonymous-route policy, and service logic |
 | `src/services/general/tidasScalarStorage.ts` | canonical TIDAS year/percentage scalar normalization and the Process/Flow save-boundary issue format |

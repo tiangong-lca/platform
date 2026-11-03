@@ -43,9 +43,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Testing Troubleshooting
@@ -78,6 +78,7 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 
 | Symptom | Likely cause | First action |
 | --- | --- | --- |
+| standalone Study PR has no executed package/browser check | no relevant path selected, stale PR head, or only a release workflow was inspected | inspect `study-report.yml` branch/path selection and the exact PR-head job; verify its downloaded package/browser evidence rather than treating a skipped release job as qualification |
 | timeout or maximum update depth | loop in effect, stale mock, unresolved async state | narrow to one file, then inspect effect triggers and mocked promises |
 | auth or session flow failing | missing provider, missing auth mock, stale route state | reuse existing auth wrapper and compare against nearby passing tests |
 | `pnpm start` or `pnpm start:dev` returns production `feature_disabled` for a Dev OAuth authorization that succeeds through the Dev SDK | Umi populated `process.env` from main `.env` before the Dev config selected `.env.development` | run `pnpm test:ci tests/unit/config/supabaseEnv.test.ts --runInBand --no-coverage`, verify the rendered bundle targets the Dev project, and repair exact main-default decontamination without weakening distinct explicit overrides or enabling OAuth in the wrong project |
@@ -216,3 +217,7 @@ The macOS Jest launcher adds `--no-sparkplug` to its existing direct Node flags.
 [Node's upstream fix](https://github.com/nodejs/node/commit/fb0d0ca28993802d67360edc84d467fe3ccdc20b) backports V8's dispatch-register/linkage correction for the matching GC signature. The official24.22.2 tagged source contains it, and the changelog first lists it in24.22.0. Latest verified stable Node24 metadata at this review is24.22.2; neither it nor a new runtime/image baseline is adopted by this workaround. Retire the temporary Sparkplug flag only after the owning tracked runtime task qualifies an upstream-fixed supported Node24 baseline, its exact executable/image identities, installed worker/consumer compatibility and unchanged complete local/hosted qualification. Keep the existing optimizer flags unless their separate retirement is supported.
 
 Do not substitute serialization, smaller pools, lower coverage, retries or excluded suites for the mitigation or its proof. The existing runner suite exercises real parent-bound Jest-worker children and a missing-flag negative control with normal process closure. Preserve full source collection, all existing suites/assertions, the25% unit pool, two coverage workers,512MB recycle boundaries and every100% threshold. A recurrence after the mitigation requires new PID/runtime/argv/native-stack evidence and diagnosis; one focused pass or a later green aggregate cannot retrospectively qualify the earlier failed push. Linux/Windows flags and all exact Node/pnpm/image/dependency/product pins stay unchanged.
+
+For a hosted resource-boundary failure, inspect receipt v2 command phase/operation/resource ID and native status/signal/errorCode before another execution. A timed-out CLI may have changed daemon state; recover only from prior exact owned identity, never from absence or a generic image/label match. Historical v1 ERR_ASSERTION cannot establish the exact Docker cause. Canonical/browser success and resource closure remain separate required evidence.
+
+For partial invocation-lock cleanup, inspect each filesystem:unlink/filesystem:rmdir event, its captured binding, mutationStarted flag, typed errno and readback. Preserve new/replaced entries and the original failure; owner-file absence alone cannot authorize directory removal. Source or daemon drift after any completed effect stops later cleanup.

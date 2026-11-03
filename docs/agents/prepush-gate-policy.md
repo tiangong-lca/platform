@@ -46,9 +46,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Pre-Push Gate Policy
@@ -73,7 +73,9 @@ pnpm docpact:gate
 pnpm prepush:gate
 ```
 
-The full gate runs LCIA verification, `pnpm reference-data:check`, lint/type checks, complete coverage, and the unchanged 100% coverage assertion in that order. Reference-data verification fails before the expensive suite when the source manifest, evidence, content-addressed filenames, generated registry, or gzip outputs drift.
+The full gate runs LCIA verification, `pnpm reference-data:check`, lint/type checks, dependency-free Study renderer package proof, complete coverage, and the unchanged 100% coverage assertion in that order. Reference-data verification fails before the expensive suite when the source manifest, evidence, content-addressed filenames, generated registry, or gzip outputs drift.
+
+The narrowly selected `study-report.yml` PR job adds standalone renderer/package/Chromium evidence for relevant Dev/Main inputs. It retains read-only permissions and the existing frozen runtime, verifies exact-source artifact bindings, and does not run another aggregate gate or change release/publication authority. [The renderer contract](study-report-renderer-contract.md) owns its input and evidence boundary.
 
 `pnpm prepush:gate:agent` enables the same gate with compact agent output. Jest writes its complete stdout/stderr and structured result JSON under `.local/test-logs/**`; the console contains only stage starts, failed suites/assertions, and final summaries. The reusable Release Gate enables this mode and uploads those files as a seven-day CI artifact even on failure, so compact output does not discard diagnostic evidence.
 
@@ -174,3 +176,5 @@ The dispatch default `publication_scope=full` preserves full release recovery. E
 - make draft creation single-writer before parallel Electron publication, fail closed when more than one release uses the tag, and verify the exact cross-platform asset set after every matrix run
 - reproduce Umi-generating focused tests, coverage commands, and `pnpm prepush:gate` serially on one workstation when they are needed; the full gate already contains the complete test inventory and unchanged 100% `src/**` coverage
 - keep `100%` coverage on every tracked file, and treat any direct-collection exclusions as a reviewed exception rather than a default pattern
+
+Hosted resource-controller changes keep canonical browser qualification and independently verified resource closure as separate conditions. Local lifecycle/timeout controls and the ordinary checked-push gate do not waive a failed hosted cleanup receipt. The resource and budget contract lives in [dependency maintenance](dependency-maintenance.md).

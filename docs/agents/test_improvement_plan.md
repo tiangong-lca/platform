@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Testing Strategy
@@ -79,6 +79,7 @@ lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and e
 - proof should be risk-proportional and scoped-first: micro-edits use focused checks, coherent batches use subsystem audits, and the repository full gate runs once for the final committed controlled checkpoint
 - documentation screenshot capture is a separate, on-demand product-evidence workflow: Next supplies only the source-bound product profile and stable locators, while workspace owns profile compilation, plan/security/access, run-scoped base-origin logic, and the synthetic Chromium canary outside the semantic localization proof and release matrix
 - gate ownership should prevent duplicate work: a normal delivery uses the push hook as the single full-gate owner, while a no-push handoff may run it manually instead
+- separately selected standalone-artifact PR qualification should prove the actual portable package and browser consumer with source-bound evidence; it must preserve the ordinary full-gate owner and release authority
 - gate eligibility should be decided before gate execution: exact current-branch and `HEAD` source spellings may proceed, raw deletion/no-update shapes spend no test budget, and invalid checked ref shapes fail before Docpact or the full suite
 - release-risk gates should be split by repair cost: operator-selected browser evidence runs while the business PR is still open, so failures stay on that PR; the generated release-candidate push runs only structural/static proof, and the exact dev Release PR runs the non-browser static/full gate. A successful dev Release PR emits proof bound to the main/dev bases, candidate head/tree/version, PR, run attempt, and artifact; immutable promotion/main stages verify it instead of repeating the gate
 - deterministic release orchestration should fail before transport on version scope, cumulative Docpact review, and composed-candidate static preflight; it must not generate browser proof. Release-line proof accepts direct ancestry or only a tree-identical two-parent promotion whose second parent remains in `dev`, while promotion retains the exact merged `dev` SHA and the original main baseline
@@ -119,3 +120,5 @@ The strategy is working when:
 - full closure remains intact
 - test additions track real product risk
 - current-state docs stay small because the queue stays closed
+
+Resource validation must separate command completion, verified effects and artifact acceptance. Creation intent plus immutable IDs precede mutation; retained partial/timeout evidence and exact-ID recovery remain necessary even when browser behavior passes.
