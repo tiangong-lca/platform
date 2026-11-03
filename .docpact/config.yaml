@@ -26,6 +26,7 @@ ownership:
         include:
           - config/**
           - src/**
+          - vendor/study-contract/**
           - public/**
           - docker/**
           - electron/**
@@ -117,6 +118,7 @@ coverage:
     - docs/plans/model-product-demand.md
     - docs/agents/lcia-calculation-evidence.md
     - docs/agents/study-report-renderer-contract.md
+    - docs/agents/study-workbench-contract.md
     - docs/agents/team_management.md
     - docs/agents/data_audit_instruction.md
     - docs/plans/i18n/**
@@ -124,6 +126,7 @@ coverage:
     - .github/PULL_REQUEST_TEMPLATE/*.md
     - config/**
     - src/**
+    - vendor/study-contract/**
     - public/**
     - public/maintenance.html
     - docker/**
@@ -451,6 +454,32 @@ repo:
   runtime: node
 
 rules:
+  - id: next-study-workbench-contract
+    scope: repo
+    repo: next
+    triggers:
+      - path: src/pages/Study/**
+        kind: study-workbench-ui
+      - path: src/services/study/**
+        kind: study-api-consumer
+      - path: vendor/study-contract/**
+        kind: exact-owner-codec-artifact
+      - path: tests/unit/pages/Study/**
+        kind: study-workbench-proof
+      - path: tests/unit/services/study/**
+        kind: study-api-proof
+      - path: docs/agents/study-workbench-contract.md
+        kind: study-consumer-contract
+    requiredDocs:
+      - path: docs/agents/study-workbench-contract.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+    reason: Authenticated Study consumers must preserve exact owner codecs, frozen evidence, immutable editing and projection-only review/share boundaries.
   - id: next-study-report-renderer-contract
     scope: repo
     repo: next

@@ -321,6 +321,25 @@ export default [
     component: './DatasetDisplaySettings',
   },
   {
+    path: '/studies',
+    name: 'studies',
+    icon: 'ExperimentOutlined',
+    wrappers: ['@/wrappers/AuthGuard'],
+    component: './Study',
+  },
+  {
+    path: '/study-report',
+    hideInMenu: true,
+    wrappers: ['@/wrappers/AuthGuard'],
+    component: './Study/Report',
+  },
+  {
+    path: '/study-share',
+    hideInMenu: true,
+    wrappers: ['@/wrappers/AuthGuard'],
+    component: './Study/Share',
+  },
+  {
     path: '/published-results',
     hideInMenu: true,
     wrappers: ['@/wrappers/AuthGuard'],

@@ -1,3 +1,4 @@
+import pages_study from './en-US/pages_study';
 import component from './en-US/component';
 import component_AISuggestion from './en-US/component_AISuggestion';
 import component_allTeams from './en-US/component_allTeams';
@@ -30,6 +31,7 @@ import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
 import validator from './en-US/validator';
 export default {
+  ...pages_study,
   'navBar.lang': 'Languages',
   'layout.user.link.help': 'Help',
   'layout.user.link.privacy': 'Privacy',

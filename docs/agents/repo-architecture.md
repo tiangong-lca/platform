@@ -53,6 +53,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `src/pages/**` | route-level product pages |
 | `src/pages/*/sdkValidation.ts`, `src/pages/Utils/validation/**` | page-level SDK-code adapters plus shared localized validation messages, detail mapping, and form-support helpers |
 | `src/components/**` | shared UI and reusable flows |
+| `src/pages/Study/**`, `src/services/study/**`, `vendor/study-contract/**` | authenticated four-view Study workbench, exact report review and named-share routes; [consumer contract](study-workbench-contract.md) owns codec, frozen-evidence, identity and mutation boundaries |
 | `src/standalone/studyReport/**`, `scripts/study-report/**` | dependency-free versioned report view and separate artifact build; [renderer contract](study-report-renderer-contract.md) owns strict projection, offline, receipt and release boundaries |
 | `src/components/DataNavigation/navigation.ts` | native ProLayout menu shaping and scope-link destinations; preserves the received route/access metadata |
 | `src/services/**` | app-side Supabase/API access, ordered-dataset shaping, typed locale normalization and runtime fallback for Node-loaded services, explicit anonymous-route policy, and service logic |

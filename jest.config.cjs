@@ -83,7 +83,11 @@ module.exports = async () => {
       '<rootDir>/tests/integration/**/*.test.{ts,tsx,js,jsx}',
       '<rootDir>/src/**/*.test.{ts,tsx,js,jsx}',
     ],
-    modulePathIgnorePatterns: [...(config.modulePathIgnorePatterns || []), ...dockerPathIgnores],
+    modulePathIgnorePatterns: [
+      ...(config.modulePathIgnorePatterns || []),
+      ...dockerPathIgnores,
+      '<rootDir>/vendor/study-contract/.*/package.json',
+    ],
     moduleNameMapper: {
       '^@tiangong-lca/tidas-sdk/core$': '<rootDir>/tests/mocks/tidas-sdk-core.js',
       '^@/tests/(.*)$': '<rootDir>/tests/$1',

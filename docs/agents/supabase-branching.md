@@ -24,8 +24,8 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 602ecfa0fc0b7842eb456d2092ee913722c9f4f3
 lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
 ---
 
