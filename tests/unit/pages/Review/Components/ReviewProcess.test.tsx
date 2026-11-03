@@ -1208,6 +1208,35 @@ describe('ReviewProcessDetail component', () => {
     await waitFor(() => expect(screen.queryByTestId('drawer')).not.toBeInTheDocument());
   });
 
+  it('ignores tab edits while loading and handles a comment whose dataset is unavailable', async () => {
+    let resolveDetail!: (value: any) => void;
+    mockGetProcessDetail.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveDetail = resolve;
+      }),
+    );
+    mockGetCommentApi.mockResolvedValueOnce({
+      data: [
+        {
+          json: {
+            modellingAndValidation: { validation: { review: [{ '@type': 'Not reviewed' }] } },
+          },
+        },
+      ],
+      error: null,
+    });
+    renderComponent();
+    fireEvent.click(screen.getAllByRole('button')[0]);
+    fireEvent.click(screen.getByTestId('trigger-on-data'));
+    fireEvent.click(screen.getByTestId('trigger-on-exchange-data'));
+    expect(proFormApi.getFieldsValue).not.toHaveBeenCalled();
+    await act(async () => {
+      resolveDetail({ data: { json: {}, stateCode: 100 }, success: true });
+    });
+    await waitFor(() => expect(mockGenProcessFromData).toHaveBeenCalledWith({}));
+    expect(mockSubmitReviewCommentApi).not.toHaveBeenCalled();
+  });
+
   it('falls back to empty process datasets, updates tab snapshots, and accepts missing reference paths', async () => {
     proFormValues = {
       processInformation: { title: 'Updated process' },
