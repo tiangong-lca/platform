@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-02
-lastReviewedCommit: b659f5aa8b90ff0d2f29f4758fe7fb70e05b039a
-lastReviewedNote: 'Platform #1396: delay success feedback until existing user hydration and safe redirect request. Default duration, contextual API, authentication and canonical assertions remain unchanged; exact candidate qualification is separate from controlled timing evidence.'
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: 2f965bd77ecf8aa5c1ac3915b38ff52326701748
+lastReviewedNote: 'Platform #1408: reviewed review-comment validation and cleanup; existing setup, serial Umi commands and delivery gates remain unchanged.'
 ---
 
 # Development Bootstrap

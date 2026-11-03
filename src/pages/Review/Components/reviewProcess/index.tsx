@@ -24,6 +24,7 @@ import type { FC } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import RejectReview from '../RejectReview';
+import { validateCommentApproval } from '../validateComment';
 import { TabsDetail } from './tabsDetail';
 
 type Props = {
@@ -546,10 +547,21 @@ const ReviewProcessDetail: FC<Props> = ({
                       validation: fieldsValue?.modellingAndValidation?.validation,
                     },
                   };
-                  const isRefCheck = await updateCommentJsonRefsToUnderReview(submitData);
+                  const prepared = validateCommentApproval(
+                    submitData,
+                    'process',
+                    { '@type': 'process data set', '@refObjectId': id, '@version': version },
+                    intl,
+                    (tabName, fields) => {
+                      setActiveTabKey(tabName);
+                      formRefEdit.current?.setFields(fields);
+                    },
+                  );
+                  if (!prepared.valid) return false;
+                  const isRefCheck = await updateCommentJsonRefsToUnderReview(prepared.json);
                   if (!isRefCheck) return false;
 
-                  const result = await submitReviewCommentApi(reviewId, submitData);
+                  const result = await submitReviewCommentApi(reviewId, prepared.json);
                   if (result.error) throw result.error;
                   message.success(
                     intl.formatMessage({

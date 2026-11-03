@@ -35,7 +35,7 @@ const ScopeItemForm: FC<Props> = ({ name }) => {
                     rules={getRules(
                       schema['processDataSet']['modellingAndValidation']['validation']['review'][
                         'common:scope'
-                      ]['common:method']['@name']['rules'],
+                      ]['@name']['rules'],
                     )}
                   >
                     <Select options={scopeNameOptions} />
