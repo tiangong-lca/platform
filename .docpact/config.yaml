@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-11-04"
-lastReviewedCommit: "8908ffc819923bcaa714862eae8f9114c5e9858b"
-lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
+lastReviewedAt: '2026-11-05'
+lastReviewedCommit: '7ce24ea3940269d488a045ba2dadf6a0b01c027e'
+lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.
@@ -27,6 +27,7 @@ ownership:
           - config/**
           - src/**
           - vendor/study-contract/**
+          - vendor/study-renderer/**
           - public/**
           - docker/**
           - electron/**
@@ -127,6 +128,7 @@ coverage:
     - config/**
     - src/**
     - vendor/study-contract/**
+    - vendor/study-renderer/**
     - public/**
     - public/maintenance.html
     - docker/**
@@ -192,6 +194,7 @@ routing:
       paths:
         - .github/workflows/study-report.yml
         - src/standalone/studyReport/**
+        - vendor/study-renderer/**
         - scripts/study-report/**
         - tests/unit/standalone/**
         - tests/fixtures/study-report/**
@@ -490,6 +493,8 @@ rules:
         kind: standalone-pr-contract-proof
       - path: src/standalone/studyReport/**
         kind: standalone-view-runtime
+      - path: vendor/study-renderer/**
+        kind: retained-renderer-artifact
       - path: scripts/study-report/**
         kind: standalone-package-proof
       - path: tests/unit/standalone/**

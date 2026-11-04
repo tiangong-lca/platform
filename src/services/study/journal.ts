@@ -2,10 +2,15 @@ import * as v2 from '../../../vendor/study-contract/v2/index.mjs';
 import * as v3 from '../../../vendor/study-contract/v3/index.mjs';
 import * as v4 from '../../../vendor/study-contract/v4/index.mjs';
 import * as v5 from '../../../vendor/study-contract/v5/index.mjs';
+import * as v6 from '../../../vendor/study-contract/v6/index.mjs';
 import { StudyRequestError } from './errors';
 
 export type StudyRequest =
-  v2.StudyApiRequest | v3.StudyApiRequest | v4.StudyApiRequest | v5.StudyApiRequest;
+  | v2.StudyApiRequest
+  | v3.StudyApiRequest
+  | v4.StudyApiRequest
+  | v5.StudyApiRequest
+  | v6.StudyApiRequest;
 type MutationRequest = Extract<StudyRequest, { idempotencyKey: string }>;
 export type WriteIdentity = { actorId: string; clientId: string | null; origin: string };
 type Rejection = { code: string; requestId: string; receivedAt: number };
@@ -53,7 +58,7 @@ function storage(): Storage {
 }
 function validWorkflow(workflow: string) {
   if (
-    !/^(?:study|report|share|report5|share5|resource|directory):[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/u.test(
+    !/^(?:study|report|share|report5|share5|report6|share6|resource|directory):[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/u.test(
       workflow,
     )
   )
@@ -69,6 +74,8 @@ function codec(request: { schemaVersion?: unknown }) {
       return v4;
     case 'lca.study-api.v5':
       return v5;
+    case 'lca.study-api.v6':
+      return v6;
     default:
       throw invalid();
   }
@@ -78,8 +85,9 @@ function assertBinding(workflow: string, request: StudyRequest) {
     kind = workflow.slice(0, separator),
     id = workflow.slice(separator + 1);
   if (
-    ['report', 'share', 'report5', 'share5'].includes(kind) &&
-    (kind === 'report5' || kind === 'share5') !== (request.schemaVersion === 'lca.study-api.v5')
+    ['report', 'share', 'report5', 'share5', 'report6', 'share6'].includes(kind) &&
+    (kind.endsWith('6') !== (request.schemaVersion === 'lca.study-api.v6') ||
+      kind.endsWith('5') !== (request.schemaVersion === 'lca.study-api.v5'))
   )
     throw invalid();
   if (
@@ -89,12 +97,16 @@ function assertBinding(workflow: string, request: StudyRequest) {
   )
     throw invalid();
   if (
-    (kind === 'report' || kind === 'report5') &&
+    (kind === 'report' || kind === 'report5' || kind === 'report6') &&
     (('reportRevisionId' in request && request.reportRevisionId !== id) ||
       ('target' in request && request.target.type === 'reportRevision' && request.target.id !== id))
   )
     throw invalid();
-  if ((kind === 'share' || kind === 'share5') && 'shareId' in request && request.shareId !== id)
+  if (
+    (kind === 'share' || kind === 'share5' || kind === 'share6') &&
+    'shareId' in request &&
+    request.shareId !== id
+  )
     throw invalid();
 }
 export function journalSnapshot(identity: WriteIdentity, workflow: string): string | null {
@@ -279,7 +291,11 @@ export async function recordJournalFailure(
 }
 
 /** Only the exact validated success clears unresolved state. */
-export async function completeJournal(identity: WriteIdentity, expected: StoredIntent) {
+export async function completeJournal(
+  identity: WriteIdentity,
+  expected: StoredIntent,
+  assertCurrent: () => void = () => {},
+) {
   const current = await readJournal(identity, expected.workflow);
   if (
     !current ||
@@ -287,6 +303,7 @@ export async function completeJournal(identity: WriteIdentity, expected: StoredI
     JSON.stringify(current.request) !== JSON.stringify(expected.request)
   )
     throw new StudyRequestError('RECOVERY_REQUIRED', false);
+  assertCurrent();
   try {
     storage().removeItem(key(identity, expected.workflow));
   } catch {

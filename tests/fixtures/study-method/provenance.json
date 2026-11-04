@@ -1,0 +1,19 @@
+{
+  "classification": "Synthetic owner fixture only; no current actor, source, native execution or scientific approval.",
+  "sourceRepository": "tiangong-lca/edge-functions",
+  "sourceCommit": "a33a5fbcc8f76f2cf29f68792d7124d6cce94615",
+  "files": [
+    {
+      "sourcePath": "test/fixtures/lca-study-v6/facts.synthetic.json",
+      "path": "facts.json",
+      "sha256": "f779f432bcf1cf1d256352b4c5b9454dd84bbb2e69773591759c18fd96c4d039",
+      "bytes": 129906
+    },
+    {
+      "sourcePath": "test/fixtures/lca-study-v6/worker-service-seams.json",
+      "path": "worker.json",
+      "sha256": "186d4b406aa27fb4e9f290d02f5dc7aeca041824597214e416473bfc7d008d48",
+      "bytes": 190828
+    }
+  ]
+}

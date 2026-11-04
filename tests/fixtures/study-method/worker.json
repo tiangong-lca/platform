@@ -1,0 +1,4588 @@
+{
+  "classification": "synthetic_transport_not_authorization_or_scientific_qualification",
+  "completion": {
+    "configHash": "0d350c9ed228d1bbf03f23712c9a7510366f32e6d8f4182c8df0408e4e569d76",
+    "factsRef": {
+      "byteSize": 129906,
+      "contentHash": "f779f432bcf1cf1d256352b4c5b9454dd84bbb2e69773591759c18fd96c4d039",
+      "digestScope": "artifact_bytes_sha256",
+      "id": "10000000-0000-4000-8000-000000000090",
+      "mediaType": "application/json",
+      "schemaVersion": "lca.study-method-assessment-facts.v1",
+      "type": "methodAssessmentFacts"
+    },
+    "profileId": "lca.study-method-pef-2021-ef31-cement-intermediate.v1",
+    "selectedFactorRecordCount": 1,
+    "storageBucket": "study-artifacts",
+    "storageObjectPath": "study/10000000-0000-4000-8000-000000000001/10000000-0000-4000-8000-000000000090/method-facts.json"
+  },
+  "facts": {
+    "assessmentId": "10000000-0000-4000-8000-000000000104",
+    "assessorVersion": "study.method-assessment.v1",
+    "baseline": {
+      "calculationContractRef": {
+        "kind": "calculation_contract",
+        "schema": "lca.calculation-contract.v1",
+        "sha256": "40002f1de748504cd46c93cae91cc1b204907fadf1ac720f3528d240740e2e39"
+      },
+      "effectiveModelRef": {
+        "contentHash": "2d051c82202641178a4b3534eabbc3297a96e3b2eec3e0fb10a5112c58a54931",
+        "digestScope": "worker_prepared_model",
+        "modelRevisionId": "10000000-0000-4000-8000-000000000070",
+        "type": "modelRevision"
+      },
+      "inputHash": "335605c9150326a3280afa09557bbce9fb814e34367e91bdd0ef9a333eea7964",
+      "methodSourceHash": "c5160a8e01645c4b9b247db183f2d8b9b2ccd002dda49325855dd3bb6ca5c1e7",
+      "modelPreparationId": "10000000-0000-4000-8000-000000000040",
+      "preparedArtifactRef": {
+        "byteSize": 3751,
+        "contentHash": "d652f006e88c8bea3f8fc39e7623b4e8209f9896333907a425272003b5d420e7",
+        "digestScope": "artifact_bytes_sha256",
+        "id": "10000000-0000-4000-8000-000000000050",
+        "mediaType": "application/json",
+        "schemaVersion": "lca.study-prepared-input.v1",
+        "type": "modelInput"
+      },
+      "resultRef": {
+        "byteSize": 693,
+        "contentHash": "ffaf1b5f17e0d0d42db1223c9b0ddff857a8e53d516b959031398b89ae7e1df4",
+        "digestScope": "artifact_bytes_sha256",
+        "id": "10000000-0000-4000-8000-000000000060",
+        "mediaType": "application/json",
+        "schemaVersion": "lca.study-result.v1",
+        "type": "runResult"
+      },
+      "runId": "10000000-0000-4000-8000-000000000010",
+      "scenarioRevisionId": "10000000-0000-4000-8000-000000000030",
+      "sourceOrigin": {
+        "id": "model",
+        "version": "01.00.000"
+      },
+      "sourceSnapshotRef": {
+        "byteSize": 4647,
+        "contentHash": "d91b5c2e9c4545dfcb8949ce345f1f9d284dd8bd5d02a43f9039e16f9fa702e8",
+        "digestScope": "artifact_bytes_sha256",
+        "id": "10000000-0000-4000-8000-000000000080",
+        "mediaType": "application/json",
+        "schemaVersion": "lca.study-source-snapshot.v1",
+        "type": "modelSource"
+      },
+      "studyRevisionId": "10000000-0000-4000-8000-000000000002",
+      "validity": {
+        "checkedAt": "2026-11-03T00:00:00Z",
+        "reasonCodes": [],
+        "status": "current"
+      }
+    },
+    "businessPilotQualified": false,
+    "candidateNormalisationWeighting": {
+      "basis": "source_global_per_capita_reference_impacts",
+      "canonicalCandidateSingleScore": null,
+      "categories": [],
+      "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+      "reasonCodes": [
+        "frozen_method_source_not_verified",
+        "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+        "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+        "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+        "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+        "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+        "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+      ],
+      "scalingFactor": "1",
+      "scope": "candidate_arithmetic_only_not_pef_qualification",
+      "scoreUnit": "Pt",
+      "status": "unavailable",
+      "weightRepresentation": "source_fraction_no_additional_division_by_100"
+    },
+    "categories": [
+      {
+        "canonicalCharacterisedValue": "5",
+        "coverage": "complete",
+        "methodRef": {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Climate change",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "method_source_or_unit_not_verified"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "primary",
+        "selected": true,
+        "sourceCompatible": false,
+        "unit": "kg CO2 Equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "706261af-a357-4cc0-a50a-f3033fcbd556",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Climate change-Biogenic",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg CO2-Equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "7fce5b3a-66b8-4ce1-91e8-a925aee1f186",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Climate change-Fossil",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg CO2 Equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "14af9ca7-aa1d-4832-b1d9-ab05a06dcb12",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Climate change-Land use and land use change",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg CO2-Equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "version": "01.01.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Human toxicity, cancer",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUh"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "01500b74-7ffb-463e-9bd4-72f17c2263ff",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Human toxicity, cancer_inorganics",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUh"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "503699e0-eca9-4089-8bf8-e0f49c93e578",
+          "version": "01.01.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Human toxicity, cancer_organics",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUh"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Human toxicity, non-cancer",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUh"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Human toxicity, non-cancer_inorganics",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUh"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "8c3141e9-1f15-43b5-bff2-182e49893a46",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Human toxicity, non-cancer_organics",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUh"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Ecotoxicity, freshwater",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUe"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "dacd48b5-4da5-49aa-aff4-cd5f5495c037",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Ecotoxicity, freshwater-inorganics",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUe"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "fd530f00-9325-424a-92ef-aaac67922fd9",
+          "version": "01.00.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Ecotoxicity, freshwater-organics",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "role": "subcategory",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "CTUe"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.010"
+        },
+        "missingInventoryIndices": [],
+        "name": "Eutrophication marine",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg N equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "version": "01.00.010"
+        },
+        "missingInventoryIndices": [],
+        "name": "Eutrophication, freshwater",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg P equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "version": "01.02.009"
+        },
+        "missingInventoryIndices": [],
+        "name": "Eutrophication, terrestrial",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "mol N equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "missingInventoryIndices": [],
+        "name": "Resource use, fossils",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200c9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "MJ"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "missingInventoryIndices": [],
+        "name": "Resource use, minerals and metals",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg Sb equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "03.00.014"
+        },
+        "missingInventoryIndices": [],
+        "name": "Water use",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-22da-a746-0800200c9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "m3-world equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "missingInventoryIndices": [],
+        "name": "Land use",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "dimensionless (pt)"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "version": "01.04.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Acidification",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "mol H+ equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.012"
+        },
+        "missingInventoryIndices": [],
+        "name": "Ozone depletion",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg CFC11 equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+          "version": "01.00.011"
+        },
+        "missingInventoryIndices": [],
+        "name": "Ionising radiation, human health",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-17da-a746-0800200c9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kBq U235 equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "version": "02.01.000"
+        },
+        "missingInventoryIndices": [],
+        "name": "Photochemical ozone formation - human health",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "kg NMVOC equivalents"
+      },
+      {
+        "canonicalCharacterisedValue": null,
+        "coverage": "not_selected",
+        "methodRef": {
+          "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.011"
+        },
+        "missingInventoryIndices": [],
+        "name": "EF-particulate Matter",
+        "normalisationWeightingIncluded": false,
+        "parentMethodId": null,
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+        "role": "primary",
+        "selected": false,
+        "sourceCompatible": false,
+        "unit": "disease incidence"
+      }
+    ],
+    "config": {
+      "baselineRunId": "10000000-0000-4000-8000-000000000010",
+      "declarations": {
+        "categoryRule": {
+          "kind": "noneEstablished"
+        },
+        "productRole": "finishedCementIntermediate",
+        "referenceUnitBasis": "declaredMass",
+        "studyPhase": "finalStudy"
+      },
+      "evidenceRefs": [],
+      "moduleRef": {
+        "artifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+        "moduleId": "method.pef-2021-ef31",
+        "moduleVersion": "0.1.0",
+        "repository": "tiangong-lca/pcr",
+        "reviewBasisSha256": "989391423c7f31bdf77e18ea4438fab1a27ff6708c0f44ecad8ab8813763a165",
+        "sourceBindingsSha256": "3fd9b1dc68228db3e146b6d23daac853b27b9f504f9445a0cc5a971d53257ce2",
+        "sourceCommit": "51c0842c67b14ba886e2edee2846e26eefac030f"
+      },
+      "schemaVersion": "lca.study-method-assessment-config.v1"
+    },
+    "configHash": "0d350c9ed228d1bbf03f23712c9a7510366f32e6d8f4182c8df0408e4e569d76",
+    "factCatalog": [
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": "5",
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "complete",
+        "factId": "category:6209b35f-9447-40b5-b68c-a1099e3674a0:characterised",
+        "methodRef": {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "method_source_or_unit_not_verified"
+        ],
+        "unit": "kg CO2 Equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg CO2 Equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "706261af-a357-4cc0-a50a-f3033fcbd556",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:706261af-a357-4cc0-a50a-f3033fcbd556:characterised",
+        "methodRef": {
+          "id": "706261af-a357-4cc0-a50a-f3033fcbd556",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg CO2-Equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "706261af-a357-4cc0-a50a-f3033fcbd556",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg CO2-Equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "7fce5b3a-66b8-4ce1-91e8-a925aee1f186",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:7fce5b3a-66b8-4ce1-91e8-a925aee1f186:characterised",
+        "methodRef": {
+          "id": "7fce5b3a-66b8-4ce1-91e8-a925aee1f186",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg CO2 Equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "7fce5b3a-66b8-4ce1-91e8-a925aee1f186",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg CO2 Equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "14af9ca7-aa1d-4832-b1d9-ab05a06dcb12",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:14af9ca7-aa1d-4832-b1d9-ab05a06dcb12:characterised",
+        "methodRef": {
+          "id": "14af9ca7-aa1d-4832-b1d9-ab05a06dcb12",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg CO2-Equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "14af9ca7-aa1d-4832-b1d9-ab05a06dcb12",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg CO2-Equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:2299222a-bbd8-474f-9d4f-4dd1f18aea7c:characterised",
+        "methodRef": {
+          "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "version": "01.01.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUh",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          },
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "unit": "CTUh"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "01500b74-7ffb-463e-9bd4-72f17c2263ff",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:01500b74-7ffb-463e-9bd4-72f17c2263ff:characterised",
+        "methodRef": {
+          "id": "01500b74-7ffb-463e-9bd4-72f17c2263ff",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUh",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "01500b74-7ffb-463e-9bd4-72f17c2263ff",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "unit": "CTUh"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "503699e0-eca9-4089-8bf8-e0f49c93e578",
+            "version": "01.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:503699e0-eca9-4089-8bf8-e0f49c93e578:characterised",
+        "methodRef": {
+          "id": "503699e0-eca9-4089-8bf8-e0f49c93e578",
+          "version": "01.01.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUh",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "503699e0-eca9-4089-8bf8-e0f49c93e578",
+            "version": "01.01.000"
+          },
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "unit": "CTUh"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8:characterised",
+        "methodRef": {
+          "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUh",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "unit": "CTUh"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85:characterised",
+        "methodRef": {
+          "id": "9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUh",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "unit": "CTUh"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "8c3141e9-1f15-43b5-bff2-182e49893a46",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:8c3141e9-1f15-43b5-bff2-182e49893a46:characterised",
+        "methodRef": {
+          "id": "8c3141e9-1f15-43b5-bff2-182e49893a46",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUh",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "8c3141e9-1f15-43b5-bff2-182e49893a46",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "unit": "CTUh"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:05316e7a-b254-4bea-9cf0-6bf33eb5c630:characterised",
+        "methodRef": {
+          "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUe",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+          "unit": "CTUe"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "dacd48b5-4da5-49aa-aff4-cd5f5495c037",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:dacd48b5-4da5-49aa-aff4-cd5f5495c037:characterised",
+        "methodRef": {
+          "id": "dacd48b5-4da5-49aa-aff4-cd5f5495c037",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUe",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "dacd48b5-4da5-49aa-aff4-cd5f5495c037",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+          "unit": "CTUe"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "subcategory",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "fd530f00-9325-424a-92ef-aaac67922fd9",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:fd530f00-9325-424a-92ef-aaac67922fd9:characterised",
+        "methodRef": {
+          "id": "fd530f00-9325-424a-92ef-aaac67922fd9",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "CTUe",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "fd530f00-9325-424a-92ef-aaac67922fd9",
+            "version": "01.00.000"
+          },
+          "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+          "unit": "CTUe"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c619fa-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.010"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg N equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg N equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b:characterised",
+        "methodRef": {
+          "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg P equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg P equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c614d2-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "version": "01.02.009"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "mol N equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          },
+          "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+          "unit": "mol N equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b2ad6110-c78d-11e6-9d9d-cec0c932ce01:characterised",
+        "methodRef": {
+          "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "MJ",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200c9a66",
+          "unit": "MJ"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b2ad6494-c78d-11e6-9d9d-cec0c932ce01:characterised",
+        "methodRef": {
+          "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg Sb equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg Sb equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01:characterised",
+        "methodRef": {
+          "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "03.00.014"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "m3-world equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-22da-a746-0800200c9a66",
+          "unit": "m3-world equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b2ad6890-c78d-11e6-9d9d-cec0c932ce01:characterised",
+        "methodRef": {
+          "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "dimensionless (pt)",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+          "unit": "dimensionless (pt)"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c611c6-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "version": "01.04.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "mol H+ equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          },
+          "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+          "unit": "mol H+ equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c629d6-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.012"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg CFC11 equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg CFC11 equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c632be-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+          "version": "01.00.011"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kBq U235 equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-17da-a746-0800200c9a66",
+          "unit": "kBq U235 equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c610fe-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "version": "02.01.000"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "kg NMVOC equivalents",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          },
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "unit": "kg NMVOC equivalents"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "categoryRole": "primary",
+          "kind": "characterisedCategory",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "category:b5c602c6-def3-11e6-bf01-fe55135034f3:characterised",
+        "methodRef": {
+          "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.011"
+        },
+        "reasonCodes": [
+          "required_exact_method_not_selected"
+        ],
+        "unit": "disease incidence",
+        "unitIdentity": {
+          "kind": "characterised",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          },
+          "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+          "unit": "disease incidence"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "methodRef": {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "sourceNormalisationFactor": "7553.08316285117",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "methodRef": {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "7553.08316285117",
+          "sourceWeightFraction": "0.2106",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c629d6-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.012"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "sourceNormalisationFactor": "0.0523483833840181",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c629d6-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.012"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "0.0523483833840181",
+          "sourceWeightFraction": "0.0631",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "methodRef": {
+          "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "version": "01.01.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "sourceNormalisationFactor": "0.0000172528976538705",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "methodRef": {
+          "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "version": "01.01.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "0.0000172528976538705",
+          "sourceWeightFraction": "0.0213",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "methodRef": {
+          "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "sourceNormalisationFactor": "0.000128735735008072",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "methodRef": {
+          "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "0.000128735735008072",
+          "sourceWeightFraction": "0.0184",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c602c6-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.011"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+          "sourceNormalisationFactor": "0.000595366821125478",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c602c6-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.011"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "0.000595366821125478",
+          "sourceWeightFraction": "0.0896",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c632be-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+          "version": "01.00.011"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-17da-a746-0800200c9a66",
+          "sourceNormalisationFactor": "4220.16339014993",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c632be-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+          "version": "01.00.011"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-17da-a746-0800200c9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "4220.16339014993",
+          "sourceWeightFraction": "0.0501",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c610fe-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "version": "02.01.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "sourceNormalisationFactor": "40.8591977347772",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c610fe-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "version": "02.01.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "40.8591977347772",
+          "sourceWeightFraction": "0.0478",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c611c6-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "version": "01.04.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+          "sourceNormalisationFactor": "55.5695412306019",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c611c6-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "version": "01.04.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "55.5695412306019",
+          "sourceWeightFraction": "0.062",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c614d2-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "version": "01.02.009"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+          "sourceNormalisationFactor": "176.754999788942",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c614d2-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "version": "01.02.009"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "176.754999788942",
+          "sourceWeightFraction": "0.0371",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+        "methodRef": {
+          "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "sourceNormalisationFactor": "1.60685212828813",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+        "methodRef": {
+          "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "1.60685212828813",
+          "sourceWeightFraction": "0.028",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b5c619fa-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "sourceNormalisationFactor": "19.5451815519191",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b5c619fa-def3-11e6-bf01-fe55135034f3",
+        "methodRef": {
+          "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "19.5451815519191",
+          "sourceWeightFraction": "0.0296",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "methodRef": {
+          "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+          "sourceNormalisationFactor": "56716.5863370596",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "methodRef": {
+          "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "version": "01.00.000"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "56716.5863370596",
+          "sourceWeightFraction": "0.0192",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+          "sourceNormalisationFactor": "819498.182923031",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "819498.182923031",
+          "sourceWeightFraction": "0.0794",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "03.00.014"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-22da-a746-0800200c9a66",
+          "sourceNormalisationFactor": "11468.7086407597",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "03.00.014"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-22da-a746-0800200c9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "11468.7086407597",
+          "sourceWeightFraction": "0.0851",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "sourceNormalisationFactor": "0.0636226152369547",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "0.0636226152369547",
+          "sourceWeightFraction": "0.0755",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "normalisedCategory",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "normalised:b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "1",
+        "unitIdentity": {
+          "kind": "normalised",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200c9a66",
+          "sourceNormalisationFactor": "65004.2596640165",
+          "unit": "1"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "weightedCategory",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          }
+        },
+        "coverage": "unknown",
+        "factId": "weighted:b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+        "methodRef": {
+          "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "weighted",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200c9a66",
+          "scalingFactor": "1",
+          "sourceNormalisationFactor": "65004.2596640165",
+          "sourceWeightFraction": "0.0832",
+          "unit": "Pt"
+        }
+      },
+      {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "baselineRunId": "10000000-0000-4000-8000-000000000010",
+        "canonicalValue": null,
+        "context": {
+          "kind": "candidateSingleScore",
+          "primaryMethods": [
+            {
+              "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+              "version": "01.00.000"
+            },
+            {
+              "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+              "version": "02.00.012"
+            },
+            {
+              "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+              "version": "01.01.000"
+            },
+            {
+              "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+              "version": "01.00.000"
+            },
+            {
+              "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+              "version": "02.00.011"
+            },
+            {
+              "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+              "version": "01.00.011"
+            },
+            {
+              "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+              "version": "02.01.000"
+            },
+            {
+              "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+              "version": "01.04.000"
+            },
+            {
+              "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+              "version": "01.02.009"
+            },
+            {
+              "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+              "version": "01.00.010"
+            },
+            {
+              "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+              "version": "02.00.010"
+            },
+            {
+              "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+              "version": "01.00.000"
+            },
+            {
+              "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "01.00.010"
+            },
+            {
+              "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "03.00.014"
+            },
+            {
+              "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "01.00.010"
+            },
+            {
+              "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "01.00.010"
+            }
+          ]
+        },
+        "coverage": "unknown",
+        "factId": "candidate:singleScore",
+        "methodRef": null,
+        "reasonCodes": [
+          "frozen_method_source_not_verified",
+          "primary_category_not_complete:6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "primary_category_not_complete:b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "primary_category_not_complete:7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "primary_category_not_complete:b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c632be-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "primary_category_not_complete:b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "primary_category_not_complete:05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "primary_category_not_complete:b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "primary_category_not_complete:b2ad6110-c78d-11e6-9d9d-cec0c932ce01"
+        ],
+        "unit": "Pt",
+        "unitIdentity": {
+          "kind": "candidateScore",
+          "moduleArtifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+          "pointDefinition": "1 Pt = sum of characterised_i / source_NF_i times source_weight_fraction_i over exactly sixteen primary categories",
+          "primaryMethods": [
+            {
+              "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+              "version": "01.00.000"
+            },
+            {
+              "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+              "version": "02.00.012"
+            },
+            {
+              "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+              "version": "01.01.000"
+            },
+            {
+              "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+              "version": "01.00.000"
+            },
+            {
+              "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+              "version": "02.00.011"
+            },
+            {
+              "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+              "version": "01.00.011"
+            },
+            {
+              "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+              "version": "02.01.000"
+            },
+            {
+              "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+              "version": "01.04.000"
+            },
+            {
+              "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+              "version": "01.02.009"
+            },
+            {
+              "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+              "version": "01.00.010"
+            },
+            {
+              "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+              "version": "02.00.010"
+            },
+            {
+              "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+              "version": "01.00.000"
+            },
+            {
+              "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "01.00.010"
+            },
+            {
+              "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "03.00.014"
+            },
+            {
+              "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "01.00.010"
+            },
+            {
+              "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+              "version": "01.00.010"
+            }
+          ],
+          "scalingFactor": "1",
+          "unit": "Pt"
+        }
+      }
+    ],
+    "frozenEvidence": {
+      "coverageGaps": [],
+      "declaredCutoffs": 0,
+      "declaredSystemBoundary": "Declared synthetic source only",
+      "exchanges": 2,
+      "functionalUnit": {
+        "amount": "1",
+        "referenceFlowId": "product",
+        "unit": "kg"
+      },
+      "inventoryAxes": 1,
+      "methodAxes": [
+        {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "unit": "kg CO2 Equivalents",
+          "version": "01.00.000"
+        }
+      ],
+      "processInstances": 1,
+      "qualityFindings": [],
+      "sourceDocumentCount": 6
+    },
+    "identityKind": "private_job_metadata_not_an_authorization_receipt",
+    "limitations": [
+      "Initial method assessment is source/byte consistency and explicitly bounded predicates, not PEF conformity, scientific, business, ranking, EPD or Commission approval.",
+      "The user has no complete real positive industry case; synthetic arithmetic or conformance fixtures cannot replace real-study/professional acceptance.",
+      "P1 missing factors remain gaps; separately reviewed non-applicability is required for ordinary sparse sixteen-category numerical adoption.",
+      "Structured declarations and provided evidence references remain unverified; no freeform goal/boundary inference or file-presence approval.",
+      "Current interim guidance applicability cannot be established from frozen artifacts or a fixed 2028 date."
+    ],
+    "methodSourceEvidence": {
+      "factorPackageVersion": "EF 3.1",
+      "frozenCMatchesVerifiedBundle": false,
+      "geographicalSuitability": "not_verified",
+      "interimGuidanceSnapshot": {
+        "announcement_date": "2026-07-14",
+        "manuscript_month": "2026-05",
+        "validity_condition": "until the next EF database is available; expected 2028 is not a fixed expiry date",
+        "with_commission_pefcr_section": "2.2",
+        "without_commission_pefcr_section": "2.1"
+      },
+      "limitations": [
+        "Original raw source hashes stay distinct; the PM bridge is reviewed structural equivalence, not source substitution or rights approval.",
+        "Unique-factor raw ordinal/location/compartment context is not retained by the existing cache; unavailable metadata is not fabricated.",
+        "Source defaults/equivalence never establish study geographic or technological suitability."
+      ],
+      "nonregionalDefaultsSha256": "d5ed7b76d96aa6640371fdba12076e129240e01f11e360d374b65fb89f9c3373",
+      "nonregionalPolicy": "lcia.nonregional-source-defaults.v1",
+      "normalisationWeightingSourceSha256": "14237568217d30236cb8bec43171c746162fde9aa4751f3b30d5fd49e4a3dce9",
+      "normativeVersion": "Recommendation (EU) 2021/2279, corrected 2022-05-23",
+      "officialFactorPackageSha256": "18763515dd93fabaa7f46b019de30cd521b2036a75a348e5824eeec2225afb27",
+      "selectedFactors": [
+        {
+          "alternativeCount": 0,
+          "canonicalEffectiveFactor": null,
+          "direction": "Output",
+          "flow": {
+            "id": "emission",
+            "version": "01.00.000"
+          },
+          "frozenUnit": "kg",
+          "frozenUnitSupport": [
+            {
+              "id": "mass",
+              "version": "01.00.000"
+            },
+            {
+              "id": "kg",
+              "version": "01.00.000"
+            }
+          ],
+          "inventoryIndex": 0,
+          "location": {
+            "originalValue": null,
+            "sourceRecordOrdinal": null,
+            "sourceRecordSha256": null,
+            "status": "no_selected_factor"
+          },
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          },
+          "rawFactorValueBits": null,
+          "status": "factor_or_coverage_mismatch"
+        }
+      ],
+      "sourceBridges": [
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "c0fe31d3c045ae85b64bd85a3bfa41e1f246d664e8f8d463005f37dee003a5a8",
+          "methodRef": {
+            "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "c0fe31d3c045ae85b64bd85a3bfa41e1f246d664e8f8d463005f37dee003a5a8"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "a3d8a39e8e0bacfe7f2877b2bf1886cb733b4124cddaf362a0a5e285311878e1",
+          "methodRef": {
+            "id": "706261af-a357-4cc0-a50a-f3033fcbd556",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "a3d8a39e8e0bacfe7f2877b2bf1886cb733b4124cddaf362a0a5e285311878e1"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "7925c8ad33f804723fee7a808d8bf98c8ecdca9b47a5d6f732e415137ac58991",
+          "methodRef": {
+            "id": "7fce5b3a-66b8-4ce1-91e8-a925aee1f186",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "7925c8ad33f804723fee7a808d8bf98c8ecdca9b47a5d6f732e415137ac58991"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "f184b2f418e69aa51df17f4741674c82ff98c486d78450097140fb6e863ffe4a",
+          "methodRef": {
+            "id": "14af9ca7-aa1d-4832-b1d9-ab05a06dcb12",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "f184b2f418e69aa51df17f4741674c82ff98c486d78450097140fb6e863ffe4a"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "f8f23807aa68f005c4dacae10aff931c568e8a74a4faad6717438b2d2c20dc35",
+          "methodRef": {
+            "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+            "version": "01.01.000"
+          },
+          "officialXmlSha256": "f8f23807aa68f005c4dacae10aff931c568e8a74a4faad6717438b2d2c20dc35"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "537c9e6a898c67e2d803991a3de9507f2ec4756bcbe5b60a211b75687a331a23",
+          "methodRef": {
+            "id": "01500b74-7ffb-463e-9bd4-72f17c2263ff",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "537c9e6a898c67e2d803991a3de9507f2ec4756bcbe5b60a211b75687a331a23"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "84203510df0a0700e385cd1b08288859bff79d0127df02edb3b26882145d33c2",
+          "methodRef": {
+            "id": "503699e0-eca9-4089-8bf8-e0f49c93e578",
+            "version": "01.01.000"
+          },
+          "officialXmlSha256": "84203510df0a0700e385cd1b08288859bff79d0127df02edb3b26882145d33c2"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "d932a60f1615945df21b823f19321d80427a6eadb1b3e816f40153726b39993f",
+          "methodRef": {
+            "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "d932a60f1615945df21b823f19321d80427a6eadb1b3e816f40153726b39993f"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "fee7f45542a256f03faa73b406da8d40e7042be4c3719f24e0f0fdb55feace98",
+          "methodRef": {
+            "id": "9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "fee7f45542a256f03faa73b406da8d40e7042be4c3719f24e0f0fdb55feace98"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "51caa1ad49ac65822714fca432c34ec032c90101afca6cdaeccfec3ab50e10e7",
+          "methodRef": {
+            "id": "8c3141e9-1f15-43b5-bff2-182e49893a46",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "51caa1ad49ac65822714fca432c34ec032c90101afca6cdaeccfec3ab50e10e7"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "252fe760308a14b647ba2a32e8e056f9d8434235be9f1bf3b0d452afe4548cd4",
+          "methodRef": {
+            "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "252fe760308a14b647ba2a32e8e056f9d8434235be9f1bf3b0d452afe4548cd4"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "6ddbbb5a67a33caa8cbd3f6d7dc46bdce71e98830bcc73d6596a2f3b250ef26d",
+          "methodRef": {
+            "id": "dacd48b5-4da5-49aa-aff4-cd5f5495c037",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "6ddbbb5a67a33caa8cbd3f6d7dc46bdce71e98830bcc73d6596a2f3b250ef26d"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "9a5a23ee80ff03a673d5aa626db693a6a7554192495103bb553f0ef90d9b914a",
+          "methodRef": {
+            "id": "fd530f00-9325-424a-92ef-aaac67922fd9",
+            "version": "01.00.000"
+          },
+          "officialXmlSha256": "9a5a23ee80ff03a673d5aa626db693a6a7554192495103bb553f0ef90d9b914a"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "a681b4b9b2d853697e2e044719d43cb7eaa6b8e185af8b00bb277aa92e735301",
+          "methodRef": {
+            "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.010"
+          },
+          "officialXmlSha256": "a681b4b9b2d853697e2e044719d43cb7eaa6b8e185af8b00bb277aa92e735301"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "15eff61b234c7564bbd41b6dd40ed0dc6dfc0d5c1704f89d143f3dc90e82d523",
+          "methodRef": {
+            "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+            "version": "01.00.010"
+          },
+          "officialXmlSha256": "15eff61b234c7564bbd41b6dd40ed0dc6dfc0d5c1704f89d143f3dc90e82d523"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "72f1187a0682e186bdedf74f60fe99a1e1dafa7469141af74dfe4ea21c296992",
+          "methodRef": {
+            "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+            "version": "01.02.009"
+          },
+          "officialXmlSha256": "72f1187a0682e186bdedf74f60fe99a1e1dafa7469141af74dfe4ea21c296992"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "d9b4f8480a8e916e37b1403fc70e68241edbe71098e26cadc41e5f5caaa9fb93",
+          "methodRef": {
+            "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "officialXmlSha256": "d9b4f8480a8e916e37b1403fc70e68241edbe71098e26cadc41e5f5caaa9fb93"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "903dc1764187342f518c5fc00e6519cd0082cfe207569592f77adadb18568b06",
+          "methodRef": {
+            "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "officialXmlSha256": "903dc1764187342f518c5fc00e6519cd0082cfe207569592f77adadb18568b06"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "f06fec854a386ecd9c2d6b2de3d735b341b9f5ac68990764a3e1fd84e91268d2",
+          "methodRef": {
+            "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "03.00.014"
+          },
+          "officialXmlSha256": "f06fec854a386ecd9c2d6b2de3d735b341b9f5ac68990764a3e1fd84e91268d2"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "94f959328235d7d68b6febea36810ab29104a14f1a1be57ae9e61c58ccb47149",
+          "methodRef": {
+            "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+            "version": "01.00.010"
+          },
+          "officialXmlSha256": "94f959328235d7d68b6febea36810ab29104a14f1a1be57ae9e61c58ccb47149"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "1a09e9e8533cc6f1027f260c2672ca6f8dd231618fe81939ed1fc22d5e066f8f",
+          "methodRef": {
+            "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+            "version": "01.04.000"
+          },
+          "officialXmlSha256": "1a09e9e8533cc6f1027f260c2672ca6f8dd231618fe81939ed1fc22d5e066f8f"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "e64477a1b282ce934a9fbeb456601589fca88c3d160289dc9680d4f1d261ead4",
+          "methodRef": {
+            "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.012"
+          },
+          "officialXmlSha256": "e64477a1b282ce934a9fbeb456601589fca88c3d160289dc9680d4f1d261ead4"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "69f7a44f3e0682e11c882d77936b5f8f79951795ac775e3e99ea975e14e7c59e",
+          "methodRef": {
+            "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+            "version": "01.00.011"
+          },
+          "officialXmlSha256": "69f7a44f3e0682e11c882d77936b5f8f79951795ac775e3e99ea975e14e7c59e"
+        },
+        {
+          "equivalenceEvidenceSha256": null,
+          "equivalenceKind": "identical_bytes",
+          "localXmlSha256": "273c43df66bfd12f7884e1c3e19d23daade5af5b96bd1d7c68802d87f7755f4a",
+          "methodRef": {
+            "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+            "version": "02.01.000"
+          },
+          "officialXmlSha256": "273c43df66bfd12f7884e1c3e19d23daade5af5b96bd1d7c68802d87f7755f4a"
+        },
+        {
+          "equivalenceEvidenceSha256": "60b7a98236a780b699b04ceee647dc9c1a2101edb213dbb85e9aad650392e738",
+          "equivalenceKind": "reviewed_whitespace_only_xml_structure",
+          "localXmlSha256": "8c2168e142ac2c46d49e3f3265d1d252256f7c8cb63970f30350dcce2307f332",
+          "methodRef": {
+            "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+            "version": "02.00.011"
+          },
+          "officialXmlSha256": "bbde0609351a78fe774c39d3c2a90b8cc463cf3f57d62ffbd4c4f9cb6cb5b721"
+        }
+      ],
+      "sourceCatalogSha256": "599337817146647d034eb12cd6373aa185d19962d882644896262e3ad3b405ee",
+      "staticSourceSnapshot": {
+        "bundle_manifest_path": "synthetic",
+        "bundle_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "bundle_version": "synthetic",
+        "factor_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "method_count": 1,
+        "method_identity_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "method_manifest_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "schema_version": "synthetic.method-source.v1",
+        "source_kind": "synthetic_software_fixture_not_official",
+        "source_snapshot_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      }
+    },
+    "moduleRef": {
+      "artifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+      "moduleId": "method.pef-2021-ef31",
+      "moduleVersion": "0.1.0",
+      "repository": "tiangong-lca/pcr",
+      "reviewBasisSha256": "989391423c7f31bdf77e18ea4438fab1a27ff6708c0f44ecad8ab8813763a165",
+      "sourceBindingsSha256": "3fd9b1dc68228db3e146b6d23daac853b27b9f504f9445a0cc5a971d53257ce2",
+      "sourceCommit": "51c0842c67b14ba886e2edee2846e26eefac030f"
+    },
+    "moduleSourceStatus": "candidate_source_module_exact_main_adoption_not_study_approval",
+    "outcome": "not_qualified_professional_and_actual_study_evidence_pending",
+    "pefConformityQualified": false,
+    "profileId": "lca.study-method-pef-2021-ef31-cement-intermediate.v1",
+    "requirements": [
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_goal_definition_binding",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "goal_and_category_rule_fitness",
+              "reasonCodes": [
+                "structured_declaration_is_not_applicability_proof"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-01",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§2,3.1",
+          "eu-2026-interim:§§2.1,2.2"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_functional_unit_reference_binding",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "supported_declared_kg_output_product",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "function_performance_cement_identity",
+              "reasonCodes": [
+                "mass_and_caller_product_role_do_not_prove_function"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-02",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §3.2.1"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_graph_and_cutoffs_bound",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "life_cycle_stage_applicability_and_completeness",
+              "reasonCodes": [
+                "no_freeform_boundary_inference"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-03",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§3.2.2,4.2–4.2.5"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_inventory_and_unknown_coverage_preserved",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "scientific_inventory_completeness",
+              "reasonCodes": [
+                "empty_or_zero_fields_do_not_prove_completeness"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-04",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4,4.1,4.3,6.2"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "foreground_cutoff_observation",
+              "reasonCodes": [
+                "no_declared_foreground_cutoffs_background_cutoffs_unknown"
+              ],
+              "status": "verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-05",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.6.3,4.6.4",
+          "eu-2026-interim:§2.1"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_process_source_identities",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "primary_data_dnm_and_dqr_quality",
+              "reasonCodes": [
+                "no_self_assigned_scores_or_presence_based_quality"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-06",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.6.1,4.6.2,4.6.5.1–4.6.5.8,Tables 23–25"
+        ]
+      },
+      {
+        "declarationState": "declared_none_established_applicability_unverified",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "conditional_without_commission_pefcr_branch",
+              "reasonCodes": [
+                "actual_search_availability_non_ef_use_and_exception_conditions_unverified"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-07",
+        "sourceApplicability": "without-commission-pefcr",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2026-interim:§§1,2.1"
+        ]
+      },
+      {
+        "declarationState": "declared_none_established_applicability_unverified",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "conditional_commission_pefcr_branch",
+              "reasonCodes": [
+                "common_module_is_not_an_applicable_cement_pefcr_or_verifier_validation"
+              ],
+              "status": "not_assessed"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_assessed"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-08",
+        "sourceApplicability": "with-commission-pefcr",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2026-interim:§§1,2.2"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "exact_original_corrigendum_interim_factor_source_pins",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "conditional_interim_currentness",
+              "reasonCodes": [
+                "2028_is_not_fixed_expiry_no_latest_database_or_guidance_proof"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [],
+          "status": "not_required_for_source_machine_predicate"
+        },
+        "requirementId": "PEF-09",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "machine",
+        "sourceCitations": [
+          "eu-2026-interim:front matter,§1",
+          "eu-2021-2279-original:OJ identity",
+          "eu-2022-corrigendum:OJ 2022-05-23"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_allocation_numeric_structure",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "allocation_hierarchy_causal_appropriateness",
+              "reasonCodes": [
+                "arithmetic_closure_is_not_allocation_judgment"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-10",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §4.5"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "frozen_upstream_model_observation",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "energy_transport_capital_and_other_suitability",
+              "reasonCodes": [
+                "source_identity_is_not_geographical_or_scenario_suitability"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-11",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.4.1–4.4.7"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "circularity_and_lifetime_applicability",
+              "reasonCodes": [
+                "cff_parameters_substitution_and_lifetime_not_assessed"
+              ],
+              "status": "unsupported"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "unsupported"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-12",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.4.8,4.4.9"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "adopted_module_climate_role_definitions",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "carbon_balance_removals_and_offsets",
+              "reasonCodes": [
+                "factor_match_does_not_prove_carbon_stock_flow_boundaries"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-13",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.4.10,4.4.11",
+          "jrc-ef31-update:§2"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "exact_sixteen_primary_category_selection",
+              "reasonCodes": [
+                "partial_selected_methods_cannot_satisfy_full_pef_selection"
+              ],
+              "status": "violated"
+            },
+            {
+              "predicateId": "decompositions_excluded_from_normalisation_total",
+              "reasonCodes": [],
+              "status": "verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "violated"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-14",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§3.2.3,5.1",
+          "jrc-ef31-update:Table 1",
+          "jrc-ef31-package:ILCD/lciamethods"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "actual_verified_source_c_and_coverage_comparison",
+              "reasonCodes": [
+                "frozen_source_not_reproduced_by_actual_pinned_bundle"
+              ],
+              "status": "violated"
+            },
+            {
+              "predicateId": "geography_compartment_and_unit_representativeness",
+              "reasonCodes": [
+                "cache_equality_blank_location_and_known_ids_are_not_suitability"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "violated"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-15",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.3,5.1",
+          "jrc-ef31-package:ILCD/lciamethods"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "source_nf_primary_only_division",
+              "reasonCodes": [
+                "complete_source_compatible_sixteen_values_unavailable"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-16",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §5.2.1",
+          "jrc-ef31-update:§4",
+          "jrc-ef31-package:other/lookLciMethodInformation.config"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "source_fraction_weight_once_and_explicit_point_scale",
+              "reasonCodes": [
+                "no_arbitrary_or_partial_category_total"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-17",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §5.2.2 and footnote 60",
+          "jrc-ef31-package:other/lookLciMethodInformation.config"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "professional_robustness_and_prescribed_hotspot_procedures",
+              "reasonCodes": [
+                "no_arbitrary_top_n_surrogate"
+              ],
+              "status": "not_assessed"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_assessed"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-18",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "professional",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§6.1–6.4"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "report_independent_verification_and_communication",
+              "reasonCodes": [
+                "source_hash_ci_ai_review_and_module_review_are_not_study_approval"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-19",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§7,8",
+          "eu-2026-interim:§§1,2.1,2.2"
+        ]
+      },
+      {
+        "declarationState": "scope_declaration_not_professional_proof",
+        "machine": {
+          "checks": [
+            {
+              "predicateId": "independently_pinned_module_and_factor_identity",
+              "reasonCodes": [],
+              "status": "verified"
+            },
+            {
+              "predicateId": "source_rights_and_redistribution",
+              "reasonCodes": [
+                "derived_facts_and_reports_license_do_not_grant_factor_or_background_rights"
+              ],
+              "status": "not_verified"
+            }
+          ],
+          "scope": "only_explicitly_named_source_bound_predicates_not_full_method_conformance",
+          "status": "not_verified"
+        },
+        "professional": {
+          "evidenceRefs": [],
+          "reasonCodes": [
+            "professional_judgment_not_verified_by_software_or_reference_presence"
+          ],
+          "status": "pending"
+        },
+        "requirementId": "PEF-20",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-original:identity",
+          "eu-2022-corrigendum:identity",
+          "eu-2026-interim:copyright page",
+          "jrc-ef31-update:copyright page",
+          "jrc-ef31-package:publicationAndOwnership"
+        ]
+      }
+    ],
+    "schemaVersion": "lca.study-method-assessment-facts.v1",
+    "scientificRankingQualified": false,
+    "studyId": "10000000-0000-4000-8000-000000000001"
+  },
+  "factsFile": "facts.synthetic.json",
+  "inputContext": {
+    "budget": {
+      "maxFactsBytes": 4194304,
+      "maxSelectedFactorRecords": 8192
+    },
+    "input": {
+      "assessment": {
+        "assessmentId": "10000000-0000-4000-8000-000000000104",
+        "config": {
+          "baselineRunId": "10000000-0000-4000-8000-000000000010",
+          "declarations": {
+            "categoryRule": {
+              "kind": "noneEstablished"
+            },
+            "productRole": "finishedCementIntermediate",
+            "referenceUnitBasis": "declaredMass",
+            "studyPhase": "finalStudy"
+          },
+          "evidenceRefs": [],
+          "moduleRef": {
+            "artifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+            "moduleId": "method.pef-2021-ef31",
+            "moduleVersion": "0.1.0",
+            "repository": "tiangong-lca/pcr",
+            "reviewBasisSha256": "989391423c7f31bdf77e18ea4438fab1a27ff6708c0f44ecad8ab8813763a165",
+            "sourceBindingsSha256": "3fd9b1dc68228db3e146b6d23daac853b27b9f504f9445a0cc5a971d53257ce2",
+            "sourceCommit": "51c0842c67b14ba886e2edee2846e26eefac030f"
+          },
+          "schemaVersion": "lca.study-method-assessment-config.v1"
+        },
+        "configHash": "0d350c9ed228d1bbf03f23712c9a7510366f32e6d8f4182c8df0408e4e569d76",
+        "execution": {
+          "jobId": "10000000-0000-4000-8000-000000000105",
+          "status": "running"
+        },
+        "profileId": "lca.study-method-pef-2021-ef31-cement-intermediate.v1",
+        "studyId": "10000000-0000-4000-8000-000000000001"
+      },
+      "baseline": {
+        "preparation": {
+          "calculationContractRef": {
+            "kind": "calculation_contract",
+            "schema": "lca.calculation-contract.v1",
+            "sha256": "40002f1de748504cd46c93cae91cc1b204907fadf1ac720f3528d240740e2e39"
+          },
+          "execution": {
+            "jobId": "10000000-0000-4000-8000-000000000110",
+            "status": "completed"
+          },
+          "inputArtifactRef": {
+            "byteSize": 3751,
+            "contentHash": "d652f006e88c8bea3f8fc39e7623b4e8209f9896333907a425272003b5d420e7",
+            "digestScope": "artifact_bytes_sha256",
+            "id": "10000000-0000-4000-8000-000000000050",
+            "mediaType": "application/json",
+            "schemaVersion": "lca.study-prepared-input.v1",
+            "type": "modelInput"
+          },
+          "inputHash": "335605c9150326a3280afa09557bbce9fb814e34367e91bdd0ef9a333eea7964",
+          "methodRefs": [
+            {
+              "datasetType": "lciamethod",
+              "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+              "type": "datasetRevision",
+              "version": "01.00.000"
+            }
+          ],
+          "modelRef": {
+            "contentHash": "2d051c82202641178a4b3534eabbc3297a96e3b2eec3e0fb10a5112c58a54931",
+            "digestScope": "worker_prepared_model",
+            "modelRevisionId": "10000000-0000-4000-8000-000000000070",
+            "type": "modelRevision"
+          },
+          "preparationId": "10000000-0000-4000-8000-000000000040",
+          "profileId": "lca.study-explicit-v1",
+          "source": {
+            "contentHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "expectedRevision": 1,
+            "scenarioRevisionId": "10000000-0000-4000-8000-000000000030",
+            "type": "scenarioRevision"
+          },
+          "studyId": "10000000-0000-4000-8000-000000000001"
+        },
+        "preparedArtifact": {
+          "artifactRef": {
+            "byteSize": 3751,
+            "contentHash": "d652f006e88c8bea3f8fc39e7623b4e8209f9896333907a425272003b5d420e7",
+            "digestScope": "artifact_bytes_sha256",
+            "id": "10000000-0000-4000-8000-000000000050",
+            "mediaType": "application/json",
+            "schemaVersion": "lca.study-prepared-input.v1",
+            "type": "modelInput"
+          },
+          "storageBucket": "study-artifacts",
+          "storageObjectPath": "study/10000000-0000-4000-8000-000000000001/10000000-0000-4000-8000-000000000050/example.json",
+          "studyId": "10000000-0000-4000-8000-000000000001"
+        },
+        "resultArtifact": {
+          "artifactRef": {
+            "byteSize": 693,
+            "contentHash": "ffaf1b5f17e0d0d42db1223c9b0ddff857a8e53d516b959031398b89ae7e1df4",
+            "digestScope": "artifact_bytes_sha256",
+            "id": "10000000-0000-4000-8000-000000000060",
+            "mediaType": "application/json",
+            "schemaVersion": "lca.study-result.v1",
+            "type": "runResult"
+          },
+          "storageBucket": "study-artifacts",
+          "storageObjectPath": "study/10000000-0000-4000-8000-000000000001/10000000-0000-4000-8000-000000000060/example.json",
+          "studyId": "10000000-0000-4000-8000-000000000001"
+        },
+        "revision": {
+          "contentHash": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "definition": {
+            "assumptions": [],
+            "functionalUnit": {
+              "amount": "1",
+              "referenceFlowId": "product",
+              "unit": "kg"
+            },
+            "goal": "SYNTHETIC frozen-byte predicate fixture, not an industry case",
+            "methodRefs": [
+              {
+                "datasetType": "lciamethod",
+                "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+                "type": "datasetRevision",
+                "version": "01.00.000"
+              }
+            ],
+            "systemBoundary": "Declared synthetic source only"
+          },
+          "modelPreparationId": "10000000-0000-4000-8000-000000000003",
+          "modelRef": {
+            "contentHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "digestScope": "worker_prepared_model",
+            "modelRevisionId": "10000000-0000-4000-8000-000000000070",
+            "type": "modelRevision"
+          },
+          "parentRevisionId": null,
+          "revision": 2,
+          "revisionId": "10000000-0000-4000-8000-000000000002",
+          "status": "frozen",
+          "studyId": "10000000-0000-4000-8000-000000000001",
+          "validation": "passed"
+        },
+        "run": {
+          "calculationContractRef": {
+            "kind": "calculation_contract",
+            "schema": "lca.calculation-contract.v1",
+            "sha256": "40002f1de748504cd46c93cae91cc1b204907fadf1ac720f3528d240740e2e39"
+          },
+          "effectiveModelRef": {
+            "contentHash": "2d051c82202641178a4b3534eabbc3297a96e3b2eec3e0fb10a5112c58a54931",
+            "digestScope": "worker_prepared_model",
+            "modelRevisionId": "10000000-0000-4000-8000-000000000070",
+            "type": "modelRevision"
+          },
+          "engineId": "solver-worker",
+          "execution": {
+            "jobId": "10000000-0000-4000-8000-000000000090",
+            "status": "completed"
+          },
+          "inputHash": "335605c9150326a3280afa09557bbce9fb814e34367e91bdd0ef9a333eea7964",
+          "modelPreparationId": "10000000-0000-4000-8000-000000000040",
+          "profileId": "lca.study-explicit-v1",
+          "resultRef": {
+            "byteSize": 693,
+            "contentHash": "ffaf1b5f17e0d0d42db1223c9b0ddff857a8e53d516b959031398b89ae7e1df4",
+            "digestScope": "artifact_bytes_sha256",
+            "id": "10000000-0000-4000-8000-000000000060",
+            "mediaType": "application/json",
+            "schemaVersion": "lca.study-result.v1",
+            "type": "runResult"
+          },
+          "runId": "10000000-0000-4000-8000-000000000010",
+          "scenarioRevisionId": "10000000-0000-4000-8000-000000000030",
+          "studyId": "10000000-0000-4000-8000-000000000001",
+          "studyRevisionId": "10000000-0000-4000-8000-000000000002",
+          "validity": {
+            "checkedAt": "2026-11-03T00:00:00Z",
+            "reasonCodes": [],
+            "status": "current"
+          }
+        },
+        "scenario": {
+          "contentHash": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "effectiveModelRef": {
+            "contentHash": "2d051c82202641178a4b3534eabbc3297a96e3b2eec3e0fb10a5112c58a54931",
+            "digestScope": "worker_prepared_model",
+            "modelRevisionId": "10000000-0000-4000-8000-000000000070",
+            "type": "modelRevision"
+          },
+          "modelPreparationId": "10000000-0000-4000-8000-000000000040",
+          "overrides": [],
+          "parentScenarioRevisionId": null,
+          "revision": 2,
+          "scenarioId": "10000000-0000-4000-8000-000000000100",
+          "scenarioRevisionId": "10000000-0000-4000-8000-000000000030",
+          "status": "frozen",
+          "studyId": "10000000-0000-4000-8000-000000000001",
+          "studyRevisionId": "10000000-0000-4000-8000-000000000002"
+        }
+      },
+      "schemaVersion": "lca.study-method-assessment-input.v1",
+      "sourceArtifact": {
+        "artifactRef": {
+          "byteSize": 4647,
+          "contentHash": "d91b5c2e9c4545dfcb8949ce345f1f9d284dd8bd5d02a43f9039e16f9fa702e8",
+          "digestScope": "artifact_bytes_sha256",
+          "id": "10000000-0000-4000-8000-000000000080",
+          "mediaType": "application/json",
+          "schemaVersion": "lca.study-source-snapshot.v1",
+          "type": "modelSource"
+        },
+        "storageBucket": "study-artifacts",
+        "storageObjectPath": "study/10000000-0000-4000-8000-000000000001/10000000-0000-4000-8000-000000000080/source.json",
+        "studyId": "10000000-0000-4000-8000-000000000001"
+      },
+      "sourceSnapshot": {
+        "digestScope": "artifact_bytes_sha256",
+        "issuerId": "synthetic-fixture-not-an-authorized-source-issuer",
+        "licenseRef": "synthetic-not-a-license",
+        "observedAt": "2026-11-04T00:00:00Z",
+        "originRef": {
+          "datasetType": "lifecyclemodel",
+          "id": "model",
+          "type": "datasetRevision",
+          "version": "01.00.000"
+        },
+        "snapshotId": "10000000-0000-4000-8000-000000000081",
+        "sourceArtifactRef": {
+          "byteSize": 4647,
+          "contentHash": "d91b5c2e9c4545dfcb8949ce345f1f9d284dd8bd5d02a43f9039e16f9fa702e8",
+          "digestScope": "artifact_bytes_sha256",
+          "id": "10000000-0000-4000-8000-000000000080",
+          "mediaType": "application/json",
+          "schemaVersion": "lca.study-source-snapshot.v1",
+          "type": "modelSource"
+        },
+        "studyId": "10000000-0000-4000-8000-000000000001"
+      }
+    },
+    "schemaVersion": "lca.study-method-job-context.v1"
+  },
+  "jobKind": "study.method_assessment",
+  "payload": {
+    "assessmentId": "10000000-0000-4000-8000-000000000104",
+    "schemaVersion": "study.method_assessment.request.v1",
+    "studyId": "10000000-0000-4000-8000-000000000001"
+  },
+  "record": {
+    "assessmentId": "10000000-0000-4000-8000-000000000104",
+    "config": {
+      "baselineRunId": "10000000-0000-4000-8000-000000000010",
+      "declarations": {
+        "categoryRule": {
+          "kind": "noneEstablished"
+        },
+        "productRole": "finishedCementIntermediate",
+        "referenceUnitBasis": "declaredMass",
+        "studyPhase": "finalStudy"
+      },
+      "evidenceRefs": [],
+      "moduleRef": {
+        "artifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+        "moduleId": "method.pef-2021-ef31",
+        "moduleVersion": "0.1.0",
+        "repository": "tiangong-lca/pcr",
+        "reviewBasisSha256": "989391423c7f31bdf77e18ea4438fab1a27ff6708c0f44ecad8ab8813763a165",
+        "sourceBindingsSha256": "3fd9b1dc68228db3e146b6d23daac853b27b9f504f9445a0cc5a971d53257ce2",
+        "sourceCommit": "51c0842c67b14ba886e2edee2846e26eefac030f"
+      },
+      "schemaVersion": "lca.study-method-assessment-config.v1"
+    },
+    "configHash": "0d350c9ed228d1bbf03f23712c9a7510366f32e6d8f4182c8df0408e4e569d76",
+    "execution": {
+      "jobId": "10000000-0000-4000-8000-000000000105",
+      "status": "completed"
+    },
+    "factsRef": {
+      "byteSize": 129906,
+      "contentHash": "f779f432bcf1cf1d256352b4c5b9454dd84bbb2e69773591759c18fd96c4d039",
+      "digestScope": "artifact_bytes_sha256",
+      "id": "10000000-0000-4000-8000-000000000090",
+      "mediaType": "application/json",
+      "schemaVersion": "lca.study-method-assessment-facts.v1",
+      "type": "methodAssessmentFacts"
+    },
+    "profileId": "lca.study-method-pef-2021-ef31-cement-intermediate.v1",
+    "studyId": "10000000-0000-4000-8000-000000000001"
+  },
+  "schemaVersion": "lca.study-method-service-fixture.v1",
+  "serviceFunctions": [
+    {
+      "arguments": [
+        "p_assessment_id",
+        "p_job_id",
+        "p_lease_token"
+      ],
+      "name": "svc_study_method_assessment_read_input_v1"
+    },
+    {
+      "arguments": [
+        "p_assessment_id",
+        "p_job_id",
+        "p_lease_token",
+        "p_completion",
+        "p_idempotency_key"
+      ],
+      "name": "svc_study_method_assessment_complete_v1"
+    },
+    {
+      "arguments": [
+        "p_resource_type",
+        "p_resource_id",
+        "p_job_id",
+        "p_lease_token",
+        "p_error_code",
+        "p_idempotency_key"
+      ],
+      "name": "svc_study_method_assessment_fail_v1"
+    },
+    {
+      "arguments": [
+        "p_resource_type",
+        "p_resource_id",
+        "p_job_id",
+        "p_lease_token",
+        "p_idempotency_key",
+        "p_artifact_id"
+      ],
+      "name": "svc_study_method_assessment_reconcile_v1"
+    }
+  ]
+}

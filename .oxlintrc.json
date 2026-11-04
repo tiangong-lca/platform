@@ -32,7 +32,8 @@
     ".umi/",
     "mock/",
     "docker/",
-    "/vendor/study-contract/"
+    "/vendor/study-contract/",
+    "/src/standalone/studyReport/methodProtocol.mjs"
   ],
   "options": {
     "respectEslintDisableDirectives": true,

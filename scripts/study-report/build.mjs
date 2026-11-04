@@ -39,8 +39,44 @@ export function archiveFiles(files) {
   return archive;
 }
 
+/** Exact immutable Edge component; formatting and lint cannot rewrite its bytes. */
+export function checkMethodProtocol(
+  directory = path.join(root, 'src/standalone/studyReport'),
+  fixtureFile = path.join(root, 'tests/fixtures/study-report/view-v3.json'),
+) {
+  const manifestBytes = fs.readFileSync(path.join(directory, 'methodProtocol.manifest.json'));
+  if (digest(manifestBytes) !== 'c0c9e1de03016ad8a17538fd6c021be2a2a0bfdf3e08beb570009bf3cb55b24b')
+    throw new Error('Method protocol producer manifest mismatch');
+  const manifest = JSON.parse(manifestBytes);
+  const names = {
+    'index.mjs': 'methodProtocol.mjs',
+    'index.d.ts': 'methodProtocol.d.mts',
+    'summary.schema.json': 'methodProtocol.summary.schema.json',
+    'view3.schema.json': 'methodProtocol.view.schema.json',
+    'producer-fixture.json': 'methodProtocol.fixture.json',
+    'module-metadata.json': 'methodProtocol.module-metadata.json',
+    'LICENSE.zod': 'LICENSE.zod',
+    'LICENSE.renderer': 'LICENSE.methodProtocol',
+    'package.json': 'methodProtocol.package.json',
+  };
+  for (const file of manifest.files) {
+    const bytes = fs.readFileSync(path.join(directory, names[file.path]));
+    if (bytes.length !== file.byteSize || digest(bytes) !== file.sha256)
+      throw new Error('Method protocol producer file mismatch');
+  }
+  const producer = JSON.parse(
+    fs.readFileSync(path.join(directory, 'methodProtocol.fixture.json'), 'utf8'),
+  );
+  if (
+    JSON.stringify(producer.view) !==
+    JSON.stringify(JSON.parse(fs.readFileSync(fixtureFile, 'utf8')))
+  )
+    throw new Error('Method protocol fixture mismatch');
+}
+
 export async function buildRenderer({ release = false } = {}) {
   await checkDocumentLanguage();
+  checkMethodProtocol();
   const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], {
     cwd: root,
     encoding: 'utf8',
@@ -61,12 +97,25 @@ export async function buildRenderer({ release = false } = {}) {
     { cwd: root, stdio: 'inherit' },
   );
   const dir = path.join(output, 'package');
+  for (const name of [
+    'methodProtocol.mjs',
+    'methodProtocol.d.mts',
+    'methodProtocol.manifest.json',
+    'methodProtocol.summary.schema.json',
+    'methodProtocol.view.schema.json',
+    'methodProtocol.fixture.json',
+    'methodProtocol.module-metadata.json',
+    'methodProtocol.package.json',
+    'LICENSE.methodProtocol',
+    'LICENSE.zod',
+  ])
+    fs.copyFileSync(path.join(root, 'src/standalone/studyReport', name), path.join(dir, name));
   fs.writeFileSync(
     path.join(dir, 'package.json'),
     JSON.stringify(
       {
         name: '@tiangong-lca/study-report-renderer',
-        version: '2.0.0',
+        version: '3.0.0',
         type: 'module',
         description: 'Dependency-free frozen LCA Study report view',
         license: 'MIT',
@@ -75,7 +124,18 @@ export async function buildRenderer({ release = false } = {}) {
           './view': { types: './viewModel.d.ts', import: './viewModel.js' },
           './manifest.json': './manifest.json',
         },
-        files: ['*.js', '*.d.ts', '*.css', 'manifest.json', 'README.md', 'LICENSE'],
+        files: [
+          '*.js',
+          '*.mjs',
+          '*.d.ts',
+          '*.d.mts',
+          '*.json',
+          '*.css',
+          'manifest.json',
+          'README.md',
+          'LICENSE',
+          'LICENSE.*',
+        ],
       },
       null,
       2,
@@ -119,7 +179,7 @@ export async function buildRenderer({ release = false } = {}) {
   };
   const manifestBytes = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
   fs.writeFileSync(path.join(dir, 'manifest.json'), manifestBytes);
-  const archiveName = 'study-report-renderer-2.0.0.tgz';
+  const archiveName = 'study-report-renderer-3.0.0.tgz';
   const archive = archiveFiles(
     [
       ...files.map((file) => [file.path, fs.readFileSync(path.join(dir, file.path))]),

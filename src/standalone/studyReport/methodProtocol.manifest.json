@@ -1,0 +1,296 @@
+{
+  "schemaVersion": "lca.study-method-summary-consumer-manifest.v1",
+  "sourceRepository": "tiangong-lca/edge-functions",
+  "sourceCommit": "f1a36ceee7d6efb9499e0edecfdd5278c27ab8e2",
+  "sourceStatus": "committed",
+  "componentVersion": "1.0.0",
+  "summarySchema": "lca.study-method-report-summary.v1",
+  "viewSchema": "lca.study-report-view.v3",
+  "rendererVersion": "3.0.0",
+  "classification": "pure schema/summary component and synthetic projection; not a renderer, authorization receipt, activation or scientific qualification",
+  "workerSourceCommit": "13a749e619d7ef348e9298bb049e8c01c60e9086",
+  "publicModule": {
+    "path": "contracts/lca-study/worker/method/module-metadata.json",
+    "sha256": "ac1b81a20d9e67f7e8807bcb86ff7cbb47a69772df5e093aa5cb445a43d2492b",
+    "rawPackageSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+    "rawPackageByteSize": 153035,
+    "payloadSha256": "407314bc364e5cfeddc8a44696118ee20cc696db5e9ef93812fd02516097a0a1",
+    "projectionSha256": "44059325552effddecf1a5d4acae3d1258996598cfabc2c1d6ef38c1be488c9e",
+    "sourceWorkerPath": "crates/solver-worker/src/study/method_assets/method.pef-2021-ef31.0.1.0.json",
+    "extractionScript": "scripts/build-study-method-module.mjs"
+  },
+  "toolchain": {
+    "node": "24.19.0",
+    "esbuild": "0.28.2",
+    "zod": "4.6.7"
+  },
+  "inputs": [
+    {
+      "path": "contracts/lca-study/v1/common.ts",
+      "sha256": "090112db560f28ac003c07073e893ab61ede08ae38c9922e4a80445a65d295a0",
+      "byteSize": 4253
+    },
+    {
+      "path": "contracts/lca-study/v1/pages.ts",
+      "sha256": "9d036d051b66f041ebd34c62ff2f7b3023b5c5def2286753f3912d1d2857c13c",
+      "byteSize": 2769
+    },
+    {
+      "path": "contracts/lca-study/v1/records.ts",
+      "sha256": "9fd835b9f53328f9530404e98cbc15bc3057efe6b57f59d86db0abe1323a1240",
+      "byteSize": 9066
+    },
+    {
+      "path": "contracts/lca-study/v2/common.ts",
+      "sha256": "2b1860e00c6af28dd2ee7431223274f77d961deb3404f6ae69d393fa1f91a6be",
+      "byteSize": 387
+    },
+    {
+      "path": "contracts/lca-study/v2/records.ts",
+      "sha256": "8d25b4b09a4323aa1f84954d87b89bafb2d88a24fd59ff426aa635cdfbfae97f",
+      "byteSize": 6115
+    },
+    {
+      "path": "contracts/lca-study/v2/requests.ts",
+      "sha256": "b6d0cf145895a73cc25627531baada2308f085f920f547befe3731ab3418df80",
+      "byteSize": 8699
+    },
+    {
+      "path": "contracts/lca-study/v2/responses.ts",
+      "sha256": "366a40467931e4846248bee108057d311ba491133abc0f66121ac009433a8890",
+      "byteSize": 3483
+    },
+    {
+      "path": "contracts/lca-study/v3/canonical.ts",
+      "sha256": "cf4092231dcbac7125a2fbfea08548cc71c796be35b3eb24528b2f096a6a972d",
+      "byteSize": 3586
+    },
+    {
+      "path": "contracts/lca-study/v3/export.ts",
+      "sha256": "c6a621441a245d89f28e9540952aab38c51d461cdee3457a744c8a3cd8509277",
+      "byteSize": 8997
+    },
+    {
+      "path": "contracts/lca-study/v3/report.ts",
+      "sha256": "f5deb28af59cc3322e2d45bed7f2c65f1371aeb809551a2257a5c219a819e679",
+      "byteSize": 9540
+    },
+    {
+      "path": "contracts/lca-study/v5/view.ts",
+      "sha256": "ffcacdabccc5334e29a15a915a572a28f49017c45c93ab8e85b52f5a1aa57ec6",
+      "byteSize": 4422
+    },
+    {
+      "path": "contracts/lca-study/v6/module_identity.ts",
+      "sha256": "87837937f2a284e506ce708d3d5fc7d201b6c2c6177deff7474fb40b8856f76b",
+      "byteSize": 469
+    },
+    {
+      "path": "contracts/lca-study/v6/owner_json.ts",
+      "sha256": "e5213827c4363f9f40aa25f148a8db987cd197b60fe8e002691c8d54ddb0c51b",
+      "byteSize": 7306
+    },
+    {
+      "path": "contracts/lca-study/v6/schemas.ts",
+      "sha256": "04a43b5b8bc9086abe1b77f156df2d5ef89e0e6fc65efbcb378215374597a489",
+      "byteSize": 12952
+    },
+    {
+      "path": "contracts/lca-study/v6/summary.ts",
+      "sha256": "561b69a04e1ce4fd38d0546e4d6dbc3c6a900e437680c3b494efee1955a6876d",
+      "byteSize": 4906
+    },
+    {
+      "path": "contracts/lca-study/v6/summary_portable.ts",
+      "sha256": "c82338ae081ba1b4e60f4f29a51fd60b1271eebb6e31b8d243c7a2747a47c958",
+      "byteSize": 277
+    },
+    {
+      "path": "contracts/lca-study/v6/view_schema.ts",
+      "sha256": "302812a6d2a1250a0caeb3958e4c5ca60d34d64496e3bfa917f8fa138bca65da",
+      "byteSize": 3502
+    },
+    {
+      "path": "contracts/lca-study/worker/method/manifest.json",
+      "sha256": "463eb124e2335492e55b500a0c931a0fcc692f876a223f1e384172d6076886b5",
+      "byteSize": 7393
+    },
+    {
+      "path": "contracts/lca-study/worker/method/module-metadata.json",
+      "sha256": "ac1b81a20d9e67f7e8807bcb86ff7cbb47a69772df5e093aa5cb445a43d2492b",
+      "byteSize": 23028
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-assessment-config.v1.schema.json",
+      "sha256": "8b7f1bf14c1904a24e869b07b8000435953091f649dc3ef1f021b0f764e06920",
+      "byteSize": 431
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-assessment-facts.v1.schema.json",
+      "sha256": "091a3f5462fce0758c24d0292672066eade2e28852b3ad8fa8c91816ee107e00",
+      "byteSize": 66795
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-assessment-input.v1.schema.json",
+      "sha256": "293b42a9dc38d1d331e23d7846703f910b8fcb9f9c723a9e9b0f02cb25ffa710",
+      "byteSize": 436
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-assessment-record.v1.schema.json",
+      "sha256": "c7228ce92614940716e1ebbc507a8d499d80e55a0ead9d33cdbc285359960e9c",
+      "byteSize": 8398
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-candidate-input.v1.schema.json",
+      "sha256": "e5fe66d2a75f4c8ed05e3fb20dbdeb0fe04f16f13e5fedb57f832b85530dfd1f",
+      "byteSize": 437
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-completion.v1.schema.json",
+      "sha256": "ee4d3c8251a42cd24305eaf6343e08b4aee709b95fa5da289b2b19be2a4d245e",
+      "byteSize": 2235
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-evidence-record.v1.schema.json",
+      "sha256": "d04e745179b3c4a31d67b87ce4cdb6f43457487e25bc54f35a8ad71694a38fac",
+      "byteSize": 2542
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-evidence.v1.schema.json",
+      "sha256": "babefe8d4bedaaf0ecbbc865b59178a62e57825a753b657e7979a2e60d7451b6",
+      "byteSize": 3554
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-fact-catalog-entry.v1.schema.json",
+      "sha256": "09fdfc369ff79639ec4305f0d99664d3c72d33c04f007e249ee2fe55c366eeee",
+      "byteSize": 10896
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-failure-request.v1.schema.json",
+      "sha256": "5cbac70704b22e3c996a4f5109f51ddd1bdbbdc363be8708b01a2f4769869d82",
+      "byteSize": 1763
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-job-context.v1.schema.json",
+      "sha256": "fd046103b342ce35e293db42b6c316756352c2b0abe4e13731f12b5d62cfc444",
+      "byteSize": 12699
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-job-request.v1.schema.json",
+      "sha256": "007ed2c157018aab138b57d9ef58a2ba22ce25a1ac5c813beb83b7c3a0d13a9f",
+      "byteSize": 924
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-reconcile-request.v1.schema.json",
+      "sha256": "5053885d6ba2277ff17a60232728b0997f9c0cf3bd1b28477a7f4b200a7b7d80",
+      "byteSize": 1583
+    },
+    {
+      "path": "contracts/lca-study/worker/method/study-method-reconcile-result.v1.schema.json",
+      "sha256": "877c93478a09f3bba1c5709c808c19ef921bd19406d673c80fd40b8017d49550",
+      "byteSize": 9573
+    },
+    {
+      "path": "package.json",
+      "sha256": "f6e98f39cebe4fb8dd533a336ad3b21253cb33f5ed8c6cd5f446bdd6da8c8709",
+      "byteSize": 1741
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "717a7b64518caf3e642351f4d058b72fa6974de2c929bbe9a5e3e94dd4d3545e",
+      "byteSize": 14532
+    },
+    {
+      "path": "scripts/build-study-contract.mjs",
+      "sha256": "2bd1f880aee2ed4fb8a9f6306a7f436ab77716e29d76956112634582e3ebce91",
+      "byteSize": 13035
+    },
+    {
+      "path": "scripts/build-study-method-module.mjs",
+      "sha256": "a1128451ea43a1f0b135c3720f709c3eff47fc950f1b7331c26daebe454675c8",
+      "byteSize": 5325
+    },
+    {
+      "path": "scripts/build-study-method-summary.mjs",
+      "sha256": "6eeb20e49543176044bd220fb3430445d04e3601221ca88ba77c2ddc339fcdc1",
+      "byteSize": 13836
+    },
+    {
+      "path": "supabase/functions/_shared/study/vendor/renderer-v2/LICENSE",
+      "sha256": "e3ed13005802307e1abf6f641f8720612b8682c3759294f4d394f05a541c0c74",
+      "byteSize": 1063
+    },
+    {
+      "path": "supabase/functions/_shared/study/vendor/renderer-v2/viewModel.js",
+      "sha256": "ff8b7222bb350db58a51285be865d2ae19232cd6a9f359bed7fe975a4165fcf3",
+      "byteSize": 13140
+    },
+    {
+      "path": "supabase/functions/deno.json",
+      "sha256": "cb6701c32d015c6907a001b8fe3172c6ee9c991b528e1a267275ae3d236cccb7",
+      "byteSize": 664
+    },
+    {
+      "path": "test/fixtures/lca-study-v6/arithmetic.native.json",
+      "sha256": "7ebe5fa613242a9520085a62557fdd199130377541ca515946667e544b077540",
+      "byteSize": 25823
+    },
+    {
+      "path": "test/fixtures/lca-study-v6/facts.synthetic.json",
+      "sha256": "f779f432bcf1cf1d256352b4c5b9454dd84bbb2e69773591759c18fd96c4d039",
+      "byteSize": 129906
+    },
+    {
+      "path": "test/fixtures/lca-study-v6/worker-service-seams.json",
+      "sha256": "186d4b406aa27fb4e9f290d02f5dc7aeca041824597214e416473bfc7d008d48",
+      "byteSize": 190828
+    }
+  ],
+  "files": [
+    {
+      "path": "index.mjs",
+      "sha256": "a260f7586e613e440343f176a4925f319831ba4ecb087788509311e29481d5a1",
+      "byteSize": 896306
+    },
+    {
+      "path": "index.d.ts",
+      "sha256": "0d8635f9828550fec568e133ccfdec07791e6d1a7ec5b02e96e5ee98962162c2",
+      "byteSize": 22790
+    },
+    {
+      "path": "summary.schema.json",
+      "sha256": "17fe50424612cf6c2a53fbbd98c37df389bbc4ab67182a18d90b68eaecc0e1f8",
+      "byteSize": 60005
+    },
+    {
+      "path": "view3.schema.json",
+      "sha256": "c55f9cb95bb287a1026b42c49735902e6811cc960f2dab349b500b75433f87f9",
+      "byteSize": 94547
+    },
+    {
+      "path": "producer-fixture.json",
+      "sha256": "4a522d5eca21900c167ace2e76f3ed210aa9bb68989e1fc8b9e5c88959719817",
+      "byteSize": 556929
+    },
+    {
+      "path": "module-metadata.json",
+      "sha256": "ac1b81a20d9e67f7e8807bcb86ff7cbb47a69772df5e093aa5cb445a43d2492b",
+      "byteSize": 23028
+    },
+    {
+      "path": "LICENSE.zod",
+      "sha256": "3f1189b28e3866e0d979968d466b78f813f76827cfdca1fbb124cc0a5c8841f8",
+      "byteSize": 1072
+    },
+    {
+      "path": "LICENSE.renderer",
+      "sha256": "e3ed13005802307e1abf6f641f8720612b8682c3759294f4d394f05a541c0c74",
+      "byteSize": 1063
+    },
+    {
+      "path": "package.json",
+      "sha256": "58afd2e0e12dd79e947d908c9130421ac683045449307bce875791d1197efb0f",
+      "byteSize": 483
+    }
+  ]
+}

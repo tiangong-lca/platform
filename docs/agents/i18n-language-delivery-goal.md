@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: '2026-11-04'
-lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
-lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 29d4d9d036b26c610f0d6991ddb82f73a2de48e1
+lastReviewedNote: 'Platform #1442: reviewed method view3/renderer3 mandatory20/25/58 disclosure, exact Edge f1a36cee validator/module metadata and retained44da renderer2 bytes. This is source/document review; independent review, V6 client/runtime, full gates and release/root delivery remain separate. Existing branch/auth/dependency/gate and locale authority remain unchanged; the third-party validation locale map has one exact audit contract.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

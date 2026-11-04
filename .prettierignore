@@ -24,3 +24,14 @@ docs/plans/i18n-de-DE/review-log.yaml
 
 # Exact Edge-owned artifacts; provenance tests enforce original bytes.
 vendor/study-contract/
+
+# Exact retained renderer packages; provenance proof protects bytes.
+vendor/study-renderer/
+
+# Contained immutable Edge summary/view validator and its producer metadata.
+/src/standalone/studyReport/methodProtocol*
+/tests/fixtures/study-report/view-v3.json
+
+# Exact synthetic owner bytes used by the V6 reader integrity proof.
+/tests/fixtures/study-method/facts.json
+/tests/fixtures/study-method/worker.json

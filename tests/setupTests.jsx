@@ -4,6 +4,13 @@ import { webcrypto } from 'node:crypto';
 import { ReadableStream, TransformStream, WritableStream } from 'node:stream/web';
 import React from 'react';
 import { TextDecoder, TextEncoder } from 'util';
+import { deserialize, serialize } from 'node:v8';
+
+// jsdom omits structuredClone; this test-only bridge clones the JSON schema data
+// using Node's native structured serializer. Real browser proof uses its native API.
+if (typeof global.structuredClone === 'undefined') {
+  global.structuredClone = (value) => deserialize(serialize(value));
+}
 
 if (typeof global.React === 'undefined') {
   global.React = React;

@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "e6bef0350083472fb726fad14ebe65189b2117e90ee03d9e42d45578a1f54945",
+    "auditedInputDigest": "3ac5fdef24f8a46d40f0c602b4e0d0c6fc6f6db6129bb737024200928f34b3ea",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -69,12 +69,12 @@
   "summary": {
     "localeCount": 4,
     "localeLeafModuleCounts": { "en-US": 32, "zh-CN": 32, "de-DE": 32, "fr-FR": 32 },
-    "localeUniqueKeyCounts": { "en-US": 3750, "zh-CN": 3750, "de-DE": 3750, "fr-FR": 3750 },
-    "canonicalCandidateKeyCount": 3750,
+    "localeUniqueKeyCounts": { "en-US": 3807, "zh-CN": 3807, "de-DE": 3807, "fr-FR": 3807 },
+    "canonicalCandidateKeyCount": 3807,
     "activeStaticKeyCount": 2435,
     "activeDynamicKeyCount": 416,
-    "reservedKeyCount": 899,
-    "productionSourceFileCount": 543,
+    "reservedKeyCount": 956,
+    "productionSourceFileCount": 552,
     "literalReferenceCount": 4474,
     "dynamicCallsiteCount": 39,
     "dynamicCallsiteSummaryCount": 39,
@@ -268304,6 +268304,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.addCitation",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Add citation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 117,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "添加引用",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 117,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Quellenangabe hinzufügen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 117,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Ajouter une citation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 117,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.addSection",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Add narrative section",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 147,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "添加叙述章节",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 147,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Textabschnitt hinzufügen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 147,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Ajouter une section de texte",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 147,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.amount",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -268422,6 +268540,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.applicabilityRecord",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Applicability record",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 104,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "适用性记录",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 104,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Anwendbarkeitsbeleg",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 104,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Déclaration d’applicabilité",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 104,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.approve",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -268472,6 +268649,124 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 59,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.assessmentId",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Assessment ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 120,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "评估 ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 120,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Bewertungs-ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 120,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Identifiant de l’évaluation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 120,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.baselineRun",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Exact baseline Run ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 124,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "确切基准运行 ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 124,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Exakte ID des Basislaufs",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 124,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Identifiant exact de l’exécution de référence",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 124,
             "column": 3,
             "module": "pages_study"
           }
@@ -268590,6 +268885,360 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 79,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.cancelAssessment",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Cancel assessment task",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 123,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "取消评估任务",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 123,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Bewertungsaufgabe abbrechen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 123,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Annuler la tâche d’évaluation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 123,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.cancelReason",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Cancellation reason",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 122,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "取消原因",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 122,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Abbruchgrund",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 122,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Motif d’annulation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 122,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.categoryRoles",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "All category roles",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 142,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "全部类别角色",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 142,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Alle Kategorierollen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 142,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Tous les rôles de catégorie",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 142,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.categoryRule",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Declared category rule",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 128,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "声明的类别规则",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 128,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Deklarierte Kategorieregel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 128,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Règle de catégorie déclarée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 128,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.citationKind",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Citation type",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 108,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "引用类型",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 108,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Quellenart",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 108,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Type de citation",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 108,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.claimSelectionNote",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Select exact supplied facts for authored claims. Values and units are copied without calculation. Unknown remains unknown.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 144,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "为报告声明选择确切提供的事实。数值及单位直接复制，不进行计算。未知保持未知。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 144,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Exakte gelieferte Fakten für Berichtsaussagen wählen. Werte und Einheiten werden ohne Berechnung übernommen. Unbekannt bleibt unbekannt.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 144,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Sélectionnez les faits fournis exacts pour les affirmations rédigées. Valeurs et unités sont copiées sans calcul. Les inconnues restent inconnues.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 144,
             "column": 3,
             "module": "pages_study"
           }
@@ -268776,6 +269425,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.commissionDeveloped",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Commission-developed rule declared",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 130,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "声明欧盟委员会制定的规则",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 130,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Von der Kommission entwickelte Regel deklariert",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 130,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Règle élaborée par la Commission déclarée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 130,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.comparability",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -268826,6 +269534,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 50,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.contentHash",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Source SHA-256, if known",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 116,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "来源 SHA-256（如已知）",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 116,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Quellen-SHA-256, falls bekannt",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 116,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "SHA-256 de la source, si connu",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 116,
             "column": 3,
             "module": "pages_study"
           }
@@ -268953,6 +269720,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.createMethodReport",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Create method report draft",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 150,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "创建方法报告草稿",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 150,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Methodenbericht als Entwurf erstellen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 150,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Créer le brouillon du rapport méthodologique",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 150,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.createSuccessor",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Create a new successor; keep this frozen report",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 148,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "创建新的后继版本；保留此冻结报告",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 148,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Neue Folgeversion erstellen; eingefrorenen Bericht behalten",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 148,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Créer une nouvelle version ; conserver ce rapport figé",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 148,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.current",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -269003,6 +269888,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 28,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.datasetRevision",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Dataset revision",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 110,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "数据集修订",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 110,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Datensatzrevision",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 110,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Révision du jeu de données",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 110,
             "column": 3,
             "module": "pages_study"
           }
@@ -269180,6 +270124,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 76,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.document",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Document",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 111,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "文档",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 111,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Dokument",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 111,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Document",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 111,
             "column": 3,
             "module": "pages_study"
           }
@@ -269416,6 +270419,183 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 16,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.evidenceId",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Evidence ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 99,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "证据 ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 99,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Nachweis-ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 99,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Identifiant de preuve",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 99,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.evidenceKind",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Declared evidence type",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 102,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "声明的证据类型",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 102,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Deklarierte Nachweisart",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 102,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Type de preuve déclaré",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 102,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.evidenceTitle",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Evidence title",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 106,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "证据标题",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 106,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Nachweistitel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 106,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Titre de la preuve",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 106,
             "column": 3,
             "module": "pages_study"
           }
@@ -269720,6 +270900,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.finalStudy",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Final study",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 127,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "最终研究",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 127,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Abschließende Studie",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 127,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Étude finale",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 127,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.finalize",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -269829,6 +271068,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 39,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.freezeMethodReport",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Freeze saved report revision",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 151,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "冻结已保存的报告修订",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 151,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Gespeicherte Berichtsrevision einfrieren",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 151,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Figer la révision enregistrée du rapport",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 151,
             "column": 3,
             "module": "pages_study"
           }
@@ -270133,6 +271431,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.identity",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Source identity",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 113,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "来源标识",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 113,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Quellenkennung",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 113,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Identité de la source",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 113,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.immutable",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -270310,7 +271667,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Study/Report.tsx",
-          "line": 530,
+          "line": 535,
           "column": 9,
           "symbol": "StudyReportPage",
           "defaultMessage": null,
@@ -270447,6 +271804,183 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.locator",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Source location or section",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 115,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "来源位置或章节",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 115,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Fundstelle oder Abschnitt",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 115,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Emplacement ou section de la source",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 115,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.machineState",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Machine state",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 140,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "机器状态",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 140,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Maschineller Status",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 140,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "État machine",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 140,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.mandatoryMethodNote",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "The report always discloses all 20 requirements, 25 category roles and 58 supplied facts. Narrative and claim choices cannot hide mandatory evidence. The complete selected-factor list stays in its authorized facts artifact.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 138,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "报告始终披露全部 20 项要求、25 个类别角色和 58 项提供的事实。叙述及声明选择不能隐藏强制证据。完整的所选因子列表保留在其授权事实文件中。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 138,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Der Bericht legt stets alle 20 Anforderungen, 25 Kategorierollen und 58 gelieferten Fakten offen. Text und Auswahl können verpflichtende Nachweise nicht ausblenden. Die vollständige Liste gewählter Faktoren verbleibt im autorisierten Faktenartefakt.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 138,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Le rapport présente toujours les 20 exigences, 25 rôles de catégorie et 58 faits fournis. Le texte et la sélection ne peuvent masquer les preuves obligatoires. La liste complète des facteurs sélectionnés reste dans son artefact de faits autorisé.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 138,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.member",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -270497,6 +272031,419 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 52,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodAssessment",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Method assessment",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 119,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "方法评估",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 119,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Methodenbewertung",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 119,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Évaluation méthodologique",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 119,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodDeclarationNote",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "This profile declares finished cement as an intermediate product on a declared mass basis. Declarations do not establish applicability or conformity.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 133,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "此配置将成品水泥声明为以声明质量为基础的中间产品。声明不能确立适用性或符合性。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 133,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Dieses Profil deklariert fertigen Zement als Zwischenprodukt auf deklarierter Massenbasis. Deklarationen belegen weder Anwendbarkeit noch Konformität.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 133,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Ce profil déclare le ciment fini comme produit intermédiaire sur une base de masse déclarée. Ces déclarations ne prouvent ni l’applicabilité ni la conformité.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 133,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodEvidence",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Recorded method evidence",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 97,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "已记录的方法证据",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 97,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Erfasste Methodennachweise",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 97,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Éléments de preuve méthodologiques enregistrés",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 97,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodEvidenceNote",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Records and citations remain unverified. Recording professional evidence does not grant professional approval.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 98,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "记录及引用仍未经验证。记录专业证据不代表专业批准。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 98,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Erfasste Angaben und Quellen bleiben ungeprüft. Die Erfassung fachlicher Nachweise erteilt keine fachliche Freigabe.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 98,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Les déclarations et citations restent non vérifiées. Enregistrer un élément professionnel ne constitue pas une approbation professionnelle.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 98,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodQualificationNote",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Machine checks, source evidence, software qualification, internal review and professional approval are separate states. Missing factors and unavailable normalisation or weighting remain explicit; this workflow grants no scientific ranking or complete PEF claim.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 135,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "机器检查、来源证据、软件验证、内部审查与专业批准是不同状态。缺失因子及不可用的归一化或加权保持明确；此流程不授予科学排名或完整 PEF 声明。",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 135,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Maschinelle Prüfungen, Quellennachweise, Softwarequalifizierung, interne Prüfung und fachliche Freigabe sind getrennte Zustände. Fehlende Faktoren sowie nicht verfügbare Normalisierung oder Gewichtung bleiben ausdrücklich sichtbar; dieser Ablauf begründet weder wissenschaftliche Rangfolgen noch vollständige PEF-Konformität.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 135,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Les contrôles machine, les sources, la qualification logicielle, la revue interne et l’approbation professionnelle sont distincts. Les facteurs manquants et la normalisation ou pondération indisponible restent explicites ; ce processus ne permet ni classement scientifique ni déclaration PEF complète.",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 135,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodReport",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Exact method report authoring",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 136,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "确切方法报告编写",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 136,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Erstellung eines exakten Methodenberichts",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 136,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Rédaction du rapport méthodologique exact",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 136,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.methodWorkspace",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Method assessments and reports",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 95,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "方法评估与报告",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 95,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Methodenbewertungen und Berichte",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 95,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Évaluations méthodologiques et rapports",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 95,
             "column": 3,
             "module": "pages_study"
           }
@@ -270624,6 +272571,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.narrative",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Authored narrative",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 146,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "编写的叙述",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 146,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Verfasster Text",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 146,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Texte rédigé",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 146,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.newMethodReport",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Use selected assessment for a new report",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 137,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "使用所选评估创建新报告",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 137,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Gewählte Bewertung für neuen Bericht verwenden",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 137,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Utiliser l’évaluation sélectionnée pour un nouveau rapport",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 137,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.next",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -270742,6 +272807,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.noneEstablished",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "No established category rule declared",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 129,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "未声明已确立的类别规则",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 129,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Keine etablierte Kategorieregel deklariert",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 129,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Aucune règle de catégorie établie déclarée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 129,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.normativeSource",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Normative source",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 109,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "规范性来源",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 109,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Normative Quelle",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 109,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Source normative",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 109,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.open",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -270851,6 +273034,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 82,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.otherDeclaredSource",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Other declared source",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 112,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "其他声明的来源",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 112,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Andere deklarierte Quelle",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 112,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Autre source déclarée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 112,
             "column": 3,
             "module": "pages_study"
           }
@@ -271273,6 +273515,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.professionalRecord",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Professional record",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 105,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "专业记录",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 105,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Fachlicher Nachweis",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 105,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Déclaration professionnelle",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 105,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.professionalState",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Professional state",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 141,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "专业状态",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 141,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Fachlicher Status",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 141,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "État professionnel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 141,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.profile",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -271441,6 +273801,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 44,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.readMethodFacts",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Read exact method facts",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 121,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "读取确切方法事实",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 121,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Exakte Methodenfakten lesen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 121,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Lire les faits méthodologiques exacts",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 121,
             "column": 3,
             "module": "pages_study"
           }
@@ -271686,6 +274105,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.recordEvidence",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Record unverified evidence",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 118,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "记录未验证证据",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 118,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Ungeprüften Nachweis erfassen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 118,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Enregistrer une preuve non vérifiée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 118,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.recoveryIntent",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -271922,6 +274400,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.reportFamily",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Report family",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 96,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "报告系列",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 96,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Berichtsreihe",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 96,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Famille de rapports",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 96,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.reportHash",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -272040,6 +274577,65 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.reportTitle",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Report title",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 143,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "报告标题",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 143,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Berichtstitel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 143,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Titre du rapport",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 143,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.reports",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -272090,6 +274686,183 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 11,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.requestAssessment",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Request method assessment",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 134,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "请求方法评估",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 134,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Methodenbewertung anfordern",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 134,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Demander une évaluation méthodologique",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 134,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.requirement",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Requirement",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 101,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "要求",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 101,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Anforderung",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 101,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Exigence",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 101,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.requirements",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "All method requirements",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 139,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "全部方法要求",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 139,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Alle Methodenanforderungen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 139,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Toutes les exigences méthodologiques",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 139,
             "column": 3,
             "module": "pages_study"
           }
@@ -272689,6 +275462,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.ruleEvidence",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Exact category-rule evidence ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 132,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "确切类别规则证据 ID",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 132,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Exakte Nachweis-ID der Kategorieregel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 132,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Identifiant exact de la preuve de règle de catégorie",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 132,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.ruleReference",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Category rule reference",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 131,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "类别规则引用",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 131,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Referenz der Kategorieregel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 131,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Référence de la règle de catégorie",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 131,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.run",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -272748,6 +275639,183 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.saveMethodReport",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Save exact draft revision",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 149,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "保存确切草稿修订",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 149,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Exakte Entwurfsrevision speichern",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 149,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Enregistrer la révision exacte du brouillon",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 149,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.screening",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Screening",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 126,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "筛查",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 126,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Screening",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 126,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Examen préliminaire",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 126,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.sectionTitle",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Section title",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 145,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "章节标题",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 145,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Abschnittstitel",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 145,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Titre de section",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 145,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.select",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -272798,6 +275866,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 91,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.selectEvidence",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Include this exact evidence",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 100,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "纳入此确切证据",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 100,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Genau diesen Nachweis einbeziehen",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 100,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Inclure cette preuve exacte",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 100,
             "column": 3,
             "module": "pages_study"
           }
@@ -273161,6 +276288,124 @@
       "defaultMessages": []
     },
     {
+      "id": "pages.study.sourceRecord",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Source record",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 103,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "来源记录",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 103,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Quellenbeleg",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 103,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Déclaration de source",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 103,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.statement",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Recorded statement",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 107,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "记录的陈述",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 107,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Erfasste Aussage",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 107,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Déclaration enregistrée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 107,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "pages.study.status",
       "category": "active-dynamic",
       "dynamicFamilies": ["studyWorkbench"],
@@ -273211,6 +276456,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 20,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.studyPhase",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Declared study phase",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 125,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "声明的研究阶段",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 125,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Deklarierte Studienphase",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 125,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Phase d’étude déclarée",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 125,
             "column": 3,
             "module": "pages_study"
           }
@@ -273515,7 +276819,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Study/index.tsx",
-          "line": 63,
+          "line": 65,
           "column": 16,
           "symbol": "StudyList",
           "defaultMessage": null,
@@ -273693,6 +276997,65 @@
           "source": {
             "path": "src/locales/fr-FR/pages_study.ts",
             "line": 46,
+            "column": 3,
+            "module": "pages_study"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "pages.study.version",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["pages_study"],
+        "zh-CN": ["pages_study"],
+        "de-DE": ["pages_study"],
+        "fr-FR": ["pages_study"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/en-US/pages_study.ts",
+            "line": 114,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "zh-CN": {
+          "value": "版本",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/zh-CN/pages_study.ts",
+            "line": 114,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "de-DE": {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/de-DE/pages_study.ts",
+            "line": 114,
+            "column": 3,
+            "module": "pages_study"
+          }
+        },
+        "fr-FR": {
+          "value": "Version",
+          "argumentSignature": [],
+          "placeholders": [],
+          "source": {
+            "path": "src/locales/fr-FR/pages_study.ts",
+            "line": 114,
             "column": 3,
             "module": "pages_study"
           }
