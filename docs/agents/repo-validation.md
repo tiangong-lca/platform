@@ -48,7 +48,7 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: '2026-11-04'
-lastReviewedCommit: '44da4e489dde1f9bbc2ae5cce96912fc0860fa87'
+lastReviewedCommit: '3e14876b4d56cf1e2c0ae5e63868c897fd300e40'
 lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share links, contained Edge5.0.0 provenance, family-bound queries and original-schema journals, selected-client collaboration/download and unchanged project/auth fences. Old V4 links and intents remain; actual runtime qualification and Main/root delivery are separate.'
 related:
   - ../AGENTS.md
@@ -154,6 +154,8 @@ The independent `.github/workflows/i18n-semantic-e2e.yml` workflow is a credenti
 - every invocation uses no production credentials, permits no production writes, and runs the complete hermetic semantic qualification
 - select an open business PR branch or exact SHA before `release:to-dev` when its change risk warrants browser evidence; a failure is fixed and rerun on that same PR
 - it always executes the content-addressed qualification's prebuilt candidate, closed simulator, complete Chromium matrix, and Firefox/WebKit critical scenarios; it is not a required release check and no release stage consumes its proof
+
+The closed semantic simulator handles the Study landing page only through an owner-codec-validated V2 `study.list` first page (`cursor:null`, `limit:25`) with an empty result. It validates the exact synthetic origin, path, query and publishable key, denies unauthenticated personas, and rejects all other Study requests. This fixture does not widen the production request guard or qualify real Study data/authorization; actual authenticated Study acceptance has its separate workspace evidence.
 
 The separate full authenticated closure is local-operator-only. It requires explicit user authorization, runtime credentials, the local candidate, `E2E_BACKEND_TARGET=production`, and `E2E_AUTHENTICATED=true`. Before Docker execution, the host controller rejects production-data mode whenever `CI` or `GITHUB_ACTIONS` is set. Only after that local check passes does it override the release image's inherited CI markers to empty inside the container; the container's safety check remains unchanged. Its two production-write guards are `E2E_ALLOW_PRODUCTION_DATA=true` and `E2E_PRODUCTION_WRITE_CONFIRMATION=I_AUTHORIZE_ONE_CODEX_E2E_PRODUCTION_PROCESS`; writing verified external evidence separately opts in with `E2E_WRITE_VERIFIED_EVIDENCE=true`. Semantic E2E GitHub Actions is never a transport for these credentials, flags, or writes.
 
