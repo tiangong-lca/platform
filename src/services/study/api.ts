@@ -18,10 +18,15 @@ import { supabase } from '@/services/supabase';
 import * as v2 from '../../../vendor/study-contract/v2/index.mjs';
 import * as v3 from '../../../vendor/study-contract/v3/index.mjs';
 import * as v4 from '../../../vendor/study-contract/v4/index.mjs';
+import * as v5 from '../../../vendor/study-contract/v5/index.mjs';
+import { reportWorkflow, type ReportApi } from './links';
 
 export type CoreData = Extract<v2.StudyApiResponse, { ok: true }>['data'];
 export type AnalysisData = Extract<v3.StudyApiResponse, { ok: true }>['data'];
-export type ReviewData = Extract<v4.StudyApiResponse, { ok: true }>['data'];
+type LegacyReviewData = Extract<v4.StudyApiResponse, { ok: true }>['data'];
+type AdvancedData = Extract<v5.StudyApiResponse, { ok: true }>['data'];
+export type ReviewData =
+  LegacyReviewData | Extract<AdvancedData, { type: LegacyReviewData['type'] }>;
 export type CoreResource<K extends CoreData['type']> = Extract<CoreData, { type: K }>;
 export type ReviewResource<K extends ReviewData['type']> = Extract<ReviewData, { type: K }>;
 export type Study = CoreResource<'study'>['value'];
@@ -31,11 +36,14 @@ export type Preparation = CoreResource<'modelPreparation'>['value'];
 export type Run = CoreResource<'run'>['value'];
 export type ReportView = ReviewResource<'view'>;
 export type Actions = ReviewResource<'actions'>;
-export type Request = v2.StudyApiRequest | v3.StudyApiRequest | v4.StudyApiRequest;
+export type Request =
+  v2.StudyApiRequest | v3.StudyApiRequest | v4.StudyApiRequest | v5.StudyApiRequest;
 export type RequestBody<R> = R extends Request ? Omit<R, 'requestId' | 'schemaVersion'> : never;
 export type CoreRequest = RequestBody<v2.StudyApiRequest>;
 export type AnalysisRequest = RequestBody<v3.StudyApiRequest>;
-export type ReviewRequest = RequestBody<v4.StudyApiRequest>;
+export type ReviewRequest = RequestBody<
+  v4.StudyApiRequest | Extract<v5.StudyApiRequest, { operation: v4.StudyApiRequest['operation'] }>
+>;
 
 /** An ambiguous write must be retried with its original key and exact payload. */
 export const newWriteKey = () => crypto.randomUUID();
@@ -134,22 +142,25 @@ export async function readPendingStudyWrite(workflow: string): Promise<{
 }
 
 function defaultWorkflow(request: Request): string {
-  if ('reportRevisionId' in request) return `report:${request.reportRevisionId}`;
+  const api = request.schemaVersion === 'lca.study-api.v5' ? 'v5' : 'v4';
+  if ('reportRevisionId' in request) return reportWorkflow('report', request.reportRevisionId, api);
   if ('studyId' in request) return `study:${request.studyId}`;
+  if ('target' in request && request.target.type === 'reportRevision')
+    return reportWorkflow('report', request.target.id, api);
   if ('target' in request)
-    return `${request.target.type === 'study' ? 'study' : request.target.type === 'reportRevision' ? 'report' : 'resource'}:${request.target.id}`;
-  if ('shareId' in request) return `share:${request.shareId}`;
+    return `${request.target.type === 'study' ? 'study' : 'resource'}:${request.target.id}`;
+  if ('shareId' in request) return reportWorkflow('share', request.shareId, api);
   return `resource:${request.operation}`;
 }
 
 /** Capture current session and admission; every mutation is journaled before dispatch. */
 async function invoke(
-  version: 'v2' | 'v3' | 'v4',
+  version: 'v2' | 'v3' | 'v4' | 'v5',
   body: unknown,
   workflow?: string,
   guard?: IdentityGuard,
 ) {
-  const codec = { v2, v3, v4 }[version];
+  const codec = { v2, v3, v4, v5 }[version];
   let request = codec.parseRequest({
     ...(body as object),
     schemaVersion: `lca.study-api.${version}`,
@@ -197,8 +208,10 @@ async function invoke(
       v2.validateResponseForRequest(request as v2.StudyApiRequest, response as v2.StudyApiResponse);
     else if (version === 'v3')
       v3.validateResponseForRequest(request as v3.StudyApiRequest, response as v3.StudyApiResponse);
-    else
+    else if (version === 'v4')
       v4.validateResponseForRequest(request as v4.StudyApiRequest, response as v4.StudyApiResponse);
+    else
+      v5.validateResponseForRequest(request as v5.StudyApiRequest, response as v5.StudyApiResponse);
     if (!response.ok) {
       if (identity && intent)
         await recordJournalFailure(
@@ -241,8 +254,8 @@ export const core = (body: CoreRequest, workflow?: string) =>
   invoke('v2', body, workflow) as Promise<CoreData>;
 export const analysis = (body: AnalysisRequest, workflow?: string) =>
   invoke('v3', body, workflow) as Promise<AnalysisData>;
-export const review = (body: ReviewRequest, workflow?: string) =>
-  invoke('v4', body, workflow) as Promise<ReviewData>;
+export const review = (body: ReviewRequest, workflow?: string, api: ReportApi = 'v4') =>
+  invoke(api, body, workflow) as Promise<ReviewData>;
 
 export async function recoverPendingStudyWrite(workflow: string) {
   return withStudyIdentity(async (guard) => {
@@ -253,7 +266,8 @@ export async function recoverPendingStudyWrite(workflow: string) {
       'lca.study-api.v2': 'v2',
       'lca.study-api.v3': 'v3',
       'lca.study-api.v4': 'v4',
-    }[intent.request.schemaVersion] as 'v2' | 'v3' | 'v4';
+      'lca.study-api.v5': 'v5',
+    }[intent.request.schemaVersion] as 'v2' | 'v3' | 'v4' | 'v5';
     return invoke(version, intent.request, workflow, guard);
   });
 }
@@ -271,11 +285,18 @@ export async function retirePendingStudyWrite(workflow: string) {
     kind = workflow.slice(0, separator),
     id = workflow.slice(separator + 1);
   if (kind === 'study') await core({ operation: 'study.read', studyId: id });
-  else if (kind === 'report' || kind === 'share')
-    await review({
-      operation: 'resource.actions',
-      resource: { type: kind === 'report' ? 'reportRevision' : 'share', id },
-    });
+  else if (['report', 'share', 'report5', 'share5'].includes(kind))
+    await review(
+      {
+        operation: 'resource.actions',
+        resource: {
+          type: kind === 'report' || kind === 'report5' ? 'reportRevision' : 'share',
+          id,
+        },
+      },
+      undefined,
+      kind === 'report5' || kind === 'share5' ? 'v5' : 'v4',
+    );
   else throw new StudyRequestError('RECOVERY_REQUIRED', false);
   const after = (await supabase.auth.getSession()).data.session;
   if (!after) throw new StudyRequestError('AUTH_REQUIRED', false);

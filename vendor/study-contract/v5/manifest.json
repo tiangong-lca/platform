@@ -1,0 +1,277 @@
+{
+  "schemaVersion": "lca.study-consumer-manifest.v1",
+  "apiSchema": "lca.study-api.v5",
+  "contractVersion": "5.0.0",
+  "sourceRepository": "tiangong-lca/edge-functions",
+  "sourceCommit": "5b27e2e1fe05e3ff7c3a89f1aa59e8c84f244aff",
+  "sourceStatus": "committed",
+  "toolchain": {
+    "node": "24.19.0",
+    "esbuild": "0.28.2",
+    "zod": "4.6.7"
+  },
+  "inputs": [
+    {
+      "path": "contracts/lca-study/v1/common.ts",
+      "sha256": "090112db560f28ac003c07073e893ab61ede08ae38c9922e4a80445a65d295a0",
+      "bytes": 4253
+    },
+    {
+      "path": "contracts/lca-study/v1/pages.ts",
+      "sha256": "9d036d051b66f041ebd34c62ff2f7b3023b5c5def2286753f3912d1d2857c13c",
+      "bytes": 2769
+    },
+    {
+      "path": "contracts/lca-study/v1/records.ts",
+      "sha256": "9fd835b9f53328f9530404e98cbc15bc3057efe6b57f59d86db0abe1323a1240",
+      "bytes": 9066
+    },
+    {
+      "path": "contracts/lca-study/v1/requests.ts",
+      "sha256": "7426e7ef055ccaaa09b8779939fcaf006131bb2bb58a6dfa3ddde48f9f5f9405",
+      "bytes": 7228
+    },
+    {
+      "path": "contracts/lca-study/v1/responses.ts",
+      "sha256": "a032ab5ebdfa08a227e87a56f1e06ad426ffa7809bb2e3fb8a1dbf3791fd8ab9",
+      "bytes": 1307
+    },
+    {
+      "path": "contracts/lca-study/v1/validation.ts",
+      "sha256": "9599e4a3fed7d9a63e4fb5f97a1151e21166684c2656cc2eeb3b459eb0142b2f",
+      "bytes": 37015
+    },
+    {
+      "path": "contracts/lca-study/v2/codec.ts",
+      "sha256": "fdda431852091cabebba82ae408ae7c0d387c85171e1ebd469e7a4adf53c5d13",
+      "bytes": 8790
+    },
+    {
+      "path": "contracts/lca-study/v2/common.ts",
+      "sha256": "2b1860e00c6af28dd2ee7431223274f77d961deb3404f6ae69d393fa1f91a6be",
+      "bytes": 387
+    },
+    {
+      "path": "contracts/lca-study/v2/records.ts",
+      "sha256": "8d25b4b09a4323aa1f84954d87b89bafb2d88a24fd59ff426aa635cdfbfae97f",
+      "bytes": 6115
+    },
+    {
+      "path": "contracts/lca-study/v2/requests.ts",
+      "sha256": "b6d0cf145895a73cc25627531baada2308f085f920f547befe3731ab3418df80",
+      "bytes": 8699
+    },
+    {
+      "path": "contracts/lca-study/v2/responses.ts",
+      "sha256": "366a40467931e4846248bee108057d311ba491133abc0f66121ac009433a8890",
+      "bytes": 3483
+    },
+    {
+      "path": "contracts/lca-study/v3/canonical.ts",
+      "sha256": "cf4092231dcbac7125a2fbfea08548cc71c796be35b3eb24528b2f096a6a972d",
+      "bytes": 3586
+    },
+    {
+      "path": "contracts/lca-study/v3/export.ts",
+      "sha256": "c6a621441a245d89f28e9540952aab38c51d461cdee3457a744c8a3cd8509277",
+      "bytes": 8997
+    },
+    {
+      "path": "contracts/lca-study/v3/report.ts",
+      "sha256": "f5deb28af59cc3322e2d45bed7f2c65f1371aeb809551a2257a5c219a819e679",
+      "bytes": 9540
+    },
+    {
+      "path": "contracts/lca-study/v4/export.ts",
+      "sha256": "7c4389d0295995d4a71a821c774e8d8af0f3b4b6dbfcfe40cd019b4405166f80",
+      "bytes": 8039
+    },
+    {
+      "path": "contracts/lca-study/v4/review.ts",
+      "sha256": "02f434b4aa04233a322b721de720452074ad8f835ad5ee393f3482b1eec74e52",
+      "bytes": 12642
+    },
+    {
+      "path": "contracts/lca-study/v4/view.ts",
+      "sha256": "2836057606be7a704caa2dfd2996c2127361a27da3b392b06fd5ef40668dd822",
+      "bytes": 4366
+    },
+    {
+      "path": "contracts/lca-study/v5/advanced.ts",
+      "sha256": "0a0e6493db1a5869ac13d4f84572ba1a7e16f1d3a1a928ae85c88414318381ae",
+      "bytes": 10146
+    },
+    {
+      "path": "contracts/lca-study/v5/authoring_codec.ts",
+      "sha256": "acd5617b3d3156b1f161ff3e2c409bac3e7d3d87cd56931f2dae2a497e5e1607",
+      "bytes": 4734
+    },
+    {
+      "path": "contracts/lca-study/v5/authoring_responses.ts",
+      "sha256": "20d0c084bdcc3730840bf2a584bdb3af910fa63205a197447d244e85bc50ba19",
+      "bytes": 2544
+    },
+    {
+      "path": "contracts/lca-study/v5/capabilities.ts",
+      "sha256": "afc284d6d4af8d90fad730fa90e01a1130840d1119ff6c414c19f89f18ecdee5",
+      "bytes": 1051
+    },
+    {
+      "path": "contracts/lca-study/v5/catalog.ts",
+      "sha256": "822ec2006ea008bcd5e63cb5bf6b143eaf9c47c7905deca43b23961ea3e76b8b",
+      "bytes": 1174
+    },
+    {
+      "path": "contracts/lca-study/v5/codec.ts",
+      "sha256": "43c3d005fff84ab8f729288fe8215124054bd6919ac6a1d3ded9b5cbb0ddfa36",
+      "bytes": 2750
+    },
+    {
+      "path": "contracts/lca-study/v5/export.ts",
+      "sha256": "272fc23e59cdc22844a4749c6b9dbd4944672cf42276acd0dc24b4fbeab82ddc",
+      "bytes": 8464
+    },
+    {
+      "path": "contracts/lca-study/v5/requests.ts",
+      "sha256": "7c0865df947c076c5c16042dee82a3270934219ab92510f1f044f0c6ac024729",
+      "bytes": 410
+    },
+    {
+      "path": "contracts/lca-study/v5/responses.ts",
+      "sha256": "cc7b11cca0e497567bceb923ac354714e70db0d8e814135983d5621bc29f0a90",
+      "bytes": 865
+    },
+    {
+      "path": "contracts/lca-study/v5/review.ts",
+      "sha256": "2b55e01ce06cdfed606c9d442c554dd29796d3ea377b1cb4a5a6394674fc5bf4",
+      "bytes": 12353
+    },
+    {
+      "path": "contracts/lca-study/v5/review_codec.ts",
+      "sha256": "8dffbafdb462c24beaac8ed63e14caf36a847a3c1bafa7f311187c3a69b174c1",
+      "bytes": 8180
+    },
+    {
+      "path": "contracts/lca-study/v5/review_responses.ts",
+      "sha256": "5d5022ef2d0764fa25184d59b61146948aed38949d90097b73f598893010956f",
+      "bytes": 3597
+    },
+    {
+      "path": "contracts/lca-study/v5/view.ts",
+      "sha256": "ffcacdabccc5334e29a15a915a572a28f49017c45c93ab8e85b52f5a1aa57ec6",
+      "bytes": 4422
+    },
+    {
+      "path": "contracts/lca-study/worker/advanced-manifest.json",
+      "sha256": "3b0ce79836c0a4b699231f4d570ef98806fc9a933f81b9baa2260aa446c0acda",
+      "bytes": 993
+    },
+    {
+      "path": "contracts/lca-study/worker/analysis-completion.v2.schema.json",
+      "sha256": "4b4c3cf72a003933daad827ff7fbdea24f01e5f8a6a585e2904d99846daba7bb",
+      "bytes": 1853
+    },
+    {
+      "path": "contracts/lca-study/worker/analysis-config.v2.schema.json",
+      "sha256": "dfa0dc7fc5813bc2708a9101ca383fd143055f5879eb5412ebf0b06c2c818bd9",
+      "bytes": 6059
+    },
+    {
+      "path": "contracts/lca-study/worker/analysis-facts.v2.schema.json",
+      "sha256": "c22df95fb1210113b56b869e124c1e5ef330b2da6d10ff398d4232c568ca3eb1",
+      "bytes": 93156
+    },
+    {
+      "path": "contracts/lca-study/worker/analysis-failure.v2.schema.json",
+      "sha256": "b152e0ba5a965fb25231d7b233570e3235e7bdc7a03cf0e44a3715351abb64ed",
+      "bytes": 1183
+    },
+    {
+      "path": "contracts/lca-study/worker/analysis-input.v2.schema.json",
+      "sha256": "08a5d6ea3b5dd9aeffba13cd6b163fe7907314467521903bf28c9697f4c674c0",
+      "bytes": 13949
+    },
+    {
+      "path": "contracts/lca-study/worker/analysis-record.v2.schema.json",
+      "sha256": "be80cec36397b5cb058f9d06ffa9e429cd688e5eccf4f11d689af22a8d5cd876",
+      "bytes": 22342
+    },
+    {
+      "path": "package.json",
+      "sha256": "f6e98f39cebe4fb8dd533a336ad3b21253cb33f5ed8c6cd5f446bdd6da8c8709",
+      "bytes": 1741
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "717a7b64518caf3e642351f4d058b72fa6974de2c929bbe9a5e3e94dd4d3545e",
+      "bytes": 14532
+    },
+    {
+      "path": "scripts/build-study-contract.mjs",
+      "sha256": "c7213fd65d434274f6bfef80e831c73003ded9672b686f74fb8280ec91582a6a",
+      "bytes": 12708
+    },
+    {
+      "path": "supabase/functions/_shared/study/vendor/renderer-v2/consumption.json",
+      "sha256": "695a8f834b48da95bf0d344cdd9adc335523b786f48bc4ec70576c2b6772f2fd",
+      "bytes": 447
+    },
+    {
+      "path": "supabase/functions/_shared/study/vendor/renderer-v2/manifest.json",
+      "sha256": "b0c9bdd08a25b9a4ac22acf135f013602970049851725a9e612fe9e23ef6a50b",
+      "bytes": 3160
+    },
+    {
+      "path": "supabase/functions/_shared/study/vendor/renderer-v2/viewModel.js",
+      "sha256": "ff8b7222bb350db58a51285be865d2ae19232cd6a9f359bed7fe975a4165fcf3",
+      "bytes": 13140
+    },
+    {
+      "path": "supabase/functions/_shared/study/vendor/renderer/viewModel.js",
+      "sha256": "a7ec8e0bca3f71d0383c3332d31b38ea5333fdd4a5fe894b2333e60bcd0f5f9d",
+      "bytes": 12509
+    },
+    {
+      "path": "supabase/functions/deno.json",
+      "sha256": "cb6701c32d015c6907a001b8fe3172c6ee9c991b528e1a267275ae3d236cccb7",
+      "bytes": 664
+    }
+  ],
+  "files": [
+    {
+      "path": "index.mjs",
+      "sha256": "80d82a850d586aace3d95307eab288a919a571d38c645f56cf83596807db7a78",
+      "bytes": 871241
+    },
+    {
+      "path": "index.d.ts",
+      "sha256": "07ec72e3bf1c1a896fb2ef17fbff7543e770b560dc15a54cf78d492dd09541f0",
+      "bytes": 42400
+    },
+    {
+      "path": "request.schema.json",
+      "sha256": "780f74098da1e561e5096a2044a967c20459ffb703e8e98b4bca7cb7fe6590b3",
+      "bytes": 77940
+    },
+    {
+      "path": "response.schema.json",
+      "sha256": "d26029796181ee5afd062bf4cf40fca5bc0bd779c50a25c759e1a32516ac1495",
+      "bytes": 300799
+    },
+    {
+      "path": "package.json",
+      "sha256": "f7c8fc99d6821c2d90f249379e75e48b2ca4b8632ad79a30d308998e9659e7f7",
+      "bytes": 423
+    },
+    {
+      "path": "LICENSE.zod",
+      "sha256": "3f1189b28e3866e0d979968d466b78f813f76827cfdca1fbb124cc0a5c8841f8",
+      "bytes": 1072
+    },
+    {
+      "path": "LICENSE.renderer",
+      "sha256": "e3ed13005802307e1abf6f641f8720612b8682c3759294f4d394f05a541c0c74",
+      "bytes": 1063
+    }
+  ]
+}

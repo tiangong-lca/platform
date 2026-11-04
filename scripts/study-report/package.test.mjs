@@ -54,12 +54,14 @@ test('artifact is deterministic, byte-bound, dependency-free and consumable outs
       assert.equal(sha(bytes), file.sha256);
     }
     const pkg = JSON.parse(fs.readFileSync(path.join(installed, 'package.json'), 'utf8'));
+    assert.equal(pkg.version, '2.0.0');
+    assert.equal(pkg.version, manifest.rendererVersion);
     assert.equal(pkg.dependencies, undefined);
     assert.equal(pkg.devDependencies, undefined);
     assert.equal(pkg.scripts, undefined);
     assert.equal(pkg.exports['.'].import, './index.js');
     const view = JSON.parse(
-      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-v1.json'), 'utf8'),
+      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-v2.json'), 'utf8'),
     );
     const context = JSON.parse(
       fs.readFileSync(path.join(root, 'tests/fixtures/study-report/context-v1.json'), 'utf8'),
@@ -74,6 +76,26 @@ test('artifact is deterministic, byte-bound, dependency-free and consumable outs
     assert.match(html, /5e-324/u);
     assert.match(html, /Unknown/u);
     assert.match(html, /<html lang="en-US" dir="ltr">/u);
+    const advanced = JSON.parse(
+      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-advanced-v2.json'), 'utf8'),
+    );
+    const legacy = JSON.parse(
+      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-v1.json'), 'utf8'),
+    );
+    fs.writeFileSync(path.join(target, 'advanced.json'), JSON.stringify(advanced));
+    fs.writeFileSync(path.join(target, 'legacy.json'), JSON.stringify(legacy));
+    fs.writeFileSync(
+      path.join(target, 'consume-advanced.mjs'),
+      `import assert from 'node:assert/strict';import {readFile,writeFile} from 'node:fs/promises';import {renderReport,validateReportView} from './package/index.js';const context=JSON.parse(await readFile('./context.json','utf8'));const legacy=JSON.parse(await readFile('./legacy.json','utf8'));assert.equal(validateReportView(legacy,'1.0.0'),legacy);await assert.rejects(renderReport(legacy,context),/version/u);await writeFile('./advanced.html',await renderReport(JSON.parse(await readFile('./advanced.json','utf8')),context));`,
+    );
+    execFileSync(process.execPath, ['consume-advanced.mjs'], { cwd: target });
+    const advancedHtml = fs.readFileSync(path.join(target, 'advanced.html'), 'utf8');
+    assert.match(advancedHtml, /No LCIA method/u);
+    assert.doesNotMatch(advancedHtml, /activity or inventory fact/u);
+    assert.match(advancedHtml, /819\.6/u);
+    assert.match(advancedHtml, /baseline value is zero/u);
+    assert.match(advancedHtml, /No numeric value/u);
+    assert.match(advancedHtml, /Reason codes: zero_baseline_relative_undefined/u);
     for (const name of fs.readdirSync(installed).filter((file) => file.endsWith('.js'))) {
       const code = fs.readFileSync(path.join(installed, name), 'utf8');
       assert.doesNotMatch(

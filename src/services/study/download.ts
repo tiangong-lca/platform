@@ -1,13 +1,20 @@
-import { expectType, review, StudyRequestError, withStudyIdentity } from './api';
+import { expectType, StudyRequestError, withStudyIdentity } from './api';
+import { reportClient } from './reportClient';
+import type { ReportApi } from './links';
 
 /** Download current server-authorized frozen bytes; do not present a local authenticity claim. */
-export async function downloadStudyExport(kind: 'export' | 'share', id: string) {
+export async function downloadStudyExport(
+  kind: 'export' | 'share',
+  id: string,
+  api: ReportApi = 'v4',
+) {
+  const client = reportClient(api);
   return withStudyIdentity(async (guard) => {
     const response =
       kind === 'share'
-        ? expectType(await review({ operation: 'share.download', shareId: id }), 'download')
+        ? expectType(await client({ operation: 'share.download', shareId: id }), 'download')
         : expectType(
-            await review({ operation: 'export.download', exportId: id }),
+            await client({ operation: 'export.download', exportId: id }),
             'exportDownload',
           );
     const reference =

@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "lca.study-report-view.v2",
+  "rendererVersion": "2.0.0",
+  "report": {
+    "studyId": "study-cement",
+    "reportRevisionId": "report-1",
+    "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "title": "Bounded advanced analysis presentation fixture",
+    "generatedAt": "2026-11-03T08:00:00Z"
+  },
+  "definition": {
+    "goal": "Inspect supplied parameter and statistic facts without numerical recomputation.",
+    "functionalUnit": {
+      "amount": "1000",
+      "unit": "kg",
+      "referenceFlowId": "cement-flow"
+    },
+    "boundary": "Gate-to-gate direct inventory; four upstream product inputs are explicitly outside this example.",
+    "methodRefs": [
+      {
+        "id": "climate",
+        "version": "01.00.000",
+        "name": "Climate change",
+        "unit": "kg CO2 eq"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "runId": "baseline",
+      "scenarioRevisionId": "scenario-base",
+      "label": "Baseline inventory",
+      "inputHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "profileId": "lca.study-explicit-v1",
+      "calculationContractRef": {
+        "kind": "calculation_contract",
+        "schema": "lca.calculation-contract.v1",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "factId": "parameter-amount",
+      "label": "Parameter amount: evaluation eval-01, exchange co2, replacement819.6",
+      "runIds": ["baseline"],
+      "methodRef": null,
+      "canonicalValue": "819.6",
+      "unit": "kg",
+      "coverage": "complete",
+      "provenance": {
+        "type": "analysisFacts",
+        "id": "advanced-analysis-facts",
+        "contentHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "uncertainty-p95",
+      "label": "Uncertainty sample statistic: p95, declared linear quantile",
+      "runIds": ["baseline"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": "1092.8",
+      "unit": "kg CO2 eq",
+      "coverage": "partial",
+      "provenance": {
+        "type": "analysisFacts",
+        "id": "advanced-analysis-facts",
+        "contentHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "undefined-relative-response",
+      "label": "Relative response undefined: baseline value is zero",
+      "runIds": ["baseline"],
+      "methodRef": null,
+      "canonicalValue": null,
+      "unit": "1",
+      "coverage": "complete",
+      "provenance": {
+        "type": "analysisFacts",
+        "id": "advanced-analysis-facts",
+        "contentHash": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "reasonCodes": ["zero_baseline_relative_undefined"]
+    }
+  ],
+  "sections": [
+    {
+      "sectionId": "advanced-settings",
+      "title": "Supplied analysis context",
+      "paragraphs": [
+        "Synthetic renderer presentation fixture only. No analysis, sampling or scientific qualification is performed here.",
+        "The baseline is the actual Run reference; eval-01 is an analysis-local evaluation, not a new Run.",
+        "Relative response is undefined because the supplied baseline value is zero. No value is imputed."
+      ],
+      "factIds": ["parameter-amount", "uncertainty-p95", "undefined-relative-response"],
+      "citationIds": []
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "advanced-evidence",
+      "title": "Parameter, statistic and undefined values",
+      "factIds": ["parameter-amount", "uncertainty-p95", "undefined-relative-response"]
+    }
+  ],
+  "charts": [
+    {
+      "chartId": "statistic",
+      "title": "Supplied statistic only",
+      "factIds": ["uncertainty-p95"]
+    }
+  ],
+  "citations": [
+    {
+      "citationId": "cement-source",
+      "label": "Declared cement inventory, illustrative projection",
+      "sourceType": "datasetRevision",
+      "identity": "dcffcc2b-d964-46d2-94ed-0c7b3c5b0c75",
+      "version": "01.01.000",
+      "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "assumptions": [
+    "Numeric reference output is 1000 kg; the conflicting free-text reference remains unresolved."
+  ],
+  "cutoffs": ["Four upstream product inputs are excluded from this direct-inventory fixture."],
+  "limitations": [
+    "Presentation fixture only; no sampling convergence, complete characterization or scientific/industrial certification is claimed."
+  ],
+  "snapshot": {
+    "validity": "unknown",
+    "checkedAt": "2026-11-03T08:00:00Z",
+    "review": "unreviewed",
+    "reviewIds": [],
+    "finalization": "not_finalized"
+  }
+}

@@ -1,6 +1,7 @@
 import * as codecV2 from '../../../../vendor/study-contract/v2/index.mjs';
 import * as codecV3 from '../../../../vendor/study-contract/v3/index.mjs';
 import * as codecV4 from '../../../../vendor/study-contract/v4/index.mjs';
+import * as codecV5 from '../../../../vendor/study-contract/v5/index.mjs';
 type Request = import('@/services/study/api').Request;
 import { webcrypto } from 'node:crypto';
 import { TextEncoder } from 'node:util';
@@ -99,6 +100,7 @@ const storeRejected = async (workflow: string, request = storedRequest()) => {
     'lca.study-api.v2': codecV2,
     'lca.study-api.v3': codecV3,
     'lca.study-api.v4': codecV4,
+    'lca.study-api.v5': codecV5,
   }[request.schemaVersion].parseRequest(request);
   const prepared = await prepareJournal(identity(), parsed, workflow);
   return recordJournalFailure(identity(), prepared, 'REVISION_CONFLICT');
