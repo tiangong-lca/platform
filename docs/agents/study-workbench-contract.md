@@ -18,8 +18,8 @@ checkPaths:
   - tests/unit/pages/Study/**
   - tests/unit/services/study/**
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: d715c6d3dbf5ec20cf3bda3f6c1d43ecb5eec8b6
-lastReviewedNote: 'Platform #1442: independent d715 review confirmed pre-hash identity rebinding and duplicate-fact claim loss; reviewed working-tree fixes capture identity before owner hashing, retain it through response/checksum, preserve all retained claims and collision-free IDs. Focused322tests/100% Study coverage and exact installed Webpack fallback proof pass. Frozen renderer94ce bytes unchanged; final clean build, full gate, independent recheck, actual parent runtime and delivery/root remain separate.'
+lastReviewedCommit: 866f3218e5218da8379536073e71d97aa5af68e0
+lastReviewedNote: 'Platform #1442: parent-authorized qualified V2 archive acknowledgement adoption reviewed. Main-qualified Edge439f8112/manifest0cfe9a2d keeps exact schema2.0.0 request/response/declarations; wrong archive status/CAS retains ambiguous original intent. Red8negativefail/1positivepass becomes green9/9, retained-family provenance passes; V3–5 and renderer1–3 bytes unchanged. Clean866 build passed; final adopted-source gate, independent recheck and actual delivery/runtime remain separate.'
 related:
   - repo-architecture.md
   - repo-validation.md
@@ -33,6 +33,8 @@ Platform owns authenticated `/studies`, `/study-report?id=<reportRevisionId>&has
 ## Service and ownership boundary
 
 All API calls stay in `src/services/study`. The service invokes `app_lca_study`, snapshots the admitted identity generation, captures the current bearer session and discards responses after admission, actor or captured-bearer changes, including a switch away and back to the original actor. Mounted views also invalidate synchronously on bearer changes, including same-actor client switches; the auth callback performs no asynchronous work. A concurrent token refresh can therefore require a fresh read. No authentication credential is persisted by this feature. Pending mutation bodies are held only in the bounded same-tab journal described below. Exact contained Edge V2, V3, V4, V5 and V6 public codecs live in `vendor/study-contract`; their unchanged manifests and licenses record producer identity. The adjacent Platform `.d.mts` adapters only resolve the original declarations. Tests verify artifact provenance separately from application code coverage. Vendored artifacts are protocol inputs, not a second editable schema.
+
+The retained V2 consumer deliberately adopts already Main-qualified Edge source `439f8112a8f9945479c63ffaa8cfe688e9d20216`, manifest SHA256 `0cfe9a2d3c957a005a6b8045b3f8df0cea9b3e852af7a49f706e3b35a798b0c1`, for archive acknowledgement validation. Its wire schema2.0.0, request/response schema bytes and declarations are unchanged. Core and original-V2 recovery accept archive success only with `archived` status and exactly `expectedRevision + 1`; a mismatched success retains the original ambiguous intent. No archive UI or local parallel schema is introduced. V3–V5 artifacts and renderer1/2/3 bytes remain unchanged, and valid historical journal envelopes retain their original identity.
 
 Each request and response passes the owning codec's strict parser and operation-specific bindings. Frozen JSON artifacts additionally require exact byte size and SHA-256 before decoding. Narrow presentation guards read only the supplied model/fact fields; the browser does not recreate model fingerprints, calculation contracts, numerical analysis, review policy or authorization. Legacy solve, comparison, hotspot and latest-dataset services are not Study sources.
 

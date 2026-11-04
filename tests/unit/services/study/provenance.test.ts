@@ -10,8 +10,8 @@ it.each([
   ],
   [
     'v2',
-    '6bdde9dcad10f2bfc474dd70f0bf3deb693cb7536137ef827a71fb879d792459',
-    'c8784576377b4ab156e89dc4eac81014a87880f6',
+    '0cfe9a2d3c957a005a6b8045b3f8df0cea9b3e852af7a49f706e3b35a798b0c1',
+    '439f8112a8f9945479c63ffaa8cfe688e9d20216',
   ],
   [
     'v3',

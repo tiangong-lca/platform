@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: d715c6d3dbf5ec20cf3bda3f6c1d43ecb5eec8b6
-lastReviewedNote: 'Platform #1442: independent d715 review confirmed pre-hash identity rebinding and duplicate-fact claim loss; reviewed working-tree fixes capture identity before owner hashing, retain it through response/checksum, preserve all retained claims and collision-free IDs. Focused322tests/100% Study coverage and exact installed Webpack fallback proof pass. Frozen renderer94ce bytes unchanged; final clean build, full gate, independent recheck, actual parent runtime and delivery/root remain separate.'
+lastReviewedCommit: 866f3218e5218da8379536073e71d97aa5af68e0
+lastReviewedNote: 'Platform #1442: parent-authorized qualified V2 archive acknowledgement adoption reviewed. Main-qualified Edge439f8112/manifest0cfe9a2d keeps exact schema2.0.0 request/response/declarations; wrong archive status/CAS retains ambiguous original intent. Red8negativefail/1positivepass becomes green9/9, retained-family provenance passes; V3–5 and renderer1–3 bytes unchanged. Clean866 build passed; final adopted-source gate, independent recheck and actual delivery/runtime remain separate.'
 ---
 
 # Pre-Push Gate Policy
