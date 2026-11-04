@@ -51,6 +51,37 @@ async function observeAttempts(context) {
   });
 }
 
+async function assertFilteredPrintMedia(page, view) {
+  const catalog = page.locator('#method-catalog');
+  const filter = catalog.getByLabel('Filter method facts');
+  await filter.fill(view.methodAssessment.factCatalog[0].factId);
+  assert.equal(await catalog.locator('[data-catalog-id]:visible').count(), 1);
+  const state = () =>
+    page.evaluate(() => ({
+      filters: [...document.querySelectorAll('input[type="search"]')].map((node) => node.value),
+      orders: [...document.querySelectorAll('select')].map((node) => node.value),
+      rows: [...document.querySelectorAll('[data-report-table] tbody>tr')].map((node) => [
+        node.dataset.label,
+        node.hidden,
+      ]),
+      details: [...document.querySelectorAll('details')].map((node) => node.open),
+    }));
+  const before = await state();
+  await page.emulateMedia({ media: 'print' });
+  assert.equal(await page.locator('[data-catalog-id]:visible').count(), 58);
+  assert.equal(
+    await page.locator('.print-evidence:visible').count(),
+    await page.locator('.print-evidence').count(),
+  );
+  assert.ok((await page.locator('.print-evidence:visible').count()) >= 103);
+  assert.equal(await page.locator('.controls:visible').count(), 0);
+  assert.deepEqual(await state(), before);
+  await page.emulateMedia({ media: 'screen' });
+  assert.deepEqual(await state(), before);
+  assert.equal(await catalog.locator('[data-catalog-id]:visible').count(), 1);
+  await filter.fill('');
+}
+
 async function observeNativeFaviconBaseline(browser) {
   const documentUrl = 'http://127.0.0.1:39139/native-baseline.html';
   const favicon = 'img-src:http://127.0.0.1:39139/favicon.ico';
@@ -260,6 +291,7 @@ test('packed method HTML preserves mandatory evidence and local controls offline
               );
             }
             assert.equal(await page.locator('script').count(), 1);
+            await assertFilteredPrintMedia(page, view);
             const observation = await page.evaluate(() => window.__studyObservation);
             assert.deepEqual(observation.attempts, []);
             // A browser-managed favicon check is allowed only after the same engine's
@@ -300,6 +332,9 @@ test('packed method HTML preserves mandatory evidence and local controls offline
               browserManagedFaviconBaseline: nativeFavicon,
               browserManagedFaviconBlockedByCsp: observation.violations.length,
               keyboardControls: true,
+              printFacts: 58,
+              printEvidenceComplete: true,
+              printStatePreserved: true,
               horizontalGesture,
               pageContained: true,
             });

@@ -273,3 +273,46 @@ it('rejects coupled source N/F substitution even when catalog unit identities ag
         fact.unitIdentity.sourceNormalisationFactor === '1' ? '2' : '1';
   expect(() => validateReportView(view)).toThrow('/methodAssessment');
 });
+
+it('counts bounded generic text as Unicode code points and rejects unpaired scalars', async () => {
+  const view = copy();
+  view.report.title = '😀'.repeat(256);
+  view.sections = [
+    {
+      sectionId: 'unicode-section',
+      title: '🔎'.repeat(256),
+      paragraphs: [],
+      factIds: [],
+      citationIds: [],
+    },
+  ];
+  expect(validateReportView(view)).toBe(view);
+  expect(await renderReport(view, context)).toContain(view.report.title);
+  const longTitle = copy();
+  longTitle.report.title = '😀'.repeat(257);
+  expect(() => validateReportView(longTitle)).toThrow('/report/title');
+  view.sections[0].title = '🔎'.repeat(257);
+  expect(() => validateReportView(view)).toThrow('/sections/0/title');
+  for (const title of ['\ud800', '\udfff']) {
+    const invalid = copy();
+    invalid.report.title = title;
+    expect(() => validateReportView(invalid)).toThrow('/report/title');
+  }
+});
+
+it('provides exact expanded evidence outside every native disclosure for non-JS printing', async () => {
+  const document = new DOMParser().parseFromString(
+    await renderReport(copy(), context),
+    'text/html',
+  );
+  const disclosures = [...document.querySelectorAll('.evidence-disclosure')];
+  expect(disclosures.length).toBeGreaterThanOrEqual(103);
+  for (const disclosure of disclosures) {
+    const native = disclosure.querySelector('details')!.cloneNode(true) as HTMLElement;
+    native.querySelector('summary')!.remove();
+    const printable = disclosure.querySelector('.print-evidence')!;
+    expect(printable.innerHTML).toBe(native.innerHTML);
+    expect(printable.closest('details')).toBeNull();
+  }
+  expect(document.querySelector('noscript')!.textContent).toContain('Read-only reading copy');
+});

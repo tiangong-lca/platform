@@ -27,4 +27,5 @@ export const BROWSER_SCRIPT = String.raw`(() => {
     search.addEventListener('input', refresh);
     order.addEventListener('change', refresh);
   }
+  document.documentElement.dataset.reportInteractive = 'true';
 })();`;

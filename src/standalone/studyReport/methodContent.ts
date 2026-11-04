@@ -1,5 +1,5 @@
 import type { MethodReportSummary } from './viewModel.js';
-import { escapeHtml as e } from './content.js';
+import { escapeHtml as e, evidenceDisclosure } from './content.js';
 
 /** Supplied structured evidence is text, including booleans, nulls and all identity fields. */
 function evidence(value: unknown): string {
@@ -25,19 +25,19 @@ export function renderMethodAssessment(summary: MethodReportSummary): string {
   const requirementRows = requirements
     .map(
       (requirement) =>
-        `<tr data-requirement-id="${e(requirement.requirementId)}"><th scope="row">${e(requirement.requirementId)}</th><td>${e(requirement.machine.status)}<br>${e(requirement.machine.scope)}<ul class="machine-checks">${requirement.machine.checks.map((check) => `<li><strong>${e(check.predicateId)}</strong><br>${e(check.status)}${evidence(check.reasonCodes)}</li>`).join('')}</ul></td><td>${e(requirement.professional.status)}<br>${e(requirement.declarationState)}${evidence(requirement.professional.reasonCodes)}</td><td><details><summary>Source and professional evidence</summary>${evidence(requirement)}</details></td></tr>`,
+        `<tr data-requirement-id="${e(requirement.requirementId)}"><th scope="row">${e(requirement.requirementId)}</th><td data-print-label="Machine state and scope">${e(requirement.machine.status)}<br>${e(requirement.machine.scope)}<ul class="machine-checks">${requirement.machine.checks.map((check) => `<li><strong>${e(check.predicateId)}</strong><br>${e(check.status)}<br>${evidence(check.reasonCodes)}</li>`).join('')}</ul></td><td data-print-label="Professional and declaration state">${e(requirement.professional.status)}<br>${e(requirement.declarationState)}<br>${evidence(requirement.professional.reasonCodes)}</td><td data-print-label="Source and professional evidence">${evidenceDisclosure('Source and professional evidence', evidence(requirement))}</td></tr>`,
     )
     .join('');
   const categoryRows = categories
     .map(
       (category) =>
-        `<tr data-category-id="${e(category.methodRef.id)}"><th scope="row">${e(category.name)}<br>${e(category.methodRef.id)} @ ${e(category.methodRef.version)}</th><td>${e(category.role)}<br>Parent: ${category.parentMethodId === null ? 'None (null)' : e(category.parentMethodId)}</td><td>${category.canonicalCharacterisedValue === null ? 'No numeric value (null)' : e(category.canonicalCharacterisedValue)}<br>${e(category.unit)}<br>${e(category.coverage)}</td><td>Selected: ${String(category.selected)}<br>Source compatible: ${String(category.sourceCompatible)}<br>N/W included: ${String(category.normalisationWeightingIncluded)}<details><summary>Category evidence</summary>${evidence(category)}</details></td></tr>`,
+        `<tr data-category-id="${e(category.methodRef.id)}"><th scope="row">${e(category.name)}<br>${e(category.methodRef.id)} @ ${e(category.methodRef.version)}</th><td data-print-label="Role and parent">${e(category.role)}<br>Parent: ${category.parentMethodId === null ? 'None (null)' : e(category.parentMethodId)}</td><td data-print-label="Supplied value, unit and coverage">${category.canonicalCharacterisedValue === null ? 'No numeric value (null)' : e(category.canonicalCharacterisedValue)}<br>${e(category.unit)}<br>${e(category.coverage)}</td><td data-print-label="Category evidence">Selected: ${String(category.selected)}<br>Source compatible: ${String(category.sourceCompatible)}<br>N/W included: ${String(category.normalisationWeightingIncluded)}${evidenceDisclosure('Category evidence', evidence(category))}</td></tr>`,
     )
     .join('');
   const catalogRows = factCatalog
     .map(
       (fact) =>
-        `<tr data-label="${e(fact.factId)}" data-catalog-id="${e(fact.factId)}"><th scope="row">${e(fact.factId)}</th><td class="value">${fact.canonicalValue === null ? 'No numeric value (null)' : e(fact.canonicalValue)}<br>${e(fact.unit)}</td><td>${e(fact.coverage)}<br>Reason codes: ${fact.reasonCodes.length ? fact.reasonCodes.map(e).join(', ') : 'None supplied'}</td><td><details><summary>Evidence</summary>${evidence(fact)}<p>Source ${e(summary.factsRef.type)} ${e(summary.factsRef.id)}<br>SHA-256 ${e(summary.factsRef.contentHash)}<br>Source fact ${e(fact.factId)}</p></details></td></tr>`,
+        `<tr data-label="${e(fact.factId)}" data-catalog-id="${e(fact.factId)}"><th scope="row">${e(fact.factId)}</th><td class="value" data-print-label="Exact value and unit">${fact.canonicalValue === null ? 'No numeric value (null)' : e(fact.canonicalValue)}<br>${e(fact.unit)}</td><td data-print-label="Coverage and reasons">${e(fact.coverage)}<br>Reason codes: ${fact.reasonCodes.length ? fact.reasonCodes.map(e).join(', ') : 'None supplied'}</td><td data-print-label="Provenance and unit identity">${evidenceDisclosure('Evidence', `${evidence(fact)}<p>Source ${e(summary.factsRef.type)} ${e(summary.factsRef.id)}<br>SHA-256 ${e(summary.factsRef.contentHash)}<br>Source fact ${e(fact.factId)}</p>`)}</td></tr>`,
     )
     .join('');
   const selected = summary.methodSourceEvidence.selectedFactorEvidence;

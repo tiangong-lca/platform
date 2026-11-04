@@ -111,10 +111,17 @@ function record(value: unknown, keys: string[], path: string): Record<string, un
 }
 
 function text(value: unknown, path: string, max = 2048): asserts value is string {
+  // JSON Schema maxLength counts Unicode code points, not UTF-16 code units.
+  // The cheap upper bound prevents expanding an already oversized string.
+  const characters = typeof value === 'string' && value.length <= max * 2 ? Array.from(value) : [];
   requireValue(
     typeof value === 'string' &&
-      value.length > 0 &&
-      value.length <= max &&
+      characters.length > 0 &&
+      characters.length <= max &&
+      characters.every((character) => {
+        const point = character.codePointAt(0)!;
+        return point < 0xd800 || point > 0xdfff;
+      }) &&
       !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(value),
     path,
   );
