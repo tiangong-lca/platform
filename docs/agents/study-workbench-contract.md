@@ -17,9 +17,9 @@ checkPaths:
   - config/routes.ts
   - tests/unit/pages/Study/**
   - tests/unit/services/study/**
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: cec3bac0c001beb051bf49f125523f8f5ff8d564
-lastReviewedNote: 'Platform #1419: reviewed exact qualified Dev 316b486 version 0.0.151 and unchanged Process Drawer source, complete three-way documentation merge, deterministic share-write refresh proof and regenerated locale inputs; Study/renderer behavior and single checked-push gate ownership remain unchanged.'
+lastReviewedAt: '2026-11-04'
+lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
+lastReviewedNote: 'Platform #1437: reviewed view.v2/renderer2.0.0 independent null/coverage semantics, exact supplied reasonCodes and non-LCIA evidence, strict current exports and explicit unchanged1.0/view.v1 preview; actual P4 producer/consumer qualification remains separate. Existing gates, ownership and release authority are unchanged.'
 related:
   - repo-architecture.md
   - repo-validation.md
@@ -54,12 +54,12 @@ Report controls use V4 resource actions and current report state. Comments bind 
 
 Finalization sends the exact revision, content hash, review-state hash, profile and accepted review IDs from current state. Exports bind current finalization/review state. Named sharing binds one exact report/export, registered recipient identity, summary disclosure policy and expiry. Roles offered for membership come only from `allowedMemberRoles`; there is no user discovery or roster endpoint. Every mutation remains subject to server authorization and CAS.
 
-The report projection and its recorded validity/review snapshot are displayed separately from current online state. Platform's private preview entrypoint shares the validated content/table/chart/escaping implementation with the standalone renderer, but supplies honest online framing without an export ID, receipt or verification claim. The portable export API and exact pre-P3 export HTML fixture bytes remain unchanged; independently pinned P2 packages are not repinned for preview. The fixed English report reading language remains governed by the renderer contract; app controls use every active locale catalog.
+The report projection and its recorded validity/review snapshot are displayed separately from current online state. Platform's private preview entrypoint shares the validated content/table/chart/escaping implementation with the standalone renderer, but supplies honest online framing without an export ID, receipt or verification claim. The portable export API uses its exact artifact version. Online preview explicitly dispatches retained1.0.0 and current2.0.0 recorded projections without changing their version or bytes. Renderer2.0.0 exports reject1.0.0 projections; independently pinned P2/P3 packages and historical exports are not repinned or regenerated for preview. The fixed English report reading language remains governed by the renderer contract; app controls use every active locale catalog.
 
 Named recipients receive only `share.view` and `share.download` projections. They are not given core Study tabs, model/facts reads, source membership or an anonymous URL. Download reauthorizes and checks exact bundle size/hash before creating a temporary download of the persisted `lca.study-export-bundle.v2` JSON bytes. It preserves the reference's `application/json` media type and uses a `.json` filename. The captured actor/client/bearer/admission identity is reverified after asynchronous SHA-256 and immediately before the DOM click; stale identity prevents the effect. Temporary object URLs are released even when browser dispatch fails. This integrity check is not represented as independently trusted receipt verification. Revocation/expiry governs subsequent online access and cannot recall downloaded copies.
 
 ## Required proof
 
-Focused service/component tests cover exact codec/version binding, permission denial, original-key retry, journal/claims/digest identity races, exact JSON bundle media/filename, header/card recovery handoff and next-stage continuity, CAS/predecessor identity, immutable editing, null/partial facts, isolated report/share paths and account-switch stale replies. The baseline portable report fixture must retain byte-identical export HTML. Keep full existing test/coverage, build, Docpact and all-active-locale gates.
+Focused service/component tests cover exact codec/version binding, permission denial, original-key retry, journal/claims/digest identity races, exact JSON bundle media/filename, header/card recovery handoff and next-stage continuity, CAS/predecessor identity, immutable editing, null/partial facts, isolated report/share paths and account-switch stale replies. The retained renderer1.0.0 projection fixture and old artifact pins remain unchanged. Current renderer2.0.0 export identity, strict old-version rejection and old/current online preview compatibility require explicit proof. Keep full existing test/coverage, build, Docpact and all-active-locale gates.
 
 Controlled component/HTTP fixtures are development proof only. Delivery additionally requires the installed CLI and actual authenticated owned non-production Edge/Database/Worker stack to demonstrate the same durable identities, independently expected amount-change result, unchanged predecessors, review/finalization transitions, named-recipient denial/revoke/expiry, keyboard/narrow/long-table/bounded-model layouts and failure/recovery. Production operations or runtime enablement are not authorized by this contract.

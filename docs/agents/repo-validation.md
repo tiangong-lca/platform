@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: '2026-11-04'
-lastReviewedCommit: '1eec63a7f137e535c86fda6d21ccb629488bc9fc'
-lastReviewedNote: 'Platform #1419: reviewed qualified Dev 69753a4 version 0.0.152 with exact Process coverage-warning removal, complete three-way documentation bodies and canonical locale regeneration; Study runtime, renderer, codec and recovery semantics remain unchanged.'
+lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
+lastReviewedNote: 'Platform #1437: reviewed view.v2/renderer2.0.0 independent null/coverage semantics, exact supplied reasonCodes and non-LCIA evidence, strict current exports and explicit unchanged1.0/view.v1 preview; actual P4 producer/consumer qualification remains separate. Existing gates, ownership and release authority are unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -389,3 +389,5 @@ The resource mutation-boundary regression must switch daemon/source between succ
 ## Study workbench proof
 
 The [Study consumer contract](study-workbench-contract.md) owns the four views, immutable amount-edit workflow and separate exact report/named-share boundaries. Run focused `tests/unit/services/study/**` and `tests/unit/pages/Study/**` plus the portable renderer tests during iteration. Recovery proof must switch actor/client/bearer/admission during journal and claims waits, resume scenario/preparation/freeze from original IDs and immutable selection after header/card recovery, and reject foreign selections. Download proof must switch identity during SHA-256 and at the final DOM effect, assert unchanged JSON bundle bytes/media/filename and release object URLs on failure. The preview proof binds pre-P3 export HTML bytes; codec provenance proof binds unchanged contained manifests/files. Existing full coverage/build/localization gates remain required. Component mocks or controlled HTTP fixtures do not establish actual Phase P3 acceptance: retain installed-CLI and authenticated owned non-production Edge/Database/Worker browser proof, numerical expectations, unchanged predecessors, review/finalization/share denial and withdrawal/revoke/expiry, identity races, keyboard/narrow/long-table/model bounds, and original-key recovery evidence. Keep credentials out of committed/bundled files and use the workspace-owned runtime/resource receipt.
+
+For renderer2.0.0, preserve the retained1.0.0 projection fixture and all contained owner artifacts. Prove that old/current online previews keep their recorded version while the new export API rejects an old-version projection. The synthetic advanced presentation fixture covers a supplied parameter amount, a partial statistic and an undefined value/reason without invented Run IDs, numerical recomputation or scientific qualification. Package and actual Chromium proofs must bind the current archive/manifest/source independently; downstream Edge/CLI adoption and actual P4 analysis/export remain separate.

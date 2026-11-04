@@ -1,0 +1,229 @@
+{
+  "schemaVersion": "lca.study-report-view.v2",
+  "rendererVersion": "2.0.0",
+  "report": {
+    "studyId": "study-cement",
+    "reportRevisionId": "report-1",
+    "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "title": "Cement at the factory gate",
+    "generatedAt": "2026-11-03T08:00:00Z"
+  },
+  "definition": {
+    "goal": "Inspect the declared direct inventory of 1000 kg of cement and one numerical alternative.",
+    "functionalUnit": {
+      "amount": "1000",
+      "unit": "kg",
+      "referenceFlowId": "cement-flow"
+    },
+    "boundary": "Gate-to-gate direct inventory; four upstream product inputs are explicitly outside this example.",
+    "methodRefs": [
+      {
+        "id": "climate",
+        "version": "01.00.000",
+        "name": "Climate change",
+        "unit": "kg CO2 eq"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "runId": "baseline",
+      "scenarioRevisionId": "scenario-base",
+      "label": "Baseline inventory",
+      "inputHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "profileId": "lca.study-explicit-v1",
+      "calculationContractRef": {
+        "kind": "calculation_contract",
+        "schema": "lca.calculation-contract.v1",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "runId": "alternative",
+      "scenarioRevisionId": "scenario-alt",
+      "label": "Numerical alternative",
+      "inputHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "profileId": "lca.study-explicit-v1",
+      "calculationContractRef": {
+        "kind": "calculation_contract",
+        "schema": "lca.calculation-contract.v1",
+        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    }
+  ],
+  "facts": [
+    {
+      "factId": "baseline-climate",
+      "label": "Baseline direct emissions",
+      "runIds": ["baseline"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": "1092.8",
+      "unit": "kg CO2 eq",
+      "coverage": "partial",
+      "provenance": {
+        "type": "runResult",
+        "id": "result-baseline",
+        "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "alternative-climate",
+      "label": "Alternative direct emissions",
+      "runIds": ["alternative"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": "546.4",
+      "unit": "kg CO2 eq",
+      "coverage": "partial",
+      "provenance": {
+        "type": "runResult",
+        "id": "result-alternative",
+        "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "known-zero",
+      "label": "Known zero contribution",
+      "runIds": ["baseline"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": "0",
+      "unit": "kg CO2 eq",
+      "coverage": "complete",
+      "provenance": {
+        "type": "runResult",
+        "id": "result-baseline",
+        "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "negative",
+      "label": "Negative contribution",
+      "runIds": ["baseline"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": "-2.5",
+      "unit": "kg CO2 eq",
+      "coverage": "complete",
+      "provenance": {
+        "type": "runResult",
+        "id": "result-baseline",
+        "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "tiny",
+      "label": "Trace contribution",
+      "runIds": ["baseline"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": "5e-324",
+      "unit": "kg CO2 eq",
+      "coverage": "complete",
+      "provenance": {
+        "type": "runResult",
+        "id": "result-baseline",
+        "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reasonCodes": []
+    },
+    {
+      "factId": "unknown",
+      "label": "Uncharacterized particles",
+      "runIds": ["baseline"],
+      "methodRef": {
+        "id": "climate",
+        "version": "01.00.000"
+      },
+      "canonicalValue": null,
+      "unit": "kg CO2 eq",
+      "coverage": "unknown",
+      "provenance": {
+        "type": "runResult",
+        "id": "result-baseline",
+        "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "reasonCodes": []
+    }
+  ],
+  "sections": [
+    {
+      "sectionId": "interpretation",
+      "title": "Read the coverage before comparing values",
+      "paragraphs": [
+        "The baseline and alternative are supplied facts. Their difference is not computed by this view.",
+        "This fixture exercises zero, negative, tiny and unknown values; those rows are not additional scientific claims."
+      ],
+      "factIds": ["baseline-climate", "alternative-climate"],
+      "citationIds": ["cement-source"]
+    }
+  ],
+  "tables": [
+    {
+      "tableId": "results",
+      "title": "Result facts",
+      "factIds": [
+        "baseline-climate",
+        "alternative-climate",
+        "known-zero",
+        "negative",
+        "tiny",
+        "unknown"
+      ]
+    }
+  ],
+  "charts": [
+    {
+      "chartId": "climate",
+      "title": "Direct contributions in the selected method",
+      "factIds": [
+        "baseline-climate",
+        "alternative-climate",
+        "known-zero",
+        "negative",
+        "tiny",
+        "unknown"
+      ]
+    }
+  ],
+  "citations": [
+    {
+      "citationId": "cement-source",
+      "label": "Declared cement inventory, illustrative projection",
+      "sourceType": "datasetRevision",
+      "identity": "dcffcc2b-d964-46d2-94ed-0c7b3c5b0c75",
+      "version": "01.01.000",
+      "contentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "assumptions": [
+    "Numeric reference output is 1000 kg; the conflicting free-text reference remains unresolved."
+  ],
+  "cutoffs": ["Four upstream product inputs are excluded from this direct-inventory fixture."],
+  "limitations": [
+    "Demonstration fixture only; not a qualified business LCA.",
+    "Characterized subtotals do not establish complete impact scores or an approved material improvement."
+  ],
+  "snapshot": {
+    "validity": "unknown",
+    "checkedAt": "2026-11-03T08:00:00Z",
+    "review": "unreviewed",
+    "reviewIds": [],
+    "finalization": "not_finalized"
+  }
+}

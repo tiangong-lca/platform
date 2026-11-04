@@ -76,7 +76,7 @@ jobs:
             assert.equal(record.sourceCommit, process.env.EXPECTED_HEAD);
             assert.equal(record.sourceDirty, false);
           }
-          assert.equal(archive.archiveName, 'study-report-renderer-1.0.0.tgz');
+          assert.equal(archive.archiveName, 'study-report-renderer-2.0.0.tgz');
           assert.equal(archive.sha256, sha(readFileSync('dist-study-report/' + archive.archiveName)));
           assert.equal(archive.manifestSha256, sha(manifestBytes));
           assert.equal(browser.archiveSha256, archive.sha256);

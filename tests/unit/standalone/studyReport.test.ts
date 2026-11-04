@@ -1,6 +1,8 @@
 import { webcrypto } from 'node:crypto';
 import { TextEncoder } from 'node:util';
-import fixture from '../../fixtures/study-report/view-v1.json';
+import fixture from '../../fixtures/study-report/view-v2.json';
+import legacyFixture from '../../fixtures/study-report/view-v1.json';
+import advancedFixture from '../../fixtures/study-report/view-advanced-v2.json';
 import context from '../../fixtures/study-report/context-v1.json';
 import {
   BROWSER_SCRIPT,
@@ -23,7 +25,54 @@ beforeAll(() => {
 
 const copy = () => JSON.parse(JSON.stringify(fixture));
 
-describe('Study report view v1', () => {
+describe('Study report view v2 with explicit legacy presentation', () => {
+  it('keeps legacy presentation validation explicit while export remains bound to renderer2.0.0', async () => {
+    expect(() => validateReportView(legacyFixture)).toThrow('/version');
+    expect(validateReportView(legacyFixture, '1.0.0')).toBe(legacyFixture);
+    expect(() => validateReportView(fixture, '1.0.0')).toThrow('/version');
+    expect(() => validateReportView(fixture, '99' as never)).toThrow('/version');
+    const legacyNull = JSON.parse(JSON.stringify(legacyFixture));
+    legacyNull.facts[0].canonicalValue = null;
+    expect(() => validateReportView(legacyNull, '1.0.0')).toThrow('/coverage');
+    const legacyExtra = JSON.parse(JSON.stringify(legacyFixture));
+    legacyExtra.facts[0].reasonCodes = [];
+    expect(() => validateReportView(legacyExtra, '1.0.0')).toThrow('/facts/0');
+    expect(() =>
+      validateReportView({ ...fixture, schemaVersion: legacyFixture.schemaVersion }),
+    ).toThrow('/version');
+    await expect(renderReport(legacyFixture, context)).rejects.toThrow('/version');
+  });
+
+  it('presents supplied parameter, statistic and undefined facts without inventing their kind or values', async () => {
+    expect(validateReportView(advancedFixture)).toBe(advancedFixture);
+    const html = await renderReport(advancedFixture, context);
+    expect(html).toContain('Parameter amount: evaluation eval-01');
+    expect(html).toContain('No LCIA method');
+    expect(html).not.toContain('activity or inventory fact');
+    expect(html).toContain('819.6');
+    expect(html).toContain('kg CO2 eq');
+    expect(html).toContain('No numeric value');
+    expect(html).toContain('Reason codes: zero_baseline_relative_undefined');
+    expect(html).toContain('baseline value is zero');
+    expect(html).toContain('No value is imputed.');
+    expect(html).toContain('eval-01 is an analysis-local evaluation, not a new Run.');
+    expect(html).toContain('Renderer 2.0.0');
+  });
+
+  it('keeps missing numeric values separate from characterization coverage and retains exact reason codes', async () => {
+    for (const coverage of ['complete', 'partial', 'unknown']) {
+      const view = copy();
+      view.facts[0].canonicalValue = null;
+      view.facts[0].coverage = coverage;
+      view.facts[0].reasonCodes = ['zero_baseline_relative_undefined', '<exact literal>'];
+      expect(validateReportView(view)).toBe(view);
+      const html = await renderReport(view, context);
+      expect(html).toContain('No numeric value');
+      expect(html).toContain('zero_baseline_relative_undefined, &lt;exact literal&gt;');
+      expect(view.facts[0].coverage).toBe(coverage);
+    }
+  });
+
   it('preserves supplied decimal spellings, exact identities and unknown values', () => {
     expect(validateReportView(fixture)).toBe(fixture);
     expect(validateRenderContext(context)).toBe(context);
@@ -220,9 +269,27 @@ describe('Study report view v1', () => {
       },
     ],
     [
-      'missing known value',
+      'missing required reason codes',
       (v: ReturnType<typeof copy>) => {
-        v.facts[0].canonicalValue = null;
+        delete v.facts[0].reasonCodes;
+      },
+    ],
+    [
+      'too many reason codes',
+      (v: ReturnType<typeof copy>) => {
+        v.facts[0].reasonCodes = Array(33).fill('reason');
+      },
+    ],
+    [
+      'empty reason code',
+      (v: ReturnType<typeof copy>) => {
+        v.facts[0].reasonCodes = [''];
+      },
+    ],
+    [
+      'oversized reason code',
+      (v: ReturnType<typeof copy>) => {
+        v.facts[0].reasonCodes = ['x'.repeat(129)];
       },
     ],
     [
@@ -371,7 +438,7 @@ describe('Study report view v1', () => {
     view.citations[0].version = 'reviewed-source';
     expect(validateReportView(view)).toBe(view);
     const html = await renderReport(view, context);
-    expect(html).toContain('No LCIA method (activity or inventory fact)');
+    expect(html).toContain('No LCIA method');
     expect(html).toContain('fill="#8b4b06"');
     view.charts[0].factIds.push(view.facts[1].factId);
     expect(() => validateReportView(view)).toThrow('/charts/0/methodRef');

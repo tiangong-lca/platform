@@ -1,6 +1,8 @@
-import { createHash, webcrypto } from 'node:crypto';
+import { webcrypto } from 'node:crypto';
 import { TextEncoder } from 'node:util';
 import view from '../../../fixtures/study-report/view-v1.json';
+import currentView from '../../../fixtures/study-report/view-v2.json';
+import advancedView from '../../../fixtures/study-report/view-advanced-v2.json';
 import context from '../../../fixtures/study-report/context-v1.json';
 import { renderStudyPreview } from '@/pages/Study/preview';
 import { renderReport } from '@/standalone/studyReport';
@@ -25,10 +27,16 @@ it('shares validated exact content while framing online previews without invente
   expect(renderStudyPreview(changed)).toContain('&lt;script&gt;literal&lt;/script&gt;');
   expect(() => renderStudyPreview({ ...view, extra: 'rejected' })).toThrow();
 });
-it('preserves exact pre-P3 export HTML bytes for the frozen baseline fixture', async () => {
-  const html = await renderReport(view, context);
-  expect(Buffer.byteLength(html)).toBe(16233);
-  expect(createHash('sha256').update(html).digest('hex')).toBe(
-    '0f90d5ef51adc47a78f1bfdd0e6ce4fba23b9f01e1224d1df3709e0286b2a4b6',
-  );
+it('dispatches old and new previews without relabelling either projection or export artifact', async () => {
+  const original = JSON.stringify(view);
+  expect(renderStudyPreview(view)).toContain('Cement at the factory gate');
+  expect(JSON.stringify(view)).toBe(original);
+  expect(renderStudyPreview(currentView)).toContain('Cement at the factory gate');
+  expect(renderStudyPreview(advancedView)).toContain('No LCIA method');
+  expect(() => renderStudyPreview({ ...view, rendererVersion: '99' })).toThrow();
+  for (const invalid of [null, 'not a projection', {}]) {
+    expect(() => renderStudyPreview(invalid)).toThrow();
+  }
+  await expect(renderReport(view, context)).rejects.toThrow('/version');
+  expect(await renderReport(currentView, context)).toContain('Renderer 2.0.0');
 });
