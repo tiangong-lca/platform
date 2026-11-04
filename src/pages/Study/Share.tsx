@@ -1,4 +1,11 @@
-import { expectType, review } from '@/services/study/api';
+import { reportClient } from '@/services/study/reportClient';
+import {
+  shareHref,
+  shareLinkSelection,
+  reportWorkflow,
+  type ReportApi,
+} from '@/services/study/links';
+import { expectType } from '@/services/study/api';
 import { downloadStudyExport } from '@/services/study/download';
 import { Alert, Button, Card, Descriptions, Space } from 'antd';
 import { FormattedMessage, useLocation } from '@umijs/max';
@@ -12,17 +19,18 @@ import {
   WriteState,
 } from './shared';
 
-function NamedShare({ id }: { id: string }) {
+function NamedShare({ id, api }: { id: string; api: ReportApi }) {
+  const client = reportClient(api);
   const t = useStudyText();
-  const query = useStudyQuery(id, async () => {
+  const query = useStudyQuery(`${api}:${id}`, async () => {
     const actions = expectType(
-      await review({ operation: 'resource.actions', resource: { type: 'share', id } }),
+      await client({ operation: 'resource.actions', resource: { type: 'share', id } }),
       'actions',
     );
-    const projection = expectType(await review({ operation: 'share.view', shareId: id }), 'view');
+    const projection = expectType(await client({ operation: 'share.view', shareId: id }), 'view');
     return { actions, projection, preview: renderStudyPreview(projection.view) };
   });
-  const write = useStudyWrite(query.refresh, `share:${id}`);
+  const write = useStudyWrite(query.refresh, reportWorkflow('share', id, api));
   const share = query.data?.projection.share;
   return (
     <QueryState {...query} retry={query.refresh}>
@@ -36,7 +44,11 @@ function NamedShare({ id }: { id: string }) {
             <Descriptions
               column={1}
               items={[
-                { key: 'share', label: t('shares'), children: share.shareId },
+                {
+                  key: 'share',
+                  label: t('shares'),
+                  children: <a href={`#${shareHref(share.shareId, api)}`}>{share.shareId}</a>,
+                },
                 { key: 'recipient', label: t('recipient'), children: share.recipientId },
                 { key: 'expiry', label: t('expires'), children: share.expiresAt },
                 {
@@ -57,7 +69,13 @@ function NamedShare({ id }: { id: string }) {
                 !!write.pending
               }
               loading={write.busy}
-              onClick={() => write.run(() => downloadStudyExport('share', id))}
+              onClick={() =>
+                write.run(() =>
+                  api === 'v5'
+                    ? downloadStudyExport('share', id, 'v5')
+                    : downloadStudyExport('share', id),
+                )
+              }
             >
               {t('download')}
             </Button>
@@ -78,12 +96,16 @@ function NamedShare({ id }: { id: string }) {
 
 export default function StudySharePage() {
   const { search } = useLocation();
-  const id = new URLSearchParams(search).get('id') ?? '';
+  const selected = shareLinkSelection(search);
   const identity = useStudyIdentity();
   return (
     <div style={{ overflowWrap: 'anywhere', minWidth: 0 }}>
-      {/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u.test(id) ? (
-        <NamedShare key={`${identity}:${id}`} id={id} />
+      {selected ? (
+        <NamedShare
+          key={`${identity}:${selected.api}:${selected.id}`}
+          id={selected.id}
+          api={selected.api}
+        />
       ) : (
         <Alert type='error' title={<FormattedMessage id='pages.study.invalidLink' />} />
       )}

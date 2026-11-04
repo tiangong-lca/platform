@@ -1,3 +1,4 @@
+import { reportHref } from '@/services/study/links';
 import { resolveRouteViewState } from '@/services/general/routeViewState';
 import {
   analysis,
@@ -43,8 +44,6 @@ import styles from './index.less';
 import StudyTaskProgress from './TaskProgress';
 import { resumeLightEdit, type EditRecovery } from './recovery';
 
-const reportHref = (id: string, hash: string) =>
-  `/study-report?id=${encodeURIComponent(id)}&hash=${encodeURIComponent(hash)}`;
 const studyHref = (id: string) => `/studies?id=${encodeURIComponent(id)}`;
 type ResourcePage = CoreResource<'resourcePage'>;
 
@@ -883,7 +882,7 @@ function Workbench({ id, tab }: { id: string; tab: string }) {
                         />
                         <Button
                           disabled={
-                            !data.actions.actions.includes('member.set') ||
+                            !data.actions.actions.some((operation) => operation === 'member.set') ||
                             !memberId ||
                             write.busy ||
                             !!write.pending

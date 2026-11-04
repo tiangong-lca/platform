@@ -1,6 +1,6 @@
 /** Platform-owned view protocol. It is not a numerical or authorization protocol. */
-export const VIEW_SCHEMA = 'lca.study-report-view.v1' as const;
-export const RENDERER_VERSION = '1.0.0' as const;
+export const VIEW_SCHEMA = 'lca.study-report-view.v2' as const;
+export const RENDERER_VERSION = '2.0.0' as const;
 
 export type MethodRef = { id: string; version: string };
 export type CalculationContractRef = {
@@ -16,11 +16,10 @@ export type ReportFact = {
   canonicalValue: string | null;
   unit: string;
   coverage: 'complete' | 'partial' | 'unknown';
+  reasonCodes: string[];
   provenance: { type: 'runResult' | 'analysisFacts'; id: string; contentHash: string };
 };
 export type ReportViewModel = {
-  schemaVersion: typeof VIEW_SCHEMA;
-  rendererVersion: typeof RENDERER_VERSION;
   report: {
     studyId: string;
     reportRevisionId: string;
@@ -42,7 +41,6 @@ export type ReportViewModel = {
     profileId: string;
     calculationContractRef: CalculationContractRef;
   }[];
-  facts: ReportFact[];
   sections: {
     sectionId: string;
     title: string;
@@ -70,7 +68,18 @@ export type ReportViewModel = {
     reviewIds: string[];
     finalization: 'not_finalized' | 'finalized';
   };
-};
+} & (
+  | {
+      schemaVersion: typeof VIEW_SCHEMA;
+      rendererVersion: typeof RENDERER_VERSION;
+      facts: ReportFact[];
+    }
+  | {
+      schemaVersion: 'lca.study-report-view.v1';
+      rendererVersion: '1.0.0';
+      facts: Omit<ReportFact, 'reasonCodes'>[];
+    }
+);
 
 /** Separate from projection bytes; no embedded key, signature or trust assertion is accepted. */
 export type RenderContext = {
@@ -194,7 +203,10 @@ export function isCanonicalDecimal(value: unknown): value is string {
   );
 }
 
-export function validateReportView(input: unknown): ReportViewModel {
+export function validateReportView(
+  input: unknown,
+  expectedRendererVersion: ReportViewModel['rendererVersion'] = RENDERER_VERSION,
+): ReportViewModel {
   const v = record(
     input,
     [
@@ -216,7 +228,10 @@ export function validateReportView(input: unknown): ReportViewModel {
     '/',
   );
   requireValue(
-    v.schemaVersion === VIEW_SCHEMA && v.rendererVersion === RENDERER_VERSION,
+    (expectedRendererVersion === RENDERER_VERSION || expectedRendererVersion === '1.0.0') &&
+      v.schemaVersion ===
+        (expectedRendererVersion === '1.0.0' ? 'lca.study-report-view.v1' : VIEW_SCHEMA) &&
+      v.rendererVersion === expectedRendererVersion,
     '/version',
   );
   const report = record(
@@ -290,6 +305,7 @@ export function validateReportView(input: unknown): ReportViewModel {
         'canonicalValue',
         'unit',
         'coverage',
+        ...(expectedRendererVersion === '1.0.0' ? [] : ['reasonCodes']),
         'provenance',
       ],
       p,
@@ -313,7 +329,17 @@ export function validateReportView(input: unknown): ReportViewModel {
       `${p}/canonicalValue`,
     );
     choice(fact.coverage, ['complete', 'partial', 'unknown'], `${p}/coverage`);
-    requireValue((fact.canonicalValue === null) === (fact.coverage === 'unknown'), `${p}/coverage`);
+    requireValue(
+      expectedRendererVersion === '1.0.0'
+        ? (fact.canonicalValue === null) === (fact.coverage === 'unknown')
+        : fact.coverage !== 'unknown' || fact.canonicalValue === null,
+      `${p}/coverage`,
+    );
+    if (expectedRendererVersion !== '1.0.0') {
+      array(fact.reasonCodes, `${p}/reasonCodes`, 32).forEach((code, index) =>
+        text(code, `${p}/reasonCodes/${index}`, 128),
+      );
+    }
     const source = record(fact.provenance, ['type', 'id', 'contentHash'], `${p}/provenance`);
     choice(source.type, ['runResult', 'analysisFacts'], `${p}/provenance/type`);
     id(source.id, `${p}/provenance/id`);

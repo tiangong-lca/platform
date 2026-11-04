@@ -577,7 +577,7 @@ it('binds direct review, one-use OAuth delegation and internal finalization to e
 
 it('uses finalization-bound export result for named share creation and exact revocation', async () => {
   mockSearch = selectedReportSearch();
-  mockActions = ['export.request', 'share.create', 'share.list', 'share.revoke'];
+  mockActions = ['export.request', 'share.create', 'share.list'];
   mockCurrentState = {
     ...reportState,
     finalization: { finalizationId: 'final-exact' },
@@ -590,6 +590,23 @@ it('uses finalization-bound export result for named share creation and exact rev
   });
   const base = mockReview.getMockImplementation()!;
   mockReview.mockImplementation(async (request) => {
+    if (request.operation === 'resource.actions' && request.resource.type === 'share')
+      return {
+        type: 'actions',
+        resource: request.resource,
+        actions: ['share.read', 'share.revoke'],
+        corePermissions: { read: false, write: false },
+        allowedMemberRoles: [],
+      };
+    if (request.operation === 'share.read')
+      return {
+        type: 'share',
+        value: {
+          shareId: request.shareId,
+          reportRevisionId: view.report.reportRevisionId,
+          reportContentHash: view.report.contentHash,
+        },
+      };
     if (request.operation === 'share.create') {
       const result = await base(request);
       shareCommitted = true;
@@ -660,6 +677,9 @@ it('uses finalization-bound export result for named share creation and exact rev
       target: { value: 'Recipient access withdrawn' },
     });
   });
+  await waitFor(() =>
+    expect(screen.getAllByRole('button', { name: 'pages.study.revoke' })[1]).toBeEnabled(),
+  );
   await performRefreshedWrite('share.revoke', () =>
     fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.revoke' })[1]),
   );

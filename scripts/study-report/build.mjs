@@ -66,7 +66,7 @@ export async function buildRenderer({ release = false } = {}) {
     JSON.stringify(
       {
         name: '@tiangong-lca/study-report-renderer',
-        version: '1.0.0',
+        version: '2.0.0',
         type: 'module',
         description: 'Dependency-free frozen LCA Study report view',
         license: 'MIT',
@@ -119,7 +119,7 @@ export async function buildRenderer({ release = false } = {}) {
   };
   const manifestBytes = Buffer.from(JSON.stringify(manifest, null, 2) + '\n');
   fs.writeFileSync(path.join(dir, 'manifest.json'), manifestBytes);
-  const archiveName = 'study-report-renderer-1.0.0.tgz';
+  const archiveName = 'study-report-renderer-2.0.0.tgz';
   const archive = archiveFiles(
     [
       ...files.map((file) => [file.path, fs.readFileSync(path.join(dir, file.path))]),

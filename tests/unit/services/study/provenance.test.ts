@@ -18,6 +18,11 @@ it.each([
     'a590d3aa43fadf1693670af62d89b148953d7ac2e3ef82b2a5f39e33e03173dc',
     '7b545b0951fbf869eff6536b6c8e5be102e8d7bc',
   ],
+  [
+    'v5',
+    '3eea620ab4041f1a6fcfab34bd2afd275f8cbd3cbcf56ba6a187076e9bb3cf94',
+    '5b27e2e1fe05e3ff7c3a89f1aa59e8c84f244aff',
+  ],
 ])(
   'retains exact Edge-owned %s manifest, source and every original artifact byte',
   (version, hash, source) => {
