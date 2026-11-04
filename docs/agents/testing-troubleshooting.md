@@ -43,9 +43,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: cec3bac0c001beb051bf49f125523f8f5ff8d564
-lastReviewedNote: 'Platform #1419: reviewed exact qualified Dev 316b486 version 0.0.151 and unchanged Process Drawer source, complete three-way documentation merge, deterministic share-write refresh proof and regenerated locale inputs; Study/renderer behavior and single checked-push gate ownership remain unchanged.'
+lastReviewedAt: '2026-11-04'
+lastReviewedCommit: '1eec63a7f137e535c86fda6d21ccb629488bc9fc'
+lastReviewedNote: 'Platform #1419: reviewed qualified Dev 69753a4 version 0.0.152 with exact Process coverage-warning removal, complete three-way documentation bodies and canonical locale regeneration; Study runtime, renderer, codec and recovery semantics remain unchanged.'
 ---
 
 # Testing Troubleshooting
