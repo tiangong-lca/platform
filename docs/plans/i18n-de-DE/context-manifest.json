@@ -5,8 +5,8 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "a095facd0f60b0f1939c3c55038f740e58d4cba5912577b4f48c8a0160794544",
-    "auditedInputDigest": "3d978bdb731baf543002bda45360a42a6552fee0be0191db02784b43ac248031"
+    "sourceManifestDigest": "5aaed964a5539b9d5cd14a3e6eac215d1967057d6726b1cd38b9b3344fd39f9b",
+    "auditedInputDigest": "085a12852ba52816f4622be4c5e76f454bc2b83c947ba12140f5d5c4fafe66bc"
   },
   "inventory": {
     "sourceMessageCount": 3656,
@@ -47,7 +47,7 @@
     "messageCount": 3656,
     "completeCount": 3656,
     "blockedCount": 0,
-    "dossierDigest": "ec9f6286a511018a36083f71019b3bce073a76f53c633d4644d9bd9f63e9cd45",
+    "dossierDigest": "d1c2ccef035d1c654bb9269e739b2c98ed9fabbda50280ce45aeedf0e8704d36",
     "catalogDigest": "b46725051550a43c06467a963d2444da4d9708cb39e0cb11ead5f62f16832af0",
     "moduleCount": 32,
     "moduleDigest": "3b4f2df2201d552cc6e09b75bcebf64a30ac3511d401d79c50d4eb6e806195d3",
@@ -1244,7 +1244,7 @@
           "viewState": "build-preview-publication-tabs",
           "requiredEvidenceScope": "access-boundary-observed",
           "sourceDigest": "dcf2d6bf12659aa1248e45c5d5b6594b7554bf0cde7c9b4d5ecf9274949662a8",
-          "focusedTestDigest": "07248813a7df6b1f0325819ae31defdc601f2e8d7694a2424f9e70042ff16970",
+          "focusedTestDigest": "e98fb2f0e353fd16f73f626f482dcea149a8f4d705e2e1170d17358f3a1c2200",
           "plannedBrowserAssertionCount": 1,
           "plannedBrowserAssertionDigest": "bab91c736a148188c3778bd30db083f6ac1af6408c3505f399dfdebf9d510ccc",
           "derivedMessageCount": 145,
@@ -1316,7 +1316,7 @@
           "unownedVisibleLiteralCount": 0
         }
       ],
-      "rowEvidenceDigest": "b8f07ae91152d71c6f4fc1b29861c70a5d1f08cd9e88662c912b238701aa6332",
+      "rowEvidenceDigest": "cd5bcccb7859f66e4656de90975701cc9c7d0b6b5b38e6deeba0586db05006f4",
       "blockedDerivedStateCount": 0,
       "unownedVisibleLiteralCount": 0
     }
@@ -1340,5 +1340,5 @@
     "docs/plans/i18n-de-DE/style-guide.md": "b139bb9cc48a23f9b9f69efc44611daba4684c3495aa5cf4fb0ac57e3ab3994f"
   },
   "blockedContext": [],
-  "contextDigest": "0efe8ca8b50394c9a72a04b318103884992e307ac2205205cb916be963195456"
+  "contextDigest": "5b5b038ec25be179d998df877184e0fb4377df42bc2d570d2bc32cfbb96fa95c"
 }

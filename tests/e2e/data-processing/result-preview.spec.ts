@@ -197,6 +197,9 @@ test('opens exact process results with readable names, units and a usable narrow
               [flow ? 'flowInformation' : 'processInformation']: {
                 dataSetInformation: {
                   name: {
+                    treatmentStandardsRoutes: [
+                      { '@xml:lang': 'en', '#text': 'Separate treatment field' },
+                    ],
                     baseName: [
                       {
                         '@xml:lang': 'en',
@@ -326,6 +329,7 @@ test('opens exact process results with readable names, units and a usable narrow
   await expect(dialog.getByText('0.12500000', { exact: true })).toBeVisible();
   await expect(dialog.getByText('Cement, at plant', { exact: false })).toBeVisible();
   await expect(dialog.getByText(method.method_id, { exact: true })).toHaveCount(0);
+  await expect(dialog.getByText(/Separate treatment field/)).toHaveCount(0);
   await page.screenshot({
     path: testInfo.outputPath('process-lcia.png'),
     fullPage: true,
@@ -375,7 +379,10 @@ test('opens exact process results with readable names, units and a usable narrow
     if (!cached) holdNames();
     // Keyboard activation keeps the pointer stationary throughout the page change.
     await dialog.locator(`li.ant-pagination-item-${number}`).press('Enter');
-    const first = dialog.locator('tbody summary').first();
+    const first = dialog.locator('tbody .ant-table-row td:first-child span').first();
+    await expect(dialog.locator('tbody .ant-table-row code').first()).toHaveText(
+      inventory[(number - 1) * 25].flow.id,
+    );
     if (!cached) {
       await expect(first).toHaveText('…');
     }
@@ -395,12 +402,20 @@ test('opens exact process results with readable names, units and a usable narrow
     animations: 'disabled',
   });
   await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      dialog
+        .locator('tbody .ant-table-row td')
+        .first()
+        .evaluate((el) => el.getBoundingClientRect().width),
+    )
+    .toBeGreaterThan(80);
   await completeAmount();
   await dialog.locator('.ant-drawer-body').evaluate((body) => (body.scrollTop = 0));
   await expect
     .poll(() =>
       dialog
-        .locator('tbody summary')
+        .locator('tbody .ant-table-row td:first-child span')
         .first()
         .evaluate((summary) => {
           const range = document.createRange();

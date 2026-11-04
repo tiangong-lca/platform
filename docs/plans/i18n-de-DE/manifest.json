@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "3d978bdb731baf543002bda45360a42a6552fee0be0191db02784b43ac248031",
+    "auditedInputDigest": "085a12852ba52816f4622be4c5e76f454bc2b83c947ba12140f5d5c4fafe66bc",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -65038,7 +65038,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 784,
+          "line": 792,
           "column": 26,
           "symbol": "content",
           "defaultMessage": "Advanced data",
@@ -65053,7 +65053,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 784,
+              "line": 792,
               "column": 26,
               "kind": "messageHelper"
             }
@@ -65121,7 +65121,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 503,
+          "line": 510,
           "column": 14,
           "symbol": "lciColumns",
           "defaultMessage": "Amount",
@@ -65136,7 +65136,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 503,
+              "line": 510,
               "column": 14,
               "kind": "messageHelper"
             }
@@ -65204,7 +65204,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 857,
+          "line": 865,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Verified artifacts",
@@ -65219,7 +65219,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 857,
+              "line": 865,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -65287,7 +65287,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 788,
+          "line": 796,
           "column": 26,
           "symbol": "content",
           "defaultMessage": "Audit evidence",
@@ -65302,7 +65302,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 788,
+              "line": 796,
               "column": 26,
               "kind": "messageHelper"
             }
@@ -65370,7 +65370,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 659,
+          "line": 666,
           "column": 80,
           "symbol": "content",
           "defaultMessage": "Incomplete / blocked",
@@ -65379,7 +65379,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 872,
+          "line": 880,
           "column": 29,
           "symbol": "content",
           "defaultMessage": "Incomplete / blocked",
@@ -65394,13 +65394,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 659,
+              "line": 666,
               "column": 80,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 872,
+              "line": 880,
               "column": 29,
               "kind": "messageHelper"
             }
@@ -65468,7 +65468,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 871,
+          "line": 879,
           "column": 29,
           "symbol": "content",
           "defaultMessage": "Complete",
@@ -65483,7 +65483,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 871,
+              "line": 879,
               "column": 29,
               "kind": "messageHelper"
             }
@@ -65551,7 +65551,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 891,
+          "line": 899,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Bundle hash",
@@ -65566,7 +65566,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 891,
+              "line": 899,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -65634,7 +65634,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 659,
+          "line": 666,
           "column": 21,
           "symbol": "content",
           "defaultMessage": "Coverage",
@@ -65643,7 +65643,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 868,
+          "line": 876,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Coverage",
@@ -65658,13 +65658,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 659,
+              "line": 666,
               "column": 21,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 868,
+              "line": 876,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -65732,7 +65732,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 492,
+          "line": 499,
           "column": 14,
           "symbol": "lciColumns",
           "defaultMessage": "Direction",
@@ -65741,7 +65741,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 699,
+          "line": 706,
           "column": 33,
           "symbol": "content",
           "defaultMessage": "Direction",
@@ -65750,7 +65750,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 700,
+          "line": 707,
           "column": 34,
           "symbol": "content",
           "defaultMessage": "Direction",
@@ -65765,19 +65765,19 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 492,
+              "line": 499,
               "column": 14,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 699,
+              "line": 706,
               "column": 33,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 700,
+              "line": 707,
               "column": 34,
               "kind": "messageHelper"
             }
@@ -65845,7 +65845,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 647,
+          "line": 654,
           "column": 12,
           "symbol": "productDownloadCards",
           "defaultMessage": "Download",
@@ -65854,7 +65854,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 807,
+          "line": 815,
           "column": 24,
           "symbol": "content",
           "defaultMessage": "Download",
@@ -65869,13 +65869,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 647,
+              "line": 654,
               "column": 12,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 807,
+              "line": 815,
               "column": 24,
               "kind": "messageHelper"
             }
@@ -65943,7 +65943,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 762,
+          "line": 770,
           "column": 20,
           "symbol": "content",
           "defaultMessage": "Downloads",
@@ -65958,7 +65958,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 762,
+              "line": 770,
               "column": 20,
               "kind": "messageHelper"
             }
@@ -66251,7 +66251,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 852,
+          "line": 860,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Factor hash",
@@ -66266,7 +66266,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 852,
+              "line": 860,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -66334,7 +66334,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 689,
+          "line": 696,
           "column": 33,
           "symbol": "content",
           "defaultMessage": "Flow UUID",
@@ -66343,7 +66343,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 690,
+          "line": 697,
           "column": 34,
           "symbol": "content",
           "defaultMessage": "Flow UUID",
@@ -66358,13 +66358,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 689,
+              "line": 696,
               "column": 33,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 690,
+              "line": 697,
               "column": 34,
               "kind": "messageHelper"
             }
@@ -66432,7 +66432,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 881,
+          "line": 889,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "LCIA methods",
@@ -66447,7 +66447,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 881,
+              "line": 889,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -66515,7 +66515,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 554,
+          "line": 561,
           "column": 17,
           "symbol": "CalculationBundlePanel",
           "defaultMessage": "Legacy LCIA-only result set: no Calculation Bundle or directional LCI is available.",
@@ -66530,7 +66530,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 554,
+              "line": 561,
               "column": 17,
               "kind": "messageHelper"
             }
@@ -66598,8 +66598,8 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 485,
-          "column": 16,
+          "line": 482,
+          "column": 18,
           "symbol": "lciColumns",
           "defaultMessage": "Location",
           "defaultMessageExpression": null
@@ -66613,8 +66613,8 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 485,
-              "column": 16,
+              "line": 482,
+              "column": 18,
               "kind": "messageHelper"
             }
           ]
@@ -66740,7 +66740,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 845,
+          "line": 853,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Method identity hash",
@@ -66755,7 +66755,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 845,
+              "line": 853,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -66823,7 +66823,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 599,
+          "line": 606,
           "column": 23,
           "symbol": "processControl",
           "defaultMessage": "Process",
@@ -66838,7 +66838,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 599,
+              "line": 606,
               "column": 23,
               "kind": "messageHelper"
             }
@@ -66906,7 +66906,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 876,
+          "line": 884,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Processes",
@@ -66921,7 +66921,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 876,
+              "line": 884,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -66989,7 +66989,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 630,
+          "line": 637,
           "column": 35,
           "symbol": "productDownloadCards",
           "defaultMessage": "records",
@@ -67004,7 +67004,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 630,
+              "line": 637,
               "column": 35,
               "kind": "messageHelper"
             }
@@ -67072,7 +67072,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 771,
+          "line": 779,
           "column": 26,
           "symbol": "content",
           "defaultMessage": "Refresh secure links",
@@ -67087,7 +67087,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 771,
+              "line": 779,
               "column": 26,
               "kind": "messageHelper"
             }
@@ -67155,7 +67155,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 780,
+          "line": 788,
           "column": 26,
           "symbol": "content",
           "defaultMessage": "Result files",
@@ -67170,7 +67170,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 780,
+              "line": 788,
               "column": 26,
               "kind": "messageHelper"
             }
@@ -67238,7 +67238,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 562,
+          "line": 569,
           "column": 12,
           "symbol": "CalculationBundlePanel",
           "defaultMessage": "Retry",
@@ -67247,7 +67247,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 671,
+          "line": 678,
           "column": 14,
           "symbol": "content",
           "defaultMessage": "Retry",
@@ -67271,13 +67271,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 562,
+              "line": 569,
               "column": 12,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 671,
+              "line": 678,
               "column": 14,
               "kind": "messageHelper"
             },
@@ -67351,7 +67351,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 863,
+          "line": 871,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Contract",
@@ -67366,7 +67366,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 863,
+              "line": 871,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -67434,7 +67434,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 835,
+          "line": 843,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Selection hash",
@@ -67449,7 +67449,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 835,
+              "line": 843,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -67517,7 +67517,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 886,
+          "line": 894,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Snapshot",
@@ -67532,7 +67532,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 886,
+              "line": 894,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -67600,7 +67600,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 840,
+          "line": 848,
           "column": 30,
           "symbol": "content",
           "defaultMessage": "Snapshot hash",
@@ -67615,7 +67615,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 840,
+              "line": 848,
               "column": 30,
               "kind": "messageHelper"
             }
@@ -67742,7 +67742,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 510,
+          "line": 517,
           "column": 14,
           "symbol": "lciColumns",
           "defaultMessage": "Unit",
@@ -67751,7 +67751,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 536,
+          "line": 543,
           "column": 16,
           "symbol": "lciaColumns",
           "defaultMessage": "Unit",
@@ -67766,13 +67766,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 510,
+              "line": 517,
               "column": 14,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 536,
+              "line": 543,
               "column": 16,
               "kind": "messageHelper"
             }
@@ -67840,8 +67840,8 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 481,
-          "column": 14,
+          "line": 480,
+          "column": 16,
           "symbol": "lciColumns",
           "defaultMessage": "Version",
           "defaultMessageExpression": null
@@ -67849,7 +67849,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 527,
+          "line": 534,
           "column": 16,
           "symbol": "lciaColumns",
           "defaultMessage": "Version",
@@ -67864,13 +67864,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 481,
-              "column": 14,
+              "line": 480,
+              "column": 16,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 527,
+              "line": 534,
               "column": 16,
               "kind": "messageHelper"
             }
@@ -77258,7 +77258,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 515,
+          "line": 522,
           "column": 16,
           "symbol": "lciaColumns",
           "defaultMessage": "LCIA method",
@@ -77291,7 +77291,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 515,
+              "line": 522,
               "column": 16,
               "kind": "messageHelper"
             },
@@ -79337,7 +79337,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 531,
+          "line": 538,
           "column": 16,
           "symbol": "lciaColumns",
           "defaultMessage": "Value",
@@ -79370,7 +79370,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 531,
+              "line": 538,
               "column": 16,
               "kind": "messageHelper"
             },
@@ -84640,7 +84640,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 497,
+          "line": 504,
           "column": 13,
           "symbol": "lciColumns",
           "defaultMessage": "Input",
@@ -84649,7 +84649,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 709,
+          "line": 716,
           "column": 32,
           "symbol": "content",
           "defaultMessage": "Input",
@@ -84664,13 +84664,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 497,
+              "line": 504,
               "column": 13,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 709,
+              "line": 716,
               "column": 32,
               "kind": "messageHelper"
             }
@@ -84904,7 +84904,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 665,
+          "line": 672,
           "column": 14,
           "symbol": "content",
           "defaultMessage": "Some names are unavailable. Exact identifiers remain visible; results are unchanged.",
@@ -84919,7 +84919,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 665,
+              "line": 672,
               "column": 14,
               "kind": "messageHelper"
             }
@@ -85085,7 +85085,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 499,
+          "line": 506,
           "column": 15,
           "symbol": "lciColumns",
           "defaultMessage": "Output",
@@ -85094,7 +85094,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 713,
+          "line": 720,
           "column": 32,
           "symbol": "content",
           "defaultMessage": "Output",
@@ -85109,13 +85109,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 499,
+              "line": 506,
               "column": 15,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 713,
+              "line": 720,
               "column": 32,
               "kind": "messageHelper"
             }
@@ -85183,7 +85183,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 585,
+          "line": 592,
           "column": 16,
           "symbol": "resultNotice",
           "defaultMessage": "This process version is not included in this calculation.",
@@ -85198,7 +85198,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 585,
+              "line": 592,
               "column": 16,
               "kind": "messageHelper"
             }
@@ -85349,7 +85349,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 609,
+          "line": 616,
           "column": 16,
           "symbol": "processControl",
           "defaultMessage": "Dataset reference quantity",
@@ -85364,7 +85364,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 609,
+              "line": 616,
               "column": 16,
               "kind": "messageHelper"
             }
@@ -86376,7 +86376,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 909,
+          "line": 917,
           "column": 13,
           "symbol": "CalculationBundlePanel",
           "defaultMessage": "Process results",
@@ -86400,7 +86400,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 909,
+              "line": 917,
               "column": 13,
               "kind": "messageHelper"
             },
@@ -87766,7 +87766,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 826,
+          "line": 834,
           "column": 22,
           "symbol": "content",
           "defaultMessage": "Technical evidence",
@@ -87808,7 +87808,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 826,
+              "line": 834,
               "column": 22,
               "kind": "messageHelper"
             },
@@ -88226,7 +88226,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 577,
+          "line": 584,
           "column": 16,
           "symbol": "resultNotice",
           "defaultMessage": "Exports",
@@ -88235,7 +88235,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 908,
+          "line": 916,
           "column": 13,
           "symbol": "CalculationBundlePanel",
           "defaultMessage": "Exports",
@@ -88259,13 +88259,13 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 577,
+              "line": 584,
               "column": 16,
               "kind": "messageHelper"
             },
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 908,
+              "line": 916,
               "column": 13,
               "kind": "messageHelper"
             },
@@ -213176,7 +213176,7 @@
         {
           "kind": "messageHelper",
           "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-          "line": 615,
+          "line": 622,
           "column": 16,
           "symbol": "processControl",
           "defaultMessage": "Reference flow(s)",
@@ -213236,7 +213236,7 @@
           "locations": [
             {
               "path": "src/pages/DataProcessing/CalculationBundlePanel.tsx",
-              "line": 615,
+              "line": 622,
               "column": 16,
               "kind": "messageHelper"
             },

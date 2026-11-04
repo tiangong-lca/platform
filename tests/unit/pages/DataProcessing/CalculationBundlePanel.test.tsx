@@ -335,7 +335,7 @@ describe('CalculationBundlePanel', () => {
       });
       fireEvent.click(screen.getByTestId('tab-lci'));
       expect(screen.queryByText('stale-flow')).not.toBeInTheDocument();
-      expect(screen.getByText('flow-0', { selector: 'summary' })).toBeInTheDocument();
+      expect(screen.getByText('flow-0', { selector: 'code' })).toBeInTheDocument();
     },
   );
 
@@ -427,9 +427,9 @@ describe('CalculationBundlePanel', () => {
     expect(await screen.findByText('Process results')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('tab-lci'));
     await waitFor(() =>
-      expect(screen.getByText('flow-1', { selector: 'summary' })).toBeInTheDocument(),
+      expect(screen.getByText('flow-1', { selector: 'code' })).toBeInTheDocument(),
     );
-    expect(screen.getByText(/Location · CN/)).toBeInTheDocument();
+    expect(screen.getByTitle(/Location · CN/)).toBeInTheDocument();
     expect(screen.getByText('12.500000')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('tab-lcia'));
@@ -485,9 +485,9 @@ describe('CalculationBundlePanel', () => {
       />,
     );
     await waitFor(() =>
-      expect(screen.getByText('flow-0', { selector: 'summary' })).toBeInTheDocument(),
+      expect(screen.getByText('flow-0', { selector: 'code' })).toBeInTheDocument(),
     );
-    expect(screen.queryByText(/Location ·/)).not.toBeInTheDocument();
+    expect(screen.queryByTitle(/Location ·/)).not.toBeInTheDocument();
 
     expect(screen.queryByRole('button', { name: 'Refresh secure links' })).not.toBeInTheDocument();
   });

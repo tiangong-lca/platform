@@ -326,12 +326,12 @@ const CalculationBundlePanel = ({
 
   const displayName = processName || resolvedProcessName;
   const reference = selectedProcess?.quantitativeReference;
-  const flowLabel = (flow: ResultReference) => {
+  const flowLabel = (flow: ResultReference, unavailable = flow.id) => {
     const key = resultReferenceKey(flow);
     return (
       (resolvedReferences === references && flowMetadata[key]?.name) ||
       readMetadata.cachedFlowName(flow) ||
-      (resolvedReferences === references ? flow.id : '…')
+      (resolvedReferences === references ? unavailable : '…')
     );
   };
   const metadataUnavailable =
@@ -473,20 +473,27 @@ const CalculationBundlePanel = ({
     {
       title: t('pages.dataProcessing.resultView.flow', 'Flow'),
       dataIndex: ['flow', 'id'],
-      render: (id: string, row: CalculationBundleLciRecord) => (
-        <details className={styles.flowIdentity}>
-          <summary>{flowLabel(row.flow)}</summary>
-          <code>{id}</code>
-          <div>
-            {t('pages.dataProcessing.bundle.version', 'Version')} · {row.flow.version}
-          </div>
-          {row.location && (
-            <div>
-              {t('pages.dataProcessing.bundle.location', 'Location')} · {row.location}
-            </div>
-          )}
-        </details>
+      render: (_: string, row: CalculationBundleLciRecord) => (
+        <span
+          className={styles.flowName}
+          title={[
+            `${t('pages.dataProcessing.bundle.version', 'Version')} · ${row.flow.version}`,
+            row.location &&
+              `${t('pages.dataProcessing.bundle.location', 'Location')} · ${row.location}`,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+        >
+          {flowLabel(row.flow, '—')}
+        </span>
       ),
+    },
+    {
+      title: 'UUID',
+      key: 'uuid',
+      width: '41%',
+      className: styles.flowUuid,
+      render: (_: unknown, row: CalculationBundleLciRecord) => <code>{row.flow.id}</code>,
     },
     {
       title: t('pages.dataProcessing.bundle.direction', 'Direction'),
@@ -721,6 +728,7 @@ const CalculationBundlePanel = ({
                   rowKey={(row: CalculationBundleLciRecord) =>
                     `${row.processIndex}:${row.flow.id}:${row.flow.version}:${row.direction}:${row.location ?? ''}`
                   }
+                  className={styles.inventoryTable}
                   columns={lciColumns}
                   dataSource={filteredRows}
                   loading={Boolean(selectedProcess) && recordStates.lci === undefined}

@@ -4,7 +4,6 @@ import {
   resolveReviewedLciaMethodIdentity,
   STATIC_LCIA_METHOD_LIST,
 } from '@/services/lciaMethods/evidence';
-import { genFlowName } from '@/services/flows/util';
 import { genProcessName } from '@/services/processes/util';
 
 export type ResultReference = { id: string; version: string };
@@ -37,7 +36,7 @@ export function createResultMetadataReader(language: string) {
             ?.dataSetInformation;
         const name =
           kind === 'flows'
-            ? genFlowName(info?.name, language)
+            ? getLangText(info?.name?.baseName, language)
             : genProcessName(info?.name, language);
         return name && name !== '-' ? { name } : null;
       })
