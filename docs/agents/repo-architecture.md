@@ -27,8 +27,8 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: c0428f339093f261bc6aa72c3ba33af6c924dc01
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
 lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
 related:
   - ../AGENTS.md
