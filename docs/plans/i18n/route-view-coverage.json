@@ -98,6 +98,15 @@
           "kind": "focused-tests",
           "testPaths": ["tests/unit/pages/NationalCarbonDashboard/index.test.tsx"]
         }
+      },
+      {
+        "registryId": "study-view",
+        "sourcePaths": ["src/pages/Study/index.tsx"],
+        "variantIds": ["overview", "model", "results", "reports"],
+        "proof": {
+          "kind": "focused-tests",
+          "testPaths": ["tests/unit/pages/Study/pages.test.tsx"]
+        }
       }
     ]
   },
@@ -452,7 +461,7 @@
       "schemaVersion": "tiangong.i18n-semantic-e2e-evidence.v2",
       "schemaPath": "docs/plans/i18n/semantic-e2e-evidence.schema.json",
       "evidencePath": ".local/e2e-release/semantic-e2e-evidence.json",
-      "requiredAssertionCount": 61,
+      "requiredAssertionCount": 64,
       "requiredLocales": ["zh-CN", "en-US", "de-DE", "fr-FR"],
       "requiredBrowsers": ["chromium", "firefox", "webkit"],
       "browserCoverage": {
@@ -1822,6 +1831,60 @@
       "visible": {
         "kind": "locale-messages",
         "messageIds": ["pages.publishedResults.invalidLink"]
+      }
+    },
+    "rv.studies.localized": {
+      "kind": "localized-view",
+      "localeTransition": "storage-reload",
+      "requiredScenarios": ["route"],
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/studies",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/studies",
+        "hashQuery": {}
+      },
+      "visible": {
+        "kind": "locale-messages",
+        "messageIds": ["pages.study.title"]
+      }
+    },
+    "rv.study-report.localized": {
+      "kind": "localized-view",
+      "localeTransition": "storage-reload",
+      "requiredScenarios": ["route"],
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/study-report",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/study-report",
+        "hashQuery": {}
+      },
+      "visible": {
+        "kind": "locale-messages",
+        "messageIds": ["pages.study.invalidLink"]
+      }
+    },
+    "rv.study-share.localized": {
+      "kind": "localized-view",
+      "localeTransition": "storage-reload",
+      "requiredScenarios": ["route"],
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/study-share",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/study-share",
+        "hashQuery": {}
+      },
+      "visible": {
+        "kind": "locale-messages",
+        "messageIds": ["pages.study.invalidLink"]
       }
     }
   },
@@ -3401,6 +3464,142 @@
         "plannedBrowserAssertions": [
           "invalid identity renders the localized error",
           "exact Derived Result reads without source lookup; frozen units and values stay intact"
+        ]
+      },
+      "unownedStaticContent": 0,
+      "blockedContext": 0
+    },
+    {
+      "route": "/studies",
+      "viewState": "study-workbench",
+      "executableAssertionId": "rv.studies.localized",
+      "trigger": "Open the authenticated Study entry or an exact revision/share route; missing identities fail closed.",
+      "component": "src/pages/Study/index.tsx",
+      "accessContext": "authenticated-session-required; server-derived exact resource actions; no anonymous report access",
+      "copySources": {
+        "sourcePaths": [
+          "src/pages/Study/index.tsx",
+          "src/pages/Study/shared.tsx",
+          "src/locales/en-US/pages_study.ts",
+          "src/pages/Study/TaskProgress.tsx"
+        ],
+        "localeMessageIds": ["pages.study.title"],
+        "localeMessageIdPrefixes": ["pages.study."],
+        "declaredFallbacks": []
+      },
+      "visibleStates": [
+        "loading",
+        "ready",
+        "error",
+        "retry",
+        "empty",
+        "disabled",
+        "exact-id",
+        "selected-view"
+      ],
+      "targetCoverage": {
+        "localeScope": "all-registry-locales",
+        "ownership": "shared locale catalog",
+        "structureAudit": "All four locale catalogs retain exact Study keys; standalone projection copy remains the separately governed English reading language.",
+        "missingContent": 0
+      },
+      "proof": {
+        "requiredEvidenceScope": "internal-localization",
+        "focusedTests": [
+          "tests/unit/pages/Study/pages.test.tsx",
+          "tests/unit/pages/Study/interactions.test.tsx",
+          "tests/unit/pages/Study/recoveryHooks.test.tsx"
+        ],
+        "plannedBrowserAssertions": [
+          "authenticated exact identity route and localized denial",
+          "identity switching suppresses prior data; keyboard and narrow layouts remain usable"
+        ]
+      },
+      "unownedStaticContent": 0,
+      "blockedContext": 0
+    },
+    {
+      "route": "/study-report",
+      "viewState": "exact-report-review",
+      "executableAssertionId": "rv.study-report.localized",
+      "trigger": "Open the authenticated Study entry or an exact revision/share route; missing identities fail closed.",
+      "component": "src/pages/Study/Report.tsx",
+      "accessContext": "authenticated-session-required; server-derived exact resource actions; no anonymous report access",
+      "copySources": {
+        "sourcePaths": [
+          "src/pages/Study/Report.tsx",
+          "src/pages/Study/shared.tsx",
+          "src/locales/en-US/pages_study.ts"
+        ],
+        "localeMessageIds": ["pages.study.invalidLink"],
+        "localeMessageIdPrefixes": ["pages.study."],
+        "declaredFallbacks": []
+      },
+      "visibleStates": [
+        "loading",
+        "ready",
+        "error",
+        "retry",
+        "empty",
+        "disabled",
+        "exact-id",
+        "exact-hash"
+      ],
+      "targetCoverage": {
+        "localeScope": "all-registry-locales",
+        "ownership": "shared locale catalog",
+        "structureAudit": "All four locale catalogs retain exact Study keys; standalone projection copy remains the separately governed English reading language.",
+        "missingContent": 0
+      },
+      "proof": {
+        "requiredEvidenceScope": "internal-localization",
+        "focusedTests": [
+          "tests/unit/pages/Study/pages.test.tsx",
+          "tests/unit/pages/Study/interactions.test.tsx",
+          "tests/unit/pages/Study/recoveryHooks.test.tsx"
+        ],
+        "plannedBrowserAssertions": [
+          "authenticated exact identity route and localized denial",
+          "identity switching suppresses prior data; keyboard and narrow layouts remain usable"
+        ]
+      },
+      "unownedStaticContent": 0,
+      "blockedContext": 0
+    },
+    {
+      "route": "/study-share",
+      "viewState": "named-report-share",
+      "executableAssertionId": "rv.study-share.localized",
+      "trigger": "Open the authenticated Study entry or an exact revision/share route; missing identities fail closed.",
+      "component": "src/pages/Study/Share.tsx",
+      "accessContext": "authenticated-session-required; server-derived exact resource actions; no anonymous report access",
+      "copySources": {
+        "sourcePaths": [
+          "src/pages/Study/Share.tsx",
+          "src/pages/Study/shared.tsx",
+          "src/locales/en-US/pages_study.ts"
+        ],
+        "localeMessageIds": ["pages.study.invalidLink"],
+        "localeMessageIdPrefixes": ["pages.study."],
+        "declaredFallbacks": []
+      },
+      "visibleStates": ["loading", "ready", "error", "retry", "empty", "disabled", "exact-id"],
+      "targetCoverage": {
+        "localeScope": "all-registry-locales",
+        "ownership": "shared locale catalog",
+        "structureAudit": "All four locale catalogs retain exact Study keys; standalone projection copy remains the separately governed English reading language.",
+        "missingContent": 0
+      },
+      "proof": {
+        "requiredEvidenceScope": "internal-localization",
+        "focusedTests": [
+          "tests/unit/pages/Study/pages.test.tsx",
+          "tests/unit/pages/Study/interactions.test.tsx",
+          "tests/unit/pages/Study/recoveryHooks.test.tsx"
+        ],
+        "plannedBrowserAssertions": [
+          "authenticated exact identity route and localized denial",
+          "identity switching suppresses prior data; keyboard and narrow layouts remain usable"
         ]
       },
       "unownedStaticContent": 0,

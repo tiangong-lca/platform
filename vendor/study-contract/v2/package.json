@@ -1,0 +1,23 @@
+{
+  "name": "@tiangong-lca/study-contract",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs"
+    }
+  },
+  "files": [
+    "index.mjs",
+    "index.d.ts",
+    "request.schema.json",
+    "response.schema.json",
+    "manifest.json",
+    "LICENSE.zod"
+  ],
+  "engines": {
+    "node": ">=24.19.0 <25"
+  }
+}

@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 2b6ac940e0c23317fa50d1bc0781210defbf036e
-lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
+lastReviewedCommit: 6a3de4d3c25045992bf0d579a880eb325388b919
+lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -154,6 +154,8 @@ The independent `.github/workflows/i18n-semantic-e2e.yml` workflow is a credenti
 - every invocation uses no production credentials, permits no production writes, and runs the complete hermetic semantic qualification
 - select an open business PR branch or exact SHA before `release:to-dev` when its change risk warrants browser evidence; a failure is fixed and rerun on that same PR
 - it always executes the content-addressed qualification's prebuilt candidate, closed simulator, complete Chromium matrix, and Firefox/WebKit critical scenarios; it is not a required release check and no release stage consumes its proof
+
+The closed semantic simulator handles the Study landing page only through an owner-codec-validated V2 `study.list` first page (`cursor:null`, `limit:25`) with an empty result. It validates the exact synthetic origin, path, query and publishable key, denies unauthenticated personas, and rejects all other Study requests. This fixture does not widen the production request guard or qualify real Study data/authorization; actual authenticated Study acceptance has its separate workspace evidence.
 
 The separate full authenticated closure is local-operator-only. It requires explicit user authorization, runtime credentials, the local candidate, `E2E_BACKEND_TARGET=production`, and `E2E_AUTHENTICATED=true`. Before Docker execution, the host controller rejects production-data mode whenever `CI` or `GITHUB_ACTIONS` is set. Only after that local check passes does it override the release image's inherited CI markers to empty inside the container; the container's safety check remains unchanged. Its two production-write guards are `E2E_ALLOW_PRODUCTION_DATA=true` and `E2E_PRODUCTION_WRITE_CONFIRMATION=I_AUTHORIZE_ONE_CODEX_E2E_PRODUCTION_PROCESS`; writing verified external evidence separately opts in with `E2E_WRITE_VERIFIED_EVIDENCE=true`. Semantic E2E GitHub Actions is never a transport for these credentials, flags, or writes.
 
@@ -385,3 +387,7 @@ For the Platform #1396 continuation, hold user hydration in the Login regression
 For the W10 hosted resource repair, run `tests/unit/e2e/environmentSmoke.test.ts`, `tests/unit/config/supabaseBrowserResources.test.ts`, `tests/unit/e2e/releaseE2ERunner.test.ts` and `tests/unit/config/supabaseBrowserWorkflow.test.ts` together. Native child-process controls preserve timeout/exit/signal and partial effects without raw output; synthetic Docker controls exercise intent/CID/inspection-before-start, exact-ID cancellation recovery, changed/unknown resources, dependency-first discovery and dependent-first cleanup. These controls do not replace fresh hosted Docker/canonical/resource evidence or qualify the historical failed cleanup.
 
 The resource mutation-boundary regression must switch daemon/source between successful cleanup effects and prove that later image/filesystem effects are never called. Stale-lock controls use real temporary-file unlink/rmdir, including native ENOTEMPTY after unlink, budget exhaustion before rmdir and file/directory inode replacement; failed effects preserve typed errno and partial readback without recursive lock removal.
+
+## Study workbench proof
+
+The [Study consumer contract](study-workbench-contract.md) owns the four views, immutable amount-edit workflow and separate exact report/named-share boundaries. Run focused `tests/unit/services/study/**` and `tests/unit/pages/Study/**` plus the portable renderer tests during iteration. Recovery proof must switch actor/client/bearer/admission during journal and claims waits, resume scenario/preparation/freeze from original IDs and immutable selection after header/card recovery, and reject foreign selections. Download proof must switch identity during SHA-256 and at the final DOM effect, assert unchanged JSON bundle bytes/media/filename and release object URLs on failure. The preview proof binds pre-P3 export HTML bytes; codec provenance proof binds unchanged contained manifests/files. Existing full coverage/build/localization gates remain required. Component mocks or controlled HTTP fixtures do not establish actual Phase P3 acceptance: retain installed-CLI and authenticated owned non-production Edge/Database/Worker browser proof, numerical expectations, unchanged predecessors, review/finalization/share denial and withdrawal/revoke/expiry, identity races, keyboard/narrow/long-table/model bounds, and original-key recovery evidence. Keep credentials out of committed/bundled files and use the workspace-owned runtime/resource receipt.

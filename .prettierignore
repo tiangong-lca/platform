@@ -21,3 +21,6 @@ CNAME
 tests/data-workflows/fixtures
 tests/data-workflows/runtime
 docs/plans/i18n-de-DE/review-log.yaml
+
+# Exact Edge-owned artifacts; provenance tests enforce original bytes.
+vendor/study-contract/
