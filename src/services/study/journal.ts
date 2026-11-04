@@ -1,9 +1,11 @@
 import * as v2 from '../../../vendor/study-contract/v2/index.mjs';
 import * as v3 from '../../../vendor/study-contract/v3/index.mjs';
 import * as v4 from '../../../vendor/study-contract/v4/index.mjs';
+import * as v5 from '../../../vendor/study-contract/v5/index.mjs';
 import { StudyRequestError } from './errors';
 
-export type StudyRequest = v2.StudyApiRequest | v3.StudyApiRequest | v4.StudyApiRequest;
+export type StudyRequest =
+  v2.StudyApiRequest | v3.StudyApiRequest | v4.StudyApiRequest | v5.StudyApiRequest;
 type MutationRequest = Extract<StudyRequest, { idempotencyKey: string }>;
 export type WriteIdentity = { actorId: string; clientId: string | null; origin: string };
 type Rejection = { code: string; requestId: string; receivedAt: number };
@@ -51,7 +53,9 @@ function storage(): Storage {
 }
 function validWorkflow(workflow: string) {
   if (
-    !/^(?:study|report|share|resource|directory):[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/u.test(workflow)
+    !/^(?:study|report|share|report5|share5|resource|directory):[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$/u.test(
+      workflow,
+    )
   )
     throw invalid();
 }
@@ -63,6 +67,8 @@ function codec(request: { schemaVersion?: unknown }) {
       return v3;
     case 'lca.study-api.v4':
       return v4;
+    case 'lca.study-api.v5':
+      return v5;
     default:
       throw invalid();
   }
@@ -72,18 +78,24 @@ function assertBinding(workflow: string, request: StudyRequest) {
     kind = workflow.slice(0, separator),
     id = workflow.slice(separator + 1);
   if (
+    ['report', 'share', 'report5', 'share5'].includes(kind) &&
+    (kind === 'report5' || kind === 'share5') !== (request.schemaVersion === 'lca.study-api.v5')
+  )
+    throw invalid();
+  if (
     kind === 'study' &&
     (('studyId' in request && request.studyId !== id) ||
       ('target' in request && request.target.type === 'study' && request.target.id !== id))
   )
     throw invalid();
   if (
-    kind === 'report' &&
+    (kind === 'report' || kind === 'report5') &&
     (('reportRevisionId' in request && request.reportRevisionId !== id) ||
       ('target' in request && request.target.type === 'reportRevision' && request.target.id !== id))
   )
     throw invalid();
-  if (kind === 'share' && 'shareId' in request && request.shareId !== id) throw invalid();
+  if ((kind === 'share' || kind === 'share5') && 'shareId' in request && request.shareId !== id)
+    throw invalid();
 }
 export function journalSnapshot(identity: WriteIdentity, workflow: string): string | null {
   validWorkflow(workflow);

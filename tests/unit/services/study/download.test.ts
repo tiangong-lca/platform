@@ -1,4 +1,5 @@
 import { parseExportBundle } from '../../../../vendor/study-contract/v4/index.mjs';
+import { parseExportBundle as parseV5ExportBundle } from '../../../../vendor/study-contract/v5/index.mjs';
 import { createHash, webcrypto } from 'node:crypto';
 import { downloadStudyExport } from '@/services/study/download';
 import { StudyRequestError } from '@/services/study/api';
@@ -115,6 +116,48 @@ it.each(['export', 'share'] as const)(
     expect(anchor.href).toBe('blob:exact-frozen-export');
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:exact-frozen-export');
     click.mockRestore();
+  },
+);
+
+it.each(['export', 'share'] as const)(
+  'downloads exact V5 %s bundle.v3 bytes through the selected family',
+  async (kind) => {
+    const current = { ...bundle, schemaVersion: 'lca.study-export-bundle.v3' };
+    const bytes = Buffer.from(JSON.stringify(canonical(current)), 'utf8');
+    const reference = {
+      byteSize: bytes.length,
+      contentHash: createHash('sha256').update(bytes).digest('hex'),
+      mediaType: 'application/json',
+    };
+    mockReview.mockResolvedValue({ ...response(kind, reference), bytes: bytes.toString('base64') });
+    const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    try {
+      await downloadStudyExport(kind, 'v5-id', 'v5');
+      expect(mockReview).toHaveBeenCalledTimes(1);
+      expect(mockReview).toHaveBeenCalledWith(
+        kind === 'share'
+          ? { operation: 'share.download', shareId: 'v5-id' }
+          : { operation: 'export.download', exportId: 'v5-id' },
+        undefined,
+        'v5',
+      );
+      const blob = (URL.createObjectURL as jest.Mock).mock.calls[0][0] as Blob;
+      const actual = new Uint8Array(await readBlob(blob));
+      expect(Array.from(actual)).toEqual(Array.from(bytes));
+      expect(JSON.parse(Buffer.from(actual).toString('utf8')).schemaVersion).toBe(
+        'lca.study-export-bundle.v3',
+      );
+      expect(parseV5ExportBundle(actual).files.map((file) => file.path)).toEqual([
+        'report.html',
+        'projection.json',
+      ]);
+      expect((click.mock.instances[0] as unknown as HTMLAnchorElement).download).toBe(
+        `study-${kind}-v5-id.json`,
+      );
+      expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:exact-frozen-export');
+    } finally {
+      click.mockRestore();
+    }
   },
 );
 

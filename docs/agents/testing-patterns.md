@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: '2026-11-04'
-lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
-lastReviewedNote: 'Platform #1437: reviewed view.v2/renderer2.0.0 independent null/coverage semantics, exact supplied reasonCodes and non-LCIA evidence, strict current exports and explicit unchanged1.0/view.v1 preview; actual P4 producer/consumer qualification remains separate. Existing gates, ownership and release authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 44da4e489dde1f9bbc2ae5cce96912fc0860fa87
+lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share family and contained codec, identity-fenced downloads and original-request journals. Existing scoped-first proof, serialized Umi work, complete 100% source coverage, exact portable-package/browser proof and hook-owned final gate remain required; actual runtime and Dev/Main/root delivery remain separate.'
 ---
 
 # Testing Patterns Reference

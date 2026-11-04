@@ -1,9 +1,17 @@
+import { reportClient } from '@/services/study/reportClient';
+import {
+  reportHref,
+  shareHref,
+  reportLinkSelection,
+  reportWorkflow,
+  type ReportApi,
+} from '@/services/study/links';
 import {
   StudyRequestError,
   expectType,
   newWriteKey,
-  review,
   type ReviewRequest,
+  type ReviewData,
 } from '@/services/study/api';
 import { downloadStudyExport } from '@/services/study/download';
 import { Button, Card, Descriptions, Divider, Input, Select, Space, Tag, Typography } from 'antd';
@@ -26,17 +34,20 @@ function ReportHistory({
   hash,
   kind,
   generation,
+  api,
 }: {
   id: string;
   hash: string;
   kind: HistoryKind;
   generation: string;
+  api: ReportApi;
 }) {
+  const client = reportClient(api);
   const [cursor, setCursor] = useState<string | null>(null);
   const t = useStudyText();
-  const query = useStudyQuery(`${id}:${hash}:${kind}:${cursor}:${generation}`, async () =>
+  const query = useStudyQuery(`${api}:${id}:${hash}:${kind}:${cursor}:${generation}`, async () =>
     expectType(
-      await review({
+      await client({
         operation: kind === 'delegation' ? 'review.delegation.list' : `${kind}.list`,
         reportRevisionId: id,
         expectedContentHash: hash,
@@ -70,7 +81,16 @@ function ReportHistory({
   );
 }
 
-export function ExactReport({ id, hash }: { id: string; hash: string }) {
+export function ExactReport({
+  id,
+  hash,
+  api = 'v4',
+}: {
+  id: string;
+  hash: string;
+  api?: ReportApi;
+}) {
+  const client = reportClient(api);
   const t = useStudyText();
   const { initialState } = useModel('@@initialState');
   const [text, setText] = useState('');
@@ -80,42 +100,42 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
   const [expiresAt, setExpiresAt] = useState('');
   const [recipientId, setRecipientId] = useState('');
   const [exportId, setExportId] = useState('');
-  const [lastResult, setLastResult] = useState<unknown>();
+  const [lastResult, setLastResult] = useState<ReviewData>();
   const [revokeId, setRevokeId] = useState('');
   const [reason, setReason] = useState('');
   const [profile, setProfile] = useState<
     'lca.study-report-unreviewed.v1' | 'lca.study-report-internal-review.v1'
   >('lca.study-report-unreviewed.v1');
-  const query = useStudyQuery(`${id}:${hash}`, async () => {
+  const query = useStudyQuery(`${api}:${id}:${hash}`, async () => {
     const [actions, capabilities] = await Promise.all([
-      review({ operation: 'resource.actions', resource: { type: 'reportRevision', id } }).then(
+      client({ operation: 'resource.actions', resource: { type: 'reportRevision', id } }).then(
         (data) => expectType(data, 'actions'),
       ),
-      review({ operation: 'capability.read' }).then((data) => expectType(data, 'capabilities')),
+      client({ operation: 'capability.read' }).then((data) => expectType(data, 'capabilities')),
     ]);
     const projection = expectType(
-      await review({ operation: 'report.view', reportRevisionId: id, expectedContentHash: hash }),
+      await client({ operation: 'report.view', reportRevisionId: id, expectedContentHash: hash }),
       'view',
     );
     return { actions, capabilities, projection, preview: renderStudyPreview(projection.view) };
   });
-  const exportActions = useStudyQuery(exportId, async () => {
+  const exportActions = useStudyQuery(`${api}:${exportId}`, async () => {
     if (!exportId) return undefined;
     const actions = expectType(
-      await review({ operation: 'resource.actions', resource: { type: 'export', id: exportId } }),
+      await client({ operation: 'resource.actions', resource: { type: 'export', id: exportId } }),
       'actions',
     );
-    const item = expectType(await review({ operation: 'export.read', exportId }), 'export').value;
+    const item = expectType(await client({ operation: 'export.read', exportId }), 'export').value;
     if (item.reportRevisionId !== id || item.reportContentHash !== hash)
       throw new StudyRequestError('REFERENCE_MISMATCH', false);
     return actions;
   });
-  const write = useStudyWrite(query.refresh, `report:${id}`);
+  const write = useStudyWrite(query.refresh, reportWorkflow('report', id, api));
   const [historyGeneration, setHistoryGeneration] = useState(0);
   const allowed = (operation: ReviewRequest['operation']) =>
     Boolean(
       query.data?.capabilities.runtimeEnabled &&
-      query.data.actions.actions.includes(operation) &&
+      query.data.actions.actions.some((available) => available === operation) &&
       !write.pending &&
       !write.busy,
     );
@@ -125,7 +145,7 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
   ) => {
     const exact = { ...body, idempotencyKey: newWriteKey() };
     write.run(async () => {
-      const result = await review(exact as ReviewRequest, `report:${id}`);
+      const result = await client(exact as ReviewRequest, reportWorkflow('report', id, api));
       setLastResult(result);
       if (result.type === 'export') setExportId(result.value.exportId);
       setHistoryGeneration((value) => value + 1);
@@ -160,7 +180,11 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
             <Descriptions
               column={1}
               items={[
-                { key: 'id', label: t('reportId'), children: id },
+                {
+                  key: 'id',
+                  label: t('reportId'),
+                  children: <a href={`#${reportHref(id, hash, api)}`}>{id}</a>,
+                },
                 { key: 'hash', label: t('hash'), children: hash },
                 {
                   key: 'validity',
@@ -186,6 +210,11 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
             />
             <WriteState write={write} />
             {lastResult !== undefined && <ExactRecord value={lastResult} />}
+            {lastResult?.type === 'share' && (
+              <a href={`#${shareHref(lastResult.value.shareId, api)}`}>
+                {t('shares')} · {lastResult.value.shareId}
+              </a>
+            )}
           </Card>
           <Card title={t('preview')}>
             <iframe
@@ -201,6 +230,7 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
               hash={hash}
               kind='comment'
               generation={String(historyGeneration)}
+              api={api}
             />
             {allowed('comment.append') && (
               <Space orientation='vertical' style={{ width: '100%' }}>
@@ -226,6 +256,7 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
               hash={hash}
               kind='review'
               generation={String(historyGeneration)}
+              api={api}
             />
             <Space wrap>
               <Select
@@ -336,6 +367,7 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
                 hash={hash}
                 kind='delegation'
                 generation={String(historyGeneration)}
+                api={api}
               />
             )}
             <Space wrap>
@@ -368,8 +400,15 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
                     ...bound,
                     finalizationId: state.finalization!.finalizationId,
                     expectedReviewStateHash: state.reviewStateHash,
-                    rendererVersion: '1.0.0',
-                    viewModelVersion: 'lca.study-report-view.v1',
+                    ...(api === 'v5'
+                      ? {
+                          rendererVersion: '2.0.0' as const,
+                          viewModelVersion: 'lca.study-report-view.v2' as const,
+                        }
+                      : {
+                          rendererVersion: '1.0.0' as const,
+                          viewModelVersion: 'lca.study-report-view.v1' as const,
+                        }),
                   })
                 }
               >
@@ -387,7 +426,13 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
                   write.busy ||
                   !!write.pending
                 }
-                onClick={() => write.run(() => downloadStudyExport('export', exportId))}
+                onClick={() =>
+                  write.run(() =>
+                    api === 'v5'
+                      ? downloadStudyExport('export', exportId, 'v5')
+                      : downloadStudyExport('export', exportId),
+                  )
+                }
               >
                 {t('download')}
               </Button>
@@ -400,6 +445,7 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
                 hash={hash}
                 kind='share'
                 generation={String(historyGeneration)}
+                api={api}
               />
             )}
             <Space wrap>
@@ -453,19 +499,18 @@ export function ExactReport({ id, hash }: { id: string; hash: string }) {
 
 export default function StudyReportPage() {
   const { search } = useLocation();
-  const params = new URLSearchParams(search);
   const identity = useStudyIdentity();
-  const id = params.get('id') ?? '',
-    hash = params.get('hash') ?? '';
-  if (!/^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u.test(id) || !/^[a-f0-9]{64}$/u.test(hash))
+  const selected = reportLinkSelection(search);
+  if (!selected)
     return (
       <Card>
         <FormattedMessage id='pages.study.invalidLink' />
       </Card>
     );
+  const { api, id, hash } = selected;
   return (
     <div style={{ overflowWrap: 'anywhere', minWidth: 0 }}>
-      <ExactReport key={`${identity}:${id}:${hash}`} id={id} hash={hash} />
+      <ExactReport key={`${identity}:${api}:${id}:${hash}`} id={id} hash={hash} api={api} />
     </div>
   );
 }

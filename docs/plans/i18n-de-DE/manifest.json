@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "4a9720e9f984f50c11896c4e2c325285dbf5394fee72360fdde3d2adf3aab67a",
+    "auditedInputDigest": "3f1ba5bee79ee9d85025c946bf6d5e037145c421bac383ce64ca4338df721ea1",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -74,7 +74,7 @@
     "activeStaticKeyCount": 2435,
     "activeDynamicKeyCount": 416,
     "reservedKeyCount": 899,
-    "productionSourceFileCount": 541,
+    "productionSourceFileCount": 543,
     "literalReferenceCount": 4474,
     "dynamicCallsiteCount": 39,
     "dynamicCallsiteSummaryCount": 39,
@@ -270310,7 +270310,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Study/Report.tsx",
-          "line": 463,
+          "line": 507,
           "column": 9,
           "symbol": "StudyReportPage",
           "defaultMessage": null,
@@ -270319,7 +270319,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Study/Share.tsx",
-          "line": 88,
+          "line": 110,
           "column": 36,
           "symbol": "StudySharePage",
           "defaultMessage": null,
@@ -273515,7 +273515,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Study/index.tsx",
-          "line": 64,
+          "line": 63,
           "column": 16,
           "symbol": "StudyList",
           "defaultMessage": null,

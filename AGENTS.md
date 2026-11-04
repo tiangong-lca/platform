@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: '2026-11-04'
-lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
-lastReviewedNote: 'Platform #1437: reviewed view.v2/renderer2.0.0 independent null/coverage semantics, exact supplied reasonCodes and non-LCIA evidence, strict current exports and explicit unchanged1.0/view.v1 preview; actual P4 producer/consumer qualification remains separate. Existing gates, ownership and release authority are unchanged.'
+lastReviewedCommit: '44da4e489dde1f9bbc2ae5cce96912fc0860fa87'
+lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share links, contained Edge5.0.0 provenance, family-bound queries and original-schema journals, selected-client collaboration/download and unchanged project/auth fences. Old V4 links and intents remain; actual runtime qualification and Main/root delivery are separate.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
