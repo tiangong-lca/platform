@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 3f45ba9121436f1b88604858864743b48420ca82
-lastReviewedNote: 'Platform #1437: reviewed online-only about:srcdoc chapter links, unchanged CSP/sandbox and immutable portable renderer, native keyboard/mouse/document/network controls across all three browser engines, source-bound locale/full-coverage obligations and pending actual V5 recovery/Dev/Main/root qualification.'
+lastReviewedCommit: 3703fac724deadeee79accc1dd0faea9797fa05e
+lastReviewedNote: 'Platform #1437: reviewed online-only srcdoc fragment repair and native version admission against the source-owned frozen browser environment rather than the package manifest range. Runtime/portable bytes unchanged by this test-only follow-up; actual journal/layout, current CI and Main/root qualification remain separate.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

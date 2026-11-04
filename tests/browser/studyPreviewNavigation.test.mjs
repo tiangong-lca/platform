@@ -25,6 +25,7 @@ const sourcePaths = [
   'pnpm-lock.yaml',
   'pnpm-workspace.yaml',
   '.nvmrc',
+  'docker/e2e/environment.json',
   'tests/browser/studyPreviewNavigation.test.mjs',
   ...execFileSync('git', ['ls-files', 'src/standalone/studyReport'], {
     cwd: root,
@@ -53,9 +54,8 @@ test(
     );
     assert.equal(
       playwrightVersion,
-      JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).devDependencies[
-        '@playwright/test'
-      ],
+      JSON.parse(fs.readFileSync(path.join(root, 'docker/e2e/environment.json'), 'utf8'))
+        .playwrightVersion,
     );
     const bindings = sourceBindings();
     const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], {
