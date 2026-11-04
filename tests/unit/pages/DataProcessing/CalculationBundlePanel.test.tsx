@@ -352,6 +352,15 @@ describe('CalculationBundlePanel', () => {
     expect(screen.getByText('Incomplete / blocked')).toBeInTheDocument();
   });
 
+  it('shows process results without reading or displaying bundle-wide coverage', async () => {
+    mockFetchText.mockResolvedValue(JSON.stringify({ complete: false }));
+    render(<CalculationBundlePanel packageId='incomplete-coverage' view='results' />);
+    fireEvent.click(await screen.findByTestId('tab-lci'));
+    expect(await screen.findByText('flow-0', { selector: 'code' })).toBeInTheDocument();
+    expect(mockFetchText).not.toHaveBeenCalled();
+    expect(screen.queryByText(/incomplete \/ blocked/i)).not.toBeInTheDocument();
+  });
+
   it('retains unknown flow directions and reports non-Error read/download failures', async () => {
     const baseRead = mockFetchRecords.getMockImplementation()!;
     mockFetchRecords.mockImplementation(async (artifact) =>
