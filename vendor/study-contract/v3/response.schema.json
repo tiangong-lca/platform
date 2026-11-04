@@ -1,0 +1,2405 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "lca.study-api.v3"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "ok": {
+          "type": "boolean",
+          "const": true
+        },
+        "data": {
+          "anyOf": [
+            {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "analysis"
+                    },
+                    "value": {
+                      "type": "object",
+                      "properties": {
+                        "analysisId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "studyId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "profileId": {
+                          "type": "string",
+                          "const": "lca.study-analysis-explicit-v1"
+                        },
+                        "config": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": {
+                              "type": "string",
+                              "const": "lca.study-analysis-config.v1"
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "contribution",
+                                "comparison"
+                              ]
+                            },
+                            "runIds": {
+                              "minItems": 1,
+                              "maxItems": 2,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                              }
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "kind",
+                            "runIds"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "configHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "execution": {
+                          "type": "object",
+                          "properties": {
+                            "jobId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "queued",
+                                "running",
+                                "waiting",
+                                "completed",
+                                "blocked",
+                                "stale",
+                                "failed",
+                                "cancelled"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "jobId",
+                            "status"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "comparability": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "not_assessed",
+                                "comparable",
+                                "not_comparable"
+                              ]
+                            },
+                            "reasonCodes": {
+                              "maxItems": 32,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              }
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "reasonCodes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "factsRef": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "type": {
+                                  "type": "string",
+                                  "const": "analysisFacts"
+                                },
+                                "id": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128,
+                                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                },
+                                "contentHash": {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{64}$"
+                                },
+                                "digestScope": {
+                                  "type": "string",
+                                  "const": "artifact_bytes_sha256"
+                                },
+                                "byteSize": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 9007199254740991
+                                },
+                                "mediaType": {
+                                  "type": "string",
+                                  "const": "application/json"
+                                },
+                                "schemaVersion": {
+                                  "type": "string",
+                                  "const": "lca.study-analysis-facts.v1"
+                                }
+                              },
+                              "required": [
+                                "type",
+                                "id",
+                                "contentHash",
+                                "digestScope",
+                                "byteSize",
+                                "mediaType",
+                                "schemaVersion"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "analysisId",
+                        "studyId",
+                        "profileId",
+                        "config",
+                        "configHash",
+                        "execution",
+                        "comparability",
+                        "factsRef"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "reportRevision"
+                    },
+                    "value": {
+                      "type": "object",
+                      "properties": {
+                        "reportRevisionId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "studyId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "parentReportRevisionId": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "authorId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "revision": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "draft",
+                            "frozen"
+                          ]
+                        },
+                        "contentHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "runIds": {
+                          "minItems": 1,
+                          "maxItems": 32,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128,
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                          }
+                        },
+                        "analysisIds": {
+                          "maxItems": 32,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128,
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                          }
+                        },
+                        "factsRefs": {
+                          "minItems": 1,
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "modelInput",
+                                  "modelSource",
+                                  "runResult",
+                                  "analysisFacts",
+                                  "reportContent",
+                                  "reportProjection",
+                                  "renderResources"
+                                ]
+                              },
+                              "id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "contentHash": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "digestScope": {
+                                "type": "string",
+                                "const": "artifact_bytes_sha256"
+                              },
+                              "byteSize": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "mediaType": {
+                                "type": "string",
+                                "enum": [
+                                  "application/json",
+                                  "application/zip",
+                                  "text/html"
+                                ]
+                              },
+                              "schemaVersion": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "id",
+                              "contentHash",
+                              "digestScope",
+                              "byteSize",
+                              "mediaType",
+                              "schemaVersion"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "contentRef": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "modelInput",
+                                "modelSource",
+                                "runResult",
+                                "analysisFacts",
+                                "reportContent",
+                                "reportProjection",
+                                "renderResources"
+                              ]
+                            },
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "contentHash": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "digestScope": {
+                              "type": "string",
+                              "const": "artifact_bytes_sha256"
+                            },
+                            "byteSize": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 9007199254740991
+                            },
+                            "mediaType": {
+                              "type": "string",
+                              "enum": [
+                                "application/json",
+                                "application/zip",
+                                "text/html"
+                              ]
+                            },
+                            "schemaVersion": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "id",
+                            "contentHash",
+                            "digestScope",
+                            "byteSize",
+                            "mediaType",
+                            "schemaVersion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "templateId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "finalization": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "not_finalized",
+                                "finalized"
+                              ]
+                            },
+                            "profileId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "reviewRequirement": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "internal",
+                                "independent"
+                              ]
+                            },
+                            "finalizedAt": {
+                              "anyOf": [
+                                {
+                                  "type": "string",
+                                  "format": "date-time",
+                                  "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                },
+                                {
+                                  "type": "null"
+                                }
+                              ]
+                            },
+                            "reviewIds": {
+                              "maxItems": 64,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              }
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "profileId",
+                            "reviewRequirement",
+                            "finalizedAt",
+                            "reviewIds"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "validitySnapshot": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "current",
+                                "superseded",
+                                "withdrawn",
+                                "unknown"
+                              ]
+                            },
+                            "checkedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            },
+                            "reasonCodes": {
+                              "maxItems": 32,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              }
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "checkedAt",
+                            "reasonCodes"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "reportRevisionId",
+                        "studyId",
+                        "parentReportRevisionId",
+                        "authorId",
+                        "revision",
+                        "status",
+                        "contentHash",
+                        "runIds",
+                        "analysisIds",
+                        "factsRefs",
+                        "contentRef",
+                        "templateId",
+                        "finalization",
+                        "validitySnapshot"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "export"
+                    },
+                    "value": {
+                      "type": "object",
+                      "properties": {
+                        "exportId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "studyId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "reportRevisionId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "reportContentHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "requested",
+                            "ready",
+                            "failed",
+                            "expired"
+                          ]
+                        },
+                        "projectionRef": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "modelInput",
+                                "modelSource",
+                                "runResult",
+                                "analysisFacts",
+                                "reportContent",
+                                "reportProjection",
+                                "renderResources"
+                              ]
+                            },
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "contentHash": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "digestScope": {
+                              "type": "string",
+                              "const": "artifact_bytes_sha256"
+                            },
+                            "byteSize": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 9007199254740991
+                            },
+                            "mediaType": {
+                              "type": "string",
+                              "enum": [
+                                "application/json",
+                                "application/zip",
+                                "text/html"
+                              ]
+                            },
+                            "schemaVersion": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "id",
+                            "contentHash",
+                            "digestScope",
+                            "byteSize",
+                            "mediaType",
+                            "schemaVersion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "grantEpoch": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 9007199254740991
+                        },
+                        "factsRefs": {
+                          "minItems": 1,
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "modelInput",
+                                  "modelSource",
+                                  "runResult",
+                                  "analysisFacts",
+                                  "reportContent",
+                                  "reportProjection",
+                                  "renderResources"
+                                ]
+                              },
+                              "id": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "contentHash": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "digestScope": {
+                                "type": "string",
+                                "const": "artifact_bytes_sha256"
+                              },
+                              "byteSize": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "mediaType": {
+                                "type": "string",
+                                "enum": [
+                                  "application/json",
+                                  "application/zip",
+                                  "text/html"
+                                ]
+                              },
+                              "schemaVersion": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "id",
+                              "contentHash",
+                              "digestScope",
+                              "byteSize",
+                              "mediaType",
+                              "schemaVersion"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "rendererVersion": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "viewModelVersion": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "resourcesRef": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "modelInput",
+                                "modelSource",
+                                "runResult",
+                                "analysisFacts",
+                                "reportContent",
+                                "reportProjection",
+                                "renderResources"
+                              ]
+                            },
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "contentHash": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "digestScope": {
+                              "type": "string",
+                              "const": "artifact_bytes_sha256"
+                            },
+                            "byteSize": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 9007199254740991
+                            },
+                            "mediaType": {
+                              "type": "string",
+                              "enum": [
+                                "application/json",
+                                "application/zip",
+                                "text/html"
+                              ]
+                            },
+                            "schemaVersion": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "id",
+                            "contentHash",
+                            "digestScope",
+                            "byteSize",
+                            "mediaType",
+                            "schemaVersion"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "actorId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "policyId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "disclosureContextHash": {
+                          "type": "string",
+                          "pattern": "^[a-f0-9]{64}$"
+                        },
+                        "disclosureDecision": {
+                          "type": "string",
+                          "enum": [
+                            "allowed",
+                            "denied"
+                          ]
+                        },
+                        "generatedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                        },
+                        "validitySnapshot": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "current",
+                                "superseded",
+                                "withdrawn",
+                                "unknown"
+                              ]
+                            },
+                            "checkedAt": {
+                              "type": "string",
+                              "format": "date-time",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                            },
+                            "reasonCodes": {
+                              "maxItems": 32,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              }
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "checkedAt",
+                            "reasonCodes"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "reviewIds": {
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128,
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                          }
+                        },
+                        "receipt": {
+                          "type": "object",
+                          "properties": {
+                            "schemaVersion": {
+                              "type": "string",
+                              "const": "lca.study-export-receipt.v2"
+                            },
+                            "manifestHash": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "keyId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "algorithm": {
+                              "type": "string",
+                              "const": "Ed25519"
+                            },
+                            "signature": {
+                              "type": "string",
+                              "pattern": "^[A-Za-z0-9_-]{85}[AQgw]$"
+                            }
+                          },
+                          "required": [
+                            "schemaVersion",
+                            "manifestHash",
+                            "keyId",
+                            "algorithm",
+                            "signature"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "bundleRef": {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "analysisFacts",
+                                "reportContent",
+                                "reportProjection",
+                                "renderResources",
+                                "reportExportBundle"
+                              ]
+                            },
+                            "id": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            },
+                            "contentHash": {
+                              "type": "string",
+                              "pattern": "^[a-f0-9]{64}$"
+                            },
+                            "digestScope": {
+                              "type": "string",
+                              "const": "artifact_bytes_sha256"
+                            },
+                            "byteSize": {
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 9007199254740991
+                            },
+                            "mediaType": {
+                              "type": "string",
+                              "enum": [
+                                "application/json",
+                                "application/zip",
+                                "text/html"
+                              ]
+                            },
+                            "schemaVersion": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128,
+                              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "id",
+                            "contentHash",
+                            "digestScope",
+                            "byteSize",
+                            "mediaType",
+                            "schemaVersion"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "exportId",
+                        "studyId",
+                        "reportRevisionId",
+                        "reportContentHash",
+                        "status",
+                        "projectionRef",
+                        "grantEpoch",
+                        "factsRefs",
+                        "rendererVersion",
+                        "viewModelVersion",
+                        "resourcesRef",
+                        "actorId",
+                        "policyId",
+                        "disclosureContextHash",
+                        "disclosureDecision",
+                        "generatedAt",
+                        "validitySnapshot",
+                        "reviewIds",
+                        "receipt",
+                        "bundleRef"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "value"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "resourcePage"
+                },
+                "studyId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "analysis",
+                    "reportRevision",
+                    "export"
+                  ]
+                },
+                "items": {
+                  "maxItems": 100,
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "analysis"
+                          },
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "analysisId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "studyId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "profileId": {
+                                "type": "string",
+                                "const": "lca.study-analysis-explicit-v1"
+                              },
+                              "config": {
+                                "type": "object",
+                                "properties": {
+                                  "schemaVersion": {
+                                    "type": "string",
+                                    "const": "lca.study-analysis-config.v1"
+                                  },
+                                  "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                      "contribution",
+                                      "comparison"
+                                    ]
+                                  },
+                                  "runIds": {
+                                    "minItems": 1,
+                                    "maxItems": 2,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "schemaVersion",
+                                  "kind",
+                                  "runIds"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "configHash": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "execution": {
+                                "type": "object",
+                                "properties": {
+                                  "jobId": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "queued",
+                                      "running",
+                                      "waiting",
+                                      "completed",
+                                      "blocked",
+                                      "stale",
+                                      "failed",
+                                      "cancelled"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "jobId",
+                                  "status"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "comparability": {
+                                "type": "object",
+                                "properties": {
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "not_assessed",
+                                      "comparable",
+                                      "not_comparable"
+                                    ]
+                                  },
+                                  "reasonCodes": {
+                                    "maxItems": 32,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "reasonCodes"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "factsRef": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "analysisFacts"
+                                      },
+                                      "id": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 128,
+                                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                      },
+                                      "contentHash": {
+                                        "type": "string",
+                                        "pattern": "^[a-f0-9]{64}$"
+                                      },
+                                      "digestScope": {
+                                        "type": "string",
+                                        "const": "artifact_bytes_sha256"
+                                      },
+                                      "byteSize": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 9007199254740991
+                                      },
+                                      "mediaType": {
+                                        "type": "string",
+                                        "const": "application/json"
+                                      },
+                                      "schemaVersion": {
+                                        "type": "string",
+                                        "const": "lca.study-analysis-facts.v1"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "id",
+                                      "contentHash",
+                                      "digestScope",
+                                      "byteSize",
+                                      "mediaType",
+                                      "schemaVersion"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "analysisId",
+                              "studyId",
+                              "profileId",
+                              "config",
+                              "configHash",
+                              "execution",
+                              "comparability",
+                              "factsRef"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "reportRevision"
+                          },
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "reportRevisionId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "studyId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "parentReportRevisionId": {
+                                "anyOf": [
+                                  {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "authorId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "revision": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "draft",
+                                  "frozen"
+                                ]
+                              },
+                              "contentHash": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "runIds": {
+                                "minItems": 1,
+                                "maxItems": 32,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128,
+                                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                }
+                              },
+                              "analysisIds": {
+                                "maxItems": 32,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128,
+                                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                }
+                              },
+                              "factsRefs": {
+                                "minItems": 1,
+                                "maxItems": 64,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "enum": [
+                                        "modelInput",
+                                        "modelSource",
+                                        "runResult",
+                                        "analysisFacts",
+                                        "reportContent",
+                                        "reportProjection",
+                                        "renderResources"
+                                      ]
+                                    },
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    },
+                                    "contentHash": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    },
+                                    "digestScope": {
+                                      "type": "string",
+                                      "const": "artifact_bytes_sha256"
+                                    },
+                                    "byteSize": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "mediaType": {
+                                      "type": "string",
+                                      "enum": [
+                                        "application/json",
+                                        "application/zip",
+                                        "text/html"
+                                      ]
+                                    },
+                                    "schemaVersion": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    }
+                                  },
+                                  "required": [
+                                    "type",
+                                    "id",
+                                    "contentHash",
+                                    "digestScope",
+                                    "byteSize",
+                                    "mediaType",
+                                    "schemaVersion"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "contentRef": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "modelInput",
+                                      "modelSource",
+                                      "runResult",
+                                      "analysisFacts",
+                                      "reportContent",
+                                      "reportProjection",
+                                      "renderResources"
+                                    ]
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "contentHash": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "digestScope": {
+                                    "type": "string",
+                                    "const": "artifact_bytes_sha256"
+                                  },
+                                  "byteSize": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "mediaType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "application/json",
+                                      "application/zip",
+                                      "text/html"
+                                    ]
+                                  },
+                                  "schemaVersion": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "id",
+                                  "contentHash",
+                                  "digestScope",
+                                  "byteSize",
+                                  "mediaType",
+                                  "schemaVersion"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "templateId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "finalization": {
+                                "type": "object",
+                                "properties": {
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "not_finalized",
+                                      "finalized"
+                                    ]
+                                  },
+                                  "profileId": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "reviewRequirement": {
+                                    "type": "string",
+                                    "enum": [
+                                      "none",
+                                      "internal",
+                                      "independent"
+                                    ]
+                                  },
+                                  "finalizedAt": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "reviewIds": {
+                                    "maxItems": 64,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "profileId",
+                                  "reviewRequirement",
+                                  "finalizedAt",
+                                  "reviewIds"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "validitySnapshot": {
+                                "type": "object",
+                                "properties": {
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "current",
+                                      "superseded",
+                                      "withdrawn",
+                                      "unknown"
+                                    ]
+                                  },
+                                  "checkedAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                  },
+                                  "reasonCodes": {
+                                    "maxItems": 32,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "checkedAt",
+                                  "reasonCodes"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "reportRevisionId",
+                              "studyId",
+                              "parentReportRevisionId",
+                              "authorId",
+                              "revision",
+                              "status",
+                              "contentHash",
+                              "runIds",
+                              "analysisIds",
+                              "factsRefs",
+                              "contentRef",
+                              "templateId",
+                              "finalization",
+                              "validitySnapshot"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "export"
+                          },
+                          "value": {
+                            "type": "object",
+                            "properties": {
+                              "exportId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "studyId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "reportRevisionId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "reportContentHash": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "requested",
+                                  "ready",
+                                  "failed",
+                                  "expired"
+                                ]
+                              },
+                              "projectionRef": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "modelInput",
+                                      "modelSource",
+                                      "runResult",
+                                      "analysisFacts",
+                                      "reportContent",
+                                      "reportProjection",
+                                      "renderResources"
+                                    ]
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "contentHash": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "digestScope": {
+                                    "type": "string",
+                                    "const": "artifact_bytes_sha256"
+                                  },
+                                  "byteSize": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "mediaType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "application/json",
+                                      "application/zip",
+                                      "text/html"
+                                    ]
+                                  },
+                                  "schemaVersion": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "id",
+                                  "contentHash",
+                                  "digestScope",
+                                  "byteSize",
+                                  "mediaType",
+                                  "schemaVersion"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "grantEpoch": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 9007199254740991
+                              },
+                              "factsRefs": {
+                                "minItems": 1,
+                                "maxItems": 64,
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "type": {
+                                      "type": "string",
+                                      "enum": [
+                                        "modelInput",
+                                        "modelSource",
+                                        "runResult",
+                                        "analysisFacts",
+                                        "reportContent",
+                                        "reportProjection",
+                                        "renderResources"
+                                      ]
+                                    },
+                                    "id": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    },
+                                    "contentHash": {
+                                      "type": "string",
+                                      "pattern": "^[a-f0-9]{64}$"
+                                    },
+                                    "digestScope": {
+                                      "type": "string",
+                                      "const": "artifact_bytes_sha256"
+                                    },
+                                    "byteSize": {
+                                      "type": "integer",
+                                      "minimum": 1,
+                                      "maximum": 9007199254740991
+                                    },
+                                    "mediaType": {
+                                      "type": "string",
+                                      "enum": [
+                                        "application/json",
+                                        "application/zip",
+                                        "text/html"
+                                      ]
+                                    },
+                                    "schemaVersion": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    }
+                                  },
+                                  "required": [
+                                    "type",
+                                    "id",
+                                    "contentHash",
+                                    "digestScope",
+                                    "byteSize",
+                                    "mediaType",
+                                    "schemaVersion"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "rendererVersion": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "viewModelVersion": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "resourcesRef": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "modelInput",
+                                      "modelSource",
+                                      "runResult",
+                                      "analysisFacts",
+                                      "reportContent",
+                                      "reportProjection",
+                                      "renderResources"
+                                    ]
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "contentHash": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "digestScope": {
+                                    "type": "string",
+                                    "const": "artifact_bytes_sha256"
+                                  },
+                                  "byteSize": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "mediaType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "application/json",
+                                      "application/zip",
+                                      "text/html"
+                                    ]
+                                  },
+                                  "schemaVersion": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "id",
+                                  "contentHash",
+                                  "digestScope",
+                                  "byteSize",
+                                  "mediaType",
+                                  "schemaVersion"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "actorId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "policyId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 128,
+                                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                              },
+                              "disclosureContextHash": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{64}$"
+                              },
+                              "disclosureDecision": {
+                                "type": "string",
+                                "enum": [
+                                  "allowed",
+                                  "denied"
+                                ]
+                              },
+                              "generatedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                              },
+                              "validitySnapshot": {
+                                "type": "object",
+                                "properties": {
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "current",
+                                      "superseded",
+                                      "withdrawn",
+                                      "unknown"
+                                    ]
+                                  },
+                                  "checkedAt": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                                  },
+                                  "reasonCodes": {
+                                    "maxItems": 32,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "minLength": 1,
+                                      "maxLength": 128,
+                                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "status",
+                                  "checkedAt",
+                                  "reasonCodes"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "reviewIds": {
+                                "maxItems": 64,
+                                "type": "array",
+                                "items": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 128,
+                                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                }
+                              },
+                              "receipt": {
+                                "type": "object",
+                                "properties": {
+                                  "schemaVersion": {
+                                    "type": "string",
+                                    "const": "lca.study-export-receipt.v2"
+                                  },
+                                  "manifestHash": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "keyId": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "algorithm": {
+                                    "type": "string",
+                                    "const": "Ed25519"
+                                  },
+                                  "signature": {
+                                    "type": "string",
+                                    "pattern": "^[A-Za-z0-9_-]{85}[AQgw]$"
+                                  }
+                                },
+                                "required": [
+                                  "schemaVersion",
+                                  "manifestHash",
+                                  "keyId",
+                                  "algorithm",
+                                  "signature"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "bundleRef": {
+                                "type": "object",
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "analysisFacts",
+                                      "reportContent",
+                                      "reportProjection",
+                                      "renderResources",
+                                      "reportExportBundle"
+                                    ]
+                                  },
+                                  "id": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  },
+                                  "contentHash": {
+                                    "type": "string",
+                                    "pattern": "^[a-f0-9]{64}$"
+                                  },
+                                  "digestScope": {
+                                    "type": "string",
+                                    "const": "artifact_bytes_sha256"
+                                  },
+                                  "byteSize": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 9007199254740991
+                                  },
+                                  "mediaType": {
+                                    "type": "string",
+                                    "enum": [
+                                      "application/json",
+                                      "application/zip",
+                                      "text/html"
+                                    ]
+                                  },
+                                  "schemaVersion": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 128,
+                                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "id",
+                                  "contentHash",
+                                  "digestScope",
+                                  "byteSize",
+                                  "mediaType",
+                                  "schemaVersion"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "exportId",
+                              "studyId",
+                              "reportRevisionId",
+                              "reportContentHash",
+                              "status",
+                              "projectionRef",
+                              "grantEpoch",
+                              "factsRefs",
+                              "rendererVersion",
+                              "viewModelVersion",
+                              "resourcesRef",
+                              "actorId",
+                              "policyId",
+                              "disclosureContextHash",
+                              "disclosureDecision",
+                              "generatedAt",
+                              "validitySnapshot",
+                              "reviewIds",
+                              "receipt",
+                              "bundleRef"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "value"
+                        ],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "nextCursor": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^[A-Za-z0-9_-]+$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "type",
+                "studyId",
+                "kind",
+                "items",
+                "nextCursor"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "capabilities"
+                },
+                "contractVersion": {
+                  "type": "string",
+                  "const": "3.0.0"
+                },
+                "runtimeEnabled": {
+                  "type": "boolean"
+                },
+                "operations": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "capability.read",
+                      "analysis.request",
+                      "analysis.read",
+                      "task.read",
+                      "task.cancel",
+                      "study.resources.list",
+                      "report.create",
+                      "report.save",
+                      "report.freeze",
+                      "report.read",
+                      "export.request",
+                      "export.read",
+                      "artifact.read"
+                    ]
+                  }
+                },
+                "analysisProfiles": {
+                  "maxItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "const": "lca.study-analysis-explicit-v1"
+                  }
+                },
+                "reportTemplates": {
+                  "maxItems": 1,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "const": "lca.study-report.v1"
+                  }
+                }
+              },
+              "required": [
+                "type",
+                "contractVersion",
+                "runtimeEnabled",
+                "operations",
+                "analysisProfiles",
+                "reportTemplates"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "task"
+                },
+                "value": {
+                  "type": "object",
+                  "properties": {
+                    "studyId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    },
+                    "resource": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "analysis"
+                        },
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "execution": {
+                      "type": "object",
+                      "properties": {
+                        "jobId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "running",
+                            "waiting",
+                            "completed",
+                            "blocked",
+                            "stale",
+                            "failed",
+                            "cancelled"
+                          ]
+                        },
+                        "phase": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "queued",
+                                "source_capture",
+                                "model_prepare",
+                                "solve",
+                                "complete",
+                                "cancelled",
+                                "study_start",
+                                "study_native",
+                                "study_artifact",
+                                "study_publish"
+                              ]
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "progress": {
+                          "anyOf": [
+                            {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "jobId",
+                        "status",
+                        "phase",
+                        "progress"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "errorCode": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "enum": [
+                            "source_invalid",
+                            "boundary_undeclared",
+                            "normalization_underflow",
+                            "normalization_overflow",
+                            "numeric_invalid",
+                            "resource_limit",
+                            "model_not_solvable",
+                            "native_execution_failed",
+                            "job_timeout",
+                            "job_lease_lost",
+                            "runtime_unavailable",
+                            "runtime_failed"
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "studyId",
+                    "resource",
+                    "execution",
+                    "errorCode"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "type",
+                "value"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "artifact"
+                },
+                "studyId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                "artifactRef": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "analysisFacts",
+                        "reportContent",
+                        "reportProjection",
+                        "renderResources",
+                        "reportExportBundle"
+                      ]
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    },
+                    "contentHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "digestScope": {
+                      "type": "string",
+                      "const": "artifact_bytes_sha256"
+                    },
+                    "byteSize": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "enum": [
+                        "application/json",
+                        "application/zip",
+                        "text/html"
+                      ]
+                    },
+                    "schemaVersion": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "contentHash",
+                    "digestScope",
+                    "byteSize",
+                    "mediaType",
+                    "schemaVersion"
+                  ],
+                  "additionalProperties": false
+                },
+                "encoding": {
+                  "type": "string",
+                  "const": "base64"
+                },
+                "bytes": {
+                  "type": "string",
+                  "maxLength": 5592408
+                }
+              },
+              "required": [
+                "type",
+                "studyId",
+                "artifactRef",
+                "encoding",
+                "bytes"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "ok",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "string",
+          "const": "lca.study-api.v3"
+        },
+        "requestId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+        },
+        "ok": {
+          "type": "boolean",
+          "const": false
+        },
+        "code": {
+          "type": "string",
+          "enum": [
+            "INVALID_REQUEST",
+            "UNSUPPORTED_SCHEMA",
+            "REVISION_CONFLICT",
+            "IDEMPOTENCY_CONFLICT",
+            "REFERENCE_MISMATCH",
+            "FROZEN_REVISION",
+            "FORBIDDEN",
+            "CAPABILITY_UNAVAILABLE",
+            "REVIEW_REQUIRED",
+            "DISCLOSURE_DENIED",
+            "NOT_FOUND",
+            "UPSTREAM_UNAVAILABLE",
+            "AUTH_REQUIRED",
+            "METHOD_NOT_ALLOWED",
+            "PAYLOAD_TOO_LARGE",
+            "DEADLINE_EXCEEDED"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "issues": {
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "INVALID_REQUEST",
+                  "UNSUPPORTED_SCHEMA",
+                  "REVISION_CONFLICT",
+                  "IDEMPOTENCY_CONFLICT",
+                  "REFERENCE_MISMATCH",
+                  "FROZEN_REVISION",
+                  "FORBIDDEN",
+                  "CAPABILITY_UNAVAILABLE",
+                  "REVIEW_REQUIRED",
+                  "DISCLOSURE_DENIED",
+                  "NOT_FOUND",
+                  "UPSTREAM_UNAVAILABLE",
+                  "AUTH_REQUIRED",
+                  "METHOD_NOT_ALLOWED",
+                  "PAYLOAD_TOO_LARGE",
+                  "DEADLINE_EXCEEDED"
+                ]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "ruleId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+              }
+            },
+            "required": [
+              "code",
+              "path",
+              "ruleId"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "requestId",
+        "ok",
+        "code",
+        "message",
+        "retryable",
+        "issues"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -128,7 +128,14 @@ it('round-trips a synthetic current report through producer receipt, private pro
   const written = JSON.parse(fs.readFileSync(proof, 'utf8'));
   expect(written.assertionBrowsers['rv.login.password-forgot']).toEqual(['chromium']);
   expect(written.assertionBrowsers['rv.login.password-reset']).toEqual(['chromium']);
-  expect(written.assertionIds).toHaveLength(61);
+  expect(written.assertionIds).toHaveLength(64);
+  expect(written.assertionIds).toEqual(
+    expect.arrayContaining([
+      'rv.studies.localized',
+      'rv.study-report.localized',
+      'rv.study-share.localized',
+    ]),
+  );
   expect(written.diagnostics.qualificationReportSha256).toBe(
     createHash('sha256').update(currentReport).digest('hex'),
   );
@@ -265,3 +272,17 @@ it.each([
   expect(verified.stdout).not.toContain('private-secret-sentinel');
   expect(verified.stderr).not.toContain('private-secret-sentinel');
 });
+
+it.each(['rv.studies.localized', 'rv.study-report.localized', 'rv.study-share.localized'])(
+  'refuses to write proof if the current Study assertion %s is absent',
+  (id) => {
+    const report = JSON.parse(currentReport.toString('utf8'));
+    report.assertionIds = report.assertionIds.filter((value: string) => value !== id);
+    delete report.assertionBrowsers[id];
+    const result = artifacts(Buffer.from(JSON.stringify(report)));
+    const error = refusal(result);
+    expect(error.failureCode).toBe('E2E_QUALIFICATION_INCOMPLETE');
+    expect(error.details.closureFailures).toContain('assertion-id-set');
+    expect(error.details.closureFailures).toContain('assertion-browser-id-set');
+  },
+);

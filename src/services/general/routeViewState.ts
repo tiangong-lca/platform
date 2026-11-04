@@ -1,6 +1,7 @@
 import rawRegistry from './routeViewStateRegistry.json';
 
 export type RouteViewStateRegistryId =
+  | 'study-view'
   | 'welcome-view'
   | 'dataset-drawer-mode'
   | 'dataset-required'

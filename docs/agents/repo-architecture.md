@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 316b4867880c7d6ec74bc7a74b6fc880bfa7dd60
-lastReviewedNote: 'Platform #1413 W10: reviewed narrow read-only exact-head PR package/Chromium qualification; existing runtime, full coverage, release authority and accepted renderer artifact remain unchanged.'
+lastReviewedAt: '2026-11-04'
+lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
+lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -53,6 +53,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `src/pages/**` | route-level product pages |
 | `src/pages/*/sdkValidation.ts`, `src/pages/Utils/validation/**` | page-level SDK-code adapters plus shared localized validation messages, detail mapping, and form-support helpers |
 | `src/components/**` | shared UI and reusable flows |
+| `src/pages/Study/**`, `src/services/study/**`, `vendor/study-contract/**` | authenticated four-view Study workbench, exact report review and named-share routes; [consumer contract](study-workbench-contract.md) owns codec, frozen-evidence, identity and mutation boundaries |
 | `src/standalone/studyReport/**`, `scripts/study-report/**` | dependency-free versioned report view and separate artifact build; [renderer contract](study-report-renderer-contract.md) owns strict projection, offline, receipt and release boundaries |
 | `src/components/DataNavigation/navigation.ts` | native ProLayout menu shaping and scope-link destinations; preserves the received route/access metadata |
 | `src/services/**` | app-side Supabase/API access, ordered-dataset shaping, typed locale normalization and runtime fallback for Node-loaded services, explicit anonymous-route policy, and service logic |

@@ -31,7 +31,8 @@
     "dist-package/",
     ".umi/",
     "mock/",
-    "docker/"
+    "docker/",
+    "/vendor/study-contract/"
   ],
   "options": {
     "respectEslintDisableDirectives": true,
@@ -129,7 +130,12 @@
         "typescript/no-deprecated": [
           "error",
           {
-            "allow": [{ "from": "lib", "name": "createElement" }]
+            "allow": [
+              {
+                "from": "lib",
+                "name": "createElement"
+              }
+            ]
           }
         ]
       }

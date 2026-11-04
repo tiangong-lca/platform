@@ -27,9 +27,9 @@ checkPaths:
   - src/services/processes/api.ts
   - .github/workflows/ci.yml
   - .github/workflows/build.yml
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 316b4867880c7d6ec74bc7a74b6fc880bfa7dd60
-lastReviewedNote: 'Platform #1402: reviewed Release-owned final Result selection, exact Derived detail links, frozen numerical units, publication/runtime pins, cancellation and authorized ZIPs. Existing backend ownership, locale, coverage and promotion gates remain unchanged.'
+lastReviewedAt: '2026-11-04'
+lastReviewedCommit: '1eec63a7f137e535c86fda6d21ccb629488bc9fc'
+lastReviewedNote: 'Platform #1419: reviewed qualified Dev 69753a4 version 0.0.152 with exact Process coverage-warning removal, complete three-way documentation bodies and canonical locale regeneration; Study runtime, renderer, codec and recovery semantics remain unchanged.'
 ---
 
 # LCIA Method Bundle and Calculation Evidence Contract

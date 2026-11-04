@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-11-04"
-lastReviewedCommit: "2b6ac940e0c23317fa50d1bc0781210defbf036e"
-lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
+lastReviewedAt: '2026-11-04'
+lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
+lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.
@@ -26,6 +26,7 @@ ownership:
         include:
           - config/**
           - src/**
+          - vendor/study-contract/**
           - public/**
           - docker/**
           - electron/**
@@ -117,6 +118,7 @@ coverage:
     - docs/plans/model-product-demand.md
     - docs/agents/lcia-calculation-evidence.md
     - docs/agents/study-report-renderer-contract.md
+    - docs/agents/study-workbench-contract.md
     - docs/agents/team_management.md
     - docs/agents/data_audit_instruction.md
     - docs/plans/i18n/**
@@ -124,6 +126,7 @@ coverage:
     - .github/PULL_REQUEST_TEMPLATE/*.md
     - config/**
     - src/**
+    - vendor/study-contract/**
     - public/**
     - public/maintenance.html
     - docker/**
@@ -451,6 +454,32 @@ repo:
   runtime: node
 
 rules:
+  - id: next-study-workbench-contract
+    scope: repo
+    repo: next
+    triggers:
+      - path: src/pages/Study/**
+        kind: study-workbench-ui
+      - path: src/services/study/**
+        kind: study-api-consumer
+      - path: vendor/study-contract/**
+        kind: exact-owner-codec-artifact
+      - path: tests/unit/pages/Study/**
+        kind: study-workbench-proof
+      - path: tests/unit/services/study/**
+        kind: study-api-proof
+      - path: docs/agents/study-workbench-contract.md
+        kind: study-consumer-contract
+    requiredDocs:
+      - path: docs/agents/study-workbench-contract.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+      - path: .docpact/config.yaml
+        mode: review_or_update
+    reason: Authenticated Study consumers must preserve exact owner codecs, frozen evidence, immutable editing and projection-only review/share boundaries.
   - id: next-study-report-renderer-contract
     scope: repo
     repo: next

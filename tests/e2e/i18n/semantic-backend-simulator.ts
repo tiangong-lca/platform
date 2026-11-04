@@ -15,6 +15,7 @@ import {
   assertExactReadOnlyProcessValidationDraft,
   PROCESS_SAVE_DRAFT_PATH,
 } from './typed-view-readonly-fixture';
+import { readOnlyStudyListFixture, STUDY_LIST_PATH } from './study-list-readonly-fixture';
 
 export const SYNTHETIC_ACTOR_B = '70400000-0000-4000-8000-000000000705';
 
@@ -311,6 +312,29 @@ export async function installSemanticBackendSimulator(
       guard.externalRequests += 1;
       guard.blockedRequests.push(`${request.method()} [external-origin]`);
       await route.abort('blockedbyclient');
+      return;
+    }
+    if (requestTarget.pathname === STUDY_LIST_PATH && request.method() !== 'OPTIONS') {
+      let response;
+      try {
+        response = readOnlyStudyListFixture({
+          expectedOrigin: backend.origin,
+          expectedPublishableKey: backend.publishableKey,
+          persona,
+          request,
+        });
+      } catch {
+        guard.blockedRequests.push(requestKey);
+        await route.abort('blockedbyclient');
+        return;
+      }
+      guard.fulfilledRequests += 1;
+      await route.fulfill({
+        status: response.ok ? 200 : 401,
+        contentType: 'application/json',
+        headers: { 'access-control-allow-origin': '*' },
+        body: JSON.stringify(response),
+      });
       return;
     }
     if (request.method() === 'POST' && requestTarget.pathname === PROCESS_SAVE_DRAFT_PATH) {

@@ -1,4 +1,5 @@
 export default {
+  'menu.studies': 'Études',
   'menu.supportingData': 'Données complémentaires',
   'menu.welcome': 'Bienvenue',
   'menu.more-blocks': 'Plus de blocs',

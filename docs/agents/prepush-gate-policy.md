@@ -46,9 +46,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 2b6ac940e0c23317fa50d1bc0781210defbf036e
-lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
+lastReviewedAt: '2026-11-04'
+lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
+lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
 ---
 
 # Pre-Push Gate Policy

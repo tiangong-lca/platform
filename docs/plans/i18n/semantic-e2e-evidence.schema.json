@@ -135,7 +135,17 @@
     },
     "browsers": {
       "type": "array",
-      "prefixItems": [{ "const": "chromium" }, { "const": "firefox" }, { "const": "webkit" }],
+      "prefixItems": [
+        {
+          "const": "chromium"
+        },
+        {
+          "const": "firefox"
+        },
+        {
+          "const": "webkit"
+        }
+      ],
       "items": false,
       "minItems": 3,
       "maxItems": 3
@@ -209,8 +219,8 @@
     },
     "assertions": {
       "type": "array",
-      "minItems": 61,
-      "maxItems": 61,
+      "minItems": 64,
+      "maxItems": 64,
       "items": {
         "$ref": "#/$defs/assertion"
       }

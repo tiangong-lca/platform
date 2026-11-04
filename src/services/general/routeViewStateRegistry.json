@@ -6,8 +6,14 @@
       "parameter": "view",
       "defaultVariantId": "overview",
       "variants": [
-        { "id": "overview", "queryValue": null },
-        { "id": "carbon-footprint-guide", "queryValue": "carbon-footprint" }
+        {
+          "id": "overview",
+          "queryValue": null
+        },
+        {
+          "id": "carbon-footprint-guide",
+          "queryValue": "carbon-footprint"
+        }
       ]
     },
     {
@@ -15,8 +21,14 @@
       "parameter": "mode",
       "defaultVariantId": "edit",
       "variants": [
-        { "id": "edit", "queryValue": "edit" },
-        { "id": "view", "queryValue": "view" }
+        {
+          "id": "edit",
+          "queryValue": "edit"
+        },
+        {
+          "id": "view",
+          "queryValue": "view"
+        }
       ]
     },
     {
@@ -24,8 +36,14 @@
       "parameter": "required",
       "defaultVariantId": "optional",
       "variants": [
-        { "id": "optional", "queryValue": null },
-        { "id": "required", "queryValue": "1" }
+        {
+          "id": "optional",
+          "queryValue": null
+        },
+        {
+          "id": "required",
+          "queryValue": "1"
+        }
       ]
     },
     {
@@ -33,9 +51,18 @@
       "parameter": "action",
       "defaultVariantId": "base",
       "variants": [
-        { "id": "base", "queryValue": null },
-        { "id": "create", "queryValue": "create" },
-        { "id": "edit", "queryValue": "edit" }
+        {
+          "id": "base",
+          "queryValue": null
+        },
+        {
+          "id": "create",
+          "queryValue": "create"
+        },
+        {
+          "id": "edit",
+          "queryValue": "edit"
+        }
       ]
     },
     {
@@ -43,10 +70,22 @@
       "parameter": "tab",
       "defaultVariantId": "builds",
       "variants": [
-        { "id": "builds", "queryValue": "builds" },
-        { "id": "preview", "queryValue": "preview" },
-        { "id": "exports", "queryValue": "exports" },
-        { "id": "publication", "queryValue": "publication" }
+        {
+          "id": "builds",
+          "queryValue": "builds"
+        },
+        {
+          "id": "preview",
+          "queryValue": "preview"
+        },
+        {
+          "id": "exports",
+          "queryValue": "exports"
+        },
+        {
+          "id": "publication",
+          "queryValue": "publication"
+        }
       ]
     },
     {
@@ -54,12 +93,30 @@
       "parameter": "screen",
       "defaultVariantId": "overview",
       "variants": [
-        { "id": "overview", "queryValue": "overview" },
-        { "id": "map_status", "queryValue": "map_status" },
-        { "id": "outcome_metrics", "queryValue": "outcome_metrics" },
-        { "id": "connectivity", "queryValue": "connectivity" },
-        { "id": "organization_contribution", "queryValue": "organization_contribution" },
-        { "id": "flow_topology", "queryValue": "flow_topology" }
+        {
+          "id": "overview",
+          "queryValue": "overview"
+        },
+        {
+          "id": "map_status",
+          "queryValue": "map_status"
+        },
+        {
+          "id": "outcome_metrics",
+          "queryValue": "outcome_metrics"
+        },
+        {
+          "id": "connectivity",
+          "queryValue": "connectivity"
+        },
+        {
+          "id": "organization_contribution",
+          "queryValue": "organization_contribution"
+        },
+        {
+          "id": "flow_topology",
+          "queryValue": "flow_topology"
+        }
       ]
     },
     {
@@ -67,8 +124,37 @@
       "parameter": "autoplay",
       "defaultVariantId": "enabled",
       "variants": [
-        { "id": "enabled", "queryValue": "1" },
-        { "id": "disabled", "queryValue": "0" }
+        {
+          "id": "enabled",
+          "queryValue": "1"
+        },
+        {
+          "id": "disabled",
+          "queryValue": "0"
+        }
+      ]
+    },
+    {
+      "id": "study-view",
+      "parameter": "view",
+      "defaultVariantId": "overview",
+      "variants": [
+        {
+          "id": "overview",
+          "queryValue": "overview"
+        },
+        {
+          "id": "model",
+          "queryValue": "model"
+        },
+        {
+          "id": "results",
+          "queryValue": "results"
+        },
+        {
+          "id": "reports",
+          "queryValue": "reports"
+        }
       ]
     }
   ]
