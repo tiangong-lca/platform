@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
-lastReviewedNote: 'Platform #1325: rechecked canonical-context unit cases, bounded rejection, cross-entity isolation and installed-package consumer proof; explicit assertions and serial focused qualification follow existing patterns.'
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed role-bound behavior tests, explicit root compatibility, cross-entity preservation and real SDK inventory proof; mocked persistence and serial focused execution retain existing patterns.'
 ---
 
 # Testing Patterns Reference

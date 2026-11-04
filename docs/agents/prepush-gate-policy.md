@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
-lastReviewedNote: 'Platform #1325: rechecked expanded field regressions and installed-SDK boundary proof without changing hook, release or source-mapped 100% coverage policy; final exact-head gate remains required.'
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed entity-role and real installed-SDK regressions without changing the existing hook, release profiles or source-mapped 100% coverage bar; final exact-head gate remains required.'
 ---
 
 # Pre-Push Gate Policy

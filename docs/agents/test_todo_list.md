@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
-lastReviewedNote: 'Platform #1325: rechecked the closed reference baseline and scope of focused descriptive-field evidence; final committed full-gate proof remains pending and the historical reference baseline is unchanged.'
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed focused field-role evidence against the retained reference baseline; exact committed full-gate qualification remains pending and reference counts/queue policy are unchanged.'
 ---
 
 # Testing Execution State

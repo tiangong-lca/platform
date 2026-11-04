@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
-lastReviewedNote: 'Platform #1325: rechecked focused red/green diagnosis, public-schema limit tests and locale regeneration without altering recovery or full-closure rules; final committed full-gate proof remains separate.'
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed SDK-valid false-positive diagnosis and positive role repair, preserving old loss/blocking observations and existing serial locale/coverage recovery commands.'
 ---
 
 # Testing Troubleshooting

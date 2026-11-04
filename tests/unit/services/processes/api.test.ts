@@ -5,6 +5,7 @@
 
 import * as processesApi from '@/services/processes/api';
 import { FunctionRegion } from '@supabase/supabase-js';
+import multilingualReferenceProcess from '../../../fixtures/general/multilingual-reference-process.json';
 
 jest.mock('@tiangong-lca/tidas-sdk/core', () => ({
   __esModule: true,
@@ -5413,6 +5414,64 @@ describe('Process multilingual persistence boundary', () => {
         code: 'LANG_VALIDATION_ERROR',
         message: expect.stringContaining(
           'processDataSet.processInformation.dataSetInformation.name.baseName[1].@xml:lang',
+        ),
+      });
+      expect(mockInvokeDatasetCommand).not.toHaveBeenCalled();
+      expect(mockInvokeDatasetCreateVersion).not.toHaveBeenCalled();
+      expect(mockValidateDatasetRuleVerification).not.toHaveBeenCalled();
+    },
+  );
+});
+
+describe('reference entity preservation at Process persistence boundaries', () => {
+  it.each(['create', 'version', 'update'])(
+    'keeps distinct reference entities through the actual %s service with mocked persistence',
+    async (operation) => {
+      const payload = JSON.parse(JSON.stringify(multilingualReferenceProcess));
+      const { normalizeLangPayloadForSave } = jest.requireActual('@/services/general/api');
+      mockNormalizeLangPayloadForSave.mockImplementation(normalizeLangPayloadForSave);
+      mockGenProcessJsonOrdered.mockReturnValue(payload);
+      if (operation === 'create') await processesApi.createProcess(sampleId, {});
+      else if (operation === 'version')
+        await processesApi.createProcessVersion(sampleId, sampleVersion, {});
+      else await processesApi.updateProcess(sampleId, sampleVersion, {});
+      const command =
+        operation === 'version'
+          ? mockInvokeDatasetCreateVersion.mock.calls[0][0]
+          : mockInvokeDatasetCommand.mock.calls[0][1];
+      expect(
+        command.jsonOrdered.processDataSet.modellingAndValidation
+          .dataSourcesTreatmentAndRepresentativeness.referenceToDataSource,
+      ).toEqual(
+        payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .referenceToDataSource,
+      );
+    },
+  );
+
+  it.each(['create', 'version', 'update'])(
+    'blocks an inner reference-caption conflict before %s persistence',
+    async (operation) => {
+      const payload = JSON.parse(JSON.stringify(multilingualReferenceProcess));
+      payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.referenceToDataSource[1][
+        'common:shortDescription'
+      ] = [
+        { '@xml:lang': 'en', '#text': 'First caption' },
+        { '@xml:lang': 'en', '#text': 'Conflicting caption' },
+      ];
+      const { normalizeLangPayloadForSave } = jest.requireActual('@/services/general/api');
+      mockNormalizeLangPayloadForSave.mockImplementation(normalizeLangPayloadForSave);
+      mockGenProcessJsonOrdered.mockReturnValue(payload);
+      const result =
+        operation === 'create'
+          ? await processesApi.createProcess(sampleId, {})
+          : operation === 'version'
+            ? await processesApi.createProcessVersion(sampleId, sampleVersion, {})
+            : await processesApi.updateProcess(sampleId, sampleVersion, {});
+      expect(result?.error).toMatchObject({
+        code: 'LANG_VALIDATION_ERROR',
+        message: expect.stringContaining(
+          'referenceToDataSource[1].common:shortDescription[1].@xml:lang',
         ),
       });
       expect(mockInvokeDatasetCommand).not.toHaveBeenCalled();

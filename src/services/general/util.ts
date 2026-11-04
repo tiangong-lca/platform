@@ -585,6 +585,74 @@ const PARAGRAPH_LANGUAGE_FIELDS = new Map<string, number | undefined>([
   ['normalisationDescription', 1000],
   ['weightingDescription', 1000],
 ]);
+// Positive localized-field roles from the installed TIDAS contracts. Entity
+// containers may also carry @xml:lang, so their shape must not define this role.
+const LOCALIZED_FIELD_NAMES = new Set([
+  'annualSupplyOrProductionVolume',
+  'baseName',
+  'centralContactPoint',
+  'comment',
+  'common:accessRestrictions',
+  'common:generalComment',
+  'common:intendedApplications',
+  'common:name',
+  'common:otherReviewDetails',
+  'common:project',
+  'common:reviewDetails',
+  'common:shortDescription',
+  'common:shortName',
+  'common:synonyms',
+  'common:timeRepresentativenessDescription',
+  'completenessOtherProblemField',
+  'consideredMechanisms',
+  'contactAddress',
+  'contactDescriptionOrComment',
+  'dataCollectionPeriod',
+  'dataCutOffAndCompletenessPrinciples',
+  'dataSelectionAndCombinationPrinciples',
+  'dataTreatmentAndExtrapolationsPrinciples',
+  'descriptionOfRestrictions',
+  'deviationsFromCutOffAndCompletenessPrinciples',
+  'deviationsFromLCIAMethodPrinciple',
+  'deviationsFromLCIMethodApproaches',
+  'deviationsFromLCIMethodPrinciple',
+  'deviationsFromModellingConstants',
+  'deviationsFromSelectionAndCombinationPrinciples',
+  'deviationsFromTreatmentAndExtrapolationPrinciples',
+  'duration',
+  'flowProperties',
+  'functionalUnitFlowProperties',
+  'functionalUnitOrOther',
+  'generalComment',
+  'geographicalRepresentativenessDescription',
+  'groupName',
+  'meaning',
+  'mixAndLocationTypes',
+  'modelDescription',
+  'modellingConstants',
+  'normalisationDescription',
+  'referenceYear',
+  'samplingProcedure',
+  'sourceDescriptionOrComment',
+  'technologicalApplicability',
+  'technologyDescriptionAndIncludedProcesses',
+  'timeRepresentativenessDescription',
+  'treatmentStandardsRoutes',
+  'uncertaintyAdjustments',
+  'useAdviceForDataSet',
+  'weightingDescription',
+]);
+
+function isLocalizedFieldPath(path: string): boolean {
+  const separator = path.lastIndexOf('.');
+  const fieldName = path.slice(separator + 1);
+  const parentPath = path.slice(0, Math.max(0, separator));
+  const parentName = parentPath.slice(parentPath.lastIndexOf('.') + 1);
+  return (
+    LOCALIZED_FIELD_NAMES.has(fieldName) &&
+    (fieldName !== 'flowProperties' || parentName === 'name')
+  );
+}
 const NON_ENGLISH_SCRIPT_REGEX =
   /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Hebrew}\p{Script=Devanagari}\p{Script=Thai}]/u;
 
@@ -593,6 +661,11 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 
 const isLangTextEntry = (value: unknown): value is Record<string, unknown> =>
   isObject(value) && Object.prototype.hasOwnProperty.call(value, LANG_KEY);
+
+// Legacy standalone language values have no dataset field owner. Keep only the
+// explicit language-value shape here; arbitrary entity attributes are not text roles.
+const isStandaloneLanguageObject = (value: unknown): boolean =>
+  isLangTextEntry(value) && Object.keys(value).every((key) => key === LANG_KEY || key === TEXT_KEY);
 
 const normalizeLangCode = (lang: unknown): string => {
   if (typeof lang !== 'string') return '';
@@ -845,7 +918,13 @@ async function normalizeLangNode(
   }
 
   if (Array.isArray(value)) {
-    const looksLikeLangList = value.some((item) => isLangTextEntry(item));
+    const looksLikeLangList =
+      (isLocalizedFieldPath(path) ||
+        (path === '' &&
+          value.every(
+            (item) => isStandaloneLanguageObject(item) || isRemovableEmptyValue(item),
+          ))) &&
+      value.some((item) => isLangTextEntry(item));
     if (looksLikeLangList) {
       const mixedEntryIndex = value.findIndex(
         (item) => !isLangTextEntry(item) && !isRemovableEmptyValue(item),
@@ -876,7 +955,10 @@ async function normalizeLangNode(
     return mapped;
   }
 
-  if (isLangTextEntry(value)) {
+  if (
+    (isLocalizedFieldPath(path) || (path === '' && isStandaloneLanguageObject(value))) &&
+    isLangTextEntry(value)
+  ) {
     return normalizeLangEntries([value], path, issues, options, translationCache, metadata, false);
   }
 
@@ -884,22 +966,18 @@ async function normalizeLangNode(
     const entries = Object.entries(value);
     const normalizedEntries = await Promise.all(
       entries.map(async ([key, nodeValue]) => {
-        // Extensions are opaque; classification hierarchy labels are independent
-        // entities, even when an imported record also carries @xml:lang.
-        const isNonLocalizedSubtree =
-          key === 'common:other' ||
-          (/(?:^|\.)classificationInformation(?:\.|\[)/u.test(path) &&
-            (key === 'common:class' || key === 'common:category'));
-        const normalizedValue = isNonLocalizedSubtree
-          ? nodeValue
-          : await normalizeLangNode(
-              nodeValue,
-              buildPath(path, key),
-              issues,
-              options,
-              translationCache,
-              metadata,
-            );
+        // Extension contents have their own schema and are opaque to content-language rules.
+        const normalizedValue =
+          key === 'common:other'
+            ? nodeValue
+            : await normalizeLangNode(
+                nodeValue,
+                buildPath(path, key),
+                issues,
+                options,
+                translationCache,
+                metadata,
+              );
         return [key, normalizedValue] as const;
       }),
     );

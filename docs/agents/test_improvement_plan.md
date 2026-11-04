@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
-lastReviewedNote: 'Platform #1325: rechecked the expanded behavior cases and installed-schema contract against maintenance strategy; no coverage exclusion, test infrastructure change or new execution queue is introduced.'
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed positive role inventory, complete Process controls and persistence-boundary regressions against maintenance strategy; no runtime schema framework, coverage exclusion or new execution queue.'
 ---
 
 # Testing Strategy

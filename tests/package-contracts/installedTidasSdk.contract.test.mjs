@@ -397,3 +397,205 @@ test('descriptive paragraph limits match the installed SDK fields', () => {
     }
   }
 });
+
+test('the installed SDK reference owners match the entity inventory and accept the whole multilingual reference Process', () => {
+  const schemaDirectory = path.join(installedPackageRoot, 'dist/runtime-assets/tidas/schemas');
+  const owners = new Set();
+  const visit = (node) => {
+    if (Array.isArray(node)) {
+      node.forEach(visit);
+    } else if (node && typeof node === 'object') {
+      for (const [key, value] of Object.entries(node)) {
+        // GlobalReferenceTypeValues is the scalar @type enum, not an entity owner.
+        if (value && typeof value === 'object' && value.$ref?.endsWith('/GlobalReferenceType'))
+          owners.add(key);
+        visit(value);
+      }
+    }
+  };
+  for (const type of [
+    'contacts',
+    'sources',
+    'unitgroups',
+    'flowproperties',
+    'flows',
+    'processes',
+    'lifecyclemodels',
+    'lciamethods',
+  ]) {
+    visit(JSON.parse(fs.readFileSync(path.join(schemaDirectory, `tidas_${type}.json`), 'utf8')));
+  }
+  const inventory = JSON.parse(
+    fs.readFileSync(
+      path.join(repositoryRoot, 'tests/fixtures/general/global-reference-field-names.json'),
+      'utf8',
+    ),
+  );
+  assert.equal(inventory.length, 42);
+  assert.deepEqual([...owners].sort(), inventory);
+  assert.ok(inventory.includes('referenceQuantity'));
+  const payload = JSON.parse(
+    fs.readFileSync(
+      path.join(repositoryRoot, 'tests/fixtures/general/multilingual-reference-process.json'),
+      'utf8',
+    ),
+  );
+  const schemas = require(
+    require.resolve('@tiangong-lca/tidas-sdk/schemas', { paths: [repositoryRoot] }),
+  );
+  assert.equal(schemas.ProcessSchema.safeParse(payload).success, true);
+  const dsr =
+    payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness;
+  assert.equal(
+    schemas.ProcessSchema.shape.processDataSet.shape.modellingAndValidation.shape.dataSourcesTreatmentAndRepresentativeness.safeParse(
+      dsr,
+    ).success,
+    true,
+  );
+  assert.equal(dsr.referenceToDataSource.length, 2);
+  assert.equal(
+    new Set(dsr.referenceToDataSource.map((reference) => reference['@refObjectId'])).size,
+    2,
+  );
+  assert.ok(
+    dsr.referenceToDataSource.every(
+      (reference) =>
+        reference['@xml:lang'] === 'en' &&
+        reference['common:shortDescription']['@xml:lang'] === 'en',
+    ),
+  );
+});
+
+test('the installed SDK binds the positive localized field inventory and its only container-name collision', () => {
+  const directory = path.join(installedPackageRoot, 'dist/runtime-assets/tidas/schemas');
+  const documents = new Map();
+  const document = (filename) => {
+    if (!documents.has(filename))
+      documents.set(filename, JSON.parse(fs.readFileSync(path.join(directory, filename), 'utf8')));
+    return documents.get(filename);
+  };
+  const localizedTypes = new Set([
+    'StringMultiLang',
+    'STMultiLang',
+    'FTMultiLang',
+    'AnnualSupplyOrProductionVolumeMultiLang',
+  ]);
+  const localizedPaths = new Map();
+  const declaredPaths = new Set();
+  const visit = (node, parts, filename, seen = new Set()) => {
+    if (!node || typeof node !== 'object' || Array.isArray(node)) return;
+    if (typeof node.$ref === 'string') {
+      const kind = node.$ref.split('/').at(-1);
+      if (localizedTypes.has(kind)) {
+        localizedPaths.set(parts.join('.'), kind);
+        return;
+      }
+      if (kind === 'CommonOther' || kind === 'AnyXmlElement') return;
+      const identity = `${filename}:${node.$ref}`;
+      if (!seen.has(identity)) {
+        const [target, pointer = ''] = node.$ref.split('#');
+        const targetFilename = target || filename;
+        const resolved = pointer
+          .split('/')
+          .slice(1)
+          .reduce(
+            (value, key) => value[key.replace(/~1/gu, '/').replace(/~0/gu, '~')],
+            document(targetFilename),
+          );
+        visit(resolved, parts, targetFilename, new Set([...seen, identity]));
+      }
+    }
+    for (const [key, value] of Object.entries(node.properties ?? {})) {
+      declaredPaths.add([...parts, key].join('.'));
+      visit(value, [...parts, key], filename, seen);
+    }
+    if (Array.isArray(node.items))
+      node.items.forEach((value) => visit(value, parts, filename, seen));
+    else if (node.items) visit(node.items, parts, filename, seen);
+    for (const branch of ['allOf', 'anyOf', 'oneOf']) {
+      for (const value of node[branch] ?? []) visit(value, parts, filename, seen);
+    }
+    for (const branch of ['if', 'then', 'else']) {
+      if (node[branch]) visit(node[branch], parts, filename, seen);
+    }
+  };
+  for (const type of [
+    'contacts',
+    'sources',
+    'unitgroups',
+    'flowproperties',
+    'flows',
+    'processes',
+    'lifecyclemodels',
+    'lciamethods',
+  ]) {
+    const filename = `tidas_${type}.json`;
+    visit(document(filename), [], filename);
+  }
+  const names = [
+    ...new Set([...localizedPaths.keys()].map((value) => value.split('.').at(-1))),
+  ].sort();
+  const inventory = JSON.parse(
+    fs.readFileSync(
+      path.join(repositoryRoot, 'tests/fixtures/general/localized-field-names.json'),
+      'utf8',
+    ),
+  );
+  assert.equal(localizedPaths.size, 181);
+  assert.equal(inventory.length, 53);
+  assert.deepEqual(names, inventory);
+  const collisions = [
+    ...new Set(
+      [...declaredPaths]
+        .filter((value) => !localizedPaths.has(value) && names.includes(value.split('.').at(-1)))
+        .map((value) => value.split('.').at(-1)),
+    ),
+  ].sort();
+  assert.deepEqual(collisions, ['flowProperties']);
+  assert.deepEqual(
+    [...localizedPaths.keys()].filter((value) => value.endsWith('.flowProperties')),
+    ['flowDataSet.flowInformation.dataSetInformation.name.flowProperties'],
+  );
+  const schemas = require(
+    require.resolve('@tiangong-lca/tidas-sdk/schemas', { paths: [repositoryRoot] }),
+  );
+  const payload = JSON.parse(
+    fs.readFileSync(
+      path.join(repositoryRoot, 'tests/fixtures/general/multilingual-reference-process.json'),
+      'utf8',
+    ),
+  );
+  const first = {
+    ...payload.processDataSet.exchanges.exchange[0],
+    '@xml:lang': 'en',
+    '#text': 'First exchange annotation',
+  };
+  payload.processDataSet.exchanges.exchange = [
+    first,
+    {
+      ...structuredClone(first),
+      '@dataSetInternalID': '1',
+      '#text': 'Second exchange annotation',
+      exchangeDirection: 'Output',
+    },
+  ];
+  assert.equal(schemas.ProcessSchema.safeParse(payload).success, true);
+  const property = {
+    '@dataSetInternalID': '0',
+    '@xml:lang': 'en',
+    '#text': 'Property annotation',
+    meanValue: '1',
+    referenceToFlowPropertyDataSet: {
+      ...payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .referenceToDataSource[0],
+      '@type': 'flow property data set',
+    },
+  };
+  assert.equal(
+    schemas.FlowSchema.shape.flowDataSet.shape.flowProperties.safeParse({
+      '@xml:lang': 'en',
+      flowProperty: [property],
+    }).success,
+    true,
+  );
+});

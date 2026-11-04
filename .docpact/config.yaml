@@ -1,8 +1,8 @@
 version: 1
 layout: repo
 lastReviewedAt: '2026-11-04'
-lastReviewedCommit: '804287fcd4743d82b081965548cc8fe101ba25c2'
-lastReviewedNote: 'Platform #1325: rechecked explicit descriptive-field coverage and installed-SDK limit proof within existing service/test/locale ownership; routing, trigger rules and full-gate policy remain unchanged.'
+lastReviewedCommit: 'da7379f8054fcd4df9f63015be2efb2a12916d45'
+lastReviewedNote: 'Platform #1325: reviewed positive SDK-bound localized roles and structural entity preservation within existing service/test ownership; routing and full-gate policy remain unchanged.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.
