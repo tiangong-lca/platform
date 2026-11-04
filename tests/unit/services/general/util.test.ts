@@ -14,6 +14,7 @@ import frValidatorMessages from '@/locales/fr-FR/validator';
 import zhValidatorMessages from '@/locales/zh-CN/validator';
 import { getReferenceUnitGroups } from '@/services/flowproperties/api';
 import { getFlowProperties } from '@/services/flows/api';
+import { SUPPORTED_APP_LOCALES } from '@/services/general/localeRegistry';
 import {
   capitalize,
   classificationToJsonList,
@@ -1371,7 +1372,7 @@ describe('General Utility Functions', () => {
   });
 
   describe('getLangValidationErrorMessage', () => {
-    it.each(['en-US', 'zh-CN', 'de-DE', 'fr-FR'])(
+    it.each(SUPPORTED_APP_LOCALES)(
       'reports full conflict paths with localized copy in %s',
       (locale) => {
         const issues = [
