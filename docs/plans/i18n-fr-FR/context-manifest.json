@@ -5,8 +5,8 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "b2750940b2e7ed5a6769582faae8ed8860f931df04a0170fb5223ffef344183f",
-    "auditedInputDigest": "40a9788e891c2d42b2450984c48340d915a089c84fcb59c708b6f11ed42486bd"
+    "sourceManifestDigest": "d23c8fd94dd21dfc1e9e154637381dac0b7491a688dd51738b628d5cd0c7d375",
+    "auditedInputDigest": "5b4c2f5daa2f9238d311fd53ab2aba2b827a659f3895511d97e67b24376f306e"
   },
   "inventory": {
     "sourceMessageCount": 3750,
@@ -47,7 +47,7 @@
     "messageCount": 3750,
     "completeCount": 3750,
     "blockedCount": 0,
-    "dossierDigest": "b81b01df3455d3dc54be95a74149a8dc8678832eaa12abc131567b1c196d7a61",
+    "dossierDigest": "8e2d896b901168240aaa527ecdfebe5dd7f73b9e4aa5ced8f797a75e6ab2e09e",
     "catalogDigest": "cf739251851ffcb6caa5017006181fae76de2590efc784829e77a7b3cfdb0770",
     "moduleCount": 33,
     "moduleDigest": "e83a9a44646c751e1cdbb2b832413fc0f20e143734d1fc62ea3e3c1f41f12e56",
@@ -144,7 +144,7 @@
         "focusedVariantCount": 12
       },
       "sourceFileCount": 50,
-      "sourceEvidenceDigest": "4a651ec5e2fb930f10a85c39bfa89b93d4255f067c1809b3a7ca48fcfae70ea8",
+      "sourceEvidenceDigest": "978e0506d457130d434e8b007074c13b832860d4f7e67eab414962b2c8312c55",
       "rowEvidence": [
         {
           "executableAssertionId": "rv.root.redirect-to-welcome",
@@ -434,7 +434,7 @@
           "viewState": "study-workbench",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "3053a271d029f796f513585e1acba489738aab9cac66a5cfd7019027480a4b8e",
-          "focusedTestDigest": "6f895a4915128078727905a8f5284230382a4a5eda02c64a2779399f6646e1fa",
+          "focusedTestDigest": "52c3f2948f1d3f1206ec170c580d4bab72c9b9446c49f10e13636a6a5b699e4f",
           "plannedBrowserAssertionCount": 2,
           "plannedBrowserAssertionDigest": "7e28d2bea2fe060bd8622766d7f4e7ecf38368fa519f148da0af34413819b317",
           "derivedMessageCount": 93,
@@ -451,8 +451,8 @@
           "route": "/study-report",
           "viewState": "exact-report-review",
           "requiredEvidenceScope": "internal-localization",
-          "sourceDigest": "e4449a00dcccd5f25af8c6d073263907e761f2cdd9d9b1175ae340e5aeb3ab13",
-          "focusedTestDigest": "6f895a4915128078727905a8f5284230382a4a5eda02c64a2779399f6646e1fa",
+          "sourceDigest": "63441c5070da01c7cb68878918d75e7597f1d3d190fe4c6a3a1fa1a6ea6dbb94",
+          "focusedTestDigest": "52c3f2948f1d3f1206ec170c580d4bab72c9b9446c49f10e13636a6a5b699e4f",
           "plannedBrowserAssertionCount": 2,
           "plannedBrowserAssertionDigest": "7e28d2bea2fe060bd8622766d7f4e7ecf38368fa519f148da0af34413819b317",
           "derivedMessageCount": 93,
@@ -470,7 +470,7 @@
           "viewState": "named-report-share",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "60fc12621514f535e2955e0c8555f6fbcad6a2a412a74e0ff6a2fd84399698ce",
-          "focusedTestDigest": "6f895a4915128078727905a8f5284230382a4a5eda02c64a2779399f6646e1fa",
+          "focusedTestDigest": "52c3f2948f1d3f1206ec170c580d4bab72c9b9446c49f10e13636a6a5b699e4f",
           "plannedBrowserAssertionCount": 2,
           "plannedBrowserAssertionDigest": "7e28d2bea2fe060bd8622766d7f4e7ecf38368fa519f148da0af34413819b317",
           "derivedMessageCount": 93,
@@ -1370,7 +1370,7 @@
           "unownedVisibleLiteralCount": 0
         }
       ],
-      "rowEvidenceDigest": "5d728936ddb879482bb4c28c76525261269b82377f6c03a56eb9b6b06e14abba",
+      "rowEvidenceDigest": "ea72025086e5b7e07d27542818fc542efcfce27eccd423945a219d97d886be39",
       "blockedDerivedStateCount": 0,
       "unownedVisibleLiteralCount": 0
     }
@@ -1394,5 +1394,5 @@
     "docs/plans/i18n-fr-FR/style-guide.md": "3b651e352a50676ed7f6609dcad88145dbd6a9ad81177ad261526b59d7bf4db4"
   },
   "blockedContext": [],
-  "contextDigest": "3f978abe80403a9beb9ebfdfb11ad47e5d79a3a9aa82c1baa9d52238fa0a408d"
+  "contextDigest": "59a7b4a0fcbcb3c63423348467f4695f468d473e2eb05b31cf74828834cd1a96"
 }

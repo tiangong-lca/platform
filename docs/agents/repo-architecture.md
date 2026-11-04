@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: '2026-11-04'
-lastReviewedCommit: '3e14876b4d56cf1e2c0ae5e63868c897fd300e40'
-lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share links, contained Edge5.0.0 provenance, family-bound queries and original-schema journals, selected-client collaboration/download and unchanged project/auth fences. Old V4 links and intents remain; actual runtime qualification and Main/root delivery are separate.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 52f335646c580d52e8f869fc549efc0f11ec24c3
+lastReviewedNote: 'Platform #1437: reviewed exact selected-share V4/V5 actions/read metadata, report/hash/query identity, independent delegation/share targets, existing actor/journal fences and full-closure test/locale obligations. Actual repaired runtime, hosted CI, Main and root remain separate.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

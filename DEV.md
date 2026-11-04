@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: '3e14876b4d56cf1e2c0ae5e63868c897fd300e40'
-lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share family and contained codec, identity-fenced downloads and original-request journals. Existing scoped-first proof, serialized Umi work, complete 100% source coverage, exact portable-package/browser proof and hook-owned final gate remain required; actual runtime and Dev/Main/root delivery remain separate.'
+lastReviewedCommit: 52f335646c580d52e8f869fc549efc0f11ec24c3
+lastReviewedNote: 'Platform #1437: reviewed exact selected-share revocation and independent target state against existing scoped tests, serialized Umi work, source-bound locale generation, full coverage and checked-push bootstrap. Runtime qualification and release/root delivery remain separate.'
 ---
 
 # Development Bootstrap

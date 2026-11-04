@@ -256,3 +256,153 @@ it('keeps a V5 recipient route projection-only and passes the selected family to
   expect(mockReview.mock.calls.every((call) => call[2] === 'v5')).toBe(true);
   expect(mockCore).not.toHaveBeenCalled();
 });
+
+const revokeButton = () => screen.getAllByRole('button', { name: 'pages.study.revoke' })[1];
+const selectShareForRevocation = (shareId = share.shareId) => {
+  fireEvent.change(screen.getByLabelText('pages.study.shares'), {
+    target: { value: shareId },
+  });
+  fireEvent.change(screen.getByLabelText('pages.study.reason'), {
+    target: { value: 'Explicit recipient revocation' },
+  });
+};
+
+it.each(['v4', 'v5'] as const)(
+  'revokes only the exact share with its own server actions through %s',
+  async (api) => {
+    const view = api === 'v5' ? advancedView : legacyView;
+    mockSearch = `?id=${view.report.reportRevisionId}&hash=${view.report.contentHash}${api === 'v5' ? '&api=5' : ''}`;
+    const exact = { ...share, ...view.report, reportContentHash: view.report.contentHash };
+    const base = mockReview.getMockImplementation()!;
+    mockReview.mockImplementation(async (request, workflow, selectedApi) => {
+      if (request.operation === 'resource.actions' && request.resource.type === 'share')
+        return {
+          type: 'actions',
+          resource: request.resource,
+          actions: ['share.read', 'share.revoke'],
+        };
+      if (request.operation === 'share.read') return { type: 'share', value: exact };
+      if (request.operation === 'share.revoke')
+        return { type: 'share', value: { ...exact, status: 'revoked' } };
+      return base(request, workflow, selectedApi);
+    });
+    render(<ReportPage />);
+    await waitFor(() => expect(document.querySelector('iframe')).not.toBeNull());
+    expect(revokeButton()).toBeDisabled();
+    selectShareForRevocation();
+    expect(screen.getByLabelText('pages.study.delegations')).toHaveValue('');
+    await waitFor(() => expect(revokeButton()).toBeEnabled());
+    expect(mockReview).toHaveBeenCalledWith(
+      { operation: 'resource.actions', resource: { type: 'share', id: share.shareId } },
+      ...(api === 'v5' ? [undefined, 'v5'] : []),
+    );
+    expect(mockReview).toHaveBeenCalledWith(
+      { operation: 'share.read', shareId: share.shareId },
+      ...(api === 'v5' ? [undefined, 'v5'] : []),
+    );
+    await act(async () => fireEvent.click(revokeButton()));
+    await waitFor(() =>
+      expect(mockReview).toHaveBeenCalledWith(
+        {
+          operation: 'share.revoke',
+          shareId: share.shareId,
+          reason: 'Explicit recipient revocation',
+          idempotencyKey: 'original-ui-key',
+        },
+        `${api === 'v5' ? 'report5' : 'report'}:${view.report.reportRevisionId}`,
+        ...(api === 'v5' ? ['v5'] : []),
+      ),
+    );
+    expect(mockCore).not.toHaveBeenCalled();
+  },
+);
+
+it.each(['report', 'hash', 'permission', 'denial'])(
+  'denies share revocation for %s mismatch without using report-wide action claims',
+  async (mismatch) => {
+    const base = mockReview.getMockImplementation()!;
+    mockReview.mockImplementation(async (request, workflow, api) => {
+      if (request.operation === 'resource.actions')
+        return {
+          type: 'actions',
+          resource: request.resource,
+          actions:
+            request.resource.type === 'share' && mismatch === 'permission'
+              ? ['share.read']
+              : ['share.revoke'],
+        };
+      if (request.operation === 'share.read') {
+        if (mismatch === 'denial') throw new Error('Server denied current access');
+        return {
+          type: 'share',
+          value: {
+            ...share,
+            reportRevisionId: mismatch === 'report' ? 'another-report' : id,
+            reportContentHash: mismatch === 'hash' ? '0'.repeat(64) : hash,
+          },
+        };
+      }
+      return base(request, workflow, api);
+    });
+    render(<ReportPage />);
+    await waitFor(() => expect(document.querySelector('iframe')).not.toBeNull());
+    selectShareForRevocation();
+    await waitFor(() =>
+      expect(mockReview).toHaveBeenCalledWith(
+        { operation: 'share.read', shareId: share.shareId },
+        undefined,
+        'v5',
+      ),
+    );
+    await act(async () => {});
+    expect(revokeButton()).toBeDisabled();
+    fireEvent.click(revokeButton());
+    expect(mockReview.mock.calls.some(([request]) => request.operation === 'share.revoke')).toBe(
+      false,
+    );
+  },
+);
+
+it('discards late actions/read metadata for a replaced share selection and another protocol family', async () => {
+  let release!: (value: unknown) => void;
+  const held = new Promise((resolve) => {
+    release = resolve;
+  });
+  const base = mockReview.getMockImplementation()!;
+  mockReview.mockImplementation(async (request, workflow, api) => {
+    if (request.operation === 'resource.actions' && request.resource.type === 'share')
+      return {
+        type: 'actions',
+        resource: request.resource,
+        actions: ['share.read', 'share.revoke'],
+      };
+    if (request.operation === 'share.read')
+      return request.shareId === share.shareId
+        ? held
+        : { type: 'share', value: { ...share, reportRevisionId: 'another-report' } };
+    return base(request, workflow, api);
+  });
+  const page = render(<ReportPage />);
+  await waitFor(() => expect(document.querySelector('iframe')).not.toBeNull());
+  selectShareForRevocation();
+  await waitFor(() =>
+    expect(mockReview).toHaveBeenCalledWith(
+      { operation: 'share.read', shareId: share.shareId },
+      undefined,
+      'v5',
+    ),
+  );
+  selectShareForRevocation('another-share');
+  await act(async () => {
+    release({ type: 'share', value: share });
+    await held;
+  });
+  expect(revokeButton()).toBeDisabled();
+  mockSearch = `?id=${id}&hash=${hash}`;
+  page.rerender(<ReportPage />);
+  await waitFor(() => expect(screen.getByLabelText('pages.study.shares')).toHaveValue(''));
+  expect(revokeButton()).toBeDisabled();
+  expect(mockReview.mock.calls.some(([request]) => request.operation === 'share.revoke')).toBe(
+    false,
+  );
+});

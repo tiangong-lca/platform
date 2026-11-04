@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: '3e14876b4d56cf1e2c0ae5e63868c897fd300e40'
-lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share family and contained codec, identity-fenced downloads and original-request journals. Existing scoped-first proof, serialized Umi work, complete 100% source coverage, exact portable-package/browser proof and hook-owned final gate remain required; actual runtime and Dev/Main/root delivery remain separate.'
+lastReviewedCommit: 52f335646c580d52e8f869fc549efc0f11ec24c3
+lastReviewedNote: 'Platform #1437: reviewed exact selected-share V4/V5 actions/read metadata, report/hash/query identity, independent delegation/share targets, existing actor/journal fences and full-closure test/locale obligations. Actual repaired runtime, hosted CI, Main and root remain separate.'
 ---
 
 # Testing Patterns Reference

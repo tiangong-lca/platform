@@ -5,8 +5,8 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "b2750940b2e7ed5a6769582faae8ed8860f931df04a0170fb5223ffef344183f",
-    "auditedInputDigest": "40a9788e891c2d42b2450984c48340d915a089c84fcb59c708b6f11ed42486bd"
+    "sourceManifestDigest": "d23c8fd94dd21dfc1e9e154637381dac0b7491a688dd51738b628d5cd0c7d375",
+    "auditedInputDigest": "5b4c2f5daa2f9238d311fd53ab2aba2b827a659f3895511d97e67b24376f306e"
   },
   "inventory": {
     "sourceMessageCount": 3750,
@@ -47,7 +47,7 @@
     "messageCount": 3750,
     "completeCount": 3750,
     "blockedCount": 0,
-    "dossierDigest": "a3205cda7801c05908bcb1853b5567613bf23eb1e5afa41efcd89676c20062b7",
+    "dossierDigest": "60ffcd7a67d113540b25929f6236b051ec6feda15c85738d3571b6485e343556",
     "catalogDigest": "93c05dd4181a0499490a1097a51fe8602864e3f9670ef25bb469ca453efdde29",
     "moduleCount": 33,
     "moduleDigest": "e83a9a44646c751e1cdbb2b832413fc0f20e143734d1fc62ea3e3c1f41f12e56",
@@ -144,7 +144,7 @@
         "focusedVariantCount": 12
       },
       "sourceFileCount": 50,
-      "sourceEvidenceDigest": "4a651ec5e2fb930f10a85c39bfa89b93d4255f067c1809b3a7ca48fcfae70ea8",
+      "sourceEvidenceDigest": "978e0506d457130d434e8b007074c13b832860d4f7e67eab414962b2c8312c55",
       "rowEvidence": [
         {
           "executableAssertionId": "rv.root.redirect-to-welcome",
@@ -434,7 +434,7 @@
           "viewState": "study-workbench",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "3053a271d029f796f513585e1acba489738aab9cac66a5cfd7019027480a4b8e",
-          "focusedTestDigest": "6f895a4915128078727905a8f5284230382a4a5eda02c64a2779399f6646e1fa",
+          "focusedTestDigest": "52c3f2948f1d3f1206ec170c580d4bab72c9b9446c49f10e13636a6a5b699e4f",
           "plannedBrowserAssertionCount": 2,
           "plannedBrowserAssertionDigest": "7e28d2bea2fe060bd8622766d7f4e7ecf38368fa519f148da0af34413819b317",
           "derivedMessageCount": 93,
@@ -451,8 +451,8 @@
           "route": "/study-report",
           "viewState": "exact-report-review",
           "requiredEvidenceScope": "internal-localization",
-          "sourceDigest": "e4449a00dcccd5f25af8c6d073263907e761f2cdd9d9b1175ae340e5aeb3ab13",
-          "focusedTestDigest": "6f895a4915128078727905a8f5284230382a4a5eda02c64a2779399f6646e1fa",
+          "sourceDigest": "63441c5070da01c7cb68878918d75e7597f1d3d190fe4c6a3a1fa1a6ea6dbb94",
+          "focusedTestDigest": "52c3f2948f1d3f1206ec170c580d4bab72c9b9446c49f10e13636a6a5b699e4f",
           "plannedBrowserAssertionCount": 2,
           "plannedBrowserAssertionDigest": "7e28d2bea2fe060bd8622766d7f4e7ecf38368fa519f148da0af34413819b317",
           "derivedMessageCount": 93,
@@ -470,7 +470,7 @@
           "viewState": "named-report-share",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "60fc12621514f535e2955e0c8555f6fbcad6a2a412a74e0ff6a2fd84399698ce",
-          "focusedTestDigest": "6f895a4915128078727905a8f5284230382a4a5eda02c64a2779399f6646e1fa",
+          "focusedTestDigest": "52c3f2948f1d3f1206ec170c580d4bab72c9b9446c49f10e13636a6a5b699e4f",
           "plannedBrowserAssertionCount": 2,
           "plannedBrowserAssertionDigest": "7e28d2bea2fe060bd8622766d7f4e7ecf38368fa519f148da0af34413819b317",
           "derivedMessageCount": 93,
@@ -1370,7 +1370,7 @@
           "unownedVisibleLiteralCount": 0
         }
       ],
-      "rowEvidenceDigest": "5d728936ddb879482bb4c28c76525261269b82377f6c03a56eb9b6b06e14abba",
+      "rowEvidenceDigest": "ea72025086e5b7e07d27542818fc542efcfce27eccd423945a219d97d886be39",
       "blockedDerivedStateCount": 0,
       "unownedVisibleLiteralCount": 0
     }
@@ -1394,5 +1394,5 @@
     "docs/plans/i18n-en-US/style-guide.md": "be570ee8db2b034dde7274f774730575ad9b9226af7a5ac7ab35a45d1ef2620c"
   },
   "blockedContext": [],
-  "contextDigest": "2c6c27ef5b00ca6d67e6a564806745e9c6d6a59ca53622992c22193fc746f076"
+  "contextDigest": "f72c1240425fcf6cd38d6fbb65934fc59a0d266d5b33ab323374bd9630ee5743"
 }

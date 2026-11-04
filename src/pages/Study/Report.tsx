@@ -93,7 +93,8 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
   const [recipientId, setRecipientId] = useState('');
   const [exportId, setExportId] = useState('');
   const [lastResult, setLastResult] = useState<ReviewData>();
-  const [revokeId, setRevokeId] = useState('');
+  const [revokeDelegationId, setRevokeDelegationId] = useState('');
+  const [revokeShareId, setRevokeShareId] = useState('');
   const [reason, setReason] = useState('');
   const [profile, setProfile] = useState<
     'lca.study-report-unreviewed.v1' | 'lca.study-report-internal-review.v1'
@@ -111,6 +112,7 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
     );
     return { actions, capabilities, projection, preview: renderStudyPreview(projection.view) };
   });
+  const [historyGeneration, setHistoryGeneration] = useState(0);
   const exportActions = useStudyQuery(`${api}:${exportId}`, async () => {
     if (!exportId) return undefined;
     const actions = expectType(
@@ -122,8 +124,27 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
       throw new StudyRequestError('REFERENCE_MISMATCH', false);
     return actions;
   });
+  const shareActions = useStudyQuery(
+    `${api}:${id}:${hash}:${revokeShareId}:${historyGeneration}`,
+    async () => {
+      if (!revokeShareId) return undefined;
+      const actions = expectType(
+        await client({
+          operation: 'resource.actions',
+          resource: { type: 'share', id: revokeShareId },
+        }),
+        'actions',
+      );
+      const item = expectType(
+        await client({ operation: 'share.read', shareId: revokeShareId }),
+        'share',
+      ).value;
+      if (item.reportRevisionId !== id || item.reportContentHash !== hash)
+        throw new StudyRequestError('REFERENCE_MISMATCH', false);
+      return actions;
+    },
+  );
   const write = useStudyWrite(query.refresh, reportWorkflow('report', id, api));
-  const [historyGeneration, setHistoryGeneration] = useState(0);
   const allowed = (operation: ReviewRequest['operation']) =>
     Boolean(
       query.data?.capabilities.runtimeEnabled &&
@@ -365,13 +386,16 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
             <Space wrap>
               <Input
                 aria-label={t('delegations')}
-                value={revokeId}
-                onChange={(event) => setRevokeId(event.target.value)}
+                value={revokeDelegationId}
+                onChange={(event) => setRevokeDelegationId(event.target.value)}
               />
               <Button
-                disabled={!allowed('review.delegation.revoke') || !revokeId}
+                disabled={!allowed('review.delegation.revoke') || !revokeDelegationId}
                 onClick={() =>
-                  command({ operation: 'review.delegation.revoke', delegationId: revokeId })
+                  command({
+                    operation: 'review.delegation.revoke',
+                    delegationId: revokeDelegationId,
+                  })
                 }
               >
                 {t('revoke')}
@@ -467,8 +491,8 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
             <Space wrap>
               <Input
                 aria-label={t('shares')}
-                value={revokeId}
-                onChange={(event) => setRevokeId(event.target.value)}
+                value={revokeShareId}
+                onChange={(event) => setRevokeShareId(event.target.value)}
               />
               <Input
                 aria-label={t('reason')}
@@ -476,8 +500,15 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
                 onChange={(event) => setReason(event.target.value)}
               />
               <Button
-                disabled={!allowed('share.revoke') || !revokeId || !reason.trim()}
-                onClick={() => command({ operation: 'share.revoke', shareId: revokeId, reason })}
+                disabled={
+                  !shareActions.data?.actions.includes('share.revoke') ||
+                  write.busy ||
+                  !!write.pending ||
+                  !reason.trim()
+                }
+                onClick={() =>
+                  command({ operation: 'share.revoke', shareId: revokeShareId, reason })
+                }
               >
                 {t('revoke')}
               </Button>
