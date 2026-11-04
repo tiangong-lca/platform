@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 98d806793377f65727caccd28d115e44c1052930
-lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
+lastReviewedCommit: 29d4d9d036b26c610f0d6991ddb82f73a2de48e1
+lastReviewedNote: 'Platform #1442: reviewed method view3/renderer3 mandatory20/25/58 disclosure, exact Edge f1a36cee validator/module metadata and retained44da renderer2 bytes. This is source/document review; independent review, V6 client/runtime, full gates and release/root delivery remain separate. Existing branch/auth/dependency/gate and locale authority remain unchanged; the third-party validation locale map has one exact audit contract.'
 ---
 
 # Testing Troubleshooting

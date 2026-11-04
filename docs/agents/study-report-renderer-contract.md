@@ -18,9 +18,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/study-report.yml
   - tests/unit/config/studyReportWorkflow.test.ts
-lastReviewedAt: '2026-11-04'
-lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
-lastReviewedNote: 'Platform #1437: reviewed view.v2/renderer2.0.0 independent null/coverage semantics, exact supplied reasonCodes and non-LCIA evidence, strict current exports and explicit unchanged1.0/view.v1 preview; actual P4 producer/consumer qualification remains separate. Existing gates, ownership and release authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 29d4d9d036b26c610f0d6991ddb82f73a2de48e1
+lastReviewedNote: 'Platform #1442: reviewed method view3/renderer3 mandatory20/25/58 disclosure, exact Edge f1a36cee validator/module metadata and retained44da renderer2 bytes. This is source/document review; independent review, V6 client/runtime, full gates and release/root delivery remain separate. Existing branch/auth/dependency/gate and locale authority remain unchanged; the third-party validation locale map has one exact audit contract.'
 related:
   - repo-architecture.md
   - repo-validation.md
