@@ -14,6 +14,7 @@ import frValidatorMessages from '@/locales/fr-FR/validator';
 import zhValidatorMessages from '@/locales/zh-CN/validator';
 import { getReferenceUnitGroups } from '@/services/flowproperties/api';
 import { getFlowProperties } from '@/services/flows/api';
+import { SUPPORTED_APP_LOCALES } from '@/services/general/localeRegistry';
 import {
   capitalize,
   classificationToJsonList,
@@ -47,6 +48,10 @@ import {
   validatePasswordStrength,
 } from '@/services/general/util';
 import { getReferenceUnits } from '@/services/unitgroups/api';
+import globalReferenceFieldNames from '../../../fixtures/general/global-reference-field-names.json';
+import localizedFieldNames from '../../../fixtures/general/localized-field-names.json';
+import multilingualReferenceProcess from '../../../fixtures/general/multilingual-reference-process.json';
+import { ProcessSchema } from '@tiangong-lca/tidas-sdk/schemas';
 
 // Mock classification data
 const mockClassificationData = [
@@ -928,17 +933,798 @@ describe('General Utility Functions', () => {
   });
 
   describe('normalizeLangPayloadBeforeSave', () => {
+    it('preserves SDK-valid reference entities in a whole Process with outer language attributes', async () => {
+      const payload = JSON.parse(JSON.stringify(multilingualReferenceProcess));
+      expect(ProcessSchema.safeParse(payload).success).toBe(true);
+      const references =
+        payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .referenceToDataSource;
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(
+        result.payload.processDataSet.modellingAndValidation
+          .dataSourcesTreatmentAndRepresentativeness.referenceToDataSource,
+      ).toEqual(references);
+      expect(ProcessSchema.safeParse(result.payload).success).toBe(true);
+      expect(payload).toEqual(multilingualReferenceProcess);
+    });
+
+    it('preserves SDK-valid exchange entities with outer language attributes in a whole Process', async () => {
+      const payload = JSON.parse(JSON.stringify(multilingualReferenceProcess));
+      const first = {
+        ...payload.processDataSet.exchanges.exchange[0],
+        '@xml:lang': 'en',
+        '#text': 'First exchange annotation',
+      };
+      const second = {
+        ...JSON.parse(JSON.stringify(first)),
+        '@dataSetInternalID': '1',
+        exchangeDirection: 'Output',
+      };
+      payload.processDataSet.exchanges.exchange = [first, second];
+      expect(ProcessSchema.safeParse(payload).success).toBe(true);
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(result.payload.processDataSet.exchanges.exchange).toEqual([first, second]);
+      expect(ProcessSchema.safeParse(result.payload).success).toBe(true);
+    });
+
+    it.each(globalReferenceFieldNames)(
+      'keeps %s reference entities and their cardinality instead of treating outer language attributes as scalar values',
+      async (field) => {
+        const references =
+          multilingualReferenceProcess.processDataSet.modellingAndValidation
+            .dataSourcesTreatmentAndRepresentativeness.referenceToDataSource;
+        for (const value of [references[0], [references[0]], references, []]) {
+          const payload = JSON.parse(JSON.stringify({ [field]: value }));
+          const result = await normalizeLangPayloadBeforeSave(payload);
+          expect(result.issues).toEqual([]);
+          expect(result.payload).toEqual(payload);
+        }
+      },
+    );
+
+    it.each(globalReferenceFieldNames)(
+      'continues to validate inner captions inside %s reference entities',
+      async (field) => {
+        const references = JSON.parse(
+          JSON.stringify(
+            multilingualReferenceProcess.processDataSet.modellingAndValidation
+              .dataSourcesTreatmentAndRepresentativeness.referenceToDataSource,
+          ),
+        );
+        references[1]['common:shortDescription'] = [
+          { '@xml:lang': 'en', '#text': 'First caption' },
+          { '@xml:lang': 'en', '#text': 'Conflicting caption' },
+        ];
+        const result = await normalizeLangPayloadBeforeSave({ [field]: references });
+        expect(result.issues).toEqual([
+          expect.objectContaining({
+            path: `${field}[1].common:shortDescription[1].@xml:lang`,
+            code: 'duplicate_language',
+          }),
+        ]);
+        expect(result.payload[field]).toEqual(references);
+      },
+    );
+
+    it('preserves outer reference annotations while applying inner English checks', async () => {
+      const reference = {
+        ...multilingualReferenceProcess.processDataSet.modellingAndValidation
+          .dataSourcesTreatmentAndRepresentativeness.referenceToDataSource[0],
+        '@xml:lang': 'EN',
+        '#text': 'Outer entity annotation',
+        'common:shortDescription': { '@xml:lang': 'en', '#text': 'Steel钢铁' },
+      };
+      const result = await normalizeLangPayloadBeforeSave({ referenceQuantity: reference });
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'referenceQuantity.common:shortDescription',
+          code: 'invalid_en',
+        }),
+      ]);
+      expect(result.payload.referenceQuantity).toEqual(reference);
+      const validation = await normalizeLangPayloadBeforeSave(
+        {
+          referenceToContact: {
+            ...reference,
+            'common:shortDescription': { '@xml:lang': 'zh', '#text': '中文说明' },
+          },
+        },
+        { intent: 'validation' },
+      );
+      expect(validation.issues).toEqual([]);
+      expect(validation.supplementedEnglishPlaceholderPaths).toEqual([
+        'referenceToContact.common:shortDescription',
+      ]);
+      expect(validation.payload.referenceToContact['@xml:lang']).toBe('EN');
+      expect(validation.payload.referenceToContact['#text']).toBe('Outer entity annotation');
+      expect(validation.payload.referenceToContact['common:shortDescription']).toEqual([
+        { '@xml:lang': 'zh', '#text': '中文说明' },
+        { '@xml:lang': 'en', '#text': undefined },
+      ]);
+    });
+
+    it('does not exempt a real comment merely because it carries a reference attribute', async () => {
+      const comment = {
+        '@xml:lang': 'en',
+        '#text': 'Original paragraph',
+        '@refObjectId': '22222222-2222-4222-8222-222222222222',
+      };
+      const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': comment });
+      expect(result.payload['common:generalComment']).toEqual(comment);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'common:generalComment.@refObjectId',
+          code: 'unsupported_language_attribute',
+        }),
+      ]);
+    });
+
+    it.each(localizedFieldNames)('recognizes the canonical localized role of %s', async (field) => {
+      const value = [{ '@xml:lang': 'en', '#text': 'Canonical localized value' }];
+      const payload =
+        field === 'flowProperties' ? { name: { [field]: value } } : { [field]: value };
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      const normalized =
+        field === 'flowProperties' ? result.payload.name[field] : result.payload[field];
+      expect(normalized).toEqual(value[0]);
+    });
+
+    it('treats flowProperties as localized only below a name and preserves the data container', async () => {
+      const reference = {
+        ...multilingualReferenceProcess.processDataSet.modellingAndValidation
+          .dataSourcesTreatmentAndRepresentativeness.referenceToDataSource[0],
+        '@type': 'flow property data set',
+      };
+      const container = {
+        '@xml:lang': 'en',
+        '#text': 'Container annotation',
+        flowProperty: [
+          {
+            '@dataSetInternalID': '0',
+            '@xml:lang': 'en',
+            '#text': 'Entity annotation',
+            meanValue: '1',
+            referenceToFlowPropertyDataSet: reference,
+          },
+        ],
+      };
+      const payload = {
+        flowDataSet: {
+          flowInformation: {
+            dataSetInformation: {
+              name: { flowProperties: [{ '@xml:lang': 'en', '#text': 'Mass basis' }] },
+            },
+          },
+          flowProperties: container,
+        },
+      };
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(result.payload.flowDataSet.flowProperties).toEqual(container);
+      expect(
+        result.payload.flowDataSet.flowInformation.dataSetInformation.name.flowProperties,
+      ).toEqual({ '@xml:lang': 'en', '#text': 'Mass basis' });
+    });
+
+    it('leaves unknown nested language-shaped metadata untouched without translating it', async () => {
+      const payload = {
+        unknownEntity: [
+          { '@xml:lang': 'en', '#text': '结构甲', '@id': 'one' },
+          { '@xml:lang': 'en', '#text': '结构乙', '@id': 'two' },
+        ],
+        unknownCaption: [
+          { '@xml:lang': 'en', '#text': 'First annotation' },
+          { '@xml:lang': 'en', '#text': 'Second annotation' },
+        ],
+      };
+      const translateZhToEn = jest.fn();
+      const result = await normalizeLangPayloadBeforeSave(payload, { translateZhToEn });
+      expect(result.payload).toEqual(payload);
+      expect(result.issues).toEqual([]);
+      expect(translateZhToEn).not.toHaveBeenCalled();
+    });
+
+    it('preserves language annotations on dataset roots instead of reclassifying the dataset', async () => {
+      const payload = {
+        ...JSON.parse(JSON.stringify(multilingualReferenceProcess)),
+        '@xml:lang': 'en',
+        '#text': 'Dataset envelope annotation',
+      };
+      expect(ProcessSchema.safeParse(payload).success).toBe(true);
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(result.payload['@xml:lang']).toBe('en');
+      expect(result.payload['#text']).toBe('Dataset envelope annotation');
+      expect(ProcessSchema.safeParse(result.payload).success).toBe(true);
+    });
+
+    it('retains explicit standalone language objects and lists while preserving root entity lists', async () => {
+      const entry = { '@xml:lang': 'en', '#text': 'Standalone text' };
+      expect((await normalizeLangPayloadBeforeSave(entry)).payload).toEqual(entry);
+      expect((await normalizeLangPayloadBeforeSave([entry])).payload).toEqual(entry);
+      expect((await normalizeLangPayloadBeforeSave([null, {}, entry])).payload).toEqual(entry);
+      expect((await normalizeLangPayloadBeforeSave([])).payload).toEqual([]);
+      const entities = [
+        { ...entry, '@id': 'one' },
+        { ...entry, '@id': 'two' },
+      ];
+      const result = await normalizeLangPayloadBeforeSave(entities);
+      expect(result.issues).toEqual([]);
+      expect(result.payload).toEqual(entities);
+    });
+
+    const additionalDescriptiveFields: Array<{ name: string; path: string[]; limit?: number }> = [
+      {
+        name: 'sourceDescriptionOrComment',
+        path: [
+          'sourceDataSet',
+          'sourceInformation',
+          'dataSetInformation',
+          'sourceDescriptionOrComment',
+        ],
+      },
+      {
+        name: 'contactDescriptionOrComment',
+        path: [
+          'contactDataSet',
+          'contactInformation',
+          'dataSetInformation',
+          'contactDescriptionOrComment',
+        ],
+        limit: 1000,
+      },
+      {
+        name: 'Process variable comment',
+        path: [
+          'processDataSet',
+          'processInformation',
+          'mathematicalRelations',
+          'variableParameter',
+          'comment',
+        ],
+        limit: 500,
+      },
+      {
+        name: 'geographicalRepresentativenessDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'LCIAMethodInformation',
+          'geography',
+          'geographicalRepresentativenessDescription',
+        ],
+      },
+      {
+        name: 'timeRepresentativenessDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'LCIAMethodInformation',
+          'time',
+          'timeRepresentativenessDescription',
+        ],
+      },
+      {
+        name: 'deviationsFromLCIAMethodPrinciple',
+        path: [
+          'LCIAMethodDataSet',
+          'modellingAndValidation',
+          'LCIAMethodNormalisationAndWeighting',
+          'deviationsFromLCIAMethodPrinciple',
+        ],
+      },
+      {
+        name: 'consideredMechanisms',
+        path: ['LCIAMethodDataSet', 'LCIAMethodInformation', 'impactModel', 'consideredMechanisms'],
+        limit: 1000,
+      },
+      {
+        name: 'normalisationDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'modellingAndValidation',
+          'LCIAMethodNormalisationAndWeighting',
+          'normalisationDescription',
+        ],
+        limit: 1000,
+      },
+      {
+        name: 'weightingDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'modellingAndValidation',
+          'LCIAMethodNormalisationAndWeighting',
+          'weightingDescription',
+        ],
+        limit: 1000,
+      },
+      {
+        name: 'LCIA recommendation meaning',
+        path: [
+          'LCIAMethodDataSet',
+          'administrativeInformation',
+          'dataEntryBy',
+          'recommendationBy',
+          'meaning',
+        ],
+      },
+    ];
+
+    const descriptivePayload = (segments: string[], value: any): any =>
+      segments.reduceRight((nested, key) => ({ [key]: nested }), value);
+    const descriptiveValue = (payload: any, segments: string[]): any =>
+      segments.reduce((nested, key) => nested[key], payload);
+
+    it.each(additionalDescriptiveFields)(
+      'merges canonical descriptive field $name without language loss',
+      async ({ path }) => {
+        const entries = [
+          { '@xml:lang': 'en', '#text': 'First paragraph.' },
+          { '@xml:lang': 'en-GB', '#text': 'First British paragraph.' },
+          { '@xml:lang': 'zh', '#text': '第一段说明。' },
+          { '@xml:lang': 'zh-CN', '#text': '第一段地区说明。' },
+          { '@xml:lang': 'en', '#text': 'Second paragraph includes First paragraph.' },
+          { '@xml:lang': 'en-GB', '#text': 'Second British paragraph.' },
+          { '@xml:lang': 'zh', '#text': '第二段包括第一段说明。' },
+          { '@xml:lang': 'zh-CN', '#text': '第二段地区说明。' },
+        ];
+        const payload = descriptivePayload(path, entries);
+        const result = await normalizeLangPayloadBeforeSave(payload);
+        expect(result.issues).toEqual([]);
+        expect(descriptiveValue(result.payload, path)).toEqual([
+          {
+            '@xml:lang': 'en',
+            '#text': 'First paragraph.\n\nSecond paragraph includes First paragraph.',
+          },
+          {
+            '@xml:lang': 'en-gb',
+            '#text': 'First British paragraph.\n\nSecond British paragraph.',
+          },
+          { '@xml:lang': 'zh', '#text': '第一段说明。\n\n第二段包括第一段说明。' },
+          { '@xml:lang': 'zh-cn', '#text': '第一段地区说明。\n\n第二段地区说明。' },
+        ]);
+        expect(await normalizeLangPayloadBeforeSave(result.payload)).toEqual(result);
+        expect(descriptiveValue(payload, path)).toEqual(entries);
+      },
+    );
+
+    it.each(additionalDescriptiveFields.filter(({ limit }) => limit !== undefined))(
+      'enforces the combined field limit for $name without changing rejected input',
+      async ({ path, limit }) => {
+        const firstLength = Math.floor(limit! / 2);
+        const atBoundary = [
+          { '@xml:lang': 'en', '#text': 'A'.repeat(firstLength) },
+          { '@xml:lang': 'en', '#text': 'B'.repeat(limit! - firstLength - 2) },
+        ];
+        const accepted = await normalizeLangPayloadBeforeSave(descriptivePayload(path, atBoundary));
+        expect(accepted.issues).toEqual([]);
+        expect(descriptiveValue(accepted.payload, path)['#text']).toHaveLength(limit!);
+        const overBoundary = [
+          atBoundary[0],
+          { ...atBoundary[1], '#text': `${atBoundary[1]['#text']}B` },
+        ];
+        const rejected = await normalizeLangPayloadBeforeSave(
+          descriptivePayload(path, overBoundary),
+        );
+        expect(rejected.issues).toEqual([
+          expect.objectContaining({
+            path: `${path.join('.')}[1].#text`,
+            code: 'localized_text_too_long',
+          }),
+        ]);
+        expect(descriptiveValue(rejected.payload, path)).toEqual(overBoundary);
+      },
+    );
+
+    it.each(additionalDescriptiveFields.filter(({ limit }) => limit === undefined))(
+      'retains long FT paragraphs for $name',
+      async ({ path }) => {
+        const entries = [
+          { '@xml:lang': 'en', '#text': 'A'.repeat(1500) },
+          { '@xml:lang': 'en', '#text': 'B'.repeat(1500) },
+        ];
+        const result = await normalizeLangPayloadBeforeSave(descriptivePayload(path, entries));
+        expect(result.issues).toEqual([]);
+        expect(descriptiveValue(result.payload, path)).toEqual({
+          '@xml:lang': 'en',
+          '#text': `${'A'.repeat(1500)}\n\n${'B'.repeat(1500)}`,
+        });
+      },
+    );
+
+    it('keeps variable comments and unit comments within their own entities and preserves scientific scalars', async () => {
+      const paragraphs = (prefix: string) => [
+        { '@xml:lang': 'en', '#text': `${prefix} first.` },
+        { '@xml:lang': 'en', '#text': `${prefix} second.` },
+      ];
+      const payload = {
+        processDataSet: {
+          processInformation: {
+            mathematicalRelations: {
+              variableParameter: [
+                {
+                  '@name': 'x',
+                  formula: '1 + 2',
+                  meanValue: '3',
+                  comment: paragraphs('Variable x'),
+                },
+                {
+                  '@name': 'y',
+                  formula: 'x * 2',
+                  meanValue: '6',
+                  comment: paragraphs('Variable y'),
+                },
+              ],
+            },
+          },
+        },
+        unitGroupDataSet: {
+          units: {
+            unit: [
+              {
+                '@dataSetInternalID': '0',
+                name: 'kg',
+                meanValue: '1',
+                generalComment: paragraphs('Kilogram'),
+              },
+              {
+                '@dataSetInternalID': '1',
+                name: 'g',
+                meanValue: '0.001',
+                generalComment: paragraphs('Gram'),
+              },
+            ],
+          },
+        },
+        LCIAMethodDataSet: {
+          administrativeInformation: {
+            dataEntryBy: {
+              recommendationBy: {
+                level: 'Level I',
+                referenceToEntity: { '@refObjectId': 'recommendation-owner' },
+                meaning: paragraphs('Recommendation'),
+              },
+            },
+          },
+        },
+      };
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(
+        result.payload.processDataSet.processInformation.mathematicalRelations.variableParameter,
+      ).toEqual([
+        {
+          '@name': 'x',
+          formula: '1 + 2',
+          meanValue: '3',
+          comment: { '@xml:lang': 'en', '#text': 'Variable x first.\n\nVariable x second.' },
+        },
+        {
+          '@name': 'y',
+          formula: 'x * 2',
+          meanValue: '6',
+          comment: { '@xml:lang': 'en', '#text': 'Variable y first.\n\nVariable y second.' },
+        },
+      ]);
+      expect(result.payload.unitGroupDataSet.units.unit).toEqual([
+        {
+          '@dataSetInternalID': '0',
+          name: 'kg',
+          meanValue: '1',
+          generalComment: { '@xml:lang': 'en', '#text': 'Kilogram first.\n\nKilogram second.' },
+        },
+        {
+          '@dataSetInternalID': '1',
+          name: 'g',
+          meanValue: '0.001',
+          generalComment: { '@xml:lang': 'en', '#text': 'Gram first.\n\nGram second.' },
+        },
+      ]);
+      expect(
+        result.payload.LCIAMethodDataSet.administrativeInformation.dataEntryBy.recommendationBy,
+      ).toEqual({
+        level: 'Level I',
+        referenceToEntity: { '@refObjectId': 'recommendation-owner' },
+        meaning: { '@xml:lang': 'en', '#text': 'Recommendation first.\n\nRecommendation second.' },
+      });
+    });
+
+    it('enforces the existing 500-character bound on the canonical unit comment', async () => {
+      const path = ['unitGroupDataSet', 'units', 'unit', 'generalComment'];
+      const accepted = await normalizeLangPayloadBeforeSave(
+        descriptivePayload(path, [
+          { '@xml:lang': 'en', '#text': 'A'.repeat(249) },
+          { '@xml:lang': 'en', '#text': 'B'.repeat(249) },
+        ]),
+      );
+      expect(accepted.issues).toEqual([]);
+      expect(descriptiveValue(accepted.payload, path)['#text']).toHaveLength(500);
+      const original = descriptivePayload(path, [
+        { '@xml:lang': 'en', '#text': 'A'.repeat(250) },
+        { '@xml:lang': 'en', '#text': 'B'.repeat(249) },
+      ]);
+      const rejected = await normalizeLangPayloadBeforeSave(original);
+      expect(rejected.payload).toEqual(original);
+      expect(rejected.issues).toEqual([
+        expect.objectContaining({
+          path: `${path.join('.')}[1].#text`,
+          code: 'localized_text_too_long',
+        }),
+      ]);
+    });
+
+    it.each([
+      ['comment'],
+      ['processDataSet', 'processInformation', 'comment'],
+      [
+        'lifeCycleModelDataSet',
+        'processInformation',
+        'mathematicalRelations',
+        'variableParameter',
+        'comment',
+      ],
+      ['meaning'],
+      ['LCIAMethodDataSet', 'LCIAMethodInformation', 'meaning'],
+      [
+        'LCIAMethodDataSet',
+        'administrativeInformation',
+        'dataEntryBy',
+        'otherRecommendation',
+        'meaning',
+      ],
+    ])('does not interpret an ambiguous leaf outside its canonical path: %j', async (...path) => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'First value' },
+        { '@xml:lang': 'en', '#text': 'Second value' },
+      ];
+      const original = descriptivePayload(path, entries);
+      const result = await normalizeLangPayloadBeforeSave(original);
+      expect(result.payload).toEqual(original);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: `${path.join('.')}[1].@xml:lang`,
+          code: 'duplicate_language',
+        }),
+      ]);
+    });
+
+    it.each([
+      'common:name',
+      'common:shortName',
+      'common:project',
+      'common:synonyms',
+      'contactAddress',
+      'centralContactPoint',
+      'duration',
+      'referenceYear',
+      'functionalUnitOrOther',
+    ])('keeps %s outside the descriptive paragraph policy', async (field) => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'First value' },
+        { '@xml:lang': 'en', '#text': 'Second value' },
+      ];
+      const result = await normalizeLangPayloadBeforeSave({ [field]: entries });
+      expect(result.payload[field]).toEqual(entries);
+      expect(result.issues).toEqual([
+        expect.objectContaining({ path: `${field}[1].@xml:lang`, code: 'duplicate_language' }),
+      ]);
+    });
+
+    it('retains every same-language descriptive paragraph in order and is idempotent', async () => {
+      const field = 'common:generalComment';
+      const entries = [
+        { '@xml:lang': 'zh', '#text': '第一段说明。' },
+        { '@xml:lang': 'en', '#text': 'First paragraph.' },
+        { '@xml:lang': 'zh', '#text': '第二段包括第一段说明。' },
+        { '@xml:lang': 'en', '#text': 'Second paragraph includes First paragraph.' },
+      ];
+      const original = {
+        processDataSet: { processInformation: { dataSetInformation: { [field]: entries } } },
+      };
+      const result = await normalizeLangPayloadBeforeSave(original);
+      expect(result.issues).toEqual([]);
+      expect(result.payload.processDataSet.processInformation.dataSetInformation[field]).toEqual([
+        { '@xml:lang': 'zh', '#text': '第一段说明。\n\n第二段包括第一段说明。' },
+        {
+          '@xml:lang': 'en',
+          '#text': 'First paragraph.\n\nSecond paragraph includes First paragraph.',
+        },
+      ]);
+      expect(await normalizeLangPayloadBeforeSave(result.payload)).toEqual(result);
+      expect(original.processDataSet.processInformation.dataSetInformation[field]).toEqual(entries);
+    });
+
+    it.each(['baseName', 'annualSupplyOrProductionVolume', 'common:shortDescription'])(
+      'rejects duplicate language conflicts in %s without selecting or joining a value',
+      async (field) => {
+        const entries = [
+          { '@xml:lang': 'en', '#text': 'First value' },
+          { '@xml:lang': 'en', '#text': 'Second value' },
+        ];
+        const result = await normalizeLangPayloadBeforeSave({ [field]: entries });
+        expect(result.issues).toEqual([
+          expect.objectContaining({ path: `${field}[1].@xml:lang`, code: 'duplicate_language' }),
+        ]);
+        expect(result.payload[field]).toEqual(entries);
+      },
+    );
+
+    it('keeps independent exchange comments separate and retains language variants', async () => {
+      const result = await normalizeLangPayloadBeforeSave({
+        exchanges: [
+          {
+            generalComment: [
+              { '@xml:lang': 'en', '#text': 'A' },
+              { '@xml:lang': 'en', '#text': 'B' },
+              { '@xml:lang': 'en-GB', '#text': 'Variant' },
+            ],
+          },
+          { generalComment: { '@xml:lang': 'en', '#text': 'Other exchange' } },
+        ],
+      });
+      expect(result.issues).toEqual([]);
+      expect(result.payload.exchanges).toEqual([
+        {
+          generalComment: [
+            { '@xml:lang': 'en', '#text': 'A\n\nB' },
+            { '@xml:lang': 'en-gb', '#text': 'Variant' },
+          ],
+        },
+        { generalComment: { '@xml:lang': 'en', '#text': 'Other exchange' } },
+      ]);
+    });
+
+    it('rejects extra attributes at the exact path and retains their original values', async () => {
+      const entry = { '@xml:lang': 'en', '#text': 'Original', '@source': 'evidence' };
+      const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': entry });
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'common:generalComment.@source',
+          code: 'unsupported_language_attribute',
+        }),
+      ]);
+      expect(result.payload['common:generalComment']).toEqual(entry);
+    });
+
+    it('rejects an oversized joined exchange comment without truncation or repeated language output', async () => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'A'.repeat(250) },
+        { '@xml:lang': 'en', '#text': 'B'.repeat(249) },
+      ];
+      const result = await normalizeLangPayloadBeforeSave({ generalComment: entries });
+      expect(result.payload.generalComment).toEqual(entries);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'generalComment[1].#text',
+          code: 'localized_text_too_long',
+        }),
+      ]);
+      const boundary = await normalizeLangPayloadBeforeSave({
+        generalComment: [entries[0], { ...entries[1], '#text': 'B'.repeat(248) }],
+      });
+      expect(boundary.issues).toEqual([]);
+      expect(boundary.payload.generalComment['#text']).toHaveLength(500);
+      const unlimited = await normalizeLangPayloadBeforeSave({ 'common:generalComment': entries });
+      expect(unlimited.issues).toEqual([]);
+      expect(unlimited.payload['common:generalComment']['#text']).toHaveLength(501);
+    });
+
+    it('checks the bounded LCIA use advice without limiting Process free text', async () => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'A'.repeat(500) },
+        { '@xml:lang': 'en', '#text': 'B'.repeat(499) },
+      ];
+      const result = await normalizeLangPayloadBeforeSave({
+        LCIAMethodDataSet: { useAdviceForDataSet: entries },
+      });
+      expect(result.issues).toEqual([expect.objectContaining({ code: 'localized_text_too_long' })]);
+      expect(
+        (await normalizeLangPayloadBeforeSave({ processDataSet: { useAdviceForDataSet: entries } }))
+          .issues,
+      ).toEqual([]);
+    });
+
+    it('leaves opaque CommonOther extension structures untouched', async () => {
+      const extension = {
+        extension: [
+          { '@xml:lang': 'en', '#text': 'First structured entity', '@id': 'one' },
+          { '@xml:lang': 'en', '#text': 'Second structured entity', '@id': 'two' },
+        ],
+        nested: {
+          'common:generalComment': [
+            { '@xml:lang': 'zh', '#text': '扩展甲' },
+            { '@xml:lang': 'zh', '#text': '扩展乙' },
+          ],
+        },
+      };
+      const translateZhToEn = jest.fn();
+      const result = await normalizeLangPayloadBeforeSave(
+        { processDataSet: { 'common:other': extension } },
+        { translateZhToEn },
+      );
+      expect(result.issues).toEqual([]);
+      expect(result.payload.processDataSet['common:other']).toEqual(extension);
+      expect(translateZhToEn).not.toHaveBeenCalled();
+    });
+
+    it.each([{ '@id': 'structured sibling', '#text': 'Keep me' }, 'Keep this primitive'])(
+      'blocks meaningful mixed language-list siblings without dropping them',
+      async (sibling) => {
+        const value = [{ '@xml:lang': 'en', '#text': 'Paragraph' }, sibling];
+        const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': value });
+        expect(result.payload['common:generalComment']).toEqual(value);
+        expect(result.issues).toEqual([
+          expect.objectContaining({
+            path: 'common:generalComment[1]',
+            code: 'invalid_language_entry',
+          }),
+        ]);
+      },
+    );
+
+    it('retains existing empty-row cleanup when joining descriptive paragraphs', async () => {
+      const result = await normalizeLangPayloadBeforeSave({
+        'common:generalComment': [
+          null,
+          {},
+          { '@xml:lang': 'en', '#text': 'First' },
+          undefined,
+          { '@xml:lang': 'en', '#text': 'Second' },
+        ],
+      });
+      expect(result.issues).toEqual([]);
+      expect(result.payload['common:generalComment']).toEqual({
+        '@xml:lang': 'en',
+        '#text': 'First\n\nSecond',
+      });
+    });
+
+    it.each([
+      ['common:classification', 'common:class', '@classId'],
+      ['common:elementaryFlowCategorization', 'common:category', '@catId'],
+    ])('preserves independent canonical %s hierarchy labels', async (parentField, field, idKey) => {
+      const hierarchy = [
+        { '@xml:lang': 'en', '@level': '0', [idKey]: 'A', '#text': 'Parent' },
+        { '@xml:lang': 'en', '@level': '1', [idKey]: 'A1', '#text': 'Child' },
+      ];
+      const payload = {
+        flowDataSet: {
+          flowInformation: {
+            dataSetInformation: {
+              classificationInformation: { [parentField]: { [field]: hierarchy } },
+            },
+          },
+        },
+      };
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(result.payload).toEqual(payload);
+    });
+
+    it('does not exempt hierarchy attributes placed on a localized comment', async () => {
+      const entry = { '@xml:lang': 'en', '#text': 'Comment', '@level': '0' };
+      const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': entry });
+      expect(result.payload['common:generalComment']).toEqual(entry);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'common:generalComment.@level',
+          code: 'unsupported_language_attribute',
+        }),
+      ]);
+    });
+
     it('should add English translation when only Chinese content exists', async () => {
       const payload = {
-        title: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
+        baseName: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
       };
       const translateZhToEn = jest.fn().mockResolvedValue('Steel manufacturing');
 
       const result = await normalizeLangPayloadBeforeSave(payload, { translateZhToEn });
 
-      expect(translateZhToEn).toHaveBeenCalledWith('钢铁制造', 'title');
+      expect(translateZhToEn).toHaveBeenCalledWith('钢铁制造', 'baseName');
       expect(result.issues).toEqual([]);
-      expect(result.payload.title).toEqual([
+      expect(result.payload.baseName).toEqual([
         { '@xml:lang': 'en', '#text': 'Steel manufacturing' },
         { '@xml:lang': 'zh', '#text': '钢铁制造' },
       ]);
@@ -946,33 +1732,36 @@ describe('General Utility Functions', () => {
 
     it('should translate invalid English when English field contains Chinese only', async () => {
       const payload = {
-        title: [{ '@xml:lang': 'en', '#text': '钢铁制造' }],
+        baseName: [{ '@xml:lang': 'en', '#text': '钢铁制造' }],
       };
       const translateZhToEn = jest.fn().mockResolvedValue('Steel manufacturing');
 
       const result = await normalizeLangPayloadBeforeSave(payload, { translateZhToEn });
 
-      expect(translateZhToEn).toHaveBeenCalledWith('钢铁制造', 'title');
+      expect(translateZhToEn).toHaveBeenCalledWith('钢铁制造', 'baseName');
       expect(result.issues).toEqual([]);
-      expect(result.payload.title).toEqual({ '@xml:lang': 'en', '#text': 'Steel manufacturing' });
+      expect(result.payload.baseName).toEqual({
+        '@xml:lang': 'en',
+        '#text': 'Steel manufacturing',
+      });
     });
 
     it('should translate invalid English when English field contains mixed Chinese and English', async () => {
       const payload = {
-        title: [{ '@xml:lang': 'en', '#text': 'Steel钢铁' }],
+        baseName: [{ '@xml:lang': 'en', '#text': 'Steel钢铁' }],
       };
       const translateZhToEn = jest.fn().mockResolvedValue('Steel');
 
       const result = await normalizeLangPayloadBeforeSave(payload, { translateZhToEn });
 
-      expect(translateZhToEn).toHaveBeenCalledWith('Steel钢铁', 'title');
+      expect(translateZhToEn).toHaveBeenCalledWith('Steel钢铁', 'baseName');
       expect(result.issues).toEqual([]);
-      expect(result.payload.title).toEqual({ '@xml:lang': 'en', '#text': 'Steel' });
+      expect(result.payload.baseName).toEqual({ '@xml:lang': 'en', '#text': 'Steel' });
     });
 
     it('should report missing English when translation is unavailable', async () => {
       const payload = {
-        title: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
+        baseName: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
       };
       const translateZhToEn = jest.fn().mockResolvedValue(undefined);
 
@@ -980,14 +1769,14 @@ describe('General Utility Functions', () => {
 
       expect(result.issues).toHaveLength(1);
       expect(result.issues[0]).toMatchObject({
-        path: 'title',
+        path: 'baseName',
         code: 'missing_en',
       });
     });
 
     it('should report invalid English when mixed with non-English scripts', async () => {
       const payload = {
-        title: [
+        baseName: [
           { '@xml:lang': 'en', '#text': 'Steel钢铁' },
           { '@xml:lang': 'zh', '#text': '钢铁' },
         ],
@@ -997,7 +1786,7 @@ describe('General Utility Functions', () => {
 
       expect(result.issues).toHaveLength(1);
       expect(result.issues[0]).toMatchObject({
-        path: 'title',
+        path: 'baseName',
         code: 'invalid_en',
       });
     });
@@ -1015,7 +1804,7 @@ describe('General Utility Functions', () => {
 
     it('should reuse cached translations for repeated invalid English source text', async () => {
       const payload = {
-        title: [
+        baseName: [
           { '@xml:lang': 'en', '#text': '钢铁制造' },
           { '@xml:lang': 'zh', '#text': '钢铁制造' },
         ],
@@ -1027,14 +1816,14 @@ describe('General Utility Functions', () => {
       expect(translateZhToEn).toHaveBeenCalledTimes(1);
       expect(result.issues).toHaveLength(1);
       expect(result.issues[0]).toMatchObject({
-        path: 'title',
+        path: 'baseName',
         code: 'invalid_en',
       });
     });
 
     it('should skip invalid language entries and normalize primitive text values', async () => {
       const payload = {
-        title: [
+        baseName: [
           {},
           { '@xml:lang': '', '#text': 'ignored' },
           { '@xml:lang': 'en', '#text': 'Hello' },
@@ -1046,7 +1835,7 @@ describe('General Utility Functions', () => {
       const result = await normalizeLangPayloadBeforeSave(payload);
 
       expect(result.issues).toEqual([]);
-      expect(result.payload.title).toEqual([
+      expect(result.payload.baseName).toEqual([
         { '@xml:lang': 'en', '#text': 'Hello' },
         { '@xml:lang': 'zh', '#text': '123' },
       ]);
@@ -1054,7 +1843,7 @@ describe('General Utility Functions', () => {
 
     it('should normalize a single language object and preserve null sibling values', async () => {
       const payload = {
-        title: { '@xml:lang': 'zh', '#text': '钢铁制造' },
+        baseName: { '@xml:lang': 'zh', '#text': '钢铁制造' },
         note: null,
       };
       const translateZhToEn = jest.fn().mockResolvedValue('Steel manufacturing');
@@ -1062,7 +1851,7 @@ describe('General Utility Functions', () => {
       const result = await normalizeLangPayloadBeforeSave(payload, { translateZhToEn });
 
       expect(result.payload.note).toBeNull();
-      expect(result.payload.title).toEqual([
+      expect(result.payload.baseName).toEqual([
         { '@xml:lang': 'en', '#text': 'Steel manufacturing' },
         { '@xml:lang': 'zh', '#text': '钢铁制造' },
       ]);
@@ -1070,17 +1859,17 @@ describe('General Utility Functions', () => {
 
     it('should preserve empty objects when all language entries are filtered out', async () => {
       const payload = {
-        title: [{ '@xml:lang': 'en', '#text': '' }],
+        baseName: [{ '@xml:lang': 'en', '#text': '' }],
       };
 
       const result = await normalizeLangPayloadBeforeSave(payload);
 
-      expect(result.payload.title).toEqual({});
+      expect(result.payload.baseName).toEqual({});
     });
 
     it('should skip entries with non-string language codes', async () => {
       const payload = {
-        title: [
+        baseName: [
           { '@xml:lang': 42, '#text': 'ignored' },
           { '@xml:lang': 'en', '#text': 'Hello' },
         ],
@@ -1088,12 +1877,12 @@ describe('General Utility Functions', () => {
 
       const result = await normalizeLangPayloadBeforeSave(payload);
 
-      expect(result.payload.title).toEqual({ '@xml:lang': 'en', '#text': 'Hello' });
+      expect(result.payload.baseName).toEqual({ '@xml:lang': 'en', '#text': 'Hello' });
     });
 
     it('should prefer translated Chinese content over retranslating invalid English directly', async () => {
       const payload = {
-        title: [
+        baseName: [
           { '@xml:lang': 'en', '#text': 'Steel钢铁' },
           { '@xml:lang': 'zh', '#text': '钢铁制造' },
         ],
@@ -1103,7 +1892,7 @@ describe('General Utility Functions', () => {
       const result = await normalizeLangPayloadBeforeSave(payload, { translateZhToEn });
 
       expect(translateZhToEn).toHaveBeenCalledTimes(1);
-      expect(result.payload.title).toEqual([
+      expect(result.payload.baseName).toEqual([
         { '@xml:lang': 'en', '#text': 'Steel manufacturing' },
         { '@xml:lang': 'zh', '#text': '钢铁制造' },
       ]);
@@ -1111,7 +1900,7 @@ describe('General Utility Functions', () => {
 
     it('should supplement an empty English placeholder during validation-only normalization', async () => {
       const payload = {
-        title: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
+        baseName: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
       };
       const translateZhToEn = jest.fn().mockResolvedValue(undefined);
 
@@ -1121,17 +1910,17 @@ describe('General Utility Functions', () => {
       });
 
       expect(result.issues).toEqual([]);
-      expect(result.payload.title).toEqual([
+      expect(result.payload.baseName).toEqual([
         { '@xml:lang': 'zh', '#text': '钢铁制造' },
         { '@xml:lang': 'en', '#text': undefined },
       ]);
-      expect(result.supplementedEnglishPlaceholderPaths).toEqual(['title']);
+      expect(result.supplementedEnglishPlaceholderPaths).toEqual(['baseName']);
       expect(result.translatedPaths).toEqual([]);
     });
 
     it('should preserve raw language ordering when validation-only normalization adds a missing English placeholder', async () => {
       const payload = {
-        title: [
+        baseName: [
           { '@xml:lang': 'zh', '#text': '钢铁制造' },
           { '@xml:lang': 'en', '#text': '' },
         ],
@@ -1143,11 +1932,11 @@ describe('General Utility Functions', () => {
         translateZhToEn,
       });
 
-      expect(result.payload.title).toEqual([
+      expect(result.payload.baseName).toEqual([
         { '@xml:lang': 'zh', '#text': '钢铁制造' },
         { '@xml:lang': 'en', '#text': undefined },
       ]);
-      expect(result.supplementedEnglishPlaceholderPaths).toEqual(['title']);
+      expect(result.supplementedEnglishPlaceholderPaths).toEqual(['baseName']);
       expect(result.translatedPaths).toEqual([]);
     });
 
@@ -1168,6 +1957,37 @@ describe('General Utility Functions', () => {
   });
 
   describe('getLangValidationErrorMessage', () => {
+    it.each(SUPPORTED_APP_LOCALES)(
+      'reports full conflict paths with localized copy in %s',
+      (locale) => {
+        const issues = [
+          {
+            path: 'processDataSet.name.baseName[1].@xml:lang',
+            code: 'duplicate_language' as const,
+            message: 'conflict',
+          },
+          {
+            path: 'processDataSet.comment.@source',
+            code: 'unsupported_language_attribute' as const,
+            message: 'attribute',
+          },
+        ];
+        const message = getLangValidationErrorMessage(issues, 1, locale);
+        expect(message).toContain(issues[0].path);
+        expect(message).toContain('1');
+        expect(message).not.toContain('{count');
+        expect(getLangValidationErrorMessage(issues, 5, locale)).toContain(issues[1].path);
+      },
+    );
+
+    it('reports the root for a root-level localized conflict', () => {
+      expect(
+        getLangValidationErrorMessage([
+          { path: '', code: 'duplicate_language', message: 'conflict' },
+        ]),
+      ).toContain('(root)');
+    });
+
     it('should return compact field-only message for multiple issue paths', () => {
       const message = getLangValidationErrorMessage([
         {

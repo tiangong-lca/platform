@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
-lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed entity-role and real installed-SDK regressions without changing the existing hook, release profiles or source-mapped 100% coverage bar; final exact-head gate remains required.'
 ---
 
 # Pre-Push Gate Policy

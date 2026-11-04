@@ -26,5 +26,7 @@ export default {
   'validator.lang.mustNotContainSemicolon': 'Ne doit pas contenir de point-virgule',
   'validator.langValidation.missingEnglish': "Échec de l'enregistrement : les champs suivants ne sont pas renseignés en anglais : {fields}.",
   'validator.langValidation.missingEnglishMore': "Échec de l'enregistrement : les champs suivants ne sont pas renseignés en anglais : {fields}, plus {count, plural, one {# autre champ} other {# autres champs}}.",
+  'validator.langValidation.invalidFields': 'Échec de l’enregistrement. Corrigez les valeurs multilingues en conflit ou non prises en charge : {fields}.',
+  'validator.langValidation.invalidFieldsMore': 'Échec de l’enregistrement. Corrigez les valeurs multilingues en conflit ou non prises en charge : {fields}, plus {count, plural, one {# autre champ} other {# autres champs}}.',
   'validator.langValidation.root': '(racine)',
 };

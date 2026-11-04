@@ -26,5 +26,7 @@ export default {
   'validator.lang.mustNotContainSemicolon': '不能输入分号',
   'validator.langValidation.missingEnglish': '保存失败，以下字段缺少英文：{fields}.',
   'validator.langValidation.missingEnglishMore': '保存失败，以下字段缺少英文：{fields}，另有 {count, plural, other {# 个字段}}。',
+  'validator.langValidation.invalidFields': '保存失败，请处理以下位置的多语言值冲突或不支持的属性：{fields}。',
+  'validator.langValidation.invalidFieldsMore': '保存失败，请处理以下位置的多语言值冲突或不支持的属性：{fields}，另有 {count, plural, other {# 个字段}}。',
   'validator.langValidation.root': '根节点',
 };

@@ -1,0 +1,249 @@
+{
+  "processDataSet": {
+    "@xmlns": "http://lca.jrc.it/ILCD/Process",
+    "@version": "1.1",
+    "exchanges": {
+      "exchange": [
+        {
+          "meanAmount": "1",
+          "resultingAmount": "1",
+          "exchangeDirection": "Input",
+          "@dataSetInternalID": "0",
+          "referenceToFlowDataSet": {
+            "@uri": "https://example.invalid/anonymous-reference",
+            "@type": "flow data set",
+            "@version": "01.01.001",
+            "@refObjectId": "99999999-9999-4999-8999-999999999999",
+            "common:shortDescription": [
+              {
+                "#text": "Anonymous fixture description.",
+                "@xml:lang": "en"
+              },
+              {
+                "#text": "匿名夹具说明。",
+                "@xml:lang": "zh"
+              }
+            ]
+          },
+          "dataDerivationTypeStatus": "Measured"
+        }
+      ]
+    },
+    "@locations": "../ILCDLocations.xml",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "processInformation": {
+      "time": {
+        "common:referenceYear": 1111
+      },
+      "geography": {
+        "locationOfOperationSupplyOrProduction": {
+          "@location": "RAF"
+        }
+      },
+      "technology": {
+        "technologyDescriptionAndIncludedProcesses": {
+          "#text": "Anonymous fixture description.",
+          "@xml:lang": "en"
+        }
+      },
+      "dataSetInformation": {
+        "name": {
+          "baseName": {
+            "#text": "Anonymous fixture description.",
+            "@xml:lang": "en"
+          },
+          "mixAndLocationTypes": {
+            "#text": "Anonymous fixture description.",
+            "@xml:lang": "en"
+          },
+          "treatmentStandardsRoutes": {
+            "#text": "Anonymous fixture description.",
+            "@xml:lang": "en"
+          }
+        },
+        "common:UUID": "11111111-1111-4111-8111-111111111111",
+        "common:generalComment": {
+          "#text": "Anonymous fixture description.",
+          "@xml:lang": "en"
+        },
+        "classificationInformation": {
+          "common:classification": {
+            "common:class": [
+              {
+                "#text": "Agriculture, forestry and fishing",
+                "@level": "0",
+                "@classId": "A"
+              },
+              {
+                "#text": "Crop and animal production, hunting and related service activities",
+                "@level": "1",
+                "@classId": "01"
+              },
+              {
+                "#text": "Growing of non-perennial crops",
+                "@level": "2",
+                "@classId": "011"
+              },
+              {
+                "#text": "Growing of cereals (except rice), leguminous crops and oil seeds",
+                "@level": "3",
+                "@classId": "0111"
+              }
+            ]
+          }
+        }
+      },
+      "quantitativeReference": {
+        "@type": "Reference flow(s)",
+        "referenceToReferenceFlow": "0"
+      }
+    },
+    "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Process ../../schemas/ILCD_ProcessDataSet.xsd",
+    "modellingAndValidation": {
+      "LCIMethodAndAllocation": {
+        "typeOfDataSet": "Unit process, single operation"
+      },
+      "dataSourcesTreatmentAndRepresentativeness": {
+        "referenceToDataSource": [
+          {
+            "@type": "source data set",
+            "@refObjectId": "22222222-2222-4222-8222-222222222222",
+            "@version": "01.00.000",
+            "@uri": "https://example.invalid/sources/anonymous-1",
+            "common:shortDescription": {
+              "@xml:lang": "en",
+              "#text": "Anonymous source 1"
+            },
+            "@xml:lang": "en"
+          },
+          {
+            "@type": "source data set",
+            "@refObjectId": "33333333-3333-4333-8333-333333333333",
+            "@version": "01.00.000",
+            "@uri": "https://example.invalid/sources/anonymous-2",
+            "common:shortDescription": {
+              "@xml:lang": "en",
+              "#text": "Anonymous source 2"
+            },
+            "@xml:lang": "en"
+          }
+        ],
+        "dataCutOffAndCompletenessPrinciples": {
+          "#text": "Anonymous fixture description.",
+          "@xml:lang": "en"
+        },
+        "annualSupplyOrProductionVolume": {
+          "@xml:lang": "en",
+          "#text": "1 kg"
+        }
+      },
+      "validation": {
+        "review": {
+          "@type": "Not reviewed"
+        }
+      },
+      "complianceDeclarations": {
+        "compliance": {
+          "common:referenceToComplianceSystem": {
+            "@type": "source data set",
+            "@refObjectId": "22222222-2222-4222-8222-222222222222",
+            "@version": "01.00.000",
+            "@uri": "https://example.invalid/sources/anonymous-1",
+            "common:shortDescription": {
+              "@xml:lang": "en",
+              "#text": "Anonymous source 1"
+            }
+          },
+          "common:approvalOfOverallCompliance": "Not defined",
+          "common:nomenclatureCompliance": "Not defined",
+          "common:methodologicalCompliance": "Not defined",
+          "common:reviewCompliance": "Not defined",
+          "common:documentationCompliance": "Not defined",
+          "common:qualityCompliance": "Not defined"
+        }
+      }
+    },
+    "administrativeInformation": {
+      "dataEntryBy": {
+        "common:timeStamp": "2026-04-20T10:48:39.419Z",
+        "common:referenceToDataSetFormat": {
+          "@uri": "https://example.invalid/anonymous-reference",
+          "@type": "source data set",
+          "@version": "01.01.001",
+          "@refObjectId": "99999999-9999-4999-8999-999999999999",
+          "common:shortDescription": [
+            {
+              "#text": "匿名夹具说明。",
+              "@xml:lang": "zh"
+            },
+            {
+              "#text": "Anonymous fixture description.",
+              "@xml:lang": "en"
+            }
+          ]
+        },
+        "common:referenceToPersonOrEntityEnteringTheData": {
+          "@uri": "https://example.invalid/anonymous-reference",
+          "@type": "contact data set",
+          "@version": "01.01.000",
+          "@refObjectId": "99999999-9999-4999-8999-999999999999",
+          "common:shortDescription": [
+            {
+              "#text": "Anonymous fixture description.",
+              "@xml:lang": "en"
+            },
+            {
+              "#text": "匿名夹具说明。",
+              "@xml:lang": "zh"
+            }
+          ]
+        }
+      },
+      "publicationAndOwnership": {
+        "common:copyright": "true",
+        "common:licenseType": "Free of charge for all users and uses",
+        "common:dataSetVersion": "01.01.000",
+        "common:permanentDataSetURI": "https://lcdn.tiangong.earth/datasetdetail/process.xhtml?uuid=99999999-9999-4999-8999-999999999999&version=01.01.000",
+        "common:referenceToOwnershipOfDataSet": {
+          "@uri": "https://example.invalid/anonymous-reference",
+          "@type": "contact data set",
+          "@version": "01.01.000",
+          "@refObjectId": "99999999-9999-4999-8999-999999999999",
+          "common:shortDescription": [
+            {
+              "#text": "Anonymous fixture description.",
+              "@xml:lang": "en"
+            },
+            {
+              "#text": "匿名夹具说明。",
+              "@xml:lang": "zh"
+            }
+          ]
+        }
+      },
+      "common:commissionerAndGoal": {
+        "common:intendedApplications": {
+          "#text": "Anonymous fixture description.",
+          "@xml:lang": "en"
+        },
+        "common:referenceToCommissioner": {
+          "@uri": "https://example.invalid/anonymous-reference",
+          "@type": "contact data set",
+          "@version": "01.01.000",
+          "@refObjectId": "99999999-9999-4999-8999-999999999999",
+          "common:shortDescription": [
+            {
+              "#text": "Anonymous fixture description.",
+              "@xml:lang": "en"
+            },
+            {
+              "#text": "匿名夹具说明。",
+              "@xml:lang": "zh"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import multilingualReferenceProcess from '../../../fixtures/general/multilingual-reference-process.json';
 /**
  * Tests for general service API functions
  * Path: src/services/general/api.ts
@@ -1852,6 +1853,113 @@ describe('getAllVersions', () => {
 });
 
 describe('multilingual save normalization', () => {
+  it('preserves SDK-valid reference entities through the real save wrapper without a remote write', async () => {
+    const payload = JSON.parse(JSON.stringify(multilingualReferenceProcess));
+    const references =
+      payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .referenceToDataSource;
+    const result = await generalApi.normalizeLangPayloadForSave(payload);
+    expect(result.validationError).toBeUndefined();
+    expect(result.issues).toEqual([]);
+    expect(
+      result.payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .referenceToDataSource,
+    ).toEqual(references);
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+    expect(mockRpc).not.toHaveBeenCalled();
+  });
+
+  it('blocks conflicting inner reference captions through the real save wrapper', async () => {
+    const payload = JSON.parse(JSON.stringify(multilingualReferenceProcess));
+    const references =
+      payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .referenceToDataSource;
+    references[1]['common:shortDescription'] = [
+      { '@xml:lang': 'en', '#text': 'First caption' },
+      { '@xml:lang': 'en', '#text': 'Conflicting caption' },
+    ];
+    const result = await generalApi.normalizeLangPayloadForSave(payload);
+    expect(result.validationError).toContain(
+      'processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.referenceToDataSource[1].common:shortDescription[1].@xml:lang',
+    );
+    expect(result.issues).toEqual([expect.objectContaining({ code: 'duplicate_language' })]);
+    expect(
+      result.payload.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+        .referenceToDataSource,
+    ).toEqual(references);
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+    expect(mockRpc).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['sourceDataSet', 'sourceInformation', 'sourceDescriptionOrComment'],
+    ['contactDataSet', 'contactInformation', 'contactDescriptionOrComment'],
+  ])(
+    'merges source/contact descriptions through the real save consumer for %s',
+    async (root, information, field) => {
+      const result = await generalApi.normalizeLangPayloadForSave({
+        [root]: {
+          [information]: {
+            dataSetInformation: {
+              [field]: [
+                { '@xml:lang': 'en', '#text': 'First description.' },
+                { '@xml:lang': 'en', '#text': 'Second description.' },
+              ],
+            },
+          },
+        },
+      });
+      expect(result.validationError).toBeUndefined();
+      expect(result.payload[root][information].dataSetInformation[field]).toEqual({
+        '@xml:lang': 'en',
+        '#text': 'First description.\n\nSecond description.',
+      });
+    },
+  );
+
+  it.each(['save', 'validation'] as const)(
+    'preserves both descriptive paragraphs through the real %s consumer',
+    async (intent) => {
+      const payload = {
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: {
+              'common:generalComment': [
+                { '@xml:lang': 'en', '#text': 'Original scope.' },
+                { '@xml:lang': 'en', '#text': 'Additional limitations.' },
+              ],
+            },
+          },
+        },
+      };
+      const result = await generalApi.normalizeLangPayloadForSave(payload, { intent });
+      expect(result.validationError).toBeUndefined();
+      expect(
+        result.payload.processDataSet.processInformation.dataSetInformation[
+          'common:generalComment'
+        ],
+      ).toEqual({ '@xml:lang': 'en', '#text': 'Original scope.\n\nAdditional limitations.' });
+      expect(
+        (await generalApi.normalizeLangPayloadForSave(result.payload, { intent })).payload,
+      ).toEqual(result.payload);
+    },
+  );
+
+  it('returns an actionable exact-path conflict through the real save consumer', async () => {
+    const result = await generalApi.normalizeLangPayloadForSave({
+      name: {
+        baseName: [
+          { '@xml:lang': 'en', '#text': 'First name' },
+          { '@xml:lang': 'en', '#text': 'Second name' },
+        ],
+      },
+    });
+    expect(result.validationError).toContain('name.baseName[1].@xml:lang');
+    expect(result.validationError).not.toContain('missing English');
+    expect(result.issues[0].code).toBe('duplicate_language');
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+  });
+
   it('should normalize payload and auto-fill English translation from AI response', async () => {
     mockAuthGetSession.mockResolvedValue({ data: { session: { access_token: 'token-6' } } });
     mockFunctionsInvoke.mockResolvedValue({
@@ -1860,11 +1968,11 @@ describe('multilingual save normalization', () => {
     });
 
     const result = await generalApi.normalizeLangPayloadForSave({
-      title: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
+      baseName: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
     });
 
     expect(result.validationError).toBeUndefined();
-    expect(result.payload.title).toEqual([
+    expect(result.payload.baseName).toEqual([
       { '@xml:lang': 'en', '#text': 'Steel manufacturing' },
       { '@xml:lang': 'zh', '#text': '钢铁制造' },
     ]);
@@ -1872,11 +1980,11 @@ describe('multilingual save normalization', () => {
 
   it('should return validation error when English contains non-English scripts', async () => {
     const result = await generalApi.normalizeLangPayloadForSave({
-      title: [{ '@xml:lang': 'en', '#text': 'Steel钢铁' }],
+      baseName: [{ '@xml:lang': 'en', '#text': 'Steel钢铁' }],
     });
 
     expect(result.validationError).toBe(
-      'Save failed, the following fields are missing English: title.',
+      'Save failed, the following fields are missing English: baseName.',
     );
     expect(result.issues).toHaveLength(1);
     expect(result.issues[0].code).toBe('invalid_en');
@@ -1886,10 +1994,10 @@ describe('multilingual save normalization', () => {
     mockGetLocale.mockReturnValue('zh-CN');
 
     const result = await generalApi.normalizeLangPayloadForSave({
-      title: [{ '@xml:lang': 'en', '#text': 'Steel钢铁' }],
+      baseName: [{ '@xml:lang': 'en', '#text': 'Steel钢铁' }],
     });
 
-    expect(result.validationError).toBe('保存失败，以下字段缺少英文：title.');
+    expect(result.validationError).toBe('保存失败，以下字段缺少英文：baseName.');
     expect(result.issues).toHaveLength(1);
     expect(result.issues[0].code).toBe('invalid_en');
   });

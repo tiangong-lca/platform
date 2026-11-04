@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-02
-lastReviewedCommit: 6e0c3d41ec05ad00cdff1d71be571e619c760b6c
-lastReviewedNote: 'Platform #1396: separate logical popup Escape admission from exit-motion DOM retention with exact Portal/Trigger patches. Native closing-popup navigation and installed Portal regressions pass; canonical actions, assertions, retries, timeouts, IME and publication boundaries remain unchanged. Historical failures remain retained; full candidate qualification is separate.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: da7379f8054fcd4df9f63015be2efb2a12916d45
+lastReviewedNote: 'Platform #1325: reviewed canonical content-field recognition, retained variants and all-active-locale audit/artifact closure; UI registries, fallback, reference resources and release workflow remain unchanged.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

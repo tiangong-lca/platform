@@ -511,7 +511,13 @@ export function getLangList(langTexts: any) {
   }
 }
 
-export type LangValidationIssueCode = 'missing_en' | 'invalid_en';
+export type LangValidationIssueCode =
+  | 'missing_en'
+  | 'invalid_en'
+  | 'duplicate_language'
+  | 'unsupported_language_attribute'
+  | 'localized_text_too_long'
+  | 'invalid_language_entry';
 
 export type LangNormalizationIntent = 'save' | 'validation';
 
@@ -539,6 +545,114 @@ type NormalizedLangEntry = {
   [LANG_KEY]: string;
   [TEXT_KEY]: string | undefined;
 };
+// Only descriptive fields can combine paragraphs. Names, quantities and reference captions
+// retain their own contracts and must resolve duplicate languages explicitly.
+// Limits follow the installed TIDAS field contracts; FT descriptions have no limit.
+// Ambiguous leaf names such as comment and meaning require their canonical paths below.
+const PARAGRAPH_LANGUAGE_FIELDS = new Map<string, number | undefined>([
+  ['common:generalComment', undefined],
+  ['generalComment', 500],
+  ['common:timeRepresentativenessDescription', undefined],
+  ['descriptionOfRestrictions', undefined],
+  ['technologyDescriptionAndIncludedProcesses', undefined],
+  ['technologicalApplicability', undefined],
+  ['modelDescription', undefined],
+  ['deviationsFromLCIMethodPrinciple', undefined],
+  ['deviationsFromLCIMethodApproaches', undefined],
+  ['modellingConstants', undefined],
+  ['deviationsFromModellingConstants', undefined],
+  ['dataCutOffAndCompletenessPrinciples', undefined],
+  ['deviationsFromCutOffAndCompletenessPrinciples', undefined],
+  ['dataSelectionAndCombinationPrinciples', undefined],
+  ['deviationsFromSelectionAndCombinationPrinciples', undefined],
+  ['dataTreatmentAndExtrapolationsPrinciples', undefined],
+  ['deviationsFromTreatmentAndExtrapolationPrinciples', undefined],
+  ['samplingProcedure', undefined],
+  ['dataCollectionPeriod', 500],
+  ['uncertaintyAdjustments', undefined],
+  ['useAdviceForDataSet', undefined],
+  ['completenessOtherProblemField', undefined],
+  ['common:reviewDetails', undefined],
+  ['common:otherReviewDetails', undefined],
+  ['common:intendedApplications', undefined],
+  ['common:accessRestrictions', undefined],
+  ['sourceDescriptionOrComment', undefined],
+  ['contactDescriptionOrComment', 1000],
+  ['geographicalRepresentativenessDescription', undefined],
+  ['timeRepresentativenessDescription', undefined],
+  ['deviationsFromLCIAMethodPrinciple', undefined],
+  ['consideredMechanisms', 1000],
+  ['normalisationDescription', 1000],
+  ['weightingDescription', 1000],
+]);
+// Positive localized-field roles from the installed TIDAS contracts. Entity
+// containers may also carry @xml:lang, so their shape must not define this role.
+const LOCALIZED_FIELD_NAMES = new Set([
+  'annualSupplyOrProductionVolume',
+  'baseName',
+  'centralContactPoint',
+  'comment',
+  'common:accessRestrictions',
+  'common:generalComment',
+  'common:intendedApplications',
+  'common:name',
+  'common:otherReviewDetails',
+  'common:project',
+  'common:reviewDetails',
+  'common:shortDescription',
+  'common:shortName',
+  'common:synonyms',
+  'common:timeRepresentativenessDescription',
+  'completenessOtherProblemField',
+  'consideredMechanisms',
+  'contactAddress',
+  'contactDescriptionOrComment',
+  'dataCollectionPeriod',
+  'dataCutOffAndCompletenessPrinciples',
+  'dataSelectionAndCombinationPrinciples',
+  'dataTreatmentAndExtrapolationsPrinciples',
+  'descriptionOfRestrictions',
+  'deviationsFromCutOffAndCompletenessPrinciples',
+  'deviationsFromLCIAMethodPrinciple',
+  'deviationsFromLCIMethodApproaches',
+  'deviationsFromLCIMethodPrinciple',
+  'deviationsFromModellingConstants',
+  'deviationsFromSelectionAndCombinationPrinciples',
+  'deviationsFromTreatmentAndExtrapolationPrinciples',
+  'duration',
+  'flowProperties',
+  'functionalUnitFlowProperties',
+  'functionalUnitOrOther',
+  'generalComment',
+  'geographicalRepresentativenessDescription',
+  'groupName',
+  'meaning',
+  'mixAndLocationTypes',
+  'modelDescription',
+  'modellingConstants',
+  'normalisationDescription',
+  'referenceYear',
+  'samplingProcedure',
+  'sourceDescriptionOrComment',
+  'technologicalApplicability',
+  'technologyDescriptionAndIncludedProcesses',
+  'timeRepresentativenessDescription',
+  'treatmentStandardsRoutes',
+  'uncertaintyAdjustments',
+  'useAdviceForDataSet',
+  'weightingDescription',
+]);
+
+function isLocalizedFieldPath(path: string): boolean {
+  const separator = path.lastIndexOf('.');
+  const fieldName = path.slice(separator + 1);
+  const parentPath = path.slice(0, Math.max(0, separator));
+  const parentName = parentPath.slice(parentPath.lastIndexOf('.') + 1);
+  return (
+    LOCALIZED_FIELD_NAMES.has(fieldName) &&
+    (fieldName !== 'flowProperties' || parentName === 'name')
+  );
+}
 const NON_ENGLISH_SCRIPT_REGEX =
   /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Hebrew}\p{Script=Devanagari}\p{Script=Thai}]/u;
 
@@ -547,6 +661,11 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
 
 const isLangTextEntry = (value: unknown): value is Record<string, unknown> =>
   isObject(value) && Object.prototype.hasOwnProperty.call(value, LANG_KEY);
+
+// Legacy standalone language values have no dataset field owner. Keep only the
+// explicit language-value shape here; arbitrary entity attributes are not text roles.
+const isStandaloneLanguageObject = (value: unknown): boolean =>
+  isLangTextEntry(value) && Object.keys(value).every((key) => key === LANG_KEY || key === TEXT_KEY);
 
 const normalizeLangCode = (lang: unknown): string => {
   if (typeof lang !== 'string') return '';
@@ -575,6 +694,16 @@ const pushUniquePath = (paths: string[], path: string) => {
   paths.push(path);
 };
 
+function buildPath(parentPath: string, key: string | number) {
+  if (typeof key === 'number') {
+    return `${parentPath}[${key}]`;
+  }
+  if (!parentPath) {
+    return key;
+  }
+  return `${parentPath}.${key}`;
+}
+
 async function normalizeLangEntries(
   langEntries: any[],
   path: string,
@@ -585,6 +714,7 @@ async function normalizeLangEntries(
     supplementedEnglishPlaceholderPaths: string[];
     translatedPaths: string[];
   },
+  inputIsArray = true,
 ) {
   const getValidEnglishTranslation = async (
     sourceText: string | undefined,
@@ -612,10 +742,38 @@ async function normalizeLangEntries(
   const rawLangCodes: string[] = [];
   const normalizedMap = new Map<string, string>();
   const orderedLangCodes: string[] = [];
+  const fieldName = path.slice(path.lastIndexOf('.') + 1);
+  const isProcessVariableComment =
+    /^processDataSet\.processInformation\.mathematicalRelations\.variableParameter(?:\[\d+\])?\.comment$/u.test(
+      path,
+    );
+  const isLciaRecommendationMeaning =
+    path === 'LCIAMethodDataSet.administrativeInformation.dataEntryBy.recommendationBy.meaning';
+  const canJoinParagraphs =
+    PARAGRAPH_LANGUAGE_FIELDS.has(fieldName) ||
+    isProcessVariableComment ||
+    isLciaRecommendationMeaning;
+  const mergedTextLimit = isProcessVariableComment
+    ? 500
+    : fieldName === 'useAdviceForDataSet' && path.startsWith('LCIAMethodDataSet.')
+      ? 1000
+      : PARAGRAPH_LANGUAGE_FIELDS.get(fieldName);
+  let hasConflict = false;
 
-  for (const entry of langEntries) {
+  for (const [index, entry] of langEntries.entries()) {
     if (!isLangTextEntry(entry)) {
       continue;
+    }
+    const entryPath = inputIsArray ? buildPath(path, index) : path;
+    for (const key of Object.keys(entry)) {
+      if (key !== LANG_KEY && key !== TEXT_KEY) {
+        issues.push({
+          path: buildPath(entryPath, key),
+          code: 'unsupported_language_attribute',
+          message: `Unsupported localized-text attribute at "${buildPath(entryPath, key)}".`,
+        });
+        hasConflict = true;
+      }
     }
     const langCode = normalizeLangCode(entry[LANG_KEY]);
     const textValue = normalizeLangTextValue(entry[TEXT_KEY]);
@@ -628,10 +786,38 @@ async function normalizeLangEntries(
     if (!textValue) {
       continue;
     }
+    const previousText = normalizedMap.get(langCode);
+    if (previousText !== undefined && !canJoinParagraphs) {
+      issues.push({
+        path: buildPath(entryPath, LANG_KEY),
+        code: 'duplicate_language',
+        message: `Language "${langCode}" occurs more than once at "${path}". Resolve this field without joining names, quantities or reference captions.`,
+      });
+      hasConflict = true;
+      continue;
+    }
     if (!orderedLangCodes.includes(langCode)) {
       orderedLangCodes.push(langCode);
     }
-    normalizedMap.set(langCode, textValue);
+    const mergedText = previousText === undefined ? textValue : `${previousText}\n\n${textValue}`;
+    if (
+      previousText !== undefined &&
+      mergedTextLimit !== undefined &&
+      mergedText.length > mergedTextLimit
+    ) {
+      issues.push({
+        path: buildPath(entryPath, TEXT_KEY),
+        code: 'localized_text_too_long',
+        message: `Combined localized text at "${path}" exceeds ${mergedTextLimit} characters. Retain the full explanation in an appropriate descriptive field; do not truncate or split one language into repeated nodes.`,
+      });
+      hasConflict = true;
+    }
+    normalizedMap.set(langCode, mergedText);
+  }
+
+  // Preserve the original field for correction; no translation or lossy rewrite is safe here.
+  if (hasConflict) {
+    return inputIsArray ? langEntries : langEntries[0];
   }
 
   let normalizedList: NormalizedLangEntry[] = orderedLangCodes.map((langCode) => ({
@@ -716,16 +902,6 @@ async function normalizeLangEntries(
   return getLangJson(normalizedList) ?? {};
 }
 
-function buildPath(parentPath: string, key: string | number) {
-  if (typeof key === 'number') {
-    return `${parentPath}[${key}]`;
-  }
-  if (!parentPath) {
-    return key;
-  }
-  return `${parentPath}.${key}`;
-}
-
 async function normalizeLangNode(
   value: any,
   path: string,
@@ -742,8 +918,26 @@ async function normalizeLangNode(
   }
 
   if (Array.isArray(value)) {
-    const looksLikeLangList = value.some((item) => isLangTextEntry(item));
+    const looksLikeLangList =
+      (isLocalizedFieldPath(path) ||
+        (path === '' &&
+          value.every(
+            (item) => isStandaloneLanguageObject(item) || isRemovableEmptyValue(item),
+          ))) &&
+      value.some((item) => isLangTextEntry(item));
     if (looksLikeLangList) {
+      const mixedEntryIndex = value.findIndex(
+        (item) => !isLangTextEntry(item) && !isRemovableEmptyValue(item),
+      );
+      if (mixedEntryIndex !== -1) {
+        const mixedPath = buildPath(path, mixedEntryIndex);
+        issues.push({
+          path: mixedPath,
+          code: 'invalid_language_entry',
+          message: `A non-localized value is mixed into the localized field at "${mixedPath}".`,
+        });
+        return value;
+      }
       return normalizeLangEntries(value, path, issues, options, translationCache, metadata);
     }
     const mapped = await Promise.all(
@@ -761,22 +955,29 @@ async function normalizeLangNode(
     return mapped;
   }
 
-  if (isLangTextEntry(value)) {
-    return normalizeLangEntries([value], path, issues, options, translationCache, metadata);
+  if (
+    (isLocalizedFieldPath(path) || (path === '' && isStandaloneLanguageObject(value))) &&
+    isLangTextEntry(value)
+  ) {
+    return normalizeLangEntries([value], path, issues, options, translationCache, metadata, false);
   }
 
   if (isObject(value)) {
     const entries = Object.entries(value);
     const normalizedEntries = await Promise.all(
       entries.map(async ([key, nodeValue]) => {
-        const normalizedValue = await normalizeLangNode(
-          nodeValue,
-          buildPath(path, key),
-          issues,
-          options,
-          translationCache,
-          metadata,
-        );
+        // Extension contents have their own schema and are opaque to content-language rules.
+        const normalizedValue =
+          key === 'common:other'
+            ? nodeValue
+            : await normalizeLangNode(
+                nodeValue,
+                buildPath(path, key),
+                issues,
+                options,
+                translationCache,
+                metadata,
+              );
         return [key, normalizedValue] as const;
       }),
     );
@@ -824,6 +1025,11 @@ const getLangValidationLocaleMessages = (locale: string) => {
     missingEnglishMore: getValidatorMessage(
       normalizedLocale,
       'validator.langValidation.missingEnglishMore',
+    ),
+    invalidFields: getValidatorMessage(normalizedLocale, 'validator.langValidation.invalidFields'),
+    invalidFieldsMore: getValidatorMessage(
+      normalizedLocale,
+      'validator.langValidation.invalidFieldsMore',
     ),
     root: getValidatorMessage(normalizedLocale, 'validator.langValidation.root'),
   };
@@ -876,9 +1082,16 @@ export function getLangValidationErrorMessage(
   }
 
   const localeMessages = getLangValidationLocaleMessages(locale);
+  const hasFieldConflict = issues.some(
+    (issue) => issue.code !== 'missing_en' && issue.code !== 'invalid_en',
+  );
   const uniqueFields = Array.from(
     new Set(
-      issues.map((issue) => getLangValidationFieldName(issue.path || '', localeMessages.root)),
+      issues.map((issue) =>
+        hasFieldConflict
+          ? issue.path || localeMessages.root
+          : getLangValidationFieldName(issue.path || '', localeMessages.root),
+      ),
     ),
   );
   const visibleFields = uniqueFields.slice(0, maxPathCount).join(',');
@@ -886,7 +1099,7 @@ export function getLangValidationErrorMessage(
 
   if (extraCount > 0) {
     return formatLangValidationTemplate(
-      localeMessages.missingEnglishMore,
+      hasFieldConflict ? localeMessages.invalidFieldsMore : localeMessages.missingEnglishMore,
       {
         fields: visibleFields,
         count: extraCount,
@@ -896,7 +1109,7 @@ export function getLangValidationErrorMessage(
   }
 
   return formatLangValidationTemplate(
-    localeMessages.missingEnglish,
+    hasFieldConflict ? localeMessages.invalidFields : localeMessages.missingEnglish,
     {
       fields: visibleFields,
     },

@@ -26,5 +26,7 @@ export default {
   'validator.lang.mustNotContainSemicolon': 'Ein Semikolon ist nicht zulässig.',
   'validator.langValidation.missingEnglish': 'Speichern fehlgeschlagen. In folgenden Feldern fehlt die englische Fassung: {fields}.',
   'validator.langValidation.missingEnglishMore': 'Speichern fehlgeschlagen. In folgenden Feldern fehlt die englische Fassung: {fields}; außerdem {count, plural, one {# weiteres Feld} other {# weitere Felder}}.',
+  'validator.langValidation.invalidFields': 'Speichern fehlgeschlagen. Widersprüchliche oder nicht unterstützte mehrsprachige Werte korrigieren: {fields}.',
+  'validator.langValidation.invalidFieldsMore': 'Speichern fehlgeschlagen. Widersprüchliche oder nicht unterstützte mehrsprachige Werte korrigieren: {fields} und {count, plural, one {# weiteres Feld} other {# weitere Felder}}.',
   'validator.langValidation.root': '(Stammebene)',
 };
