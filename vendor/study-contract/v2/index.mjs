@@ -21003,6 +21003,8 @@ function validateResponseForRequest2(request, value) {
     return;
   }
   const d = value.data;
+  if (request.operation === "study.archive" && (d.type !== "study" || d.value.status !== "archived" || !Number.isSafeInteger(request.target.expectedRevision + 1) || d.value.revision !== request.target.expectedRevision + 1))
+    throw new StudyCodecError("REFERENCE_MISMATCH", "response.archived_study");
   if ((request.operation === "revision.create" || request.operation === "revision.save") && (d.type !== "studyRevision" || JSON.stringify(d.value.definition) !== JSON.stringify(request.definition) || d.value.modelPreparationId !== request.modelPreparationId || JSON.stringify(d.value.modelRef) !== JSON.stringify(request.modelRef) || d.value.status !== "draft" || d.value.validation !== "not_checked"))
     throw new StudyCodecError("REFERENCE_MISMATCH", "response.revision_intent");
   if (request.operation === "revision.freeze" && (d.type !== "studyRevision" || d.value.status !== "frozen" || d.value.validation !== "passed" || d.value.contentHash !== request.expectedContentHash))

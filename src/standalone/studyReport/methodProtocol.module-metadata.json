@@ -1,0 +1,682 @@
+{
+  "schemaVersion": "lca.study-method-public-module-metadata.v1",
+  "classification": "public immutable module identity/parameters only; no CF catalog, numerical execution, permission or scientific approval",
+  "sourceRepository": "tiangong-lca/pcr",
+  "sourceCommit": "51c0842c67b14ba886e2edee2846e26eefac030f",
+  "workerSourceCommit": "13a749e619d7ef348e9298bb049e8c01c60e9086",
+  "rawPackageSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+  "rawPackageByteSize": 153035,
+  "payloadSha256": "407314bc364e5cfeddc8a44696118ee20cc696db5e9ef93812fd02516097a0a1",
+  "projectionSha256": "44059325552effddecf1a5d4acae3d1258996598cfabc2c1d6ef38c1be488c9e",
+  "projection": {
+    "moduleRef": {
+      "repository": "tiangong-lca/pcr",
+      "sourceCommit": "51c0842c67b14ba886e2edee2846e26eefac030f",
+      "moduleId": "method.pef-2021-ef31",
+      "moduleVersion": "0.1.0",
+      "artifactSha256": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad",
+      "reviewBasisSha256": "989391423c7f31bdf77e18ea4438fab1a27ff6708c0f44ecad8ab8813763a165",
+      "sourceBindingsSha256": "3fd9b1dc68228db3e146b6d23daac853b27b9f504f9445a0cc5a971d53257ce2"
+    },
+    "normativeVersion": "Recommendation (EU) 2021/2279, corrected 2022-05-23",
+    "factorPackageVersion": "EF 3.1",
+    "interimGuidanceSnapshot": {
+      "manuscript_month": "2026-05",
+      "announcement_date": "2026-07-14",
+      "validity_condition": "until the next EF database is available; expected 2028 is not a fixed expiry date",
+      "without_commission_pefcr_section": "2.1",
+      "with_commission_pefcr_section": "2.2"
+    },
+    "normalisationWeightingSourceSha256": "14237568217d30236cb8bec43171c746162fde9aa4751f3b30d5fd49e4a3dce9",
+    "officialFactorPackageSha256": "18763515dd93fabaa7f46b019de30cd521b2036a75a348e5824eeec2225afb27",
+    "categories": [
+      {
+        "methodRef": {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "version": "01.00.000"
+        },
+        "name": "Climate change",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CO2 Equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "706261af-a357-4cc0-a50a-f3033fcbd556",
+          "version": "01.00.000"
+        },
+        "name": "Climate change-Biogenic",
+        "role": "subcategory",
+        "parentMethodId": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CO2-Equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "7fce5b3a-66b8-4ce1-91e8-a925aee1f186",
+          "version": "01.00.000"
+        },
+        "name": "Climate change-Fossil",
+        "role": "subcategory",
+        "parentMethodId": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CO2 Equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "14af9ca7-aa1d-4832-b1d9-ab05a06dcb12",
+          "version": "01.00.000"
+        },
+        "name": "Climate change-Land use and land use change",
+        "role": "subcategory",
+        "parentMethodId": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CO2-Equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "version": "01.01.000"
+        },
+        "name": "Human toxicity, cancer",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh"
+      },
+      {
+        "methodRef": {
+          "id": "01500b74-7ffb-463e-9bd4-72f17c2263ff",
+          "version": "01.00.000"
+        },
+        "name": "Human toxicity, cancer_inorganics",
+        "role": "subcategory",
+        "parentMethodId": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh"
+      },
+      {
+        "methodRef": {
+          "id": "503699e0-eca9-4089-8bf8-e0f49c93e578",
+          "version": "01.01.000"
+        },
+        "name": "Human toxicity, cancer_organics",
+        "role": "subcategory",
+        "parentMethodId": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh"
+      },
+      {
+        "methodRef": {
+          "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "version": "01.00.000"
+        },
+        "name": "Human toxicity, non-cancer",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh"
+      },
+      {
+        "methodRef": {
+          "id": "9d1d43a2-e1aa-4c16-acd4-3dd8a6a2fb85",
+          "version": "01.00.000"
+        },
+        "name": "Human toxicity, non-cancer_inorganics",
+        "role": "subcategory",
+        "parentMethodId": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh"
+      },
+      {
+        "methodRef": {
+          "id": "8c3141e9-1f15-43b5-bff2-182e49893a46",
+          "version": "01.00.000"
+        },
+        "name": "Human toxicity, non-cancer_organics",
+        "role": "subcategory",
+        "parentMethodId": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh"
+      },
+      {
+        "methodRef": {
+          "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "version": "01.00.000"
+        },
+        "name": "Ecotoxicity, freshwater",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "unit": "CTUe"
+      },
+      {
+        "methodRef": {
+          "id": "dacd48b5-4da5-49aa-aff4-cd5f5495c037",
+          "version": "01.00.000"
+        },
+        "name": "Ecotoxicity, freshwater-inorganics",
+        "role": "subcategory",
+        "parentMethodId": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "unit": "CTUe"
+      },
+      {
+        "methodRef": {
+          "id": "fd530f00-9325-424a-92ef-aaac67922fd9",
+          "version": "01.00.000"
+        },
+        "name": "Ecotoxicity, freshwater-organics",
+        "role": "subcategory",
+        "parentMethodId": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "unit": "CTUe"
+      },
+      {
+        "methodRef": {
+          "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.010"
+        },
+        "name": "Eutrophication marine",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg N equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "version": "01.00.010"
+        },
+        "name": "Eutrophication, freshwater",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg P equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "version": "01.02.009"
+        },
+        "name": "Eutrophication, terrestrial",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+        "unit": "mol N equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "name": "Resource use, fossils",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200c9a66",
+        "unit": "MJ"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "name": "Resource use, minerals and metals",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg Sb equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "03.00.014"
+        },
+        "name": "Water use",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-22da-a746-0800200c9a66",
+        "unit": "m3-world equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "name": "Land use",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+        "unit": "dimensionless (pt)"
+      },
+      {
+        "methodRef": {
+          "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "version": "01.04.000"
+        },
+        "name": "Acidification",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+        "unit": "mol H+ equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.012"
+        },
+        "name": "Ozone depletion",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CFC11 equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+          "version": "01.00.011"
+        },
+        "name": "Ionising radiation, human health",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-17da-a746-0800200c9a66",
+        "unit": "kBq U235 equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "version": "02.01.000"
+        },
+        "name": "Photochemical ozone formation - human health",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg NMVOC equivalents"
+      },
+      {
+        "methodRef": {
+          "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.011"
+        },
+        "name": "EF-particulate Matter",
+        "role": "primary",
+        "parentMethodId": null,
+        "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+        "unit": "disease incidence"
+      }
+    ],
+    "normalisation": [
+      {
+        "methodRef": {
+          "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+          "version": "01.00.000"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CO2 Equivalents",
+        "sourceNormalisationFactor": "7553.08316285117",
+        "sourceWeightFraction": "0.2106",
+        "sourceUnitLabel": "kg CO2 eq",
+        "sourceShortDescription": "CC"
+      },
+      {
+        "methodRef": {
+          "id": "b5c629d6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.012"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg CFC11 equivalents",
+        "sourceNormalisationFactor": "0.0523483833840181",
+        "sourceWeightFraction": "0.0631",
+        "sourceUnitLabel": "kg CFC-11eq",
+        "sourceShortDescription": "ODP"
+      },
+      {
+        "methodRef": {
+          "id": "2299222a-bbd8-474f-9d4f-4dd1f18aea7c",
+          "version": "01.01.000"
+        },
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh",
+        "sourceNormalisationFactor": "0.0000172528976538705",
+        "sourceWeightFraction": "0.0213",
+        "sourceUnitLabel": "CTUh",
+        "sourceShortDescription": "HTC"
+      },
+      {
+        "methodRef": {
+          "id": "7cfdcfcf-b222-4b26-888a-a55f9fbf7ac8",
+          "version": "01.00.000"
+        },
+        "referenceQuantityId": "f65d356a-d702-4d79-850e-dd68b47bbcd9",
+        "unit": "CTUh",
+        "sourceNormalisationFactor": "0.000128735735008072",
+        "sourceWeightFraction": "0.0184",
+        "sourceUnitLabel": "CTUh",
+        "sourceShortDescription": "HTN"
+      },
+      {
+        "methodRef": {
+          "id": "b5c602c6-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.011"
+        },
+        "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+        "unit": "disease incidence",
+        "sourceNormalisationFactor": "0.000595366821125478",
+        "sourceWeightFraction": "0.0896",
+        "sourceUnitLabel": "Disease incidences",
+        "sourceShortDescription": "PM"
+      },
+      {
+        "methodRef": {
+          "id": "b5c632be-def3-11e6-bf01-fe55135034f3",
+          "version": "01.00.011"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-17da-a746-0800200c9a66",
+        "unit": "kBq U235 equivalents",
+        "sourceNormalisationFactor": "4220.16339014993",
+        "sourceWeightFraction": "0.0501",
+        "sourceUnitLabel": "kBq U235",
+        "sourceShortDescription": "IR"
+      },
+      {
+        "methodRef": {
+          "id": "b5c610fe-def3-11e6-bf01-fe55135034f3",
+          "version": "02.01.000"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg NMVOC equivalents",
+        "sourceNormalisationFactor": "40.8591977347772",
+        "sourceWeightFraction": "0.0478",
+        "sourceUnitLabel": "kg NMVOC eq",
+        "sourceShortDescription": "POz"
+      },
+      {
+        "methodRef": {
+          "id": "b5c611c6-def3-11e6-bf01-fe55135034f3",
+          "version": "01.04.000"
+        },
+        "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+        "unit": "mol H+ equivalents",
+        "sourceNormalisationFactor": "55.5695412306019",
+        "sourceWeightFraction": "0.062",
+        "sourceUnitLabel": "mol H+ eq",
+        "sourceShortDescription": "ACI"
+      },
+      {
+        "methodRef": {
+          "id": "b5c614d2-def3-11e6-bf01-fe55135034f3",
+          "version": "01.02.009"
+        },
+        "referenceQuantityId": "341fd786-b2ad-4552-a762-5eafcab45dee",
+        "unit": "mol N equivalents",
+        "sourceNormalisationFactor": "176.754999788942",
+        "sourceWeightFraction": "0.0371",
+        "sourceUnitLabel": "mol N eq",
+        "sourceShortDescription": "EUt"
+      },
+      {
+        "methodRef": {
+          "id": "b53ec18f-7377-4ad3-86eb-cc3f4f276b2b",
+          "version": "01.00.010"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg P equivalents",
+        "sourceNormalisationFactor": "1.60685212828813",
+        "sourceWeightFraction": "0.028",
+        "sourceUnitLabel": "kg P eq",
+        "sourceShortDescription": "EUf"
+      },
+      {
+        "methodRef": {
+          "id": "b5c619fa-def3-11e6-bf01-fe55135034f3",
+          "version": "02.00.010"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg N equivalents",
+        "sourceNormalisationFactor": "19.5451815519191",
+        "sourceWeightFraction": "0.0296",
+        "sourceUnitLabel": "kg N eq",
+        "sourceShortDescription": "EUm"
+      },
+      {
+        "methodRef": {
+          "id": "05316e7a-b254-4bea-9cf0-6bf33eb5c630",
+          "version": "01.00.000"
+        },
+        "referenceQuantityId": "585d3441-af58-49c9-a5c2-1d1e5b63f8d5",
+        "unit": "CTUe",
+        "sourceNormalisationFactor": "56716.5863370596",
+        "sourceWeightFraction": "0.0192",
+        "sourceUnitLabel": "CTUitaloe",
+        "sourceShortDescription": "Eto"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad6890-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "referenceQuantityId": "01846770-4cfe-4a25-8ad9-919d8d378345",
+        "unit": "dimensionless (pt)",
+        "sourceNormalisationFactor": "819498.182923031",
+        "sourceWeightFraction": "0.0794",
+        "sourceUnitLabel": "soil quality index",
+        "sourceShortDescription": "Lnd"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad66ce-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "03.00.014"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-22da-a746-0800200c9a66",
+        "unit": "m3-world equivalents",
+        "sourceNormalisationFactor": "11468.7086407597",
+        "sourceWeightFraction": "0.0851",
+        "sourceUnitLabel": "m3 water eq. deprived",
+        "sourceShortDescription": "Wat"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad6494-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+        "unit": "kg Sb equivalents",
+        "sourceNormalisationFactor": "0.0636226152369547",
+        "sourceWeightFraction": "0.0755",
+        "sourceUnitLabel": "kg Sb eq",
+        "sourceShortDescription": "RMi"
+      },
+      {
+        "methodRef": {
+          "id": "b2ad6110-c78d-11e6-9d9d-cec0c932ce01",
+          "version": "01.00.010"
+        },
+        "referenceQuantityId": "93a60a56-a3c8-11da-a746-0800200c9a66",
+        "unit": "MJ",
+        "sourceNormalisationFactor": "65004.2596640165",
+        "sourceWeightFraction": "0.0832",
+        "sourceUnitLabel": "MJ",
+        "sourceShortDescription": "REn"
+      }
+    ],
+    "requirements": [
+      {
+        "requirementId": "PEF-01",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§2,3.1",
+          "eu-2026-interim:§§2.1,2.2"
+        ]
+      },
+      {
+        "requirementId": "PEF-02",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §3.2.1"
+        ]
+      },
+      {
+        "requirementId": "PEF-03",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§3.2.2,4.2–4.2.5"
+        ]
+      },
+      {
+        "requirementId": "PEF-04",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4,4.1,4.3,6.2"
+        ]
+      },
+      {
+        "requirementId": "PEF-05",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.6.3,4.6.4",
+          "eu-2026-interim:§2.1"
+        ]
+      },
+      {
+        "requirementId": "PEF-06",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.6.1,4.6.2,4.6.5.1–4.6.5.8,Tables 23–25"
+        ]
+      },
+      {
+        "requirementId": "PEF-07",
+        "sourceApplicability": "without-commission-pefcr",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2026-interim:§§1,2.1"
+        ]
+      },
+      {
+        "requirementId": "PEF-08",
+        "sourceApplicability": "with-commission-pefcr",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2026-interim:§§1,2.2"
+        ]
+      },
+      {
+        "requirementId": "PEF-09",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "machine",
+        "sourceCitations": [
+          "eu-2026-interim:front matter,§1",
+          "eu-2021-2279-original:OJ identity",
+          "eu-2022-corrigendum:OJ 2022-05-23"
+        ]
+      },
+      {
+        "requirementId": "PEF-10",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §4.5"
+        ]
+      },
+      {
+        "requirementId": "PEF-11",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.4.1–4.4.7"
+        ]
+      },
+      {
+        "requirementId": "PEF-12",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.4.8,4.4.9"
+        ]
+      },
+      {
+        "requirementId": "PEF-13",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.4.10,4.4.11",
+          "jrc-ef31-update:§2"
+        ]
+      },
+      {
+        "requirementId": "PEF-14",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§3.2.3,5.1",
+          "jrc-ef31-update:Table 1",
+          "jrc-ef31-package:ILCD/lciamethods"
+        ]
+      },
+      {
+        "requirementId": "PEF-15",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§4.3,5.1",
+          "jrc-ef31-package:ILCD/lciamethods"
+        ]
+      },
+      {
+        "requirementId": "PEF-16",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §5.2.1",
+          "jrc-ef31-update:§4",
+          "jrc-ef31-package:other/lookLciMethodInformation.config"
+        ]
+      },
+      {
+        "requirementId": "PEF-17",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §5.2.2 and footnote 60",
+          "jrc-ef31-package:other/lookLciMethodInformation.config"
+        ]
+      },
+      {
+        "requirementId": "PEF-18",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "professional",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§6.1–6.4"
+        ]
+      },
+      {
+        "requirementId": "PEF-19",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-corrected:Annex I §§7,8",
+          "eu-2026-interim:§§1,2.1,2.2"
+        ]
+      },
+      {
+        "requirementId": "PEF-20",
+        "sourceApplicability": "all-pef",
+        "sourceCheckKind": "mixed",
+        "sourceCitations": [
+          "eu-2021-2279-original:identity",
+          "eu-2022-corrigendum:identity",
+          "eu-2026-interim:copyright page",
+          "jrc-ef31-update:copyright page",
+          "jrc-ef31-package:publicationAndOwnership"
+        ]
+      }
+    ]
+  }
+}

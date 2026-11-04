@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 98d806793377f65727caccd28d115e44c1052930
-lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: 7ce24ea3940269d488a045ba2dadf6a0b01c027e
+lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -54,7 +54,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `src/pages/*/sdkValidation.ts`, `src/pages/Utils/validation/**` | page-level SDK-code adapters plus shared localized validation messages, detail mapping, and form-support helpers |
 | `src/components/**` | shared UI and reusable flows |
 | `src/pages/Study/**`, `src/services/study/**`, `vendor/study-contract/**` | authenticated four-view Study workbench, exact report review and named-share routes; [consumer contract](study-workbench-contract.md) owns codec, frozen-evidence, identity and mutation boundaries |
-| `src/standalone/studyReport/**`, `scripts/study-report/**` | dependency-free versioned report view and separate artifact build; [renderer contract](study-report-renderer-contract.md) owns strict projection, offline, receipt and release boundaries |
+| `src/standalone/studyReport/**`, `scripts/study-report/**`, `vendor/study-renderer/**` | dependency-free versioned report view and separate artifact build; [renderer contract](study-report-renderer-contract.md) owns strict projection, offline, receipt and release boundaries |
 | `src/components/DataNavigation/navigation.ts` | native ProLayout menu shaping and scope-link destinations; preserves the received route/access metadata |
 | `src/services/**` | app-side Supabase/API access, ordered-dataset shaping, typed locale normalization and runtime fallback for Node-loaded services, explicit anonymous-route policy, and service logic |
 | `src/services/general/tidasScalarStorage.ts` | canonical TIDAS year/percentage scalar normalization and the Process/Flow save-boundary issue format |
@@ -324,4 +324,8 @@ Result preview uses the shared data-list pagination defaults through the native 
 
 Private solver and published `process_all_impacts` rows retain optional `impact_version` through normalization. A result keeps its frozen numeric value, revision and unit; labels may be localized only from matching method ID/revision metadata. Saved rows for the same method are replaced by the returned solver rows without collapsing distinct revisions. Missing revisions remain unknown and do not block display. Historical saved results with no unit may use the exact static revision to fill that unit; explicit frozen units, including an empty unit, are never overwritten by this enrichment. These are result-display rules and do not change calculation eligibility or data-quality policy.
 
-The Study report/share adapter explicitly selects retained V4 or advanced V5 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` does not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
+The Study report/share adapter explicitly selects retained V4, advanced V5 or method V6 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` / `api=6` do not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
+
+Method authoring is an explicit selection inside the existing reports tab. `src/services/study/method.ts` delegates exact evidence/facts/stored-content reads to the contained V6 owner parsers; the UI copies supplied facts and preserves immutable predecessors. The [Study consumer contract](study-workbench-contract.md) owns its permission, recovery and qualification boundaries.
+
+The SPA's Webpack resolver prefers real `.js` modules and falls back to `.ts` for portable ESM source specifiers. This permits the method renderer source in online previews while preserving retained renderer modules and immutable portable package bytes.

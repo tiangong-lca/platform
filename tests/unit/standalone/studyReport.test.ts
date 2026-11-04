@@ -10,13 +10,13 @@ import {
   escapeHtml,
   renderReport,
   renderReportBody,
-} from '../../../src/standalone/studyReport';
+} from '../../../vendor/study-renderer/v2/index.js';
 import {
   isCanonicalDecimal,
   ReportViewError,
   validateRenderContext,
   validateReportView,
-} from '../../../src/standalone/studyReport/viewModel';
+} from '../../../vendor/study-renderer/v2/viewModel.js';
 
 beforeAll(() => {
   Object.defineProperty(globalThis, 'crypto', { value: webcrypto, configurable: true });

@@ -42,6 +42,7 @@ import {
 } from './shared';
 import styles from './index.less';
 import StudyTaskProgress from './TaskProgress';
+import MethodWorkspace from './MethodWorkspace';
 import { resumeLightEdit, type EditRecovery } from './recovery';
 
 const studyHref = (id: string) => `/studies?id=${encodeURIComponent(id)}`;
@@ -54,6 +55,7 @@ function StudyList() {
     expectType(await core({ operation: 'study.list', cursor, limit: 25 }), 'studyPage'),
   );
   const write = useStudyWrite(query.refresh);
+  const [reportApi, setReportApi] = useState<'v4' | 'v5' | 'v6'>('v4');
   const [reportId, setReportId] = useState(''),
     [reportHash, setReportHash] = useState('');
   return (
@@ -99,6 +101,12 @@ function StudyList() {
       </Card>
       <Card title={t('openReport')}>
         <Space wrap>
+          <Select
+            aria-label={t('reportFamily')}
+            value={reportApi}
+            onChange={setReportApi}
+            options={['v4', 'v5', 'v6'].map((value) => ({ value, label: value.toUpperCase() }))}
+          />
           <Input
             aria-label={t('reportId')}
             placeholder={t('reportId')}
@@ -112,7 +120,7 @@ function StudyList() {
             onChange={(event) => setReportHash(event.target.value)}
           />
           <Button
-            onClick={() => history.push(reportHref(reportId, reportHash))}
+            onClick={() => history.push(reportHref(reportId, reportHash, reportApi))}
             disabled={!reportId || !/^[a-f0-9]{64}$/u.test(reportHash)}
           >
             {t('openReport')}
@@ -685,7 +693,7 @@ function StudyResults({ studyId }: { studyId: string }) {
   );
 }
 
-function Reports({ studyId }: { studyId: string }) {
+function LegacyReports({ studyId }: { studyId: string }) {
   const t = useStudyText();
   const [cursor, setCursor] = useState<string | null>(null);
   const query = useStudyQuery(`${studyId}:${cursor}`, async () =>
@@ -729,6 +737,29 @@ function Reports({ studyId }: { studyId: string }) {
         </>
       )}
     </QueryState>
+  );
+}
+
+function Reports({ studyId, canWrite }: { studyId: string; canWrite: boolean }) {
+  const t = useStudyText();
+  const [methodSelected, setMethodSelected] = useState(false);
+  return (
+    <Space orientation='vertical' size='large' style={{ width: '100%' }}>
+      <Select
+        aria-label={t('reportFamily')}
+        value={methodSelected ? 'method' : 'legacy'}
+        onChange={(value) => setMethodSelected(value === 'method')}
+        options={[
+          { value: 'legacy', label: t('historical') },
+          { value: 'method', label: t('methodWorkspace') },
+        ]}
+      />
+      {methodSelected ? (
+        <MethodWorkspace studyId={studyId} canWrite={canWrite} />
+      ) : (
+        <LegacyReports studyId={studyId} />
+      )}
+    </Space>
   );
 }
 
@@ -929,7 +960,11 @@ function Workbench({ id, tab }: { id: string; tab: string }) {
                 ),
               },
               { key: 'results', label: t('results'), children: <StudyResults studyId={id} /> },
-              { key: 'reports', label: t('reports'), children: <Reports studyId={id} /> },
+              {
+                key: 'reports',
+                label: t('reports'),
+                children: <Reports studyId={id} canWrite={data.actions.corePermissions.write} />,
+              },
             ]}
           />
         </Space>

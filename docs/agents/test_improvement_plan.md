@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8908ffc819923bcaa714862eae8f9114c5e9858b
-lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: b75a00b6a0f97d99dfbe09374983d3218287a7d2
+lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
 ---
 
 # Testing Strategy

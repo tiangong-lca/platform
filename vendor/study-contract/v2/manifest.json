@@ -3,7 +3,7 @@
   "apiSchema": "lca.study-api.v2",
   "contractVersion": "2.0.0",
   "sourceRepository": "tiangong-lca/edge-functions",
-  "sourceCommit": "c8784576377b4ab156e89dc4eac81014a87880f6",
+  "sourceCommit": "439f8112a8f9945479c63ffaa8cfe688e9d20216",
   "sourceStatus": "committed",
   "toolchain": {
     "node": "24.19.0",
@@ -43,8 +43,8 @@
     },
     {
       "path": "contracts/lca-study/v2/codec.ts",
-      "sha256": "fdda431852091cabebba82ae408ae7c0d387c85171e1ebd469e7a4adf53c5d13",
-      "bytes": 8790
+      "sha256": "c977d521c3743c86c7683d91be0db406f0ee4b976d8237c8e85fbf18efd74285",
+      "bytes": 9124
     },
     {
       "path": "contracts/lca-study/v2/common.ts",
@@ -78,8 +78,8 @@
     },
     {
       "path": "scripts/build-study-contract.mjs",
-      "sha256": "8529d0fb358331243bf0b3a802cbce68d990a5f40da4005422ee433db22ca6ac",
-      "bytes": 10594
+      "sha256": "c7213fd65d434274f6bfef80e831c73003ded9672b686f74fb8280ec91582a6a",
+      "bytes": 12708
     },
     {
       "path": "supabase/functions/deno.json",
@@ -90,8 +90,8 @@
   "files": [
     {
       "path": "index.mjs",
-      "sha256": "de9505da7d190dc73c75ca7ac9626b4bfac2f65f040449f3ffcd07f35c8a17c5",
-      "bytes": 744788
+      "sha256": "cf73a4f1a29c60ae066ff6972926a6196c42ab735e343229b17799469a9c60c4",
+      "bytes": 745092
     },
     {
       "path": "index.d.ts",

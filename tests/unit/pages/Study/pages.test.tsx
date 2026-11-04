@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import StudyPage from '@/pages/Study';
 import ReportPage from '@/pages/Study/Report';
 import SharePage from '@/pages/Study/Share';
@@ -7,6 +7,7 @@ import {
   resolveRouteViewState,
   getRouteViewStateVariantIds,
 } from '@/services/general/routeViewState';
+const mockMethod = jest.fn();
 const mockCore = jest.fn(),
   mockAnalysis = jest.fn(),
   mockReview = jest.fn(),
@@ -24,6 +25,7 @@ jest.mock('@umijs/max', () => ({
 jest.mock('@/services/study/api', () => ({
   ...jest.requireActual('@/services/study/api'),
   core: (...args: unknown[]) => mockCore(...args),
+  method: (...args: unknown[]) => mockMethod(...args),
   analysis: (...args: unknown[]) => mockAnalysis(...args),
   review: (...args: unknown[]) => mockReview(...args),
   subscribeStudyIdentityChange: () => () => {},
@@ -79,6 +81,13 @@ const state = {
 };
 let actions: string[] = [];
 const reportSearch = () => `?id=${view.report.reportRevisionId}&hash=${view.report.contentHash}`;
+async function chooseReportFamily(option: string) {
+  const input = screen.getByRole('combobox', { name: 'pages.study.reportFamily' });
+  await act(async () => fireEvent.mouseDown(input));
+  const choice = await screen.findByText(option, { selector: '.ant-select-item-option-content' });
+  await act(async () => fireEvent.click(choice));
+  await waitFor(() => expect(input).toHaveAttribute('aria-expanded', 'false'));
+}
 beforeEach(() => {
   jest.clearAllMocks();
   mockSearch = '';
@@ -273,4 +282,39 @@ it('keeps numerical interpretation limits visible on the results view', async ()
   mockSearch = '?id=study-a&view=results';
   render(<StudyPage />);
   expect(await screen.findByText('pages.study.noRanking')).toBeInTheDocument();
+});
+
+it('selects method V6 inside reports explicitly while retaining the historical default', async () => {
+  mockMethod.mockImplementation(async (q) =>
+    q.operation === 'capability.read'
+      ? { type: 'capabilities', runtimeEnabled: false, operations: [] }
+      : { type: 'resourcePage', kind: q.kind, studyId: q.studyId, items: [], nextCursor: null },
+  );
+  mockSearch = '?id=study-a&view=reports';
+  render(<StudyPage />);
+  await screen.findByRole('combobox', { name: 'pages.study.reportFamily' });
+  expect(mockMethod).not.toHaveBeenCalled();
+  await chooseReportFamily('pages.study.methodWorkspace');
+  await screen.findByText('pages.study.methodQualificationNote');
+  expect(mockMethod).toHaveBeenCalledWith({ operation: 'capability.read' });
+  await chooseReportFamily('pages.study.historical');
+  await waitFor(() =>
+    expect(screen.queryByText('pages.study.methodQualificationNote')).not.toBeInTheDocument(),
+  );
+});
+
+it('opens a user-selected V6 exact report from the Study landing page', async () => {
+  render(<StudyPage />);
+  await screen.findByRole('combobox', { name: 'pages.study.reportFamily' });
+  await chooseReportFamily('V6');
+  fireEvent.change(screen.getByRole('textbox', { name: 'pages.study.reportId' }), {
+    target: { value: 'exact-method-report' },
+  });
+  fireEvent.change(screen.getByRole('textbox', { name: 'pages.study.reportHash' }), {
+    target: { value: 'a'.repeat(64) },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'pages.study.openReport' }));
+  expect(mockPush).toHaveBeenCalledWith(
+    `/study-report?id=exact-method-report&hash=${'a'.repeat(64)}&api=6`,
+  );
 });

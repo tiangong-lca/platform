@@ -686,3 +686,57 @@ describe('language platform audit', () => {
     });
   });
 });
+
+describe('immutable contained method protocol locale map', () => {
+  const componentPath = 'src/standalone/studyReport/methodProtocol.mjs';
+  const allowlistPath = 'scripts/i18n/language-hardcoding-allowlist.json';
+  const entry = () =>
+    JSON.parse(fs.readFileSync(path.join(REPOSITORY_ROOT, allowlistPath), 'utf8')).entries.find(
+      (candidate: Record<string, unknown>) =>
+        candidate.permanentContract === 'immutable-study-method-protocol-component',
+    );
+  const source = () => {
+    const original = fs.readFileSync(path.join(REPOSITORY_ROOT, componentPath), 'utf8');
+    const object = /__export\(locales_exports, (\{[\s\S]*?\})\);/u.exec(original)![1];
+    return `export const locales = ${object};\n`;
+  };
+  const inspect = (override: Record<string, unknown> = {}) => {
+    const root = initializeFixture(true);
+    try {
+      writeFixtureFile(root, componentPath, source());
+      writeFixtureFile(
+        root,
+        allowlistPath,
+        JSON.stringify({
+          schemaVersion: 'tiangong.i18n-language-hardcoding-allowlist.v2',
+          entries: [{ ...entry(), ...override }],
+        }),
+      );
+      return runAudit(root, ['--scope', 'hardcoding', '--check']);
+    } finally {
+      fs.rmSync(root, { force: true, recursive: true });
+    }
+  };
+  it('admits only the exact contained third-party map without changing application locale authority', () => {
+    const result = inspect();
+    const report = JSON.parse(result.stdout) as AuditReport;
+    expect(report.violations).toEqual([]);
+    expect(result.status).toBe(0);
+    expect(report.findings).toEqual([
+      expect.objectContaining({ path: componentPath, ruleId: 'language-keyed-map' }),
+    ]);
+  });
+  it.each([
+    { ownerIssue: '#1443' },
+    { path: 'src/other.mjs' },
+    { ruleId: 'language-default' },
+    { nodeTextDigest: '0'.repeat(64) },
+    { maxMatches: 2 },
+  ])('rejects changed owner/path/rule/digest/cardinality: %s', (override) => {
+    const result = inspect(override);
+    expect(result.status).toBe(1);
+    expect((JSON.parse(result.stdout) as AuditReport).violations.map(({ code }) => code)).toContain(
+      'invalid-allowlist-entry',
+    );
+  });
+});

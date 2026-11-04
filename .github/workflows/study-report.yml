@@ -6,6 +6,7 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - src/standalone/studyReport/**
+      - vendor/study-renderer/**
       - src/services/general/localeRegistry.ts
       - scripts/study-report/**
       - tests/unit/standalone/**
@@ -50,7 +51,7 @@ jobs:
       - name: Build clean portable renderer
         run: pnpm study-report:build --release
       - name: Verify standalone protocol and CI boundaries
-        run: pnpm test:ci --runInBand --runTestsByPath tests/unit/standalone/studyReport.test.ts tests/unit/config/studyReportWorkflow.test.ts --no-coverage
+        run: pnpm test:ci --runInBand --runTestsByPath tests/unit/standalone/studyReport.test.ts tests/unit/standalone/studyMethodReport.test.ts tests/unit/standalone/studyMethodPresentation.test.ts tests/unit/config/studyReportWorkflow.test.ts --no-coverage
       - name: Verify packed independent consumer
         run: pnpm study-report:test:package
       - name: Install the lockfile-selected Chromium and system dependencies
@@ -76,7 +77,7 @@ jobs:
             assert.equal(record.sourceCommit, process.env.EXPECTED_HEAD);
             assert.equal(record.sourceDirty, false);
           }
-          assert.equal(archive.archiveName, 'study-report-renderer-2.0.0.tgz');
+          assert.equal(archive.archiveName, 'study-report-renderer-3.0.0.tgz');
           assert.equal(archive.sha256, sha(readFileSync('dist-study-report/' + archive.archiveName)));
           assert.equal(archive.manifestSha256, sha(manifestBytes));
           assert.equal(browser.archiveSha256, archive.sha256);
