@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 98d806793377f65727caccd28d115e44c1052930
+lastReviewedCommit: 8908ffc819923bcaa714862eae8f9114c5e9858b
 lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
 related:
   - .docpact/config.yaml
