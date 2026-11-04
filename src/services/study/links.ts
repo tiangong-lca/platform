@@ -1,4 +1,4 @@
-export type ReportApi = 'v4' | 'v5';
+export type ReportApi = 'v4' | 'v5' | 'v6';
 
 const idPattern = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/u;
 const hashPattern = /^[a-f0-9]{64}$/u;
@@ -6,7 +6,13 @@ const hashPattern = /^[a-f0-9]{64}$/u;
 function selectedApi(params: URLSearchParams): ReportApi | undefined {
   const values = params.getAll('api');
   if (values.length === 0) return 'v4';
-  return values.length === 1 && values[0] === '5' ? 'v5' : undefined;
+  return values.length === 1
+    ? values[0] === '5'
+      ? 'v5'
+      : values[0] === '6'
+        ? 'v6'
+        : undefined
+    : undefined;
 }
 
 export function reportLinkSelection(search: string) {
@@ -39,6 +45,7 @@ export function shareLinkSelection(search: string) {
 function apiSuffix(api: ReportApi) {
   if (api === 'v4') return '';
   if (api === 'v5') return '&api=5';
+  if (api === 'v6') return '&api=6';
   throw new Error('Unsupported report family');
 }
 
@@ -51,5 +58,5 @@ export const shareHref = (id: string, api: ReportApi = 'v4') =>
 /** Existing V4 journal keys stay unchanged; V5 has an independent workflow identity. */
 export function reportWorkflow(kind: 'report' | 'share', id: string, api: ReportApi = 'v4') {
   apiSuffix(api);
-  return `${kind}${api === 'v5' ? '5' : ''}:${id}`;
+  return `${kind}${api === 'v6' ? '6' : api === 'v5' ? '5' : ''}:${id}`;
 }

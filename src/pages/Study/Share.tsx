@@ -71,8 +71,8 @@ function NamedShare({ id, api }: { id: string; api: ReportApi }) {
               loading={write.busy}
               onClick={() =>
                 write.run(() =>
-                  api === 'v5'
-                    ? downloadStudyExport('share', id, 'v5')
+                  api !== 'v4'
+                    ? downloadStudyExport('share', id, api)
                     : downloadStudyExport('share', id),
                 )
               }

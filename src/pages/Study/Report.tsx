@@ -416,15 +416,20 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
                     ...bound,
                     finalizationId: state.finalization!.finalizationId,
                     expectedReviewStateHash: state.reviewStateHash,
-                    ...(api === 'v5'
+                    ...(api === 'v6'
                       ? {
-                          rendererVersion: '2.0.0' as const,
-                          viewModelVersion: 'lca.study-report-view.v2' as const,
+                          rendererVersion: '3.0.0' as const,
+                          viewModelVersion: 'lca.study-report-view.v3' as const,
                         }
-                      : {
-                          rendererVersion: '1.0.0' as const,
-                          viewModelVersion: 'lca.study-report-view.v1' as const,
-                        }),
+                      : api === 'v5'
+                        ? {
+                            rendererVersion: '2.0.0' as const,
+                            viewModelVersion: 'lca.study-report-view.v2' as const,
+                          }
+                        : {
+                            rendererVersion: '1.0.0' as const,
+                            viewModelVersion: 'lca.study-report-view.v1' as const,
+                          }),
                   })
                 }
               >
@@ -444,8 +449,8 @@ export function ExactReport({ id, hash, api }: { id: string; hash: string; api: 
                 }
                 onClick={() =>
                   write.run(() =>
-                    api === 'v5'
-                      ? downloadStudyExport('export', exportId, 'v5')
+                    api !== 'v4'
+                      ? downloadStudyExport('export', exportId, api)
                       : downloadStudyExport('export', exportId),
                   )
                 }

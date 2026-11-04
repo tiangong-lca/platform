@@ -1,0 +1,2886 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "anyOf": [
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "capability.read"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "method.assessment.request"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "profileId": {
+              "type": "string",
+              "const": "lca.study-method-pef-2021-ef31-cement-intermediate.v1"
+            },
+            "config": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": {
+                  "type": "string",
+                  "const": "lca.study-method-assessment-config.v1"
+                },
+                "baselineRunId": {
+                  "type": "string",
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                    }
+                  ]
+                },
+                "moduleRef": {
+                  "type": "object",
+                  "properties": {
+                    "repository": {
+                      "type": "string",
+                      "const": "tiangong-lca/pcr"
+                    },
+                    "sourceCommit": {
+                      "type": "string",
+                      "const": "51c0842c67b14ba886e2edee2846e26eefac030f"
+                    },
+                    "moduleId": {
+                      "type": "string",
+                      "const": "method.pef-2021-ef31"
+                    },
+                    "moduleVersion": {
+                      "type": "string",
+                      "const": "0.1.0"
+                    },
+                    "artifactSha256": {
+                      "type": "string",
+                      "const": "b19ba5754b0bc20c44c8c65966bafafd5984cd74636f2c805c0fa4373f5554ad"
+                    },
+                    "reviewBasisSha256": {
+                      "type": "string",
+                      "const": "989391423c7f31bdf77e18ea4438fab1a27ff6708c0f44ecad8ab8813763a165"
+                    },
+                    "sourceBindingsSha256": {
+                      "type": "string",
+                      "const": "3fd9b1dc68228db3e146b6d23daac853b27b9f504f9445a0cc5a971d53257ce2"
+                    }
+                  },
+                  "required": [
+                    "repository",
+                    "sourceCommit",
+                    "moduleId",
+                    "moduleVersion",
+                    "artifactSha256",
+                    "reviewBasisSha256",
+                    "sourceBindingsSha256"
+                  ],
+                  "additionalProperties": false
+                },
+                "declarations": {
+                  "type": "object",
+                  "properties": {
+                    "productRole": {
+                      "type": "string",
+                      "const": "finishedCementIntermediate"
+                    },
+                    "studyPhase": {
+                      "type": "string",
+                      "enum": [
+                        "screening",
+                        "finalStudy"
+                      ]
+                    },
+                    "referenceUnitBasis": {
+                      "type": "string",
+                      "const": "declaredMass"
+                    },
+                    "categoryRule": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "noneEstablished"
+                            }
+                          },
+                          "required": [
+                            "kind"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "const": "commissionDeveloped"
+                            },
+                            "referenceId": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 256
+                            },
+                            "version": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 128
+                            },
+                            "evidenceId": {
+                              "type": "string",
+                              "allOf": [
+                                {
+                                  "type": "string",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                {
+                                  "type": "string",
+                                  "pattern": "^[a-f0-9]{8}(-[a-f0-9]{4}){3}-[a-f0-9]{12}$"
+                                }
+                              ]
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "referenceId",
+                            "version",
+                            "evidenceId"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "productRole",
+                    "studyPhase",
+                    "referenceUnitBasis",
+                    "categoryRule"
+                  ],
+                  "additionalProperties": false
+                },
+                "evidenceRefs": {
+                  "maxItems": 128,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "requirementId": {
+                        "type": "string",
+                        "pattern": "^PEF-(0[1-9]|1[0-9]|20)$"
+                      },
+                      "declaredKind": {
+                        "type": "string",
+                        "enum": [
+                          "sourceRecord",
+                          "applicabilityRecord",
+                          "professionalRecord"
+                        ]
+                      },
+                      "artifactRef": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "modelInput",
+                              "runResult",
+                              "modelSource",
+                              "methodEvidence"
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "contentHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "digestScope": {
+                            "type": "string",
+                            "const": "artifact_bytes_sha256"
+                          },
+                          "byteSize": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 4194304
+                          },
+                          "mediaType": {
+                            "type": "string",
+                            "const": "application/json"
+                          },
+                          "schemaVersion": {
+                            "type": "string",
+                            "maxLength": 4096
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "id",
+                          "contentHash",
+                          "digestScope",
+                          "byteSize",
+                          "mediaType",
+                          "schemaVersion"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "requirementId",
+                      "declaredKind",
+                      "artifactRef"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "baselineRunId",
+                "moduleRef",
+                "declarations",
+                "evidenceRefs"
+              ],
+              "additionalProperties": false,
+              "$id": "lca.study-method-assessment-config.v1",
+              "$comment": "Closed new assessment records; retained P1 projections keep their owner shape. Byte/config/source verification and current actor/job/disclosure authority remain independently required. No validation implies scientific approval."
+            },
+            "configHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "studyId",
+            "profileId",
+            "config",
+            "configHash"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "method.assessment.read"
+            },
+            "assessmentId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "assessmentId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "method.evidence.create"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": {
+                  "type": "string",
+                  "const": "lca.study-method-evidence.v1"
+                },
+                "requirementId": {
+                  "type": "string",
+                  "pattern": "^PEF-(?:0[1-9]|1[0-9]|20)$"
+                },
+                "declaredKind": {
+                  "type": "string",
+                  "enum": [
+                    "sourceRecord",
+                    "applicabilityRecord",
+                    "professionalRecord"
+                  ]
+                },
+                "title": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256,
+                      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f<>]+$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "[^\\u0020\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+                    }
+                  ]
+                },
+                "statement": {
+                  "allOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 8192,
+                      "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f<>]+$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "[^\\u0020\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+                    }
+                  ]
+                },
+                "citations": {
+                  "minItems": 0,
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "normativeSource",
+                          "datasetRevision",
+                          "document",
+                          "professionalRecord",
+                          "otherDeclaredSource"
+                        ]
+                      },
+                      "identity": {
+                        "allOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256,
+                            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f<>]+$"
+                          },
+                          {
+                            "type": "string",
+                            "pattern": "[^\\u0020\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+                          }
+                        ]
+                      },
+                      "version": {
+                        "allOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128,
+                            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f<>]+$"
+                          },
+                          {
+                            "type": "string",
+                            "pattern": "[^\\u0020\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+                          }
+                        ]
+                      },
+                      "contentHash": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "locator": {
+                        "allOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 512,
+                            "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f<>]+$"
+                          },
+                          {
+                            "type": "string",
+                            "pattern": "[^\\u0020\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]"
+                          }
+                        ]
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "identity",
+                      "version",
+                      "contentHash",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "requirementId",
+                "declaredKind",
+                "title",
+                "statement",
+                "citations"
+              ],
+              "additionalProperties": false,
+              "$id": "lca.study-method-evidence.v1",
+              "$comment": "Worker-owned closed method interface. Schema checks never establish professional approval, current actor/source/lease authority or byte identity."
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "studyId",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "method.evidence.read"
+            },
+            "evidenceId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "evidenceId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "task.read"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "resource": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "methodAssessment"
+                },
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                }
+              },
+              "required": [
+                "type",
+                "id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "studyId",
+            "resource"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "task.cancel"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "resource": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "methodAssessment"
+                },
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                }
+              },
+              "required": [
+                "type",
+                "id"
+              ],
+              "additionalProperties": false
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "studyId",
+            "resource",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "study.resources.list"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "kind": {
+              "type": "string",
+              "enum": [
+                "methodAssessment",
+                "reportRevision"
+              ]
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "studyId",
+            "kind",
+            "limit",
+            "cursor"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "artifact.read"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "artifactRef": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "methodAssessmentFacts"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "contentHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "digestScope": {
+                      "type": "string",
+                      "const": "artifact_bytes_sha256"
+                    },
+                    "byteSize": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4194304
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "application/json"
+                    },
+                    "schemaVersion": {
+                      "type": "string",
+                      "const": "lca.study-method-assessment-facts.v1"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "contentHash",
+                    "digestScope",
+                    "byteSize",
+                    "mediaType",
+                    "schemaVersion"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "methodEvidence"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "contentHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "digestScope": {
+                      "type": "string",
+                      "const": "artifact_bytes_sha256"
+                    },
+                    "byteSize": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65536
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "application/json"
+                    },
+                    "schemaVersion": {
+                      "type": "string",
+                      "const": "lca.study-method-evidence.v1"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "contentHash",
+                    "digestScope",
+                    "byteSize",
+                    "mediaType",
+                    "schemaVersion"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "reportContent"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    },
+                    "contentHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "digestScope": {
+                      "type": "string",
+                      "const": "artifact_bytes_sha256"
+                    },
+                    "byteSize": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4194304
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "application/json"
+                    },
+                    "schemaVersion": {
+                      "type": "string",
+                      "const": "lca.study-method-report-content.v1"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "contentHash",
+                    "digestScope",
+                    "byteSize",
+                    "mediaType",
+                    "schemaVersion"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "modelInput"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    },
+                    "contentHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "digestScope": {
+                      "type": "string",
+                      "const": "artifact_bytes_sha256"
+                    },
+                    "byteSize": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4194304
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "application/json"
+                    },
+                    "schemaVersion": {
+                      "type": "string",
+                      "const": "lca.study-prepared-input.v1"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "contentHash",
+                    "digestScope",
+                    "byteSize",
+                    "mediaType",
+                    "schemaVersion"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "runResult"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    },
+                    "contentHash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "digestScope": {
+                      "type": "string",
+                      "const": "artifact_bytes_sha256"
+                    },
+                    "byteSize": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4194304
+                    },
+                    "mediaType": {
+                      "type": "string",
+                      "const": "application/json"
+                    },
+                    "schemaVersion": {
+                      "type": "string",
+                      "const": "lca.study-result.v1"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id",
+                    "contentHash",
+                    "digestScope",
+                    "byteSize",
+                    "mediaType",
+                    "schemaVersion"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "studyId",
+            "artifactRef"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "resource.actions"
+            },
+            "resource": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "methodAssessment"
+                },
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                }
+              },
+              "required": [
+                "type",
+                "id"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "resource"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.create"
+            },
+            "studyId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "parentReportRevisionId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "runIds": {
+              "minItems": 1,
+              "maxItems": 1,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+              }
+            },
+            "methodAssessmentIds": {
+              "minItems": 1,
+              "maxItems": 1,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+              }
+            },
+            "templateId": {
+              "type": "string",
+              "const": "lca.study-method-report.v1"
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": {
+                  "type": "string",
+                  "const": "lca.study-method-report-draft.v1"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "claims": {
+                  "minItems": 1,
+                  "maxItems": 256,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "claimId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "bundleRef": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "methodAssessmentFacts"
+                          },
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "contentHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "digestScope": {
+                            "type": "string",
+                            "const": "artifact_bytes_sha256"
+                          },
+                          "byteSize": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 4194304
+                          },
+                          "mediaType": {
+                            "type": "string",
+                            "const": "application/json"
+                          },
+                          "schemaVersion": {
+                            "type": "string",
+                            "const": "lca.study-method-assessment-facts.v1"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "id",
+                          "contentHash",
+                          "digestScope",
+                          "byteSize",
+                          "mediaType",
+                          "schemaVersion"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "factId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "canonicalValue": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 64,
+                            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d*[1-9])?(?:e-?[1-9]\\d{0,2})?$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "unit": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "display": {
+                        "type": "object",
+                        "properties": {
+                          "style": {
+                            "type": "string",
+                            "const": "exact"
+                          }
+                        },
+                        "required": [
+                          "style"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "claimId",
+                      "bundleRef",
+                      "factId",
+                      "canonicalValue",
+                      "unit",
+                      "display"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "sections": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sectionId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "paragraphs": {
+                        "maxItems": 32,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        }
+                      },
+                      "claimIds": {
+                        "maxItems": 256,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "sectionId",
+                      "title",
+                      "paragraphs",
+                      "claimIds"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "tables": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "tableId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "claimIds": {
+                        "minItems": 1,
+                        "maxItems": 256,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "tableId",
+                      "title",
+                      "claimIds"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "charts": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "chartId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "claimIds": {
+                        "minItems": 1,
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "chartId",
+                      "title",
+                      "claimIds"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "additionalLimitations": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  }
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "title",
+                "claims",
+                "sections",
+                "tables",
+                "charts",
+                "additionalLimitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "studyId",
+            "parentReportRevisionId",
+            "runIds",
+            "methodAssessmentIds",
+            "templateId",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.save"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "reportRevision"
+                },
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "expectedRevision"
+              ],
+              "additionalProperties": false
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "schemaVersion": {
+                  "type": "string",
+                  "const": "lca.study-method-report-draft.v1"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "claims": {
+                  "minItems": 1,
+                  "maxItems": 256,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "claimId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "bundleRef": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "const": "methodAssessmentFacts"
+                          },
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "contentHash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$"
+                          },
+                          "digestScope": {
+                            "type": "string",
+                            "const": "artifact_bytes_sha256"
+                          },
+                          "byteSize": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 4194304
+                          },
+                          "mediaType": {
+                            "type": "string",
+                            "const": "application/json"
+                          },
+                          "schemaVersion": {
+                            "type": "string",
+                            "const": "lca.study-method-assessment-facts.v1"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "id",
+                          "contentHash",
+                          "digestScope",
+                          "byteSize",
+                          "mediaType",
+                          "schemaVersion"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "factId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "canonicalValue": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 64,
+                            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d*[1-9])?(?:e-?[1-9]\\d{0,2})?$"
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "unit": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "display": {
+                        "type": "object",
+                        "properties": {
+                          "style": {
+                            "type": "string",
+                            "const": "exact"
+                          }
+                        },
+                        "required": [
+                          "style"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "required": [
+                      "claimId",
+                      "bundleRef",
+                      "factId",
+                      "canonicalValue",
+                      "unit",
+                      "display"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "sections": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "sectionId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "paragraphs": {
+                        "maxItems": 32,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2048
+                        }
+                      },
+                      "claimIds": {
+                        "maxItems": 256,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "sectionId",
+                      "title",
+                      "paragraphs",
+                      "claimIds"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "tables": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "tableId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "claimIds": {
+                        "minItems": 1,
+                        "maxItems": 256,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "tableId",
+                      "title",
+                      "claimIds"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "charts": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "chartId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 256
+                      },
+                      "claimIds": {
+                        "minItems": 1,
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                        }
+                      }
+                    },
+                    "required": [
+                      "chartId",
+                      "title",
+                      "claimIds"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "additionalLimitations": {
+                  "maxItems": 32,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  }
+                }
+              },
+              "required": [
+                "schemaVersion",
+                "title",
+                "claims",
+                "sections",
+                "tables",
+                "charts",
+                "additionalLimitations"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "target",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.freeze"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "reportRevision"
+                },
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "expectedRevision"
+              ],
+              "additionalProperties": false
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "target",
+            "expectedContentHash"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.read"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "capability.read"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "resource.actions"
+            },
+            "resource": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "reportRevision"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "share"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "export"
+                    },
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "resource"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "comment.append"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "text"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "comment.list"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "cursor",
+            "limit"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "review.record"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "reviewClass": {
+              "type": "string",
+              "const": "internal"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "reject",
+                "withdraw"
+              ]
+            },
+            "comment": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "predecessorReviewId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "delegationId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "reviewClass",
+            "decision",
+            "comment",
+            "predecessorReviewId",
+            "delegationId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "review.list"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "cursor",
+            "limit"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "review.delegation.issue"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "clientId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "reviewClass": {
+              "type": "string",
+              "const": "internal"
+            },
+            "decision": {
+              "type": "string",
+              "enum": [
+                "approve",
+                "reject",
+                "withdraw"
+              ]
+            },
+            "predecessorReviewId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "clientId",
+            "reviewClass",
+            "decision",
+            "predecessorReviewId",
+            "expiresAt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "review.delegation.revoke"
+            },
+            "delegationId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "delegationId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "review.delegation.list"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "cursor",
+            "limit"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.finalize"
+            },
+            "target": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "reportRevision"
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+                },
+                "expectedRevision": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                }
+              },
+              "required": [
+                "type",
+                "id",
+                "expectedRevision"
+              ],
+              "additionalProperties": false
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "expectedReviewStateHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "profileId": {
+              "type": "string",
+              "enum": [
+                "lca.study-report-unreviewed.v1",
+                "lca.study-report-internal-review.v1"
+              ]
+            },
+            "acceptedReviewIds": {
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+              }
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "target",
+            "expectedContentHash",
+            "expectedReviewStateHash",
+            "profileId",
+            "acceptedReviewIds"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.current"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "report.view"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "export.request"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "finalizationId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedReviewStateHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "rendererVersion": {
+              "type": "string",
+              "const": "3.0.0"
+            },
+            "viewModelVersion": {
+              "type": "string",
+              "const": "lca.study-report-view.v3"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "finalizationId",
+            "expectedReviewStateHash",
+            "rendererVersion",
+            "viewModelVersion"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "export.read"
+            },
+            "exportId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "exportId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "export.download"
+            },
+            "exportId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "exportId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "share.create"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "exportId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "recipientId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "disclosurePolicyId": {
+              "type": "string",
+              "const": "lca.study-report-summary-share.v1"
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "exportId",
+            "recipientId",
+            "disclosurePolicyId",
+            "expiresAt"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "share.read"
+            },
+            "shareId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "shareId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "share.view"
+            },
+            "shareId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "shareId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "share.download"
+            },
+            "shareId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "shareId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "idempotencyKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "share.revoke"
+            },
+            "shareId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "idempotencyKey",
+            "operation",
+            "shareId",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "type": "string",
+              "const": "lca.study-api.v6"
+            },
+            "requestId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "operation": {
+              "type": "string",
+              "const": "share.list"
+            },
+            "reportRevisionId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+            },
+            "expectedContentHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "cursor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^[A-Za-z0-9_-]+$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "requestId",
+            "operation",
+            "reportRevisionId",
+            "expectedContentHash",
+            "cursor",
+            "limit"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  ]
+}

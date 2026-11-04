@@ -40,7 +40,7 @@ it('generates stable explicit V5 links and preserves the old V4 link and workflo
   expect(reportWorkflow('share', 'id', 'v5')).toBe('share5:id');
 });
 
-it.each(['4', '05', '', '6', '5%00', '5&api=5'])(
+it.each(['4', '05', '', '7', '5%00', '5&api=5'])(
   'rejects unsupported or ambiguous family selector %s without a fallback',
   (api) => {
     expect(reportLinkSelection(`id=r&hash=${hash}&api=${api}`)).toBeUndefined();
@@ -88,4 +88,18 @@ it('keeps legacy call arity while dispatching V5 once and preserving its rejecti
   expect(mockReview).toHaveBeenCalledTimes(1);
   expect(mockReview).toHaveBeenCalledWith(body, undefined, 'v5');
   expect(() => reportClient('v9' as never)).toThrow('UNSUPPORTED_SCHEMA');
+});
+
+it('selects V6 explicitly and keeps its report/share journals isolated', async () => {
+  expect(reportLinkSelection(reportHref('r', hash, 'v6').split('?')[1])).toEqual({
+    api: 'v6',
+    id: 'r',
+    hash,
+  });
+  expect(shareLinkSelection(shareHref('s', 'v6').split('?')[1])).toEqual({ api: 'v6', id: 's' });
+  expect(reportWorkflow('report', 'r', 'v6')).toBe('report6:r');
+  expect(reportWorkflow('share', 's', 'v6')).toBe('share6:s');
+  const body = { operation: 'capability.read' as const };
+  await reportClient('v6')(body, 'report6:r');
+  expect(mockReview).toHaveBeenCalledWith(body, 'report6:r', 'v6');
 });

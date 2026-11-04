@@ -146,7 +146,7 @@ it('rejects ambiguous or unknown API selectors before any report or share reques
   const page = render(<ReportPage />);
   expect(screen.getByText('pages.study.invalidLink')).toBeInTheDocument();
   page.unmount();
-  mockSearch = '?id=share-v5&api=6';
+  mockSearch = '?id=share-v5&api=7';
   render(<SharePage />);
   expect(screen.getByText('pages.study.invalidLink')).toBeInTheDocument();
   expect(mockReview).not.toHaveBeenCalled();

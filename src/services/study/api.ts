@@ -19,14 +19,18 @@ import * as v2 from '../../../vendor/study-contract/v2/index.mjs';
 import * as v3 from '../../../vendor/study-contract/v3/index.mjs';
 import * as v4 from '../../../vendor/study-contract/v4/index.mjs';
 import * as v5 from '../../../vendor/study-contract/v5/index.mjs';
+import * as v6 from '../../../vendor/study-contract/v6/index.mjs';
 import { reportWorkflow, type ReportApi } from './links';
 
 export type CoreData = Extract<v2.StudyApiResponse, { ok: true }>['data'];
 export type AnalysisData = Extract<v3.StudyApiResponse, { ok: true }>['data'];
 type LegacyReviewData = Extract<v4.StudyApiResponse, { ok: true }>['data'];
+export type MethodData = Extract<v6.StudyApiResponse, { ok: true }>['data'];
+export type MethodRequest = RequestBody<v6.StudyApiRequest>;
+export type MethodResource<K extends MethodData['type']> = Extract<MethodData, { type: K }>;
 type AdvancedData = Extract<v5.StudyApiResponse, { ok: true }>['data'];
 export type ReviewData =
-  LegacyReviewData | Extract<AdvancedData, { type: LegacyReviewData['type'] }>;
+  LegacyReviewData | Extract<AdvancedData | MethodData, { type: LegacyReviewData['type'] }>;
 export type CoreResource<K extends CoreData['type']> = Extract<CoreData, { type: K }>;
 export type ReviewResource<K extends ReviewData['type']> = Extract<ReviewData, { type: K }>;
 export type Study = CoreResource<'study'>['value'];
@@ -37,12 +41,17 @@ export type Run = CoreResource<'run'>['value'];
 export type ReportView = ReviewResource<'view'>;
 export type Actions = ReviewResource<'actions'>;
 export type Request =
-  v2.StudyApiRequest | v3.StudyApiRequest | v4.StudyApiRequest | v5.StudyApiRequest;
+  | v2.StudyApiRequest
+  | v3.StudyApiRequest
+  | v4.StudyApiRequest
+  | v5.StudyApiRequest
+  | v6.StudyApiRequest;
 export type RequestBody<R> = R extends Request ? Omit<R, 'requestId' | 'schemaVersion'> : never;
 export type CoreRequest = RequestBody<v2.StudyApiRequest>;
 export type AnalysisRequest = RequestBody<v3.StudyApiRequest>;
 export type ReviewRequest = RequestBody<
-  v4.StudyApiRequest | Extract<v5.StudyApiRequest, { operation: v4.StudyApiRequest['operation'] }>
+  | v4.StudyApiRequest
+  | Extract<v5.StudyApiRequest | v6.StudyApiRequest, { operation: v4.StudyApiRequest['operation'] }>
 >;
 
 /** An ambiguous write must be retried with its original key and exact payload. */
@@ -142,7 +151,12 @@ export async function readPendingStudyWrite(workflow: string): Promise<{
 }
 
 function defaultWorkflow(request: Request): string {
-  const api = request.schemaVersion === 'lca.study-api.v5' ? 'v5' : 'v4';
+  const api =
+    request.schemaVersion === 'lca.study-api.v6'
+      ? 'v6'
+      : request.schemaVersion === 'lca.study-api.v5'
+        ? 'v5'
+        : 'v4';
   if ('reportRevisionId' in request) return reportWorkflow('report', request.reportRevisionId, api);
   if ('studyId' in request) return `study:${request.studyId}`;
   if ('target' in request && request.target.type === 'reportRevision')
@@ -155,12 +169,12 @@ function defaultWorkflow(request: Request): string {
 
 /** Capture current session and admission; every mutation is journaled before dispatch. */
 async function invoke(
-  version: 'v2' | 'v3' | 'v4' | 'v5',
+  version: 'v2' | 'v3' | 'v4' | 'v5' | 'v6',
   body: unknown,
   workflow?: string,
   guard?: IdentityGuard,
 ) {
-  const codec = { v2, v3, v4, v5 }[version];
+  const codec = { v2, v3, v4, v5, v6 }[version];
   let request = codec.parseRequest({
     ...(body as object),
     schemaVersion: `lca.study-api.${version}`,
@@ -210,6 +224,11 @@ async function invoke(
       v3.validateResponseForRequest(request as v3.StudyApiRequest, response as v3.StudyApiResponse);
     else if (version === 'v4')
       v4.validateResponseForRequest(request as v4.StudyApiRequest, response as v4.StudyApiResponse);
+    else if (version === 'v6')
+      await v6.validateResponseContentForRequest(
+        request as v6.StudyApiRequest,
+        response as v6.StudyApiResponse,
+      );
     else
       v5.validateResponseForRequest(request as v5.StudyApiRequest, response as v5.StudyApiResponse);
     if (!response.ok) {
@@ -257,6 +276,9 @@ export const analysis = (body: AnalysisRequest, workflow?: string) =>
 export const review = (body: ReviewRequest, workflow?: string, api: ReportApi = 'v4') =>
   invoke(api, body, workflow) as Promise<ReviewData>;
 
+export const method = (body: MethodRequest, workflow?: string) =>
+  invoke('v6', body, workflow) as Promise<MethodData>;
+
 export async function recoverPendingStudyWrite(workflow: string) {
   return withStudyIdentity(async (guard) => {
     const intent = await readJournal(guard.identity, workflow);
@@ -267,7 +289,8 @@ export async function recoverPendingStudyWrite(workflow: string) {
       'lca.study-api.v3': 'v3',
       'lca.study-api.v4': 'v4',
       'lca.study-api.v5': 'v5',
-    }[intent.request.schemaVersion] as 'v2' | 'v3' | 'v4' | 'v5';
+      'lca.study-api.v6': 'v6',
+    }[intent.request.schemaVersion] as 'v2' | 'v3' | 'v4' | 'v5' | 'v6';
     return invoke(version, intent.request, workflow, guard);
   });
 }
@@ -285,17 +308,24 @@ export async function retirePendingStudyWrite(workflow: string) {
     kind = workflow.slice(0, separator),
     id = workflow.slice(separator + 1);
   if (kind === 'study') await core({ operation: 'study.read', studyId: id });
-  else if (['report', 'share', 'report5', 'share5'].includes(kind))
+  else if (['report', 'share', 'report5', 'share5', 'report6', 'share6'].includes(kind))
     await review(
       {
         operation: 'resource.actions',
         resource: {
-          type: kind === 'report' || kind === 'report5' ? 'reportRevision' : 'share',
+          type:
+            kind === 'report' || kind === 'report5' || kind === 'report6'
+              ? 'reportRevision'
+              : 'share',
           id,
         },
       },
       undefined,
-      kind === 'report5' || kind === 'share5' ? 'v5' : 'v4',
+      kind === 'report6' || kind === 'share6'
+        ? 'v6'
+        : kind === 'report5' || kind === 'share5'
+          ? 'v5'
+          : 'v4',
     );
   else throw new StudyRequestError('RECOVERY_REQUIRED', false);
   const after = (await supabase.auth.getSession()).data.session;

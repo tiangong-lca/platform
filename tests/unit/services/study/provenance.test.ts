@@ -4,6 +4,11 @@ import path from 'node:path';
 
 it.each([
   [
+    'v6',
+    'c1fee1ab2b990d96ff160d2a86f6d4f4690122c8ebb0af30d1a64bcf29c77f84',
+    'a33a5fbcc8f76f2cf29f68792d7124d6cce94615',
+  ],
+  [
     'v2',
     '6bdde9dcad10f2bfc474dd70f0bf3deb693cb7536137ef827a71fb879d792459',
     'c8784576377b4ab156e89dc4eac81014a87880f6',
