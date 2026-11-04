@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed frontend-only normalization ownership, dev PR base, pinned runtime and unchanged full-gate boundaries; no dependency, schema or release change.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked the bounded Source, Contact, Process-variable and LCIA descriptive-field extension; frontend ownership, dev base, SDK/runtime pins and final full-gate requirements remain unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

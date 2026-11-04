@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed focused multilingual regressions and generated locale inputs against the existing single full-gate and source-mapped 100% coverage contract; gate and publication policy stay unchanged.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked expanded field regressions and installed-SDK boundary proof without changing hook, release or source-mapped 100% coverage policy; final exact-head gate remains required.'
 ---
 
 # Pre-Push Gate Policy

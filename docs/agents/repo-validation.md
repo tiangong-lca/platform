@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed multilingual save-consumer regressions and all-locale audit/artifact proof against the existing matrix; exact-head full coverage, lint and build remain required.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked the ten-field source-order/variant/idempotence and size/isolation regressions plus real installed-SDK limits; exact-head lint, full coverage and production build remain required.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed behavior-level normalizer and persistence-boundary regressions against maintenance strategy; no test infrastructure, coverage exclusion or new execution queue is introduced.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked the expanded behavior cases and installed-schema contract against maintenance strategy; no coverage exclusion, test infrastructure change or new execution queue is introduced.'
 ---
 
 # Testing Strategy

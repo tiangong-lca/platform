@@ -339,3 +339,61 @@ test('the installed SDK preserves scaling aliases separately and rejects ambiguo
     false,
   );
 });
+
+test('descriptive paragraph limits match the installed SDK fields', () => {
+  const schemas = require(
+    require.resolve('@tiangong-lca/tidas-sdk/schemas', { paths: [repositoryRoot] }),
+  );
+  const lcia = schemas.LCIAMethodSchema.shape.LCIAMethodDataSet;
+  const lciaInfo = lcia.shape.LCIAMethodInformation;
+  const normalization = lcia.shape.modellingAndValidation.shape.LCIAMethodNormalisationAndWeighting;
+  const parameter =
+    schemas.ProcessSchema.shape.processDataSet.shape.processInformation.shape.mathematicalRelations
+      .unwrap()
+      .shape.variableParameter.unwrap().options[0];
+  const unit = schemas.UnitGroupSchema.shape.unitGroupDataSet.shape.units.shape.unit.options[0];
+  const cases = [
+    [
+      'Source description',
+      schemas.SourceSchema.shape.sourceDataSet.shape.sourceInformation.shape.dataSetInformation
+        .shape.sourceDescriptionOrComment,
+    ],
+    [
+      'Contact description',
+      schemas.ContactSchema.shape.contactDataSet.shape.contactInformation.shape.dataSetInformation
+        .shape.contactDescriptionOrComment,
+      1000,
+    ],
+    ['Process variable comment', parameter.shape.comment, 500],
+    ['Unit comment', unit.shape.generalComment, 500],
+    ['LCIA time description', lciaInfo.shape.time.shape.timeRepresentativenessDescription],
+    ['LCIA principle deviations', normalization.shape.deviationsFromLCIAMethodPrinciple],
+    ['LCIA mechanisms', lciaInfo.shape.impactModel.shape.consideredMechanisms, 1000],
+    ['LCIA normalization description', normalization.shape.normalisationDescription, 1000],
+    ['LCIA weighting description', normalization.shape.weightingDescription, 1000],
+    [
+      'LCIA recommendation meaning',
+      lcia.shape.administrativeInformation.shape.dataEntryBy.shape.recommendationBy.shape.meaning,
+    ],
+  ];
+  // Geography is an intersection that also owns a separate location constraint.
+  assert.equal(
+    lciaInfo.shape.geography.safeParse({
+      geographicalRepresentativenessDescription: { '@xml:lang': 'en', '#text': 'A'.repeat(2001) },
+    }).success,
+    true,
+  );
+  for (const [label, schema, limit] of cases) {
+    const value = { '@xml:lang': 'en', '#text': 'A'.repeat(limit ?? 2001) };
+    assert.equal(schema.safeParse(value).success, true, `${label} accepts its complete text`);
+    if (limit !== undefined) {
+      const outcome = schema.safeParse({ ...value, '#text': `${value['#text']}A` });
+      assert.equal(outcome.success, false, `${label} enforces its installed limit`);
+      assert.ok(
+        outcome.error.issues.some(
+          (issue) => issue.code === 'too_big' && issue.path.at(-1) === '#text',
+        ),
+      );
+    }
+  }
+});

@@ -1852,6 +1852,32 @@ describe('getAllVersions', () => {
 });
 
 describe('multilingual save normalization', () => {
+  it.each([
+    ['sourceDataSet', 'sourceInformation', 'sourceDescriptionOrComment'],
+    ['contactDataSet', 'contactInformation', 'contactDescriptionOrComment'],
+  ])(
+    'merges source/contact descriptions through the real save consumer for %s',
+    async (root, information, field) => {
+      const result = await generalApi.normalizeLangPayloadForSave({
+        [root]: {
+          [information]: {
+            dataSetInformation: {
+              [field]: [
+                { '@xml:lang': 'en', '#text': 'First description.' },
+                { '@xml:lang': 'en', '#text': 'Second description.' },
+              ],
+            },
+          },
+        },
+      });
+      expect(result.validationError).toBeUndefined();
+      expect(result.payload[root][information].dataSetInformation[field]).toEqual({
+        '@xml:lang': 'en',
+        '#text': 'First description.\n\nSecond description.',
+      });
+    },
+  );
+
   it.each(['save', 'validation'] as const)(
     'preserves both descriptive paragraphs through the real %s consumer',
     async (intent) => {

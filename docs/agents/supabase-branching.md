@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed app-owned ordered-dataset normalization and translation-save boundaries; no backend contract, schema, environment or live-write authority changes.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked app-owned descriptive normalization and pre-persistence errors across Source, Contact, Process and LCIA contexts; no backend contract, environment or live-write authority change.'
 ---
 
 # Supabase Environment And Database Workflow

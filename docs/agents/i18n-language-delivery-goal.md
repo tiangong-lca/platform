@@ -57,8 +57,8 @@ checkPaths:
   - .github/workflows/build.yml
   - package.json
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed separate UI/content-language contracts, all-active-locale diagnostics and canonical artifact generation; no new locale, alias, reference-data or release workflow is introduced.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked preservation of content-language variants and registry-owned UI contracts after explicit descriptive-field coverage; all-locale audits and canonical artifact generation remain the existing qualification path.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

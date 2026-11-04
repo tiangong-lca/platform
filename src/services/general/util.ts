@@ -547,33 +547,43 @@ type NormalizedLangEntry = {
 };
 // Only descriptive fields can combine paragraphs. Names, quantities and reference captions
 // retain their own contracts and must resolve duplicate languages explicitly.
-const PARAGRAPH_LANGUAGE_FIELDS = new Set([
-  'common:generalComment',
-  'generalComment',
-  'common:timeRepresentativenessDescription',
-  'descriptionOfRestrictions',
-  'technologyDescriptionAndIncludedProcesses',
-  'technologicalApplicability',
-  'modelDescription',
-  'deviationsFromLCIMethodPrinciple',
-  'deviationsFromLCIMethodApproaches',
-  'modellingConstants',
-  'deviationsFromModellingConstants',
-  'dataCutOffAndCompletenessPrinciples',
-  'deviationsFromCutOffAndCompletenessPrinciples',
-  'dataSelectionAndCombinationPrinciples',
-  'deviationsFromSelectionAndCombinationPrinciples',
-  'dataTreatmentAndExtrapolationsPrinciples',
-  'deviationsFromTreatmentAndExtrapolationPrinciples',
-  'samplingProcedure',
-  'dataCollectionPeriod',
-  'uncertaintyAdjustments',
-  'useAdviceForDataSet',
-  'completenessOtherProblemField',
-  'common:reviewDetails',
-  'common:otherReviewDetails',
-  'common:intendedApplications',
-  'common:accessRestrictions',
+// Limits follow the installed TIDAS field contracts; FT descriptions have no limit.
+// Ambiguous leaf names such as comment and meaning require their canonical paths below.
+const PARAGRAPH_LANGUAGE_FIELDS = new Map<string, number | undefined>([
+  ['common:generalComment', undefined],
+  ['generalComment', 500],
+  ['common:timeRepresentativenessDescription', undefined],
+  ['descriptionOfRestrictions', undefined],
+  ['technologyDescriptionAndIncludedProcesses', undefined],
+  ['technologicalApplicability', undefined],
+  ['modelDescription', undefined],
+  ['deviationsFromLCIMethodPrinciple', undefined],
+  ['deviationsFromLCIMethodApproaches', undefined],
+  ['modellingConstants', undefined],
+  ['deviationsFromModellingConstants', undefined],
+  ['dataCutOffAndCompletenessPrinciples', undefined],
+  ['deviationsFromCutOffAndCompletenessPrinciples', undefined],
+  ['dataSelectionAndCombinationPrinciples', undefined],
+  ['deviationsFromSelectionAndCombinationPrinciples', undefined],
+  ['dataTreatmentAndExtrapolationsPrinciples', undefined],
+  ['deviationsFromTreatmentAndExtrapolationPrinciples', undefined],
+  ['samplingProcedure', undefined],
+  ['dataCollectionPeriod', 500],
+  ['uncertaintyAdjustments', undefined],
+  ['useAdviceForDataSet', undefined],
+  ['completenessOtherProblemField', undefined],
+  ['common:reviewDetails', undefined],
+  ['common:otherReviewDetails', undefined],
+  ['common:intendedApplications', undefined],
+  ['common:accessRestrictions', undefined],
+  ['sourceDescriptionOrComment', undefined],
+  ['contactDescriptionOrComment', 1000],
+  ['geographicalRepresentativenessDescription', undefined],
+  ['timeRepresentativenessDescription', undefined],
+  ['deviationsFromLCIAMethodPrinciple', undefined],
+  ['consideredMechanisms', 1000],
+  ['normalisationDescription', 1000],
+  ['weightingDescription', 1000],
 ]);
 const NON_ENGLISH_SCRIPT_REGEX =
   /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Hebrew}\p{Script=Devanagari}\p{Script=Thai}]/u;
@@ -660,13 +670,21 @@ async function normalizeLangEntries(
   const normalizedMap = new Map<string, string>();
   const orderedLangCodes: string[] = [];
   const fieldName = path.slice(path.lastIndexOf('.') + 1);
-  const canJoinParagraphs = PARAGRAPH_LANGUAGE_FIELDS.has(fieldName);
-  const mergedTextLimit =
-    fieldName === 'generalComment' || fieldName === 'dataCollectionPeriod'
-      ? 500
-      : fieldName === 'useAdviceForDataSet' && path.startsWith('LCIAMethodDataSet.')
-        ? 1000
-        : undefined;
+  const isProcessVariableComment =
+    /^processDataSet\.processInformation\.mathematicalRelations\.variableParameter(?:\[\d+\])?\.comment$/u.test(
+      path,
+    );
+  const isLciaRecommendationMeaning =
+    path === 'LCIAMethodDataSet.administrativeInformation.dataEntryBy.recommendationBy.meaning';
+  const canJoinParagraphs =
+    PARAGRAPH_LANGUAGE_FIELDS.has(fieldName) ||
+    isProcessVariableComment ||
+    isLciaRecommendationMeaning;
+  const mergedTextLimit = isProcessVariableComment
+    ? 500
+    : fieldName === 'useAdviceForDataSet' && path.startsWith('LCIAMethodDataSet.')
+      ? 1000
+      : PARAGRAPH_LANGUAGE_FIELDS.get(fieldName);
   let hasConflict = false;
 
   for (const [index, entry] of langEntries.entries()) {

@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed serial focused diagnosis, exact conflict paths, locale ICU/audit recovery and source-mapped coverage handling; existing recovery commands remain applicable.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked focused red/green diagnosis, public-schema limit tests and locale regeneration without altering recovery or full-closure rules; final committed full-gate proof remains separate.'
 ---
 
 # Testing Troubleshooting

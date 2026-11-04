@@ -929,6 +929,361 @@ describe('General Utility Functions', () => {
   });
 
   describe('normalizeLangPayloadBeforeSave', () => {
+    const additionalDescriptiveFields: Array<{ name: string; path: string[]; limit?: number }> = [
+      {
+        name: 'sourceDescriptionOrComment',
+        path: [
+          'sourceDataSet',
+          'sourceInformation',
+          'dataSetInformation',
+          'sourceDescriptionOrComment',
+        ],
+      },
+      {
+        name: 'contactDescriptionOrComment',
+        path: [
+          'contactDataSet',
+          'contactInformation',
+          'dataSetInformation',
+          'contactDescriptionOrComment',
+        ],
+        limit: 1000,
+      },
+      {
+        name: 'Process variable comment',
+        path: [
+          'processDataSet',
+          'processInformation',
+          'mathematicalRelations',
+          'variableParameter',
+          'comment',
+        ],
+        limit: 500,
+      },
+      {
+        name: 'geographicalRepresentativenessDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'LCIAMethodInformation',
+          'geography',
+          'geographicalRepresentativenessDescription',
+        ],
+      },
+      {
+        name: 'timeRepresentativenessDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'LCIAMethodInformation',
+          'time',
+          'timeRepresentativenessDescription',
+        ],
+      },
+      {
+        name: 'deviationsFromLCIAMethodPrinciple',
+        path: [
+          'LCIAMethodDataSet',
+          'modellingAndValidation',
+          'LCIAMethodNormalisationAndWeighting',
+          'deviationsFromLCIAMethodPrinciple',
+        ],
+      },
+      {
+        name: 'consideredMechanisms',
+        path: ['LCIAMethodDataSet', 'LCIAMethodInformation', 'impactModel', 'consideredMechanisms'],
+        limit: 1000,
+      },
+      {
+        name: 'normalisationDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'modellingAndValidation',
+          'LCIAMethodNormalisationAndWeighting',
+          'normalisationDescription',
+        ],
+        limit: 1000,
+      },
+      {
+        name: 'weightingDescription',
+        path: [
+          'LCIAMethodDataSet',
+          'modellingAndValidation',
+          'LCIAMethodNormalisationAndWeighting',
+          'weightingDescription',
+        ],
+        limit: 1000,
+      },
+      {
+        name: 'LCIA recommendation meaning',
+        path: [
+          'LCIAMethodDataSet',
+          'administrativeInformation',
+          'dataEntryBy',
+          'recommendationBy',
+          'meaning',
+        ],
+      },
+    ];
+
+    const descriptivePayload = (segments: string[], value: any): any =>
+      segments.reduceRight((nested, key) => ({ [key]: nested }), value);
+    const descriptiveValue = (payload: any, segments: string[]): any =>
+      segments.reduce((nested, key) => nested[key], payload);
+
+    it.each(additionalDescriptiveFields)(
+      'merges canonical descriptive field $name without language loss',
+      async ({ path }) => {
+        const entries = [
+          { '@xml:lang': 'en', '#text': 'First paragraph.' },
+          { '@xml:lang': 'en-GB', '#text': 'First British paragraph.' },
+          { '@xml:lang': 'zh', '#text': '第一段说明。' },
+          { '@xml:lang': 'zh-CN', '#text': '第一段地区说明。' },
+          { '@xml:lang': 'en', '#text': 'Second paragraph includes First paragraph.' },
+          { '@xml:lang': 'en-GB', '#text': 'Second British paragraph.' },
+          { '@xml:lang': 'zh', '#text': '第二段包括第一段说明。' },
+          { '@xml:lang': 'zh-CN', '#text': '第二段地区说明。' },
+        ];
+        const payload = descriptivePayload(path, entries);
+        const result = await normalizeLangPayloadBeforeSave(payload);
+        expect(result.issues).toEqual([]);
+        expect(descriptiveValue(result.payload, path)).toEqual([
+          {
+            '@xml:lang': 'en',
+            '#text': 'First paragraph.\n\nSecond paragraph includes First paragraph.',
+          },
+          {
+            '@xml:lang': 'en-gb',
+            '#text': 'First British paragraph.\n\nSecond British paragraph.',
+          },
+          { '@xml:lang': 'zh', '#text': '第一段说明。\n\n第二段包括第一段说明。' },
+          { '@xml:lang': 'zh-cn', '#text': '第一段地区说明。\n\n第二段地区说明。' },
+        ]);
+        expect(await normalizeLangPayloadBeforeSave(result.payload)).toEqual(result);
+        expect(descriptiveValue(payload, path)).toEqual(entries);
+      },
+    );
+
+    it.each(additionalDescriptiveFields.filter(({ limit }) => limit !== undefined))(
+      'enforces the combined field limit for $name without changing rejected input',
+      async ({ path, limit }) => {
+        const firstLength = Math.floor(limit! / 2);
+        const atBoundary = [
+          { '@xml:lang': 'en', '#text': 'A'.repeat(firstLength) },
+          { '@xml:lang': 'en', '#text': 'B'.repeat(limit! - firstLength - 2) },
+        ];
+        const accepted = await normalizeLangPayloadBeforeSave(descriptivePayload(path, atBoundary));
+        expect(accepted.issues).toEqual([]);
+        expect(descriptiveValue(accepted.payload, path)['#text']).toHaveLength(limit!);
+        const overBoundary = [
+          atBoundary[0],
+          { ...atBoundary[1], '#text': `${atBoundary[1]['#text']}B` },
+        ];
+        const rejected = await normalizeLangPayloadBeforeSave(
+          descriptivePayload(path, overBoundary),
+        );
+        expect(rejected.issues).toEqual([
+          expect.objectContaining({
+            path: `${path.join('.')}[1].#text`,
+            code: 'localized_text_too_long',
+          }),
+        ]);
+        expect(descriptiveValue(rejected.payload, path)).toEqual(overBoundary);
+      },
+    );
+
+    it.each(additionalDescriptiveFields.filter(({ limit }) => limit === undefined))(
+      'retains long FT paragraphs for $name',
+      async ({ path }) => {
+        const entries = [
+          { '@xml:lang': 'en', '#text': 'A'.repeat(1500) },
+          { '@xml:lang': 'en', '#text': 'B'.repeat(1500) },
+        ];
+        const result = await normalizeLangPayloadBeforeSave(descriptivePayload(path, entries));
+        expect(result.issues).toEqual([]);
+        expect(descriptiveValue(result.payload, path)).toEqual({
+          '@xml:lang': 'en',
+          '#text': `${'A'.repeat(1500)}\n\n${'B'.repeat(1500)}`,
+        });
+      },
+    );
+
+    it('keeps variable comments and unit comments within their own entities and preserves scientific scalars', async () => {
+      const paragraphs = (prefix: string) => [
+        { '@xml:lang': 'en', '#text': `${prefix} first.` },
+        { '@xml:lang': 'en', '#text': `${prefix} second.` },
+      ];
+      const payload = {
+        processDataSet: {
+          processInformation: {
+            mathematicalRelations: {
+              variableParameter: [
+                {
+                  '@name': 'x',
+                  formula: '1 + 2',
+                  meanValue: '3',
+                  comment: paragraphs('Variable x'),
+                },
+                {
+                  '@name': 'y',
+                  formula: 'x * 2',
+                  meanValue: '6',
+                  comment: paragraphs('Variable y'),
+                },
+              ],
+            },
+          },
+        },
+        unitGroupDataSet: {
+          units: {
+            unit: [
+              {
+                '@dataSetInternalID': '0',
+                name: 'kg',
+                meanValue: '1',
+                generalComment: paragraphs('Kilogram'),
+              },
+              {
+                '@dataSetInternalID': '1',
+                name: 'g',
+                meanValue: '0.001',
+                generalComment: paragraphs('Gram'),
+              },
+            ],
+          },
+        },
+        LCIAMethodDataSet: {
+          administrativeInformation: {
+            dataEntryBy: {
+              recommendationBy: {
+                level: 'Level I',
+                referenceToEntity: { '@refObjectId': 'recommendation-owner' },
+                meaning: paragraphs('Recommendation'),
+              },
+            },
+          },
+        },
+      };
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(
+        result.payload.processDataSet.processInformation.mathematicalRelations.variableParameter,
+      ).toEqual([
+        {
+          '@name': 'x',
+          formula: '1 + 2',
+          meanValue: '3',
+          comment: { '@xml:lang': 'en', '#text': 'Variable x first.\n\nVariable x second.' },
+        },
+        {
+          '@name': 'y',
+          formula: 'x * 2',
+          meanValue: '6',
+          comment: { '@xml:lang': 'en', '#text': 'Variable y first.\n\nVariable y second.' },
+        },
+      ]);
+      expect(result.payload.unitGroupDataSet.units.unit).toEqual([
+        {
+          '@dataSetInternalID': '0',
+          name: 'kg',
+          meanValue: '1',
+          generalComment: { '@xml:lang': 'en', '#text': 'Kilogram first.\n\nKilogram second.' },
+        },
+        {
+          '@dataSetInternalID': '1',
+          name: 'g',
+          meanValue: '0.001',
+          generalComment: { '@xml:lang': 'en', '#text': 'Gram first.\n\nGram second.' },
+        },
+      ]);
+      expect(
+        result.payload.LCIAMethodDataSet.administrativeInformation.dataEntryBy.recommendationBy,
+      ).toEqual({
+        level: 'Level I',
+        referenceToEntity: { '@refObjectId': 'recommendation-owner' },
+        meaning: { '@xml:lang': 'en', '#text': 'Recommendation first.\n\nRecommendation second.' },
+      });
+    });
+
+    it('enforces the existing 500-character bound on the canonical unit comment', async () => {
+      const path = ['unitGroupDataSet', 'units', 'unit', 'generalComment'];
+      const accepted = await normalizeLangPayloadBeforeSave(
+        descriptivePayload(path, [
+          { '@xml:lang': 'en', '#text': 'A'.repeat(249) },
+          { '@xml:lang': 'en', '#text': 'B'.repeat(249) },
+        ]),
+      );
+      expect(accepted.issues).toEqual([]);
+      expect(descriptiveValue(accepted.payload, path)['#text']).toHaveLength(500);
+      const original = descriptivePayload(path, [
+        { '@xml:lang': 'en', '#text': 'A'.repeat(250) },
+        { '@xml:lang': 'en', '#text': 'B'.repeat(249) },
+      ]);
+      const rejected = await normalizeLangPayloadBeforeSave(original);
+      expect(rejected.payload).toEqual(original);
+      expect(rejected.issues).toEqual([
+        expect.objectContaining({
+          path: `${path.join('.')}[1].#text`,
+          code: 'localized_text_too_long',
+        }),
+      ]);
+    });
+
+    it.each([
+      ['comment'],
+      ['processDataSet', 'processInformation', 'comment'],
+      [
+        'lifeCycleModelDataSet',
+        'processInformation',
+        'mathematicalRelations',
+        'variableParameter',
+        'comment',
+      ],
+      ['meaning'],
+      ['LCIAMethodDataSet', 'LCIAMethodInformation', 'meaning'],
+      [
+        'LCIAMethodDataSet',
+        'administrativeInformation',
+        'dataEntryBy',
+        'otherRecommendation',
+        'meaning',
+      ],
+    ])('does not interpret an ambiguous leaf outside its canonical path: %j', async (...path) => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'First value' },
+        { '@xml:lang': 'en', '#text': 'Second value' },
+      ];
+      const original = descriptivePayload(path, entries);
+      const result = await normalizeLangPayloadBeforeSave(original);
+      expect(result.payload).toEqual(original);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: `${path.join('.')}[1].@xml:lang`,
+          code: 'duplicate_language',
+        }),
+      ]);
+    });
+
+    it.each([
+      'common:name',
+      'common:shortName',
+      'common:project',
+      'common:synonyms',
+      'contactAddress',
+      'centralContactPoint',
+      'duration',
+      'referenceYear',
+      'functionalUnitOrOther',
+    ])('keeps %s outside the descriptive paragraph policy', async (field) => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'First value' },
+        { '@xml:lang': 'en', '#text': 'Second value' },
+      ];
+      const result = await normalizeLangPayloadBeforeSave({ [field]: entries });
+      expect(result.payload[field]).toEqual(entries);
+      expect(result.issues).toEqual([
+        expect.objectContaining({ path: `${field}[1].@xml:lang`, code: 'duplicate_language' }),
+      ]);
+    });
+
     it('retains every same-language descriptive paragraph in order and is idempotent', async () => {
       const field = 'common:generalComment';
       const entries = [

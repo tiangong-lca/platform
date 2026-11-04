@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: dbef86147fe70d85bf2d243b38bc537e8e462309
-lastReviewedNote: 'Platform #1325: reviewed frozen-install and serial focused-test/bootstrap commands plus the committed-checkpoint gate/build requirements; commands and environment selection remain unchanged.'
+lastReviewedCommit: 804287fcd4743d82b081965548cc8fe101ba25c2
+lastReviewedNote: 'Platform #1325: rechecked frozen-install, serial focused test and installed-SDK contract commands for the descriptive-field extension; bootstrap, build and committed-checkpoint gate requirements remain unchanged.'
 ---
 
 # Development Bootstrap
