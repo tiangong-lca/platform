@@ -40,3 +40,28 @@ it('dispatches old and new previews without relabelling either projection or exp
   await expect(renderReport(view, context)).rejects.toThrow('/version');
   expect(await renderReport(currentView, context)).toContain('Renderer 2.0.0');
 });
+
+it('binds online chapter navigation to srcdoc while preserving portable links and trust controls', async () => {
+  for (const projection of [view, currentView, advancedView]) {
+    const original = JSON.stringify(projection);
+    const html = renderStudyPreview(projection);
+    const parsed = new DOMParser().parseFromString(html, 'text/html');
+    const links = [...parsed.querySelectorAll('nav a')];
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'about:srcdoc#scope',
+      'about:srcdoc#results',
+      'about:srcdoc#evidence',
+      'about:srcdoc#identity',
+    ]);
+    for (const link of links)
+      expect(parsed.getElementById(link.getAttribute('href')!.split('#')[1])).not.toBeNull();
+    expect(parsed.querySelector('base')).toBeNull();
+    expect(
+      parsed.querySelector('meta[http-equiv="Content-Security-Policy"]')!.getAttribute('content'),
+    ).toContain("base-uri 'none'; form-action 'none'");
+    expect(JSON.stringify(projection)).toBe(original);
+  }
+  const portable = await renderReport(currentView, context);
+  expect(portable).toContain('href="#results"');
+  expect(portable).not.toContain('about:srcdoc');
+});

@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 52f335646c580d52e8f869fc549efc0f11ec24c3
-lastReviewedNote: 'Platform #1437: reviewed exact selected-share V4/V5 actions/read metadata, report/hash/query identity, independent delegation/share targets, existing actor/journal fences and full-closure test/locale obligations. Actual repaired runtime, hosted CI, Main and root remain separate.'
+lastReviewedCommit: 3f45ba9121436f1b88604858864743b48420ca82
+lastReviewedNote: 'Platform #1437: reviewed online-only about:srcdoc chapter links, unchanged CSP/sandbox and immutable portable renderer, native keyboard/mouse/document/network controls across all three browser engines, source-bound locale/full-coverage obligations and pending actual V5 recovery/Dev/Main/root qualification.'
 ---
 
 # Testing Execution State

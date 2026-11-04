@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 52f335646c580d52e8f869fc549efc0f11ec24c3
-lastReviewedNote: 'Platform #1437: reviewed exact selected-share revocation and independent target state against existing scoped tests, serialized Umi work, source-bound locale generation, full coverage and checked-push bootstrap. Runtime qualification and release/root delivery remain separate.'
+lastReviewedCommit: 3f45ba9121436f1b88604858864743b48420ca82
+lastReviewedNote: 'Platform #1437: reviewed online-only about:srcdoc chapter links, unchanged CSP/sandbox and immutable portable renderer, native keyboard/mouse/document/network controls across all three browser engines, source-bound locale/full-coverage obligations and pending actual V5 recovery/Dev/Main/root qualification.'
 ---
 
 # Development Bootstrap
@@ -167,6 +167,7 @@ If no push will occur and a standalone handoff needs final evidence, run `pnpm d
 | native TypeScript 7 web typecheck | `pnpm tsc` |
 | native TypeScript 7 Electron typecheck | `pnpm tsc:electron` |
 | shared CI-style test runner | `pnpm test` |
+| isolated online Study preview navigation/keyboard browser proof | `node --import tsx --test --test-concurrency=1 tests/browser/studyPreviewNavigation.test.mjs` (synthetic component proof only) |
 | direct/focused semantic localization E2E development | `pnpm e2e:dev <Playwright arguments>` (`pnpm test:e2e:i18n` remains the CI-compatible alias) |
 | scope-closure adapter unit proof | `pnpm test:qualification:scope-closure:unit` |
 | scope-closure loopback browser proof | `pnpm test:qualification:scope-closure:browser` (normally invoked by the exact-commit adapter) |
