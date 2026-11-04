@@ -3,7 +3,7 @@
   "apiSchema": "lca.study-api.v6",
   "contractVersion": "6.0.0",
   "sourceRepository": "tiangong-lca/edge-functions",
-  "sourceCommit": "77e268f2fedea0359fc1f364a9817d2390e8df69",
+  "sourceCommit": "c322ec2d018dcd0cbb66549ecbddfbe8b10dc59b",
   "sourceStatus": "committed",
   "toolchain": {
     "node": "24.19.0",
@@ -123,8 +123,8 @@
     },
     {
       "path": "contracts/lca-study/v6/authoring.ts",
-      "sha256": "f5892a8053c4ddc7335a5880241943a27157d7a18627f5122b8fa09fe7898d91",
-      "bytes": 10492
+      "sha256": "f50806a842308e3b0ca7317eedf6f1b89f63dfa14027396c9bdab0406a60cb71",
+      "bytes": 10703
     },
     {
       "path": "contracts/lca-study/v6/capabilities.ts",
@@ -495,8 +495,8 @@
   "files": [
     {
       "path": "index.mjs",
-      "sha256": "3f0a6f5f8927c6763d82cdd7f2d685b3add4babd11ede1acf1680c5fb32f41f6",
-      "bytes": 1960965
+      "sha256": "294ac4bd8769ba2136159c4861ca5ef33b8ab89a1f2366ad148e982ac93baa46",
+      "bytes": 1961111
     },
     {
       "path": "index.d.ts",

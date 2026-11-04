@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: 9f5d4230678038e1682f7c566110d2b56e2a9e53
-lastReviewedNote: 'Platform #1442: reviewed exact original-key local retries for all six method mutations and an outer identity fence spanning authorized artifact read plus owner hash/parse. Changing-key and held-reader-hash red regressions now pass with source/approval semantics unchanged; qualified V2 adoption and all renderer pins retained. Final full gate/current build and independent exact-source recheck remain pending; prior clean866 build is preserved and actual runtime/Main/root holds remain.'
+lastReviewedCommit: a6fc599ad70931a1915944725fc6d3568740757e
+lastReviewedNote: 'Platform #1442: corrected owner V6 c322ec2/manifest003deb09 deliberately adopted after clean a6fc build. Only runtime index/manifest change; all six non-index outputs,33 operations and readers match77e. Owner create/save scalar negatives reject before POST/journal, paired Unicode preserved; red12fail/20pass becomes green32/32. No local scalar/domain policy or renderer/V2 repin. Current full gate/build and independent recheck remain pending; original a33/77/build proofs and actual runtime/Main/root holds retained.'
 ---
 
 # Development Bootstrap

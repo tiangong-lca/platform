@@ -1,5 +1,7 @@
 import * as owner from '../../../../vendor/study-contract/v6/index.mjs';
 import view from '../../../fixtures/study-report/view-v3.json';
+import methodFixture from '@/standalone/studyReport/methodProtocol.fixture.json';
+type MethodRequest = import('@/services/study/api').MethodRequest;
 import { webcrypto } from 'node:crypto';
 import { TextEncoder, TextDecoder } from 'node:util';
 import {
@@ -568,3 +570,99 @@ it('discards a read if the same actor changes clients while final claims settle'
   await expect(running).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
   expect(mockInvoke).toHaveBeenCalledTimes(1);
 });
+
+const invalidReportInputs = (['report.create', 'report.save'] as const).flatMap((operation) =>
+  (['title', 'paragraph', 'unit'] as const).map((field) => [operation, field] as const),
+);
+function reportInput(
+  operation: 'report.create' | 'report.save',
+  field: 'title' | 'paragraph' | 'unit' | 'paired',
+) {
+  const stored = methodFixture.stored;
+  const content = JSON.parse(JSON.stringify(stored.content)) as Extract<
+    MethodRequest,
+    { operation: 'report.create' }
+  >['content'];
+  if (field === 'title') content.title = 'Broken\ud800';
+  if (field === 'paragraph')
+    content.sections = [
+      {
+        sectionId: 'text',
+        title: 'Declared narrative',
+        paragraphs: ['Broken\udfff'],
+        claimIds: [],
+      },
+    ];
+  if (field === 'unit') content.claims[0].unit = 'kg\ud800';
+  if (field === 'paired') {
+    content.title = 'Paired Unicode 🌱 title';
+    content.sections = [
+      {
+        sectionId: 'text',
+        title: 'Declared narrative',
+        paragraphs: ['Paired Unicode 🌍 paragraph'],
+        claimIds: [],
+      },
+    ];
+  }
+  return operation === 'report.create'
+    ? {
+        operation,
+        idempotencyKey: 'unicode-report-key',
+        studyId: stored.studyId,
+        parentReportRevisionId: null,
+        runIds: stored.runIds,
+        methodAssessmentIds: stored.methodAssessmentIds,
+        templateId: stored.templateId,
+        content,
+      }
+    : {
+        operation,
+        idempotencyKey: 'unicode-report-key',
+        target: {
+          type: 'reportRevision' as const,
+          id: stored.reportRevisionId,
+          expectedRevision: 1,
+        },
+        content,
+      };
+}
+it.each(invalidReportInputs)(
+  'uses the owner codec to reject malformed Unicode in %s %s',
+  (operation, field) => {
+    expect(() =>
+      owner.parseRequest({
+        ...reportInput(operation, field),
+        schemaVersion: 'lca.study-api.v6',
+        requestId: 'scalar-pure-probe',
+      }),
+    ).toThrow();
+  },
+);
+it.each(invalidReportInputs)(
+  'does not dispatch or journal malformed Unicode in %s %s',
+  async (operation, field) => {
+    mockInvoke.mockRejectedValue(new Error('Unexpected malformed-input dispatch'));
+    await expect(method(reportInput(operation, field) as never)).rejects.toMatchObject({
+      code: 'INVALID_REQUEST',
+    });
+    expect(mockInvoke).not.toHaveBeenCalled();
+    expect(window.sessionStorage.length).toBe(0);
+  },
+);
+it.each(['report.create', 'report.save'] as const)(
+  'preserves paired Unicode in valid owner %s input',
+  (operation) => {
+    const q = owner.parseRequest({
+      ...reportInput(operation, 'paired'),
+      schemaVersion: 'lca.study-api.v6',
+      requestId: 'paired-scalar-probe',
+    });
+    expect(q).toMatchObject({
+      content: {
+        title: 'Paired Unicode 🌱 title',
+        sections: [{ paragraphs: ['Paired Unicode 🌍 paragraph'] }],
+      },
+    });
+  },
+);

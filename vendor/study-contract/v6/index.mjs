@@ -27238,6 +27238,10 @@ var reportContentSchema3 = external_exports.object({
     }).strict()
   ).min(1).max(256)
 }).strict().superRefine((value, ctx) => {
+  if (!hasOnlyUnicodeScalars(value)) {
+    ctx.addIssue({ code: "custom", message: "Unicode scalar authored content required" });
+    return;
+  }
   const claims = new Set(value.claims.map((c) => c.claimId));
   if (claims.size !== value.claims.length)
     ctx.addIssue({ code: "custom", message: "unique method claims required" });

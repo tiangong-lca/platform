@@ -5,8 +5,8 @@ import path from 'node:path';
 it.each([
   [
     'v6',
-    '13af25e3f1d7df26aab59afa0493b75906818b8104b5647353512313c4f005e8',
-    '77e268f2fedea0359fc1f364a9817d2390e8df69',
+    '003deb096baa38b7ff6cb5474815ea0eb92bb4c6d188bb6c27f81448026d0427',
+    'c322ec2d018dcd0cbb66549ecbddfbe8b10dc59b',
   ],
   [
     'v2',
@@ -49,7 +49,7 @@ it.each([
   },
 );
 
-it('retains exact a33 request/response interface bytes while adopting additive 77e reader helpers', () => {
+it('retains exact a33 request/response interface bytes through the corrected c322 facade and retained reader declarations', () => {
   const root = path.resolve(process.cwd(), 'vendor/study-contract/v6');
   for (const [name, hash] of [
     ['request.schema.json', '7da790012370d5e15c8ecbb33a81af1a1c0c4c493c09481c50c4ef6a278aa95b'],
