@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: df61172bc54819c4149ab6ecc3be93c34e4420c6
+lastReviewedCommit: 316b4867880c7d6ec74bc7a74b6fc880bfa7dd60
 lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 related:
   - .docpact/config.yaml

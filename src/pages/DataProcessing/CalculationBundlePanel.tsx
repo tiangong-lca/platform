@@ -208,7 +208,7 @@ const CalculationBundlePanel = ({
           .flat()
           .sort((left, right) => left.processIndex - right.processIndex);
         const coverageArtifact = nextBundle.calculationBundle.artifacts.find(
-          (artifact) => artifact.kind === 'coverage',
+          (artifact) => view !== 'results' && artifact.kind === 'coverage',
         );
         if (coverageArtifact) assertInlineArtifact(coverageArtifact);
         const coveragePayload = coverageArtifact
@@ -659,13 +659,6 @@ const CalculationBundlePanel = ({
   const content = (
     <Space orientation='vertical' size='middle' className={styles.previewDetails}>
       {view !== 'exports' ? processControl : null}
-      {view === 'results' && coverageComplete === false && (
-        <Alert
-          type='warning'
-          showIcon
-          title={`${t('pages.dataProcessing.bundle.coverage', 'Coverage')} · ${t('pages.dataProcessing.bundle.blocked', 'Incomplete / blocked')}`}
-        />
-      )}
       {metadataUnavailable && view !== 'exports' ? (
         <Space>
           <Typography.Text type='secondary'>
