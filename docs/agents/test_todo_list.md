@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: a6fc599ad70931a1915944725fc6d3568740757e
-lastReviewedNote: 'Platform #1442: corrected owner V6 c322ec2/manifest003deb09 deliberately adopted after clean a6fc build. Only runtime index/manifest change; all six non-index outputs,33 operations and readers match77e. Owner create/save scalar negatives reject before POST/journal, paired Unicode preserved; red12fail/20pass becomes green32/32. No local scalar/domain policy or renderer/V2 repin. Current full gate/build and independent recheck remain pending; original a33/77/build proofs and actual runtime/Main/root holds retained.'
+lastReviewedCommit: e2e3b439eb87fc2d0ffdccd0e8a9bc37ab7fd01e
+lastReviewedNote: 'Platform #1442: exact e2e hosted strict-act failure reproduced in three tests; reviewed test-only async-act/select-closure and report-query synchronization. Strict CI355 Study tests/100% focused coverage pass; guard, production, dependencies, timeouts and assertions remain unchanged. Parent reviewed two-file diff with no material finding. Canonical strict gate/current hosted CI pending; sealed e2e actual UI requires an explicit unchanged-production-input bridge, not a rebuilt-binary claim.'
 ---
 
 # Testing Execution State

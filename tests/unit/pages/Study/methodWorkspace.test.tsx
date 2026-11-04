@@ -1,5 +1,5 @@
 import * as owner from '../../../../vendor/study-contract/v6/index.mjs';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import MethodWorkspace from '@/pages/Study/MethodWorkspace';
 import facts from '../../../fixtures/study-method/facts.json';
 import worker from '../../../fixtures/study-method/worker.json';
@@ -310,8 +310,11 @@ it('denies authoring without current core write permission', async () => {
 });
 
 async function choose(label: string, option: string) {
-  fireEvent.mouseDown(screen.getAllByRole('combobox', { name: label })[0]);
-  fireEvent.click(await screen.findByText(option, { selector: '.ant-select-item-option-content' }));
+  const input = screen.getAllByRole('combobox', { name: label })[0];
+  await act(async () => fireEvent.mouseDown(input));
+  const choice = await screen.findByText(option, { selector: '.ant-select-item-option-content' });
+  await act(async () => fireEvent.click(choice));
+  await waitFor(() => expect(input).toHaveAttribute('aria-expanded', 'false'));
 }
 
 it('authors multiple citations and commission-rule declarations without changing their meaning', async () => {
@@ -414,7 +417,7 @@ it('uses typed resource pages and independent cursors to reopen exact selected r
   );
   click(reportId);
   await screen.findByRole('textbox', { name: 'pages.study.reportTitle' });
-  click('pages.study.newMethodReport');
+  await act(async () => click('pages.study.newMethodReport'));
   expect(
     screen.queryByRole('textbox', { name: 'pages.study.reportTitle' }),
   ).not.toBeInTheDocument();
