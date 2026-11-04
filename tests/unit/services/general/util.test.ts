@@ -928,6 +928,209 @@ describe('General Utility Functions', () => {
   });
 
   describe('normalizeLangPayloadBeforeSave', () => {
+    it('retains every same-language descriptive paragraph in order and is idempotent', async () => {
+      const field = 'common:generalComment';
+      const entries = [
+        { '@xml:lang': 'zh', '#text': '第一段说明。' },
+        { '@xml:lang': 'en', '#text': 'First paragraph.' },
+        { '@xml:lang': 'zh', '#text': '第二段包括第一段说明。' },
+        { '@xml:lang': 'en', '#text': 'Second paragraph includes First paragraph.' },
+      ];
+      const original = {
+        processDataSet: { processInformation: { dataSetInformation: { [field]: entries } } },
+      };
+      const result = await normalizeLangPayloadBeforeSave(original);
+      expect(result.issues).toEqual([]);
+      expect(result.payload.processDataSet.processInformation.dataSetInformation[field]).toEqual([
+        { '@xml:lang': 'zh', '#text': '第一段说明。\n\n第二段包括第一段说明。' },
+        {
+          '@xml:lang': 'en',
+          '#text': 'First paragraph.\n\nSecond paragraph includes First paragraph.',
+        },
+      ]);
+      expect(await normalizeLangPayloadBeforeSave(result.payload)).toEqual(result);
+      expect(original.processDataSet.processInformation.dataSetInformation[field]).toEqual(entries);
+    });
+
+    it.each(['baseName', 'annualSupplyOrProductionVolume', 'common:shortDescription'])(
+      'rejects duplicate language conflicts in %s without selecting or joining a value',
+      async (field) => {
+        const entries = [
+          { '@xml:lang': 'en', '#text': 'First value' },
+          { '@xml:lang': 'en', '#text': 'Second value' },
+        ];
+        const result = await normalizeLangPayloadBeforeSave({ [field]: entries });
+        expect(result.issues).toEqual([
+          expect.objectContaining({ path: `${field}[1].@xml:lang`, code: 'duplicate_language' }),
+        ]);
+        expect(result.payload[field]).toEqual(entries);
+      },
+    );
+
+    it('keeps independent exchange comments separate and retains language variants', async () => {
+      const result = await normalizeLangPayloadBeforeSave({
+        exchanges: [
+          {
+            generalComment: [
+              { '@xml:lang': 'en', '#text': 'A' },
+              { '@xml:lang': 'en', '#text': 'B' },
+              { '@xml:lang': 'en-GB', '#text': 'Variant' },
+            ],
+          },
+          { generalComment: { '@xml:lang': 'en', '#text': 'Other exchange' } },
+        ],
+      });
+      expect(result.issues).toEqual([]);
+      expect(result.payload.exchanges).toEqual([
+        {
+          generalComment: [
+            { '@xml:lang': 'en', '#text': 'A\n\nB' },
+            { '@xml:lang': 'en-gb', '#text': 'Variant' },
+          ],
+        },
+        { generalComment: { '@xml:lang': 'en', '#text': 'Other exchange' } },
+      ]);
+    });
+
+    it('rejects extra attributes at the exact path and retains their original values', async () => {
+      const entry = { '@xml:lang': 'en', '#text': 'Original', '@source': 'evidence' };
+      const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': entry });
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'common:generalComment.@source',
+          code: 'unsupported_language_attribute',
+        }),
+      ]);
+      expect(result.payload['common:generalComment']).toEqual(entry);
+    });
+
+    it('rejects an oversized joined exchange comment without truncation or repeated language output', async () => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'A'.repeat(250) },
+        { '@xml:lang': 'en', '#text': 'B'.repeat(249) },
+      ];
+      const result = await normalizeLangPayloadBeforeSave({ generalComment: entries });
+      expect(result.payload.generalComment).toEqual(entries);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'generalComment[1].#text',
+          code: 'localized_text_too_long',
+        }),
+      ]);
+      const boundary = await normalizeLangPayloadBeforeSave({
+        generalComment: [entries[0], { ...entries[1], '#text': 'B'.repeat(248) }],
+      });
+      expect(boundary.issues).toEqual([]);
+      expect(boundary.payload.generalComment['#text']).toHaveLength(500);
+      const unlimited = await normalizeLangPayloadBeforeSave({ 'common:generalComment': entries });
+      expect(unlimited.issues).toEqual([]);
+      expect(unlimited.payload['common:generalComment']['#text']).toHaveLength(501);
+    });
+
+    it('checks the bounded LCIA use advice without limiting Process free text', async () => {
+      const entries = [
+        { '@xml:lang': 'en', '#text': 'A'.repeat(500) },
+        { '@xml:lang': 'en', '#text': 'B'.repeat(499) },
+      ];
+      const result = await normalizeLangPayloadBeforeSave({
+        LCIAMethodDataSet: { useAdviceForDataSet: entries },
+      });
+      expect(result.issues).toEqual([expect.objectContaining({ code: 'localized_text_too_long' })]);
+      expect(
+        (await normalizeLangPayloadBeforeSave({ processDataSet: { useAdviceForDataSet: entries } }))
+          .issues,
+      ).toEqual([]);
+    });
+
+    it('leaves opaque CommonOther extension structures untouched', async () => {
+      const extension = {
+        extension: [
+          { '@xml:lang': 'en', '#text': 'First structured entity', '@id': 'one' },
+          { '@xml:lang': 'en', '#text': 'Second structured entity', '@id': 'two' },
+        ],
+        nested: {
+          'common:generalComment': [
+            { '@xml:lang': 'zh', '#text': '扩展甲' },
+            { '@xml:lang': 'zh', '#text': '扩展乙' },
+          ],
+        },
+      };
+      const translateZhToEn = jest.fn();
+      const result = await normalizeLangPayloadBeforeSave(
+        { processDataSet: { 'common:other': extension } },
+        { translateZhToEn },
+      );
+      expect(result.issues).toEqual([]);
+      expect(result.payload.processDataSet['common:other']).toEqual(extension);
+      expect(translateZhToEn).not.toHaveBeenCalled();
+    });
+
+    it.each([{ '@id': 'structured sibling', '#text': 'Keep me' }, 'Keep this primitive'])(
+      'blocks meaningful mixed language-list siblings without dropping them',
+      async (sibling) => {
+        const value = [{ '@xml:lang': 'en', '#text': 'Paragraph' }, sibling];
+        const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': value });
+        expect(result.payload['common:generalComment']).toEqual(value);
+        expect(result.issues).toEqual([
+          expect.objectContaining({
+            path: 'common:generalComment[1]',
+            code: 'invalid_language_entry',
+          }),
+        ]);
+      },
+    );
+
+    it('retains existing empty-row cleanup when joining descriptive paragraphs', async () => {
+      const result = await normalizeLangPayloadBeforeSave({
+        'common:generalComment': [
+          null,
+          {},
+          { '@xml:lang': 'en', '#text': 'First' },
+          undefined,
+          { '@xml:lang': 'en', '#text': 'Second' },
+        ],
+      });
+      expect(result.issues).toEqual([]);
+      expect(result.payload['common:generalComment']).toEqual({
+        '@xml:lang': 'en',
+        '#text': 'First\n\nSecond',
+      });
+    });
+
+    it.each([
+      ['common:classification', 'common:class', '@classId'],
+      ['common:elementaryFlowCategorization', 'common:category', '@catId'],
+    ])('preserves independent canonical %s hierarchy labels', async (parentField, field, idKey) => {
+      const hierarchy = [
+        { '@xml:lang': 'en', '@level': '0', [idKey]: 'A', '#text': 'Parent' },
+        { '@xml:lang': 'en', '@level': '1', [idKey]: 'A1', '#text': 'Child' },
+      ];
+      const payload = {
+        flowDataSet: {
+          flowInformation: {
+            dataSetInformation: {
+              classificationInformation: { [parentField]: { [field]: hierarchy } },
+            },
+          },
+        },
+      };
+      const result = await normalizeLangPayloadBeforeSave(payload);
+      expect(result.issues).toEqual([]);
+      expect(result.payload).toEqual(payload);
+    });
+
+    it('does not exempt hierarchy attributes placed on a localized comment', async () => {
+      const entry = { '@xml:lang': 'en', '#text': 'Comment', '@level': '0' };
+      const result = await normalizeLangPayloadBeforeSave({ 'common:generalComment': entry });
+      expect(result.payload['common:generalComment']).toEqual(entry);
+      expect(result.issues).toEqual([
+        expect.objectContaining({
+          path: 'common:generalComment.@level',
+          code: 'unsupported_language_attribute',
+        }),
+      ]);
+    });
+
     it('should add English translation when only Chinese content exists', async () => {
       const payload = {
         title: [{ '@xml:lang': 'zh', '#text': '钢铁制造' }],
@@ -1168,6 +1371,37 @@ describe('General Utility Functions', () => {
   });
 
   describe('getLangValidationErrorMessage', () => {
+    it.each(['en-US', 'zh-CN', 'de-DE', 'fr-FR'])(
+      'reports full conflict paths with localized copy in %s',
+      (locale) => {
+        const issues = [
+          {
+            path: 'processDataSet.name.baseName[1].@xml:lang',
+            code: 'duplicate_language' as const,
+            message: 'conflict',
+          },
+          {
+            path: 'processDataSet.comment.@source',
+            code: 'unsupported_language_attribute' as const,
+            message: 'attribute',
+          },
+        ];
+        const message = getLangValidationErrorMessage(issues, 1, locale);
+        expect(message).toContain(issues[0].path);
+        expect(message).toContain('1');
+        expect(message).not.toContain('{count');
+        expect(getLangValidationErrorMessage(issues, 5, locale)).toContain(issues[1].path);
+      },
+    );
+
+    it('reports the root for a root-level localized conflict', () => {
+      expect(
+        getLangValidationErrorMessage([
+          { path: '', code: 'duplicate_language', message: 'conflict' },
+        ]),
+      ).toContain('(root)');
+    });
+
     it('should return compact field-only message for multiple issue paths', () => {
       const message = getLangValidationErrorMessage([
         {

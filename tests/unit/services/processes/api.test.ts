@@ -103,6 +103,10 @@ const mockJsonToList = jest.fn();
 
 jest.mock('@/services/general/util', () => ({
   __esModule: true,
+  normalizeLangPayloadBeforeSave:
+    jest.requireActual('@/services/general/util').normalizeLangPayloadBeforeSave,
+  getLangValidationErrorMessage:
+    jest.requireActual('@/services/general/util').getLangValidationErrorMessage,
   classificationToString: (...args: any[]) => mockClassificationToString.apply(null, args),
   genClassificationZH: (...args: any[]) => mockGenClassificationZH.apply(null, args),
   genLocalizedClassification: (...args: any[]) => mockGenClassificationZH.apply(null, args),
@@ -5341,4 +5345,79 @@ describe('Model Result complete exact-process collection', () => {
       'and(id.eq."quoted\\"identity",version.eq."slash\\\\version")',
     );
   });
+});
+
+describe('Process multilingual persistence boundary', () => {
+  it.each(['create', 'version', 'update'])(
+    'preserves descriptive text through %s before dispatch',
+    async (operation) => {
+      const { normalizeLangPayloadForSave } = jest.requireActual('@/services/general/api');
+      mockNormalizeLangPayloadForSave.mockImplementation(normalizeLangPayloadForSave);
+      mockGenProcessJsonOrdered.mockReturnValue({
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: {
+              'common:generalComment': [
+                { '@xml:lang': 'en', '#text': 'Original scientific scope.' },
+                { '@xml:lang': 'en', '#text': 'Additional limitations.' },
+              ],
+            },
+          },
+        },
+      });
+      if (operation === 'create') await processesApi.createProcess(sampleId, {});
+      else if (operation === 'version')
+        await processesApi.createProcessVersion(sampleId, sampleVersion, {});
+      else await processesApi.updateProcess(sampleId, sampleVersion, {});
+      const command =
+        operation === 'version'
+          ? mockInvokeDatasetCreateVersion.mock.calls[0][0]
+          : mockInvokeDatasetCommand.mock.calls[0][1];
+      expect(
+        command.jsonOrdered.processDataSet.processInformation.dataSetInformation[
+          'common:generalComment'
+        ],
+      ).toEqual({
+        '@xml:lang': 'en',
+        '#text': 'Original scientific scope.\n\nAdditional limitations.',
+      });
+    },
+  );
+
+  it.each(['create', 'version', 'update'])(
+    'rejects unresolved names through %s before persistence',
+    async (operation) => {
+      const { normalizeLangPayloadForSave } = jest.requireActual('@/services/general/api');
+      mockNormalizeLangPayloadForSave.mockImplementation(normalizeLangPayloadForSave);
+      mockGenProcessJsonOrdered.mockReturnValue({
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: {
+              name: {
+                baseName: [
+                  { '@xml:lang': 'en', '#text': 'First identity' },
+                  { '@xml:lang': 'en', '#text': 'Second identity' },
+                ],
+              },
+            },
+          },
+        },
+      });
+      const result =
+        operation === 'create'
+          ? await processesApi.createProcess(sampleId, {})
+          : operation === 'version'
+            ? await processesApi.createProcessVersion(sampleId, sampleVersion, {})
+            : await processesApi.updateProcess(sampleId, sampleVersion, {});
+      expect(result?.error).toMatchObject({
+        code: 'LANG_VALIDATION_ERROR',
+        message: expect.stringContaining(
+          'processDataSet.processInformation.dataSetInformation.name.baseName[1].@xml:lang',
+        ),
+      });
+      expect(mockInvokeDatasetCommand).not.toHaveBeenCalled();
+      expect(mockInvokeDatasetCreateVersion).not.toHaveBeenCalled();
+      expect(mockValidateDatasetRuleVerification).not.toHaveBeenCalled();
+    },
+  );
 });

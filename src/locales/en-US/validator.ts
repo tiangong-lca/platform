@@ -26,5 +26,7 @@ export default {
   'validator.lang.mustNotContainSemicolon': 'Must not contain semicolon',
   'validator.langValidation.missingEnglish': 'Save failed, the following fields are missing English: {fields}.',
   'validator.langValidation.missingEnglishMore': 'Save failed, the following fields are missing English: {fields}, plus {count, plural, one {# more field} other {# more fields}}.',
+  'validator.langValidation.invalidFields': 'Save failed, resolve conflicting or unsupported multilingual values at: {fields}.',
+  'validator.langValidation.invalidFieldsMore': 'Save failed, resolve conflicting or unsupported multilingual values at: {fields}, plus {count, plural, one {# more field} other {# more fields}}.',
   'validator.langValidation.root': '(root)',
 };

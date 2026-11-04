@@ -1852,6 +1852,49 @@ describe('getAllVersions', () => {
 });
 
 describe('multilingual save normalization', () => {
+  it.each(['save', 'validation'] as const)(
+    'preserves both descriptive paragraphs through the real %s consumer',
+    async (intent) => {
+      const payload = {
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: {
+              'common:generalComment': [
+                { '@xml:lang': 'en', '#text': 'Original scope.' },
+                { '@xml:lang': 'en', '#text': 'Additional limitations.' },
+              ],
+            },
+          },
+        },
+      };
+      const result = await generalApi.normalizeLangPayloadForSave(payload, { intent });
+      expect(result.validationError).toBeUndefined();
+      expect(
+        result.payload.processDataSet.processInformation.dataSetInformation[
+          'common:generalComment'
+        ],
+      ).toEqual({ '@xml:lang': 'en', '#text': 'Original scope.\n\nAdditional limitations.' });
+      expect(
+        (await generalApi.normalizeLangPayloadForSave(result.payload, { intent })).payload,
+      ).toEqual(result.payload);
+    },
+  );
+
+  it('returns an actionable exact-path conflict through the real save consumer', async () => {
+    const result = await generalApi.normalizeLangPayloadForSave({
+      name: {
+        baseName: [
+          { '@xml:lang': 'en', '#text': 'First name' },
+          { '@xml:lang': 'en', '#text': 'Second name' },
+        ],
+      },
+    });
+    expect(result.validationError).toContain('name.baseName[1].@xml:lang');
+    expect(result.validationError).not.toContain('missing English');
+    expect(result.issues[0].code).toBe('duplicate_language');
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+  });
+
   it('should normalize payload and auto-fill English translation from AI response', async () => {
     mockAuthGetSession.mockResolvedValue({ data: { session: { access_token: 'token-6' } } });
     mockFunctionsInvoke.mockResolvedValue({

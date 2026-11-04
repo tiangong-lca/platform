@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "ef4af9fc17f11e408b7e9cae1e2dcf077f7b341f89df6462618c1db1a67b95cc",
+    "auditedInputDigest": "576d1bfd0813f36c2703e52ee2f475a4b40d521979e4c6b794003f23552b5b44",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -69,11 +69,11 @@
   "summary": {
     "localeCount": 4,
     "localeLeafModuleCounts": { "en-US": 31, "zh-CN": 31, "de-DE": 31, "fr-FR": 31 },
-    "localeUniqueKeyCounts": { "en-US": 3654, "zh-CN": 3654, "de-DE": 3654, "fr-FR": 3654 },
-    "canonicalCandidateKeyCount": 3654,
+    "localeUniqueKeyCounts": { "en-US": 3656, "zh-CN": 3656, "de-DE": 3656, "fr-FR": 3656 },
+    "canonicalCandidateKeyCount": 3656,
     "activeStaticKeyCount": 2435,
     "activeDynamicKeyCount": 323,
-    "reservedKeyCount": 896,
+    "reservedKeyCount": 898,
     "productionSourceFileCount": 529,
     "literalReferenceCount": 4463,
     "dynamicCallsiteCount": 38,
@@ -298514,6 +298514,136 @@
       ]
     },
     {
+      "id": "validator.langValidation.invalidFields",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["validator"],
+        "zh-CN": ["validator"],
+        "de-DE": ["validator"],
+        "fr-FR": ["validator"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Save failed, resolve conflicting or unsupported multilingual values at: {fields}.",
+          "argumentSignature": [{ "name": "fields", "type": "simple" }],
+          "placeholders": ["fields"],
+          "source": {
+            "path": "src/locales/en-US/validator.ts",
+            "line": 29,
+            "column": 3,
+            "module": "validator"
+          }
+        },
+        "zh-CN": {
+          "value": "保存失败，请处理以下位置的多语言值冲突或不支持的属性：{fields}。",
+          "argumentSignature": [{ "name": "fields", "type": "simple" }],
+          "placeholders": ["fields"],
+          "source": {
+            "path": "src/locales/zh-CN/validator.ts",
+            "line": 29,
+            "column": 3,
+            "module": "validator"
+          }
+        },
+        "de-DE": {
+          "value": "Speichern fehlgeschlagen. Widersprüchliche oder nicht unterstützte mehrsprachige Werte korrigieren: {fields}.",
+          "argumentSignature": [{ "name": "fields", "type": "simple" }],
+          "placeholders": ["fields"],
+          "source": {
+            "path": "src/locales/de-DE/validator.ts",
+            "line": 29,
+            "column": 3,
+            "module": "validator"
+          }
+        },
+        "fr-FR": {
+          "value": "Échec de l’enregistrement. Corrigez les valeurs multilingues en conflit ou non prises en charge : {fields}.",
+          "argumentSignature": [{ "name": "fields", "type": "simple" }],
+          "placeholders": ["fields"],
+          "source": {
+            "path": "src/locales/fr-FR/validator.ts",
+            "line": 29,
+            "column": 3,
+            "module": "validator"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
+      "id": "validator.langValidation.invalidFieldsMore",
+      "category": "reserved",
+      "dynamicFamilies": [],
+      "moduleOwnership": {
+        "en-US": ["validator"],
+        "zh-CN": ["validator"],
+        "de-DE": ["validator"],
+        "fr-FR": ["validator"]
+      },
+      "translations": {
+        "en-US": {
+          "value": "Save failed, resolve conflicting or unsupported multilingual values at: {fields}, plus {count, plural, one {# more field} other {# more fields}}.",
+          "argumentSignature": [
+            { "name": "count", "type": "plural" },
+            { "name": "fields", "type": "simple" }
+          ],
+          "placeholders": ["count", "fields"],
+          "source": {
+            "path": "src/locales/en-US/validator.ts",
+            "line": 30,
+            "column": 3,
+            "module": "validator"
+          }
+        },
+        "zh-CN": {
+          "value": "保存失败，请处理以下位置的多语言值冲突或不支持的属性：{fields}，另有 {count, plural, other {# 个字段}}。",
+          "argumentSignature": [
+            { "name": "count", "type": "plural" },
+            { "name": "fields", "type": "simple" }
+          ],
+          "placeholders": ["count", "fields"],
+          "source": {
+            "path": "src/locales/zh-CN/validator.ts",
+            "line": 30,
+            "column": 3,
+            "module": "validator"
+          }
+        },
+        "de-DE": {
+          "value": "Speichern fehlgeschlagen. Widersprüchliche oder nicht unterstützte mehrsprachige Werte korrigieren: {fields} und {count, plural, one {# weiteres Feld} other {# weitere Felder}}.",
+          "argumentSignature": [
+            { "name": "count", "type": "plural" },
+            { "name": "fields", "type": "simple" }
+          ],
+          "placeholders": ["count", "fields"],
+          "source": {
+            "path": "src/locales/de-DE/validator.ts",
+            "line": 30,
+            "column": 3,
+            "module": "validator"
+          }
+        },
+        "fr-FR": {
+          "value": "Échec de l’enregistrement. Corrigez les valeurs multilingues en conflit ou non prises en charge : {fields}, plus {count, plural, one {# autre champ} other {# autres champs}}.",
+          "argumentSignature": [
+            { "name": "count", "type": "plural" },
+            { "name": "fields", "type": "simple" }
+          ],
+          "placeholders": ["count", "fields"],
+          "source": {
+            "path": "src/locales/fr-FR/validator.ts",
+            "line": 30,
+            "column": 3,
+            "module": "validator"
+          }
+        }
+      },
+      "references": [],
+      "defaultMessages": []
+    },
+    {
       "id": "validator.langValidation.missingEnglish",
       "category": "active-dynamic",
       "dynamicFamilies": ["schemaValidation"],
@@ -298660,7 +298790,7 @@
           "placeholders": [],
           "source": {
             "path": "src/locales/en-US/validator.ts",
-            "line": 29,
+            "line": 31,
             "column": 3,
             "module": "validator"
           }
@@ -298671,7 +298801,7 @@
           "placeholders": [],
           "source": {
             "path": "src/locales/zh-CN/validator.ts",
-            "line": 29,
+            "line": 31,
             "column": 3,
             "module": "validator"
           }
@@ -298682,7 +298812,7 @@
           "placeholders": [],
           "source": {
             "path": "src/locales/de-DE/validator.ts",
-            "line": 29,
+            "line": 31,
             "column": 3,
             "module": "validator"
           }
@@ -298693,7 +298823,7 @@
           "placeholders": [],
           "source": {
             "path": "src/locales/fr-FR/validator.ts",
-            "line": 29,
+            "line": 31,
             "column": 3,
             "module": "validator"
           }

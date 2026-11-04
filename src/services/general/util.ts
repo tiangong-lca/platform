@@ -511,7 +511,13 @@ export function getLangList(langTexts: any) {
   }
 }
 
-export type LangValidationIssueCode = 'missing_en' | 'invalid_en';
+export type LangValidationIssueCode =
+  | 'missing_en'
+  | 'invalid_en'
+  | 'duplicate_language'
+  | 'unsupported_language_attribute'
+  | 'localized_text_too_long'
+  | 'invalid_language_entry';
 
 export type LangNormalizationIntent = 'save' | 'validation';
 
@@ -539,6 +545,36 @@ type NormalizedLangEntry = {
   [LANG_KEY]: string;
   [TEXT_KEY]: string | undefined;
 };
+// Only descriptive fields can combine paragraphs. Names, quantities and reference captions
+// retain their own contracts and must resolve duplicate languages explicitly.
+const PARAGRAPH_LANGUAGE_FIELDS = new Set([
+  'common:generalComment',
+  'generalComment',
+  'common:timeRepresentativenessDescription',
+  'descriptionOfRestrictions',
+  'technologyDescriptionAndIncludedProcesses',
+  'technologicalApplicability',
+  'modelDescription',
+  'deviationsFromLCIMethodPrinciple',
+  'deviationsFromLCIMethodApproaches',
+  'modellingConstants',
+  'deviationsFromModellingConstants',
+  'dataCutOffAndCompletenessPrinciples',
+  'deviationsFromCutOffAndCompletenessPrinciples',
+  'dataSelectionAndCombinationPrinciples',
+  'deviationsFromSelectionAndCombinationPrinciples',
+  'dataTreatmentAndExtrapolationsPrinciples',
+  'deviationsFromTreatmentAndExtrapolationPrinciples',
+  'samplingProcedure',
+  'dataCollectionPeriod',
+  'uncertaintyAdjustments',
+  'useAdviceForDataSet',
+  'completenessOtherProblemField',
+  'common:reviewDetails',
+  'common:otherReviewDetails',
+  'common:intendedApplications',
+  'common:accessRestrictions',
+]);
 const NON_ENGLISH_SCRIPT_REGEX =
   /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Cyrillic}\p{Script=Arabic}\p{Script=Hebrew}\p{Script=Devanagari}\p{Script=Thai}]/u;
 
@@ -575,6 +611,16 @@ const pushUniquePath = (paths: string[], path: string) => {
   paths.push(path);
 };
 
+function buildPath(parentPath: string, key: string | number) {
+  if (typeof key === 'number') {
+    return `${parentPath}[${key}]`;
+  }
+  if (!parentPath) {
+    return key;
+  }
+  return `${parentPath}.${key}`;
+}
+
 async function normalizeLangEntries(
   langEntries: any[],
   path: string,
@@ -585,6 +631,7 @@ async function normalizeLangEntries(
     supplementedEnglishPlaceholderPaths: string[];
     translatedPaths: string[];
   },
+  inputIsArray = true,
 ) {
   const getValidEnglishTranslation = async (
     sourceText: string | undefined,
@@ -612,10 +659,30 @@ async function normalizeLangEntries(
   const rawLangCodes: string[] = [];
   const normalizedMap = new Map<string, string>();
   const orderedLangCodes: string[] = [];
+  const fieldName = path.slice(path.lastIndexOf('.') + 1);
+  const canJoinParagraphs = PARAGRAPH_LANGUAGE_FIELDS.has(fieldName);
+  const mergedTextLimit =
+    fieldName === 'generalComment' || fieldName === 'dataCollectionPeriod'
+      ? 500
+      : fieldName === 'useAdviceForDataSet' && path.startsWith('LCIAMethodDataSet.')
+        ? 1000
+        : undefined;
+  let hasConflict = false;
 
-  for (const entry of langEntries) {
+  for (const [index, entry] of langEntries.entries()) {
     if (!isLangTextEntry(entry)) {
       continue;
+    }
+    const entryPath = inputIsArray ? buildPath(path, index) : path;
+    for (const key of Object.keys(entry)) {
+      if (key !== LANG_KEY && key !== TEXT_KEY) {
+        issues.push({
+          path: buildPath(entryPath, key),
+          code: 'unsupported_language_attribute',
+          message: `Unsupported localized-text attribute at "${buildPath(entryPath, key)}".`,
+        });
+        hasConflict = true;
+      }
     }
     const langCode = normalizeLangCode(entry[LANG_KEY]);
     const textValue = normalizeLangTextValue(entry[TEXT_KEY]);
@@ -628,10 +695,38 @@ async function normalizeLangEntries(
     if (!textValue) {
       continue;
     }
+    const previousText = normalizedMap.get(langCode);
+    if (previousText !== undefined && !canJoinParagraphs) {
+      issues.push({
+        path: buildPath(entryPath, LANG_KEY),
+        code: 'duplicate_language',
+        message: `Language "${langCode}" occurs more than once at "${path}". Resolve this field without joining names, quantities or reference captions.`,
+      });
+      hasConflict = true;
+      continue;
+    }
     if (!orderedLangCodes.includes(langCode)) {
       orderedLangCodes.push(langCode);
     }
-    normalizedMap.set(langCode, textValue);
+    const mergedText = previousText === undefined ? textValue : `${previousText}\n\n${textValue}`;
+    if (
+      previousText !== undefined &&
+      mergedTextLimit !== undefined &&
+      mergedText.length > mergedTextLimit
+    ) {
+      issues.push({
+        path: buildPath(entryPath, TEXT_KEY),
+        code: 'localized_text_too_long',
+        message: `Combined localized text at "${path}" exceeds ${mergedTextLimit} characters. Retain the full explanation in an appropriate descriptive field; do not truncate or split one language into repeated nodes.`,
+      });
+      hasConflict = true;
+    }
+    normalizedMap.set(langCode, mergedText);
+  }
+
+  // Preserve the original field for correction; no translation or lossy rewrite is safe here.
+  if (hasConflict) {
+    return inputIsArray ? langEntries : langEntries[0];
   }
 
   let normalizedList: NormalizedLangEntry[] = orderedLangCodes.map((langCode) => ({
@@ -716,16 +811,6 @@ async function normalizeLangEntries(
   return getLangJson(normalizedList) ?? {};
 }
 
-function buildPath(parentPath: string, key: string | number) {
-  if (typeof key === 'number') {
-    return `${parentPath}[${key}]`;
-  }
-  if (!parentPath) {
-    return key;
-  }
-  return `${parentPath}.${key}`;
-}
-
 async function normalizeLangNode(
   value: any,
   path: string,
@@ -744,6 +829,18 @@ async function normalizeLangNode(
   if (Array.isArray(value)) {
     const looksLikeLangList = value.some((item) => isLangTextEntry(item));
     if (looksLikeLangList) {
+      const mixedEntryIndex = value.findIndex(
+        (item) => !isLangTextEntry(item) && !isRemovableEmptyValue(item),
+      );
+      if (mixedEntryIndex !== -1) {
+        const mixedPath = buildPath(path, mixedEntryIndex);
+        issues.push({
+          path: mixedPath,
+          code: 'invalid_language_entry',
+          message: `A non-localized value is mixed into the localized field at "${mixedPath}".`,
+        });
+        return value;
+      }
       return normalizeLangEntries(value, path, issues, options, translationCache, metadata);
     }
     const mapped = await Promise.all(
@@ -762,21 +859,29 @@ async function normalizeLangNode(
   }
 
   if (isLangTextEntry(value)) {
-    return normalizeLangEntries([value], path, issues, options, translationCache, metadata);
+    return normalizeLangEntries([value], path, issues, options, translationCache, metadata, false);
   }
 
   if (isObject(value)) {
     const entries = Object.entries(value);
     const normalizedEntries = await Promise.all(
       entries.map(async ([key, nodeValue]) => {
-        const normalizedValue = await normalizeLangNode(
-          nodeValue,
-          buildPath(path, key),
-          issues,
-          options,
-          translationCache,
-          metadata,
-        );
+        // Extensions are opaque; classification hierarchy labels are independent
+        // entities, even when an imported record also carries @xml:lang.
+        const isNonLocalizedSubtree =
+          key === 'common:other' ||
+          (/(?:^|\.)classificationInformation(?:\.|\[)/u.test(path) &&
+            (key === 'common:class' || key === 'common:category'));
+        const normalizedValue = isNonLocalizedSubtree
+          ? nodeValue
+          : await normalizeLangNode(
+              nodeValue,
+              buildPath(path, key),
+              issues,
+              options,
+              translationCache,
+              metadata,
+            );
         return [key, normalizedValue] as const;
       }),
     );
@@ -824,6 +929,11 @@ const getLangValidationLocaleMessages = (locale: string) => {
     missingEnglishMore: getValidatorMessage(
       normalizedLocale,
       'validator.langValidation.missingEnglishMore',
+    ),
+    invalidFields: getValidatorMessage(normalizedLocale, 'validator.langValidation.invalidFields'),
+    invalidFieldsMore: getValidatorMessage(
+      normalizedLocale,
+      'validator.langValidation.invalidFieldsMore',
     ),
     root: getValidatorMessage(normalizedLocale, 'validator.langValidation.root'),
   };
@@ -876,9 +986,16 @@ export function getLangValidationErrorMessage(
   }
 
   const localeMessages = getLangValidationLocaleMessages(locale);
+  const hasFieldConflict = issues.some(
+    (issue) => issue.code !== 'missing_en' && issue.code !== 'invalid_en',
+  );
   const uniqueFields = Array.from(
     new Set(
-      issues.map((issue) => getLangValidationFieldName(issue.path || '', localeMessages.root)),
+      issues.map((issue) =>
+        hasFieldConflict
+          ? issue.path || localeMessages.root
+          : getLangValidationFieldName(issue.path || '', localeMessages.root),
+      ),
     ),
   );
   const visibleFields = uniqueFields.slice(0, maxPathCount).join(',');
@@ -886,7 +1003,7 @@ export function getLangValidationErrorMessage(
 
   if (extraCount > 0) {
     return formatLangValidationTemplate(
-      localeMessages.missingEnglishMore,
+      hasFieldConflict ? localeMessages.invalidFieldsMore : localeMessages.missingEnglishMore,
       {
         fields: visibleFields,
         count: extraCount,
@@ -896,7 +1013,7 @@ export function getLangValidationErrorMessage(
   }
 
   return formatLangValidationTemplate(
-    localeMessages.missingEnglish,
+    hasFieldConflict ? localeMessages.invalidFields : localeMessages.missingEnglish,
     {
       fields: visibleFields,
     },
