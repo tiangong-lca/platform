@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: df61172bc54819c4149ab6ecc3be93c34e4420c6
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Development Bootstrap

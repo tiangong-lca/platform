@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: df61172bc54819c4149ab6ecc3be93c34e4420c6
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -375,3 +375,13 @@ The actual Utoo percent-output differential retains the [user-approved restricti
 ## Login feedback ordering
 
 For the Platform #1396 continuation, hold user hydration in the Login regression and prove that success feedback has not started; after release, verify the existing safe redirect precedes the single contextual success message. A bounded rendered control holds the actual membership RPC beyond the native toast lifetime and checks that feedback is visible after release and the account remains operable. Keep the unchanged session-race canonical case, default toast duration, authentication/identity fencing and hosted resource/artifact gates. The controlled mechanism does not identify a historical run's unobserved timing.
+
+## Standalone Study report renderer
+
+[The renderer contract](study-report-renderer-contract.md) owns W10 schema, precision, receipt/trust and release limits. Run the focused standalone Jest suite, `pnpm study-report:test:package`, and `pnpm study-report:test:browser` when changing view/runtime/package behavior. Package proof is part of pre-push; browser proof remains separately selected, synthetic, credential-free and source-bound. It checks actual packed HTML in fresh online/offline desktop/mobile contexts with request/API-attempt/CSP monitoring, keyboard controls and narrow layout. Artifacts stay ignored in `.local/study-report`. Existing app lint/build, coverage and localization gates remain required. A fixture pass does not prove W09 signing/disclosure, installed CLI integration, production rollout or P2 completion.
+
+`study-report.yml` supplies actual PR CI for those standalone inputs on Dev/Main: clean exact-head release build, focused protocol/CI tests, independent package consumption and actual Chromium. It binds uploaded archive/manifest bytes and browser evidence to the same source identity before upload. Its job uses the current frozen Node/pnpm graph and read-only permissions, with no full-gate duplication or operational side effects. Inspect the executed job and downloaded artifact for the exact PR head; a workflow definition or skipped release job is insufficient evidence.
+
+For the W10 hosted resource repair, run `tests/unit/e2e/environmentSmoke.test.ts`, `tests/unit/config/supabaseBrowserResources.test.ts`, `tests/unit/e2e/releaseE2ERunner.test.ts` and `tests/unit/config/supabaseBrowserWorkflow.test.ts` together. Native child-process controls preserve timeout/exit/signal and partial effects without raw output; synthetic Docker controls exercise intent/CID/inspection-before-start, exact-ID cancellation recovery, changed/unknown resources, dependency-first discovery and dependent-first cleanup. These controls do not replace fresh hosted Docker/canonical/resource evidence or qualify the historical failed cleanup.
+
+The resource mutation-boundary regression must switch daemon/source between successful cleanup effects and prove that later image/filesystem effects are never called. Stale-lock controls use real temporary-file unlink/rmdir, including native ENOTEMPTY after unlink, budget exhaustion before rmdir and file/directory inode replacement; failed effects preserve typed errno and partial readback without recursive lock removal.

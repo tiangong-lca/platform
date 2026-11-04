@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: df61172bc54819c4149ab6ecc3be93c34e4420c6
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Testing Execution State
@@ -65,6 +65,10 @@ lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and e
 This is a checked-in reference, not a per-PR execution ledger. A delivery's post-commit, hook-owned full-gate result belongs in its PR validation evidence; update this section when the reference counts, coverage policy, or queue state materially changes.
 
 ## Current State
+
+- Issue #1413 also owns the observed hosted cleanup failure: original exact-source canonical success remains historical evidence; bounded operation telemetry and explicit smoke identity/cleanup require fresh hosted resource closure. No source coverage queue or production authority is opened.
+
+- Issue #1413 adds a narrow standalone Study renderer PR qualification for exact-source package/Chromium evidence. It preserves the full-coverage queue and existing release gates; executed results and artifact acceptance belong on the Issue/PR.
 
 - Issue #1396 owns the qualification-only batch allocation witness and separate bounded native controls. Its authorized continuation also owns evidence-supported closing-popup Escape admission and login-feedback ordering corrections; each new candidate retains independent regression and complete qualification obligations. It preserves the historical failed source, complete original canonical actions and budgets, and the distinction between public observations and private handler state. Implementation, inert checks, one reviewed native set, exact canonical/hosted artifacts and subsequent Main/Dev/root delivery are separate evidence stages; actual outcomes and remaining work belong on the Issue. No historical cause, product fix or qualification pass follows from adding the observer.
 

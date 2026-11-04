@@ -541,6 +541,8 @@ export default {
   'pages.dataProcessing.workspace.reviewCalculation': 'Review calculation',
   'pages.dataProcessing.workspace.fileCount': '{count} files. Download files individually; the manifest describes the complete export.',
   'pages.dataProcessing.workspace.downloadFile': 'Download {name}',
+  'pages.dataProcessing.resultView.exportLcia': 'Export LCIA',
+  'pages.dataProcessing.resultView.exportLci': 'Export LCI',
   'pages.dataProcessing.resultView.flow': 'Flow',
   'pages.dataProcessing.resultView.input': 'Input',
   'pages.dataProcessing.resultView.output': 'Output',

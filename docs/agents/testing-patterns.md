@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: df61172bc54819c4149ab6ecc3be93c34e4420c6
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 ---
 
 # Testing Patterns Reference
@@ -284,6 +284,8 @@ Canonical baseline and proof ownership stays with `DEV.md` and `docs/agents/repo
 
 ## Workflow guard fixtures (platform #1055)
 
+The standalone Study PR contract checks trigger/runtime/permission/order boundaries and executes the actual inline evidence-binding script against isolated files. Its positive control uses matching source/archive/manifest/browser identities; negative controls substitute source, dirty state, digests, empty records and archive bytes. These controls prove admission behavior, while the hosted package/Chromium job supplies actual execution evidence.
+
 Inline release-admission guards stay workflow-owned. Focused tests extract the exact `run:` block from the workflow file and execute it against fixture git remotes (insteadOf-mapped bare upstream, fixture `GITHUB_*` environment) instead of re-implementing the shell logic; see `tests/unit/scripts/buildReleaseContextGuard.test.ts`.
 
 ### ILCD asynchronous editor proof
@@ -297,3 +299,7 @@ Run real package lifecycle contracts in isolated Node children with development/
 Image-input tests should bind declared patch bytes before cache lookup, then cover both dependency and candidate contexts and every manifest consumer, including the Git-free evidence reporter. Use a patch-free control and explicit path/hash/index/schema failures. Resource observer fixtures canonicalize their owned temporary root before deriving paths so macOS aliases do not replace the intended ownership assertions with an unrelated setup failure.
 
 Passive mobile diagnostics use five fixed schema-2 detail slots and one optional unawaited frame under the original record/byte caps. Normal cancellation is explicit evidence, never a reason to wait or retry the product action. Observe only selected DOM predicates and window composition counts with unknown prehistory; preserve exact original rejection identity and independent cleanup. The owning wire/lifecycle contract is in [dependency maintenance](dependency-maintenance.md#bounded-mobile-navigation-diagnostics).
+
+Resource lifecycle tests must model actual staged discovery, including a prepared dependency observed before its candidate. Use native disposable subprocesses for timeout/nonzero/partial effects and a strict synthetic Docker map for creation intent, CID, inspected identity and exact-ID recovery; never target unrelated real containers. Unknown CID/profile, changed source or failed mutation stays explicit. Preserve finite budgets and assert no prune, image force or foreign resource deletion.
+
+A resource guard must be tested between mutations, beyond an initially valid snapshot or a later failing verify. For composite filesystem cleanup, assert each exact effect and its readback independently: successful unlink does not grant rmdir authority after new entries, identity change, source/daemon drift or deadline expiry.

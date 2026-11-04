@@ -35,6 +35,28 @@ it('deduplicates exact references and caches successful metadata only within its
   expect(read).toHaveBeenCalledTimes(2);
 });
 
+it('keeps the replacement name when an evicted in-flight read finishes late', async () => {
+  let rejectFirst!: (error: Error) => void;
+  read.mockImplementationOnce(
+    () =>
+      new Promise((_, reject) => {
+        rejectFirst = reject;
+      }),
+  );
+  read.mockImplementation(async (id, version) => row(id, version));
+  const metadata = createResultMetadataReader('en');
+  const first = metadata('flows', [ref]);
+  expect(metadata.cachedFlowName(ref)).toBeUndefined();
+  await metadata(
+    'flows',
+    Array.from({ length: 500 }, (_, i) => ({ id: String(i), version: ref.version })),
+  );
+  await metadata('flows', [ref]);
+  rejectFirst(new Error('expired'));
+  await first;
+  expect(metadata.cachedFlowName(ref)).toBe('Water');
+});
+
 it('does not borrow metadata from another version or use latest for an absent version', async () => {
   const metadata = createResultMetadataReader('en');
   read.mockResolvedValueOnce(row(ref.id, '02.00.000')).mockResolvedValueOnce(row());

@@ -4,6 +4,7 @@ import {
   resultReferenceKey,
   resultMethodMetadata,
   type ResultMetadata,
+  type ResultReference,
 } from '@/services/lcaReleases/presentation';
 import {
   fetchCalculationBundleArtifactText,
@@ -26,6 +27,8 @@ import {
   Card,
   Collapse,
   Descriptions,
+  Dropdown,
+  Input,
   Select,
   Space,
   Spin,
@@ -61,7 +64,7 @@ export function artifactInlineByteSize(artifact: CalculationBundleArtifact): num
 function assertInlineArtifact(artifact: CalculationBundleArtifact): void {
   if (artifactInlineByteSize(artifact) > MAX_INLINE_ARTIFACT_BYTES) {
     throw new Error(
-      'This result chunk is too large for inline preview. Use the verified raw downloads below.',
+      'This result chunk is too large for inline preview. Open Exports to download the result files.',
     );
   }
 }
@@ -112,6 +115,7 @@ type Props = {
   packageId: string;
   view?: 'results' | 'exports';
   onReviewCalculation?: () => void;
+  onOpenExports?: () => void;
   initialProcessId?: string;
   initialProcessVersion?: string;
   processName?: string;
@@ -121,6 +125,7 @@ const CalculationBundlePanel = ({
   packageId,
   view,
   onReviewCalculation,
+  onOpenExports,
   initialProcessId,
   initialProcessVersion,
   processName,
@@ -137,9 +142,13 @@ const CalculationBundlePanel = ({
   const [lciaRows, setLciaRows] = useState<CalculationBundleLciaRecord[]>([]);
   const [coverage, setCoverage] = useState<Record<string, unknown> | null>(null);
   const [loading, setLoading] = useState(false);
-  const [recordsLoading, setRecordsLoading] = useState(false);
+
   const [issue, setIssue] = useState<BundleIssue | null>(null);
-  const [recordsIssue, setRecordsIssue] = useState<string | null>(null);
+  type ResultKind = 'lci' | 'lcia';
+  const [recordStates, setRecordStates] = useState<Partial<Record<ResultKind, string | null>>>({});
+  const [flowQuery, setFlowQuery] = useState('');
+  const [directionFilter, setDirectionFilter] = useState('');
+  const [exporting, setExporting] = useState(false);
   const [downloadIssue, setDownloadIssue] = useState<string | null>(null);
   const [downloadingPath, setDownloadingPath] = useState<string | null>(null);
   const language = resolveContentLanguage(intl.locale);
@@ -147,7 +156,16 @@ const CalculationBundlePanel = ({
   const [flowMetadata, setFlowMetadata] = useState<Record<string, ResultMetadata>>({});
   const [resolvedProcessName, setResolvedProcessName] = useState('');
   const [lciPage, setLciPage] = useState(1);
-  const [metadataLoading, setMetadataLoading] = useState(false);
+  const [resolvedReferences, setResolvedReferences] = useState<ResultReference[]>([]);
+  const filteredRows = useMemo(
+    () =>
+      lciRows.filter(
+        (row) =>
+          row.flow.id.toLowerCase().includes(flowQuery.trim().toLowerCase()) &&
+          (!directionFilter || row.direction === directionFilter),
+      ),
+    [lciRows, flowQuery, directionFilter],
+  );
   const [metadataRetry, setMetadataRetry] = useState(0);
   const [reloadToken, setReloadToken] = useState(0);
   const [activeResultTab, setActiveResultTab] = useState('lcia');
@@ -177,7 +195,7 @@ const CalculationBundlePanel = ({
       try {
         const nextBundle = result.data;
         const processArtifacts = nextBundle.calculationBundle.artifacts.filter(
-          (artifact) => artifact.kind === 'process_axis',
+          (artifact) => view !== 'exports' && artifact.kind === 'process_axis',
         );
         processArtifacts.forEach(assertInlineArtifact);
         const processRows = (
@@ -223,49 +241,34 @@ const CalculationBundlePanel = ({
     return () => {
       cancelled = true;
     };
-  }, [initialProcessId, initialProcessVersion, packageId, reloadToken]);
+  }, [initialProcessId, initialProcessVersion, packageId, reloadToken, view]);
 
   useEffect(() => {
     let cancelled = false;
-    const loadRecords = async () => {
-      if (view === 'exports' || !bundle || selectedProcessIndex === undefined) return;
-      setRecordsLoading(true);
-      setRecordsIssue(null);
-      setLciRows([]);
-      setLciaRows([]);
-      const artifacts = bundle.calculationBundle.artifacts;
-      const lciArtifact = artifactForProcess(artifacts, 'lci', selectedProcessIndex);
-      const lciaArtifact = artifactForProcess(artifacts, 'lcia', selectedProcessIndex);
-      if (!lciArtifact || !lciaArtifact) {
-        setRecordsIssue('Calculation Bundle result chunks are incomplete for this process.');
-        setRecordsLoading(false);
-        return;
-      }
-      if (
-        artifactInlineByteSize(lciArtifact) > MAX_INLINE_ARTIFACT_BYTES ||
-        artifactInlineByteSize(lciaArtifact) > MAX_INLINE_ARTIFACT_BYTES
-      ) {
-        setRecordsIssue(
-          'This result chunk is too large for inline preview. Use the verified raw downloads below.',
-        );
-        setRecordsLoading(false);
-        return;
-      }
+    setRecordStates({});
+    setLciRows([]);
+    setLciaRows([]);
+    if (view === 'exports' || !bundle || selectedProcessIndex === undefined) return;
+    const artifacts = bundle.calculationBundle.artifacts;
+    const load = async <T extends { processIndex: number }>(
+      kind: ResultKind,
+      publish: (rows: T[]) => void,
+    ) => {
+      let issue: string | null = null;
       try {
-        const [nextLciRows, nextLciaRows] = await Promise.all([
-          fetchCalculationBundleRecords<CalculationBundleLciRecord>(lciArtifact),
-          fetchCalculationBundleRecords<CalculationBundleLciaRecord>(lciaArtifact),
-        ]);
-        if (cancelled) return;
-        setLciRows(nextLciRows.filter((row) => row.processIndex === selectedProcessIndex));
-        setLciaRows(nextLciaRows.filter((row) => row.processIndex === selectedProcessIndex));
+        const artifact = artifactForProcess(artifacts, kind, selectedProcessIndex);
+        if (!artifact)
+          throw new Error('Calculation Bundle result chunks are incomplete for this process.');
+        assertInlineArtifact(artifact);
+        const rows = await fetchCalculationBundleRecords<T>(artifact);
+        if (!cancelled) publish(rows.filter((row) => row.processIndex === selectedProcessIndex));
       } catch (error) {
-        if (!cancelled) setRecordsIssue(error instanceof Error ? error.message : String(error));
-      } finally {
-        if (!cancelled) setRecordsLoading(false);
+        issue = error instanceof Error ? error.message : String(error);
       }
+      if (!cancelled) setRecordStates((previous) => ({ ...previous, [kind]: issue }));
     };
-    void loadRecords();
+    void load('lci', setLciRows);
+    void load('lcia', setLciaRows);
     return () => {
       cancelled = true;
     };
@@ -276,7 +279,6 @@ const CalculationBundlePanel = ({
   );
   useEffect(() => {
     let cancelled = false;
-    setLciPage(1);
     setResolvedProcessName('');
     if (selectedProcess && view !== 'exports') {
       void readMetadata('processes', [selectedProcess.rootProcess]).then((metadata) => {
@@ -292,36 +294,50 @@ const CalculationBundlePanel = ({
   }, [selectedProcess, readMetadata, view, metadataRetry]);
 
   useEffect(() => {
+    setLciPage(1);
+    setFlowQuery('');
+    setDirectionFilter('');
+  }, [selectedProcess]);
+
+  const references = useMemo(
+    () =>
+      selectedProcess
+        ? [
+            selectedProcess.quantitativeReference.flow,
+            ...filteredRows.slice((lciPage - 1) * 25, lciPage * 25).map((row) => row.flow),
+          ]
+        : [],
+    [selectedProcess, filteredRows, lciPage],
+  );
+
+  useEffect(() => {
     let cancelled = false;
-    setFlowMetadata({});
-    if (!selectedProcess || view === 'exports') return;
-    setMetadataLoading(true);
-    const references = [
-      selectedProcess.quantitativeReference.flow,
-      ...lciRows.slice((lciPage - 1) * 25, lciPage * 25).map((row) => row.flow),
-    ];
+    if (!references.length || view === 'exports') return;
     void readMetadata('flows', references).then((metadata) => {
       if (!cancelled) {
         setFlowMetadata(metadata);
-        setMetadataLoading(false);
+        setResolvedReferences(references);
       }
     });
     return () => {
       cancelled = true;
     };
-  }, [selectedProcess, lciRows, lciPage, readMetadata, view, metadataRetry]);
+  }, [references, readMetadata, view, metadataRetry]);
 
   const displayName = processName || resolvedProcessName;
   const reference = selectedProcess?.quantitativeReference;
-  const referenceName = reference && flowMetadata[resultReferenceKey(reference.flow)]?.name;
+  const flowLabel = (flow: ResultReference, unavailable = flow.id) => {
+    const key = resultReferenceKey(flow);
+    return (
+      (resolvedReferences === references && flowMetadata[key]?.name) ||
+      readMetadata.cachedFlowName(flow) ||
+      (resolvedReferences === references ? unavailable : '…')
+    );
+  };
   const metadataUnavailable =
-    !metadataLoading &&
     selectedProcess &&
-    (!displayName ||
-      !referenceName ||
-      lciRows
-        .slice((lciPage - 1) * 25, lciPage * 25)
-        .some((row) => !flowMetadata[resultReferenceKey(row.flow)]));
+    resolvedReferences === references &&
+    (!displayName || references.some((ref) => !flowMetadata[resultReferenceKey(ref)]));
   const processOptions = processes.map((process) => ({
     label: processOptionLabel(process),
     value: String(process.processIndex),
@@ -333,28 +349,104 @@ const CalculationBundlePanel = ({
   const downloadsFor = (group: CalculationProductDownload['group']) =>
     productDownloads.filter((download) => download.group === group);
 
-  const exportLciCsv = () =>
-    downloadText(
-      `lci-${selectedProcess!.rootProcess.id}.csv`,
-      recordsToCsv(
-        ['flow_uuid', 'flow_version', 'direction', 'unit', 'location', 'mean_amount'],
-        lciRows.map((row) => [
-          row.flow.id,
-          row.flow.version,
-          row.direction,
-          row.unit,
-          row.location ?? '',
-          row.meanAmount,
-        ]),
-      ),
-      'text/csv;charset=utf-8',
+  const exportCsv = async (kind: ResultKind) => {
+    if (!selectedProcess) return;
+    setExporting(true);
+    try {
+      let csv: string;
+      if (kind === 'lci') {
+        const names = await readMetadata(
+          'flows',
+          lciRows.map((row) => row.flow),
+        );
+        csv = recordsToCsv(
+          [
+            'flow_uuid',
+            'flow_version',
+            'direction',
+            'unit',
+            'location',
+            'mean_amount',
+            'flow_name',
+          ],
+          lciRows.map((row) => [
+            row.flow.id,
+            row.flow.version,
+            row.direction,
+            row.unit,
+            row.location,
+            row.meanAmount,
+            names[resultReferenceKey(row.flow)]?.name,
+          ]),
+        );
+      } else {
+        csv = recordsToCsv(
+          ['method_uuid', 'method_version', 'method_name', 'mean_amount', 'unit'],
+          lciaRows.map((row) => {
+            const metadata = resultMethodMetadata(row.method, language);
+            return [
+              row.method.id,
+              row.method.version,
+              metadata.name,
+              row.meanAmount,
+              metadata.unit,
+            ];
+          }),
+        );
+      }
+      downloadText(
+        `${kind}-${selectedProcess.rootProcess.id}-${selectedProcess.rootProcess.version}.csv`,
+        csv,
+        'text/csv;charset=utf-8',
+      );
+    } finally {
+      setExporting(false);
+    }
+  };
+  const exportControl = (kind: ResultKind) => {
+    const rows = kind === 'lci' ? lciRows : lciaRows;
+    const label =
+      kind === 'lci'
+        ? t('pages.dataProcessing.resultView.exportLci', 'Export LCI')
+        : t('pages.dataProcessing.resultView.exportLcia', 'Export LCIA');
+    return (
+      <Dropdown
+        destroyOnHidden
+        trigger={['click']}
+        disabled={!rows.length || exporting}
+        menu={{
+          'aria-label': label,
+          items: [
+            {
+              key: 'csv',
+              label: t('pages.dataProcessing.bundle.exportCsv', 'Export CSV'),
+              onClick: () => void exportCsv(kind),
+            },
+            {
+              key: 'json',
+              label: t('pages.dataProcessing.bundle.exportJson', 'Export JSON'),
+              onClick: () =>
+                downloadText(
+                  `${kind}-${selectedProcess!.rootProcess.id}-${selectedProcess!.rootProcess.version}.json`,
+                  `${JSON.stringify(rows, null, 2)}\n`,
+                  'application/json',
+                ),
+            },
+          ],
+        }}
+      >
+        <Button
+          size='small'
+          icon={<DownloadOutlined />}
+          aria-label={label}
+          disabled={!rows.length}
+          loading={exporting}
+        >
+          {label}
+        </Button>
+      </Dropdown>
     );
-  const exportJson = (kind: 'lci' | 'lcia', rows: unknown[]) =>
-    downloadText(
-      `${kind}-${selectedProcess!.rootProcess.id}.json`,
-      `${JSON.stringify(rows, null, 2)}\n`,
-      'application/json',
-    );
+  };
 
   const downloadVerifiedArtifact = async (
     key: string,
@@ -377,45 +469,53 @@ const CalculationBundlePanel = ({
     }
   };
 
-  const lciColumns = useMemo(
-    () => [
-      {
-        title: t('pages.dataProcessing.resultView.flow', 'Flow'),
-        dataIndex: ['flow', 'id'],
-        render: (id: string, row: CalculationBundleLciRecord) => (
-          <span title={`${id} · ${row.flow.version}`}>
-            {flowMetadata[resultReferenceKey(row.flow)]?.name || id}
-          </span>
-        ),
-      },
-      {
-        title: t('pages.dataProcessing.bundle.version', 'Version'),
-        dataIndex: ['flow', 'version'],
-      },
-      {
-        title: t('pages.dataProcessing.bundle.direction', 'Direction'),
-        dataIndex: 'direction',
-        render: (value: string) =>
-          value === 'Input'
-            ? t('pages.dataProcessing.resultView.input', 'Input')
-            : value === 'Output'
-              ? t('pages.dataProcessing.resultView.output', 'Output')
-              : value,
-      },
-      { title: t('pages.dataProcessing.bundle.unit', 'Unit'), dataIndex: 'unit' },
-      {
-        title: t('pages.dataProcessing.bundle.location', 'Location'),
-        dataIndex: 'location',
-        render: (value: unknown) => hashValue(value),
-      },
-      {
-        title: t('pages.dataProcessing.bundle.amount', 'Amount'),
-        dataIndex: 'meanAmount',
-        render: (value: number) => formatBundleNumber(value),
-      },
-    ],
-    [t, flowMetadata],
-  );
+  const lciColumns = [
+    {
+      title: t('pages.dataProcessing.resultView.flow', 'Flow'),
+      dataIndex: ['flow', 'id'],
+      render: (_: string, row: CalculationBundleLciRecord) => (
+        <span
+          className={styles.flowName}
+          title={[
+            `${t('pages.dataProcessing.bundle.version', 'Version')} · ${row.flow.version}`,
+            row.location &&
+              `${t('pages.dataProcessing.bundle.location', 'Location')} · ${row.location}`,
+          ]
+            .filter(Boolean)
+            .join(' · ')}
+        >
+          {flowLabel(row.flow, '—')}
+        </span>
+      ),
+    },
+    {
+      title: 'UUID',
+      key: 'uuid',
+      width: '41%',
+      className: styles.flowUuid,
+      render: (_: unknown, row: CalculationBundleLciRecord) => <code>{row.flow.id}</code>,
+    },
+    {
+      title: t('pages.dataProcessing.bundle.direction', 'Direction'),
+      dataIndex: 'direction',
+      width: 76,
+      render: (value: string) =>
+        value === 'Input'
+          ? t('pages.dataProcessing.resultView.input', 'Input')
+          : value === 'Output'
+            ? t('pages.dataProcessing.resultView.output', 'Output')
+            : value,
+    },
+    {
+      title: t('pages.dataProcessing.bundle.amount', 'Amount'),
+      dataIndex: 'meanAmount',
+      width: 128,
+      align: 'right' as const,
+      className: styles.resultNumber,
+      render: formatBundleNumber,
+    },
+    { title: t('pages.dataProcessing.bundle.unit', 'Unit'), dataIndex: 'unit', width: 54 },
+  ];
   const lciaColumns = useMemo(
     () => [
       {
@@ -473,24 +573,34 @@ const CalculationBundlePanel = ({
   }
   if (!bundleData || !manifest) return null;
 
-  const resultNotice = recordsIssue ? (
-    <Alert type='warning' title={recordsIssue} />
-  ) : initialProcessId && !selectedProcess ? (
-    <Alert
-      type='info'
-      title={t(
-        'pages.dataProcessing.resultView.processUnavailable',
-        'This process version is not included in this calculation.',
-      )}
-    />
-  ) : null;
+  const resultNotice = (kind: ResultKind) =>
+    recordStates[kind] ? (
+      <Alert
+        type='warning'
+        title={recordStates[kind]}
+        action={
+          onOpenExports && (
+            <Button size='small' onClick={onOpenExports}>
+              {t('pages.dataProcessing.workspace.exports', 'Exports')}
+            </Button>
+          )
+        }
+      />
+    ) : initialProcessId && !selectedProcess ? (
+      <Alert
+        type='info'
+        title={t(
+          'pages.dataProcessing.resultView.processUnavailable',
+          'This process version is not included in this calculation.',
+        )}
+      />
+    ) : null;
   const processControl = (
-    <Space className={styles.bundleToolbar} wrap>
-      <span>{t('pages.dataProcessing.bundle.process', 'Process')}</span>
+    <div className={styles.processSummary}>
       {initialProcessId ? (
-        <Typography.Text strong>
+        <strong>
           {displayName || initialProcessId} · {initialProcessVersion}
-        </Typography.Text>
+        </strong>
       ) : (
         <Select
           aria-label={t('pages.dataProcessing.bundle.process', 'Process')}
@@ -501,34 +611,23 @@ const CalculationBundlePanel = ({
           onChange={(value) => setSelectedProcessIndex(Number(value))}
         />
       )}
-      {reference ? (
-        <Typography.Text type='secondary'>
-          {t('pages.dataProcessing.resultView.reference', 'Dataset reference quantity')}:{' '}
-          {referenceName || reference.flow.id} · {formatBundleNumber(reference.meanAmount)}{' '}
-          {reference.referenceUnit}
-        </Typography.Text>
-      ) : null}
-    </Space>
-  );
-  const rawActions = (
-    <Space wrap>
-      <Button
-        size='small'
-        icon={<DownloadOutlined />}
-        onClick={exportLciCsv}
-        disabled={!lciRows.length}
-      >
-        {t('pages.dataProcessing.workspace.currentCsv', 'Current process CSV')}
-      </Button>
-      <Button
-        size='small'
-        icon={<DownloadOutlined />}
-        onClick={() => exportJson('lci', lciRows)}
-        disabled={!lciRows.length}
-      >
-        {t('pages.dataProcessing.workspace.currentJson', 'Current process JSON')}
-      </Button>
-    </Space>
+      {reference && (
+        <dl>
+          <dt>{t('pages.dataProcessing.resultView.reference', 'Dataset reference quantity')}</dt>
+          <dd>
+            <strong>
+              {reference.meanAmount} {reference.referenceUnit}
+            </strong>
+          </dd>
+          <dt>{t('pages.process.view.exchange.referenceToReferenceFlow', 'Reference flow(s)')}</dt>
+          <dd>
+            <Typography.Paragraph ellipsis={{ rows: 2, expandable: true }}>
+              {flowLabel(reference.flow)}
+            </Typography.Paragraph>
+          </dd>
+        </dl>
+      )}
+    </div>
   );
   const productDownloadCards = (downloads: CalculationProductDownload[]) =>
     downloads.map((download) => (
@@ -557,150 +656,177 @@ const CalculationBundlePanel = ({
       </section>
     ));
 
-  return (
-    <Card
-      className={styles.bundleCard}
-      title={
-        view === 'exports'
-          ? t('pages.dataProcessing.workspace.exports', 'Exports')
-          : t('pages.dataProcessing.resultView.title', 'Process results')
-      }
-    >
-      <Space orientation='vertical' size='middle' className={styles.previewDetails}>
-        {view !== 'exports' ? processControl : null}
-        {metadataUnavailable && view !== 'exports' ? (
-          <Space>
-            <Typography.Text type='secondary'>
-              {t(
-                'pages.dataProcessing.resultView.metadataUnavailable',
-                'Some names are unavailable. Exact identifiers remain visible; results are unchanged.',
-              )}
-            </Typography.Text>
-            <Button size='small' onClick={() => setMetadataRetry((value) => value + 1)}>
-              {t('pages.dataProcessing.bundle.retry', 'Retry')}
-            </Button>
-          </Space>
-        ) : null}
-        <Spin spinning={recordsLoading}>
-          <Tabs
-            activeKey={view === 'exports' ? 'downloads' : activeResultTab}
-            onChange={setActiveResultTab}
-            items={[
-              {
-                key: 'lci',
-                label: 'LCI',
-                children: (
-                  <Space orientation='vertical' size='middle' className={styles.previewDetails}>
-                    {resultNotice}
-                    {rawActions}
-                    <Table
-                      size='small'
-                      rowKey={(row: CalculationBundleLciRecord) =>
-                        `${row.processIndex}:${row.flow.id}:${row.flow.version}:${row.direction}:${row.location ?? ''}`
-                      }
-                      columns={lciColumns}
-                      dataSource={lciRows}
-                      pagination={{
-                        current: lciPage,
-                        pageSize: 25,
-                        showSizeChanger: false,
-                        onChange: setLciPage,
-                      }}
-                      scroll={{ x: 700, y: 480 }}
-                    />
-                  </Space>
-                ),
-              },
-              {
-                key: 'lcia',
-                label: 'LCIA',
-                children: (
-                  <Space orientation='vertical' size='middle' className={styles.previewDetails}>
-                    {resultNotice}
+  const content = (
+    <Space orientation='vertical' size='middle' className={styles.previewDetails}>
+      {view !== 'exports' ? processControl : null}
+      {view === 'results' && coverageComplete === false && (
+        <Alert
+          type='warning'
+          showIcon
+          title={`${t('pages.dataProcessing.bundle.coverage', 'Coverage')} · ${t('pages.dataProcessing.bundle.blocked', 'Incomplete / blocked')}`}
+        />
+      )}
+      {metadataUnavailable && view !== 'exports' ? (
+        <Space>
+          <Typography.Text type='secondary'>
+            {t(
+              'pages.dataProcessing.resultView.metadataUnavailable',
+              'Some names are unavailable. Exact identifiers remain visible; results are unchanged.',
+            )}
+          </Typography.Text>
+          <Button size='small' onClick={() => setMetadataRetry((value) => value + 1)}>
+            {t('pages.dataProcessing.bundle.retry', 'Retry')}
+          </Button>
+        </Space>
+      ) : null}
+
+      <Tabs
+        activeKey={view === 'exports' ? 'downloads' : activeResultTab}
+        onChange={setActiveResultTab}
+        items={[
+          {
+            key: 'lci',
+            label: 'LCI',
+            children: (
+              <Space orientation='vertical' size='middle' className={styles.previewDetails}>
+                {resultNotice('lci')}
+                <div className={styles.inventoryControls}>
+                  <Input
+                    allowClear
+                    aria-label={t('pages.dataProcessing.bundle.flow', 'Flow UUID')}
+                    placeholder={t('pages.dataProcessing.bundle.flow', 'Flow UUID')}
+                    value={flowQuery}
+                    onChange={(event) => {
+                      setFlowQuery(event.target.value);
+                      setLciPage(1);
+                    }}
+                  />
+                  <Select
+                    allowClear
+                    aria-label={t('pages.dataProcessing.bundle.direction', 'Direction')}
+                    placeholder={t('pages.dataProcessing.bundle.direction', 'Direction')}
+                    value={directionFilter || undefined}
+                    onChange={(value) => {
+                      setDirectionFilter(value || '');
+                      setLciPage(1);
+                    }}
+                    options={[
+                      {
+                        value: 'Input',
+                        label: t('pages.dataProcessing.resultView.input', 'Input'),
+                      },
+                      {
+                        value: 'Output',
+                        label: t('pages.dataProcessing.resultView.output', 'Output'),
+                      },
+                    ]}
+                  />
+                  {exportControl('lci')}
+                </div>
+                <Table
+                  size='small'
+                  rowKey={(row: CalculationBundleLciRecord) =>
+                    `${row.processIndex}:${row.flow.id}:${row.flow.version}:${row.direction}:${row.location ?? ''}`
+                  }
+                  className={styles.inventoryTable}
+                  columns={lciColumns}
+                  dataSource={filteredRows}
+                  loading={Boolean(selectedProcess) && recordStates.lci === undefined}
+                  tableLayout='fixed'
+                  pagination={{
+                    current: lciPage,
+                    pageSize: 25,
+                    showSizeChanger: false,
+                    onChange: setLciPage,
+                  }}
+                  scroll={{ y: 480 }}
+                />
+              </Space>
+            ),
+          },
+          {
+            key: 'lcia',
+            label: 'LCIA',
+            children: (
+              <Space orientation='vertical' size='middle' className={styles.previewDetails}>
+                {resultNotice('lcia')}
+                {exportControl('lcia')}
+                <Table
+                  size='small'
+                  rowKey={(row: CalculationBundleLciaRecord) =>
+                    `${row.processIndex}:${row.method.id}:${row.method.version}`
+                  }
+                  columns={lciaColumns}
+                  dataSource={lciaRows}
+                  loading={Boolean(selectedProcess) && recordStates.lcia === undefined}
+                  pagination={false}
+                  scroll={{ x: 600, y: 480 }}
+                />
+              </Space>
+            ),
+          },
+          {
+            key: 'downloads',
+            label: t('pages.dataProcessing.bundle.downloads', 'Downloads'),
+            children: (
+              <Space orientation='vertical' size='middle' className={styles.previewDetails}>
+                {downloadIssue ? (
+                  <Alert
+                    type='error'
+                    title={downloadIssue}
+                    action={
+                      <Button size='small' onClick={() => setReloadToken((value) => value + 1)}>
+                        {t('pages.dataProcessing.bundle.refresh', 'Refresh secure links')}
+                      </Button>
+                    }
+                  />
+                ) : null}
+                <CalculationExportsPanel
+                  packageId={packageId}
+                  onReviewCalculation={onReviewCalculation}
+                />
+                <strong>{t('pages.dataProcessing.bundle.resultFiles', 'Result files')}</strong>
+                <div className={styles.bundleDownloadGrid}>
+                  {productDownloadCards(downloadsFor('results'))}
+                </div>
+                <strong>{t('pages.dataProcessing.bundle.advancedFiles', 'Advanced data')}</strong>
+                <div className={styles.bundleDownloadGrid}>
+                  {productDownloadCards(downloadsFor('advanced_data'))}
+                </div>
+                <strong>{t('pages.dataProcessing.bundle.auditFiles', 'Audit evidence')}</strong>
+                <div className={styles.bundleDownloadGrid}>
+                  <section className={styles.bundleDownloadItem}>
+                    <strong>calculation-bundle.json</strong>
+                    <code>{bundleData.manifestSha256}</code>
                     <Button
                       size='small'
                       icon={<DownloadOutlined />}
-                      onClick={() => exportJson('lcia', lciaRows)}
-                      disabled={!lciaRows.length}
-                    >
-                      {t('pages.dataProcessing.workspace.currentJson', 'Current process JSON')}
-                    </Button>
-                    <Table
-                      size='small'
-                      rowKey={(row: CalculationBundleLciaRecord) =>
-                        `${row.processIndex}:${row.method.id}:${row.method.version}`
+                      loading={downloadingPath === 'calculation-bundle.json'}
+                      disabled={downloadingPath !== null}
+                      onClick={() =>
+                        void downloadVerifiedArtifact(
+                          'calculation-bundle.json',
+                          null,
+                          'calculation-bundle.json',
+                          bundleData.manifestDownload,
+                        )
                       }
-                      columns={lciaColumns}
-                      dataSource={lciaRows}
-                      pagination={false}
-                      scroll={{ x: 600, y: 480 }}
-                    />
-                  </Space>
-                ),
-              },
-              {
-                key: 'downloads',
-                label: t('pages.dataProcessing.bundle.downloads', 'Downloads'),
-                children: (
-                  <Space orientation='vertical' size='middle' className={styles.previewDetails}>
-                    {downloadIssue ? (
-                      <Alert
-                        type='error'
-                        title={downloadIssue}
-                        action={
-                          <Button size='small' onClick={() => setReloadToken((value) => value + 1)}>
-                            {t('pages.dataProcessing.bundle.refresh', 'Refresh secure links')}
-                          </Button>
-                        }
-                      />
-                    ) : null}
-                    <CalculationExportsPanel
-                      packageId={packageId}
-                      onReviewCalculation={onReviewCalculation}
-                    />
-                    <strong>{t('pages.dataProcessing.bundle.resultFiles', 'Result files')}</strong>
-                    <div className={styles.bundleDownloadGrid}>
-                      {productDownloadCards(downloadsFor('results'))}
-                    </div>
-                    <strong>
-                      {t('pages.dataProcessing.bundle.advancedFiles', 'Advanced data')}
-                    </strong>
-                    <div className={styles.bundleDownloadGrid}>
-                      {productDownloadCards(downloadsFor('advanced_data'))}
-                    </div>
-                    <strong>{t('pages.dataProcessing.bundle.auditFiles', 'Audit evidence')}</strong>
-                    <div className={styles.bundleDownloadGrid}>
-                      <section className={styles.bundleDownloadItem}>
-                        <strong>calculation-bundle.json</strong>
-                        <code>{bundleData.manifestSha256}</code>
-                        <Button
-                          size='small'
-                          icon={<DownloadOutlined />}
-                          loading={downloadingPath === 'calculation-bundle.json'}
-                          disabled={downloadingPath !== null}
-                          onClick={() =>
-                            void downloadVerifiedArtifact(
-                              'calculation-bundle.json',
-                              null,
-                              'calculation-bundle.json',
-                              bundleData.manifestDownload,
-                            )
-                          }
-                        >
-                          {t('pages.dataProcessing.bundle.download', 'Download')}
-                        </Button>
-                      </section>
-                      {productDownloadCards(downloadsFor('audit_evidence'))}
-                    </div>
-                  </Space>
-                ),
-              },
-            ].filter(
-              (item) =>
-                !view || (view === 'exports' ? item.key === 'downloads' : item.key !== 'downloads'),
-            )}
-          />
-        </Spin>
+                    >
+                      {t('pages.dataProcessing.bundle.download', 'Download')}
+                    </Button>
+                  </section>
+                  {productDownloadCards(downloadsFor('audit_evidence'))}
+                </div>
+              </Space>
+            ),
+          },
+        ].filter(
+          (item) =>
+            !view || (view === 'exports' ? item.key === 'downloads' : item.key !== 'downloads'),
+        )}
+      />
+
+      {view !== 'results' && (
         <Collapse
           items={[
             {
@@ -779,7 +905,19 @@ const CalculationBundlePanel = ({
             },
           ]}
         />
-      </Space>
+      )}
+    </Space>
+  );
+  if (view === 'results') return content;
+  return (
+    <Card
+      title={
+        view === 'exports'
+          ? t('pages.dataProcessing.workspace.exports', 'Exports')
+          : t('pages.dataProcessing.resultView.title', 'Process results')
+      }
+    >
+      {content}
     </Card>
   );
 };

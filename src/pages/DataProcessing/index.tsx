@@ -2527,6 +2527,10 @@ const DataProcessing = () => {
                 key={`${getDataProductTaskOwnerId()}:${selectedPreviewPackageId}:${resultProcess.id}:${resultProcess.version}`}
                 packageId={selectedPreviewPackageId as string}
                 view='results'
+                onOpenExports={() => {
+                  setResultProcess(null);
+                  handleTabChange('exports');
+                }}
                 initialProcessId={resultProcess.id}
                 initialProcessVersion={resultProcess.version}
                 processName={resultProcess.name}

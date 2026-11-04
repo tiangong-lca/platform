@@ -271,11 +271,6 @@
   width: 100%;
 }
 
-.bundleCard {
-  width: 100%;
-  border-top: 3px solid var(--ant-color-primary);
-}
-
 .closureCard {
   margin-top: 12px;
   border-left: 3px solid var(--ant-color-primary);
@@ -322,12 +317,99 @@
   font-size: 11px;
 }
 
-.bundleToolbar {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--ant-color-border-secondary);
-  border-radius: 8px;
-  background: var(--ant-color-fill-quaternary);
+.processSummary {
+  overflow-wrap: anywhere;
+  dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 16px;
+    margin-bottom: 0;
+  }
+  dt {
+    color: var(--ant-color-text-secondary);
+  }
+  dd,
+  dd :global(.ant-typography) {
+    margin: 0;
+    min-width: 0;
+  }
+}
+
+.inventoryControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  > :first-child {
+    width: min(200px, 100%);
+  }
+  > :global(.ant-select) {
+    min-width: 100px;
+  }
+  > button {
+    margin-inline-start: auto;
+  }
+}
+
+.flowName,
+.flowUuid code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.flowUuid code {
+  font-size: 12px;
+  color: var(--ant-color-text-secondary);
+  user-select: all;
+}
+
+@media (max-width: 600px) {
+  .inventoryTable {
+    table,
+    thead,
+    tbody {
+      display: block;
+      width: 100%;
+    }
+    colgroup,
+    :global(.ant-table-measure-row) {
+      display: none;
+    }
+    :global(.ant-table-thead) > tr,
+    :global(.ant-table-row) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 60px 122px 44px;
+      align-items: baseline;
+    }
+
+    thead th.flowUuid {
+      display: none;
+    }
+    :global(.ant-table-tbody) > tr:global(.ant-table-row) {
+      border-bottom: 1px solid var(--ant-color-border-secondary);
+    }
+    :global(.ant-table-tbody) > tr:global(.ant-table-row) > td:global(.ant-table-cell) {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    :global(.ant-table-tbody) > tr:global(.ant-table-row) > td.flowUuid:global(.ant-table-cell) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      padding-top: 0;
+      padding-bottom: 8px;
+    }
+    td.flowUuid::before {
+      content: 'UUID';
+      margin-inline-end: 6px;
+      font-size: 11px;
+      color: var(--ant-color-text-secondary);
+    }
+  }
+}
+
+.resultNumber {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .bundleProcessSelect {

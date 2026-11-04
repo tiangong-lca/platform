@@ -110,12 +110,23 @@ jest.mock('@ant-design/icons', () =>
 jest.mock('@/pages/DataProcessing/CalculationBundlePanel', () => ({
   __esModule: true,
   formatBundleNumber: (value: number) => (Number.isFinite(value) ? String(value) : '-'),
-  default: ({ packageId, initialProcessId, initialProcessVersion, onReviewCalculation }: any) => (
+  default: ({
+    packageId,
+    initialProcessId,
+    initialProcessVersion,
+    onReviewCalculation,
+    onOpenExports,
+  }: any) => (
     <div data-testid='calculation-bundle-panel'>
       {packageId}
       <span data-testid='selected-result-process'>
         {initialProcessId}@{initialProcessVersion}
       </span>
+      {onOpenExports && (
+        <button type='button' onClick={onOpenExports}>
+          Open result downloads
+        </button>
+      )}
       {onReviewCalculation ? (
         <button type='button' onClick={onReviewCalculation}>
           Review calculation
@@ -4064,6 +4075,11 @@ describe('DataProcessing page', () => {
       'process-a@01.00.000',
     );
     expect(mockCreateLciaResultBuildRequest).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Open result downloads' }));
+    expect(screen.queryByRole('dialog', { name: 'Process results' })).not.toBeInTheDocument();
+    expect(mockHistoryReplace).toHaveBeenLastCalledWith(
+      expect.objectContaining({ search: expect.stringContaining('tab=exports') }),
+    );
   });
 
   it('keeps directory filters on entry and return without exposing workflow tabs in the list', async () => {

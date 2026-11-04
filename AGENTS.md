@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: ef9f35161687826395629a066405f2e6105dedc5
-lastReviewedNote: 'platform #1414: reviewed exact TIDAS SDK 0.6.0 adoption and existing consumer tests; runtime, validation policy, delivery gates and deployment authority are unchanged.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: df61172bc54819c4149ab6ecc3be93c34e4420c6
+lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -145,7 +145,7 @@ Do not start from additional governed source docs, proposal docs, or README-leve
 - the unified-German historical review record lives in `docs/plans/i18n-de-DE/README.md`; Pilot/catalog/delta confirmations validate only their frozen snapshots, while current `de-DE` copy is governed by the tracked baseline and automated correction overlay in `docs/plans/i18n/corrections.json` plus the shared context/quality/activation gate
 - repo-local documentation maintenance is enforced locally by the pre-push docpact gate; `.github/workflows/ai-doc-lint.yml` is manual-dispatch fallback
 - dataset-validation adapters live in `src/pages/*/sdkValidation.ts`; shared localized validation helpers live in `src/pages/Utils/validation/**`
-- `tests/package-contracts/installedTidasSdk.contract.test.mjs` resolves the real installed `@tiangong-lca/tidas-sdk` `0.5.0` package outside Jest's SDK mapper and protects all seven dataset factories, the normalized `validateEnhanced` error envelope, singleton/ordered Process review acceptance, and required Process general-comment validation
+- `tests/package-contracts/installedTidasSdk.contract.test.mjs` resolves the real installed `@tiangong-lca/tidas-sdk` `0.6.0` package outside Jest's SDK mapper and protects all seven dataset factories, the normalized `validateEnhanced` error envelope, singleton/ordered Process review acceptance, and required Process general-comment validation
 - data workflow result fixture relationships live in `tests/data-workflows/fixtures/result/README.md`; proof selection stays in `docs/agents/repo-validation.md`
 - run Umi-generating focused tests, coverage, and `pnpm prepush:gate` serially; for ordinary delivery, use focused proof during iteration and let the push hook own the one full gate after the final controlled tracked change. Run manual hermetic browser qualification on the open business PR before merge or release-to-dev when the change risk warrants it, so a failure can be fixed on that same PR. Deterministic release/promotion pushes use only their repo-owned restricted profiles because the exact dev Release PR owns the non-browser release gate. The hook skips no-update and raw deletion-only pushes, accepts `HEAD` only as the current exact branch source, and rejects other ineligible checked ref shapes before any expensive gate.
 - maintained dependency patches use the native pnpm exact-version mechanism in `patches/`; dependency maintenance owns their source, retirement and consumer-proof contract
@@ -178,6 +178,7 @@ Keep these entry-level facts in `AGENTS.md`. Use `DEV.md` and `docs/agents/repo-
 - exact-candidate local release E2E: `pnpm e2e:env:install`, `pnpm e2e:env:doctor`, then `pnpm e2e:release`
 - exact-candidate scope-closure proof: `pnpm test:qualification:scope-closure:browser --output <result.json> --run-id <uuid>` with the documented non-production confirmation and loopback backend environment
 - build when shipped behavior, branding/package surfaces, or static assets change: `pnpm build`
+- standalone Study report view/package: `pnpm study-report:build`, `pnpm study-report:test:package`, and separately selected `pnpm study-report:test:browser`; [renderer contract](docs/agents/study-report-renderer-contract.md) owns view/trust/release limits
 - protected-branch parity gate: `pnpm prepush:gate`
 - static release preflight: `pnpm release:static-preflight` (`release:preflight` is a compatibility alias); this validates tracked locale/reference contracts but does not claim browser execution
 - optional content-addressed browser qualification: dispatch `.github/workflows/i18n-semantic-e2e.yml` for the chosen business-PR ref, or run `pnpm e2e:qualification:key` then `pnpm e2e:qualify --proof .local/e2e-release/qualification-proof.json`; verify with `pnpm release:proof:verify --proof <path>`
