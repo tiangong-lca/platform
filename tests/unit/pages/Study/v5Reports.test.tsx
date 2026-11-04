@@ -211,6 +211,17 @@ it('uses V5 export literals and workflow identity and generates a V5 recipient l
       'v5',
     ),
   );
+  const download = screen.getByRole('button', { name: 'pages.study.download' });
+  await waitFor(() => expect(download).toBeEnabled());
+  await act(async () => {
+    fireEvent.click(download);
+  });
+  await waitFor(() => expect(mockDownload).toHaveBeenCalledWith('export', 'export-v5', 'v5'));
+  expect(mockReview).toHaveBeenCalledWith(
+    { operation: 'export.read', exportId: 'export-v5' },
+    undefined,
+    'v5',
+  );
   fireEvent.change(screen.getByLabelText('pages.study.recipient'), {
     target: { value: share.recipientId },
   });

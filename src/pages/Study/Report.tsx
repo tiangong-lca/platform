@@ -81,15 +81,7 @@ function ReportHistory({
   );
 }
 
-export function ExactReport({
-  id,
-  hash,
-  api = 'v4',
-}: {
-  id: string;
-  hash: string;
-  api?: ReportApi;
-}) {
+export function ExactReport({ id, hash, api }: { id: string; hash: string; api: ReportApi }) {
   const client = reportClient(api);
   const t = useStudyText();
   const { initialState } = useModel('@@initialState');
