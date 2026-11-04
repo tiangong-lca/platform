@@ -18,9 +18,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/study-report.yml
   - tests/unit/config/studyReportWorkflow.test.ts
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: cb9298cb1bc9e15598d1270a34089e2805b7acfd
-lastReviewedNote: 'Platform #1442: reviewed native print correction: complete static expanded evidence and every filtered fact print without JS or mutation of interactive state; full-width print records avoid evidence clipping. Generic view3 text now counts Unicode code points and rejects unpaired scalars, matching f1a36cee. Original renderer1/2 and superseded8b artifact remain unchanged. Independent fix recheck, full checked push, CI, V6 and Main/root remain separate.'
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: 7ce24ea3940269d488a045ba2dadf6a0b01c027e
+lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
 related:
   - repo-architecture.md
   - repo-validation.md

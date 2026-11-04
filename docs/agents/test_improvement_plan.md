@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: 50629bc4c4c2304beb4b127354c67131b961d61c
-lastReviewedNote: 'Platform #1442: strict act synchronization is test-only; canonical gate exposed source-bound locale validation digests needing regeneration. Reviewed16 JSON outputs:56 changed SHA fields only; copy, rules, flags, source digests, guard/timeouts and product/build inputs unchanged. Locale contracts19/19 and all4 activation checks pass. Existing fail-closed normalizer proves identical hosted/local mapped20668/20668 branches, no waiver. Updated sealed-e2e source bridge and fresh strict gate/hosted CI remain required; no rebuilt binary or runtime action.'
+lastReviewedCommit: 7ce24ea3940269d488a045ba2dadf6a0b01c027e
+lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
 ---
 
 # Testing Strategy

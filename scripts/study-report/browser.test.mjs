@@ -248,8 +248,12 @@ test('packed method HTML preserves mandatory evidence and local controls offline
               'method-sources',
             ]) {
               const link = page.locator(`nav a[href="#${id}"]`);
+              const navigation = page.waitForURL((url) => url.hash === '#' + id, {
+                waitUntil: 'load',
+              });
               await link.focus();
               await page.keyboard.press('Enter');
+              await navigation;
               assert.equal(new URL(page.url()).hash, '#' + id);
             }
             assert.equal(await page.locator('img,iframe,object,a[href^="http"],base').count(), 0);
