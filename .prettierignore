@@ -31,3 +31,7 @@ vendor/study-renderer/
 # Contained immutable Edge summary/view validator and its producer metadata.
 /src/standalone/studyReport/methodProtocol*
 /tests/fixtures/study-report/view-v3.json
+
+# Exact synthetic owner bytes used by the V6 reader integrity proof.
+/tests/fixtures/study-method/facts.json
+/tests/fixtures/study-method/worker.json

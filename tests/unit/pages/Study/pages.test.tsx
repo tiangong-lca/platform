@@ -7,6 +7,7 @@ import {
   resolveRouteViewState,
   getRouteViewStateVariantIds,
 } from '@/services/general/routeViewState';
+const mockMethod = jest.fn();
 const mockCore = jest.fn(),
   mockAnalysis = jest.fn(),
   mockReview = jest.fn(),
@@ -24,6 +25,7 @@ jest.mock('@umijs/max', () => ({
 jest.mock('@/services/study/api', () => ({
   ...jest.requireActual('@/services/study/api'),
   core: (...args: unknown[]) => mockCore(...args),
+  method: (...args: unknown[]) => mockMethod(...args),
   analysis: (...args: unknown[]) => mockAnalysis(...args),
   review: (...args: unknown[]) => mockReview(...args),
   subscribeStudyIdentityChange: () => () => {},
@@ -273,4 +275,50 @@ it('keeps numerical interpretation limits visible on the results view', async ()
   mockSearch = '?id=study-a&view=results';
   render(<StudyPage />);
   expect(await screen.findByText('pages.study.noRanking')).toBeInTheDocument();
+});
+
+it('selects method V6 inside reports explicitly while retaining the historical default', async () => {
+  mockMethod.mockImplementation(async (q) =>
+    q.operation === 'capability.read'
+      ? { type: 'capabilities', runtimeEnabled: false, operations: [] }
+      : { type: 'resourcePage', kind: q.kind, studyId: q.studyId, items: [], nextCursor: null },
+  );
+  mockSearch = '?id=study-a&view=reports';
+  render(<StudyPage />);
+  await screen.findByRole('combobox', { name: 'pages.study.reportFamily' });
+  expect(mockMethod).not.toHaveBeenCalled();
+  fireEvent.mouseDown(screen.getByRole('combobox', { name: 'pages.study.reportFamily' }));
+  fireEvent.click(
+    await screen.findByText('pages.study.methodWorkspace', {
+      selector: '.ant-select-item-option-content',
+    }),
+  );
+  await screen.findByText('pages.study.methodQualificationNote');
+  expect(mockMethod).toHaveBeenCalledWith({ operation: 'capability.read' });
+  fireEvent.mouseDown(screen.getByRole('combobox', { name: 'pages.study.reportFamily' }));
+  fireEvent.click(
+    await screen.findByText('pages.study.historical', {
+      selector: '.ant-select-item-option-content',
+    }),
+  );
+  await waitFor(() =>
+    expect(screen.queryByText('pages.study.methodQualificationNote')).not.toBeInTheDocument(),
+  );
+});
+
+it('opens a user-selected V6 exact report from the Study landing page', async () => {
+  render(<StudyPage />);
+  await screen.findByRole('combobox', { name: 'pages.study.reportFamily' });
+  fireEvent.mouseDown(screen.getByRole('combobox', { name: 'pages.study.reportFamily' }));
+  fireEvent.click(await screen.findByText('V6', { selector: '.ant-select-item-option-content' }));
+  fireEvent.change(screen.getByRole('textbox', { name: 'pages.study.reportId' }), {
+    target: { value: 'exact-method-report' },
+  });
+  fireEvent.change(screen.getByRole('textbox', { name: 'pages.study.reportHash' }), {
+    target: { value: 'a'.repeat(64) },
+  });
+  fireEvent.click(screen.getByRole('button', { name: 'pages.study.openReport' }));
+  expect(mockPush).toHaveBeenCalledWith(
+    `/study-report?id=exact-method-report&hash=${'a'.repeat(64)}&api=6`,
+  );
 });

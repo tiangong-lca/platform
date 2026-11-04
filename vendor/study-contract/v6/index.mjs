@@ -27141,6 +27141,9 @@ var methodFactsSchema = rawFactsSchema.superRefine((value, ctx) => {
     ctx.addIssue({ code: "custom", message: "exact method fact selector bindings required" });
   }
 });
+function parseMethodFacts(input3) {
+  return methodFactsSchema.parse(input3);
+}
 function parseMethodConfig(input3) {
   return methodConfigSchema.parse(input3);
 }
@@ -55865,6 +55868,80 @@ function validateResponseForRequest2(request, response) {
   if (!valid) throw new StudyCodecError("REFERENCE_MISMATCH", "response.selection");
 }
 
+// contracts/lca-study/v6/facts_reader.ts
+async function parseMethodFactsForAssessment(bytes, assessmentRecord) {
+  try {
+    const record6 = assessmentSchema.parse(assessmentRecord), ref = record6.factsRef;
+    if (record6.execution.status !== "completed" || !ref || bytes.length > METHOD_FACTS_MAX_BYTES || bytes.length !== ref.byteSize || await sha256(bytes) !== ref.contentHash)
+      throw new Error("facts_bytes");
+    const facts = parseMethodFacts(
+      JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes))
+    );
+    if (facts.studyId !== record6.studyId || facts.assessmentId !== record6.assessmentId || facts.profileId !== record6.profileId || facts.configHash !== record6.configHash || await methodConfigHash(record6.config) !== record6.configHash || !sameMethodJson(facts.config, record6.config) || !sameMethodJson(facts.moduleRef, record6.config.moduleRef) || facts.baseline.runId !== record6.config.baselineRunId)
+      throw new Error("facts_record");
+    return facts;
+  } catch {
+    throw new StudyCodecError("REFERENCE_MISMATCH", "response.method_facts");
+  }
+}
+
+// contracts/lca-study/v6/report_content.ts
+var methodReportContentSchema = external_exports.object({
+  schemaVersion: external_exports.literal("lca.study-method-report-content.v1"),
+  reportRevisionId: idSchema,
+  studyId: idSchema,
+  templateId: external_exports.literal(REPORT_TEMPLATE3),
+  runIds: external_exports.array(idSchema).length(1),
+  methodAssessmentIds: external_exports.array(idSchema).length(1),
+  factsRefs: external_exports.array(methodFactsRefSchema).length(1),
+  factsBindingHash: hashSchema,
+  content: reportContentSchema3,
+  claims: external_exports.array(
+    reportContentSchema3.shape.claims.element.extend({ fact: methodCatalogFactSchema }).strict()
+  ).min(1).max(256),
+  methodAssessment: methodSummarySchema
+}).strict().superRefine((value, ctx) => {
+  const summary = value.methodAssessment;
+  if (summary.studyId !== value.studyId || summary.assessmentId !== value.methodAssessmentIds[0] || summary.baseline.runId !== value.runIds[0] || !sameMethodJson(summary.factsRef, value.factsRefs[0]) || value.claims.length !== value.content.claims.length || value.claims.some((stored, index) => {
+    const { fact, ...claim3 } = stored;
+    const original = value.content.claims[index], source = summary.factCatalog.find((f) => f.factId === claim3.factId);
+    return !sameMethodJson(claim3, original) || !sameMethodJson(claim3.bundleRef, value.factsRefs[0]) || !source || !sameMethodJson(fact, source) || claim3.canonicalValue !== source.canonicalValue || claim3.unit !== source.unit;
+  }))
+    ctx.addIssue({
+      code: "custom",
+      message: "exact stored draft, mandatory evidence and claim identities required"
+    });
+});
+
+// contracts/lca-study/v6/artifact_readers.ts
+async function read(bytes, ref, max) {
+  if (bytes.length > max || bytes.length !== ref.byteSize || await sha256(bytes) !== ref.contentHash)
+    throw Error("artifact_binding");
+  return parseCanonicalBytes(bytes);
+}
+async function parseMethodEvidenceForRecord(bytes, evidenceRecord) {
+  try {
+    const record6 = methodEvidenceRecordSchema.parse(evidenceRecord);
+    const body = methodEvidenceSchema.parse(await read(bytes, record6.artifactRef, 65536));
+    if (body.requirementId !== record6.requirementId || body.declaredKind !== record6.declaredKind)
+      throw Error("evidence_record");
+    return body;
+  } catch {
+    throw new StudyCodecError("REFERENCE_MISMATCH", "response.method_evidence");
+  }
+}
+async function parseMethodReportContentForRevision(bytes, reportRevision) {
+  try {
+    const record6 = reportRevisionSchema4.parse(reportRevision);
+    const content = methodReportContentSchema.parse(await read(bytes, record6.contentRef, 4194304));
+    if (record6.contentHash !== record6.contentRef.contentHash || content.reportRevisionId !== record6.reportRevisionId || content.studyId !== record6.studyId || content.templateId !== record6.templateId || !sameMethodJson(content.runIds, record6.runIds) || !sameMethodJson(content.methodAssessmentIds, record6.methodAssessmentIds) || !sameMethodJson(content.factsRefs, record6.factsRefs) || await methodConfigHash(content.methodAssessment.config) !== content.methodAssessment.configHash)
+      throw Error("report_record");
+    return content;
+  } catch {
+    throw new StudyCodecError("REFERENCE_MISMATCH", "response.method_report_content");
+  }
+}
+
 // contracts/lca-study/v6/codec.ts
 function parseRequest(input3) {
   if (input3 && typeof input3 === "object" && "schemaVersion" in input3 && input3.schemaVersion !== API_SCHEMA5)
@@ -55989,6 +56066,9 @@ export {
   methodEvidenceHash,
   operationMetadata3 as operationMetadata,
   parseExportBundle4 as parseExportBundle,
+  parseMethodEvidenceForRecord,
+  parseMethodFactsForAssessment,
+  parseMethodReportContentForRevision,
   parseRequest,
   parseResponse,
   signExportManifest,

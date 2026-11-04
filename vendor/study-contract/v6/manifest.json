@@ -3,7 +3,7 @@
   "apiSchema": "lca.study-api.v6",
   "contractVersion": "6.0.0",
   "sourceRepository": "tiangong-lca/edge-functions",
-  "sourceCommit": "a33a5fbcc8f76f2cf29f68792d7124d6cce94615",
+  "sourceCommit": "77e268f2fedea0359fc1f364a9817d2390e8df69",
   "sourceStatus": "committed",
   "toolchain": {
     "node": "24.19.0",
@@ -117,6 +117,11 @@
       "bytes": 4422
     },
     {
+      "path": "contracts/lca-study/v6/artifact_readers.ts",
+      "sha256": "06d7c36b1e5c0484f9ec881cd210b85f66769a752a78a1b911fd0ebab8f62f3d",
+      "bytes": 2568
+    },
+    {
       "path": "contracts/lca-study/v6/authoring.ts",
       "sha256": "f5892a8053c4ddc7335a5880241943a27157d7a18627f5122b8fa09fe7898d91",
       "bytes": 10492
@@ -128,8 +133,8 @@
     },
     {
       "path": "contracts/lca-study/v6/codec.ts",
-      "sha256": "46fd29905ede9025ca13dca26906cbdaf6064ac782772bf8e28b86c6feef7f57",
-      "bytes": 7132
+      "sha256": "60b8928da51c9142fd68b28d44c252c1924edc73d3a6d8644ecd716cc81118a7",
+      "bytes": 7476
     },
     {
       "path": "contracts/lca-study/v6/evidence_contract.ts",
@@ -142,6 +147,11 @@
       "bytes": 8590
     },
     {
+      "path": "contracts/lca-study/v6/facts_reader.ts",
+      "sha256": "8c127467601486133dada7299f9ba4024cbca4f818f998214bb3d2c56a60f2e7",
+      "bytes": 1569
+    },
+    {
       "path": "contracts/lca-study/v6/module_identity.ts",
       "sha256": "87837937f2a284e506ce708d3d5fc7d201b6c2c6177deff7474fb40b8856f76b",
       "bytes": 469
@@ -150,6 +160,11 @@
       "path": "contracts/lca-study/v6/owner_json.ts",
       "sha256": "e5213827c4363f9f40aa25f148a8db987cd197b60fe8e002691c8d54ddb0c51b",
       "bytes": 7306
+    },
+    {
+      "path": "contracts/lca-study/v6/report_content.ts",
+      "sha256": "f9c44fcee01f73e22990bc5e4c8ab855b43e4cb8034fef51e6bffa24865fd3f7",
+      "bytes": 2192
     },
     {
       "path": "contracts/lca-study/v6/requests.ts",
@@ -293,8 +308,8 @@
     },
     {
       "path": "scripts/build-study-contract.mjs",
-      "sha256": "5cf0dc9592e8737de076cc9cfdb3654a787ee2c09f482b1b2010b461ca8595c9",
-      "bytes": 16224
+      "sha256": "8ef3ac680a4ebce6c30d902af14e18c7b53ba1a3e44360305dc6a170aaa4a8ae",
+      "bytes": 17306
     },
     {
       "path": "supabase/functions/_shared/study/vendor/renderer-v2/viewModel.js",
@@ -480,13 +495,13 @@
   "files": [
     {
       "path": "index.mjs",
-      "sha256": "66715e4d92d3beac236770ec04f0308d97958e67268721db50f882dfd07cc2ee",
-      "bytes": 1956370
+      "sha256": "3f0a6f5f8927c6763d82cdd7f2d685b3add4babd11ede1acf1680c5fb32f41f6",
+      "bytes": 1960965
     },
     {
       "path": "index.d.ts",
-      "sha256": "4e5ac7b8d8fec42f52bed24266e56cda4b5ab2c15785437d66937aba1eae07dd",
-      "bytes": 75125
+      "sha256": "af9317e49f720d5126c84a4d7fe992da5ce60b09c9020a84c31de1cdb1251ca4",
+      "bytes": 99735
     },
     {
       "path": "request.schema.json",

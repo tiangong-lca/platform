@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 29d4d9d036b26c610f0d6991ddb82f73a2de48e1
-lastReviewedNote: 'Platform #1442: reviewed method view3/renderer3 mandatory20/25/58 disclosure, exact Edge f1a36cee validator/module metadata and retained44da renderer2 bytes. This is source/document review; independent review, V6 client/runtime, full gates and release/root delivery remain separate. Existing branch/auth/dependency/gate and locale authority remain unchanged; the third-party validation locale map has one exact audit contract.'
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: a8f2dbfb5c4b50d470a1adf027f402d74d224556
+lastReviewedNote: 'Platform #1442: reviewed V6 owner77e268f reader/async facade, exact a33 schema compatibility, explicit method authoring, current core/runtime/resource fences, original-schema journals, mandatory20/25/58 disclosure and immutable report CAS/successors. Working-tree focused311tests and100% Study coverage pass; full gate, independent app review, actual parent runtime and delivery/root remain separate. Renderer94ce and retained1/2 bytes unchanged.'
 ---
 
 # Testing Patterns Reference

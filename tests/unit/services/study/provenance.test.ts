@@ -5,8 +5,8 @@ import path from 'node:path';
 it.each([
   [
     'v6',
-    'c1fee1ab2b990d96ff160d2a86f6d4f4690122c8ebb0af30d1a64bcf29c77f84',
-    'a33a5fbcc8f76f2cf29f68792d7124d6cce94615',
+    '13af25e3f1d7df26aab59afa0493b75906818b8104b5647353512313c4f005e8',
+    '77e268f2fedea0359fc1f364a9817d2390e8df69',
   ],
   [
     'v2',
@@ -48,3 +48,16 @@ it.each([
     );
   },
 );
+
+it('retains exact a33 request/response interface bytes while adopting additive 77e reader helpers', () => {
+  const root = path.resolve(process.cwd(), 'vendor/study-contract/v6');
+  for (const [name, hash] of [
+    ['request.schema.json', '7da790012370d5e15c8ecbb33a81af1a1c0c4c493c09481c50c4ef6a278aa95b'],
+    ['response.schema.json', 'f5c4a752be1429aba6a9890c5fd71e4f63f6ee6eb2c70a160f001601aa4ae1c3'],
+  ])
+    expect(
+      createHash('sha256')
+        .update(fs.readFileSync(path.join(root, name)))
+        .digest('hex'),
+    ).toBe(hash);
+});

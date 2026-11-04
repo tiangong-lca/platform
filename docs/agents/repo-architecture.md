@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: cb9298cb1bc9e15598d1270a34089e2805b7acfd
-lastReviewedNote: 'Platform #1442: reviewed native print correction: complete static expanded evidence and every filtered fact print without JS or mutation of interactive state; full-width print records avoid evidence clipping. Generic view3 text now counts Unicode code points and rejects unpaired scalars, matching f1a36cee. Original renderer1/2 and superseded8b artifact remain unchanged. Independent fix recheck, full checked push, CI, V6 and Main/root remain separate.'
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: a8f2dbfb5c4b50d470a1adf027f402d74d224556
+lastReviewedNote: 'Platform #1442: reviewed V6 owner77e268f reader/async facade, exact a33 schema compatibility, explicit method authoring, current core/runtime/resource fences, original-schema journals, mandatory20/25/58 disclosure and immutable report CAS/successors. Working-tree focused311tests and100% Study coverage pass; full gate, independent app review, actual parent runtime and delivery/root remain separate. Renderer94ce and retained1/2 bytes unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -324,4 +324,6 @@ Result preview uses the shared data-list pagination defaults through the native 
 
 Private solver and published `process_all_impacts` rows retain optional `impact_version` through normalization. A result keeps its frozen numeric value, revision and unit; labels may be localized only from matching method ID/revision metadata. Saved rows for the same method are replaced by the returned solver rows without collapsing distinct revisions. Missing revisions remain unknown and do not block display. Historical saved results with no unit may use the exact static revision to fill that unit; explicit frozen units, including an empty unit, are never overwritten by this enrichment. These are result-display rules and do not change calculation eligibility or data-quality policy.
 
-The Study report/share adapter explicitly selects retained V4 or advanced V5 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` does not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
+The Study report/share adapter explicitly selects retained V4, advanced V5 or method V6 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` / `api=6` do not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
+
+Method authoring is an explicit selection inside the existing reports tab. `src/services/study/method.ts` delegates exact evidence/facts/stored-content reads to the contained V6 owner parsers; the UI copies supplied facts and preserves immutable predecessors. The [Study consumer contract](study-workbench-contract.md) owns its permission, recovery and qualification boundaries.
