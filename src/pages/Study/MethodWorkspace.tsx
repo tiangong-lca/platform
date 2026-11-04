@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react';
 import {
   expectType,
   method,
+  prepareMethodRequest,
   newWriteKey,
   StudyRequestError,
   type MethodRequest,
@@ -483,15 +484,15 @@ function MethodAssessment({
                   })),
                 };
                 const result = expectType(
-                  await method(
-                    {
+                  await prepareMethodRequest(
+                    async () => ({
                       operation: 'method.assessment.request',
                       studyId,
                       profileId: 'lca.study-method-pef-2021-ef31-cement-intermediate.v1',
                       config,
                       configHash: await methodConfigHash(config),
                       idempotencyKey: newWriteKey(),
-                    },
+                    }),
                     `study:${studyId}`,
                   ),
                   'methodAssessment',
@@ -556,19 +557,25 @@ function MethodDraftEditor({
   const readonly = report?.status === 'frozen' && !successor;
   const selectedIds = draft.claims.map((claim) => claim.factId);
   const updateClaims = (ids: string[]) => {
-    const claims = ids.map((id, index) => {
-      const retained = draft.claims.find((claim) => claim.factId === id);
-      if (retained) return retained;
+    const claims = draft.claims.filter((claim) => ids.includes(claim.factId));
+    const reserved = new Set(draft.claims.map((claim) => claim.claimId));
+    for (const id of ids) {
+      if (claims.some((claim) => claim.factId === id)) continue;
       const fact = facts.factCatalog.find((value) => value.factId === id)!;
-      return {
-        claimId: `fact-${index + 1}-${facts.factCatalog.indexOf(fact)}`,
+      const prefix = `fact-${facts.factCatalog.indexOf(fact) + 1}`;
+      let claimId = prefix;
+      let suffix = 1;
+      while (reserved.has(claimId)) claimId = `${prefix}-${suffix++}`;
+      reserved.add(claimId);
+      claims.push({
+        claimId,
         bundleRef: assessment.factsRef!,
         factId: fact.factId,
         canonicalValue: fact.canonicalValue,
         unit: fact.unit,
-        display: { style: 'exact' as const },
-      };
-    });
+        display: { style: 'exact' },
+      });
+    }
     const keep = (values: string[]) =>
       values.filter((id) => claims.some((claim) => claim.claimId === id));
     setDraft({

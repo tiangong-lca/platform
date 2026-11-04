@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: a8f2dbfb5c4b50d470a1adf027f402d74d224556
-lastReviewedNote: 'Platform #1442: reviewed V6 owner77e268f reader/async facade, exact a33 schema compatibility, explicit method authoring, current core/runtime/resource fences, original-schema journals, mandatory20/25/58 disclosure and immutable report CAS/successors. Working-tree focused311tests and100% Study coverage pass; full gate, independent app review, actual parent runtime and delivery/root remain separate. Renderer94ce and retained1/2 bytes unchanged.'
+lastReviewedCommit: d715c6d3dbf5ec20cf3bda3f6c1d43ecb5eec8b6
+lastReviewedNote: 'Platform #1442: independent d715 review confirmed pre-hash identity rebinding and duplicate-fact claim loss; reviewed working-tree fixes capture identity before owner hashing, retain it through response/checksum, preserve all retained claims and collision-free IDs. Focused322tests/100% Study coverage and exact installed Webpack fallback proof pass. Frozen renderer94ce bytes unchanged; final clean build, full gate, independent recheck, actual parent runtime and delivery/root remain separate.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -327,3 +327,5 @@ Private solver and published `process_all_impacts` rows retain optional `impact_
 The Study report/share adapter explicitly selects retained V4, advanced V5 or method V6 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` / `api=6` do not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
 
 Method authoring is an explicit selection inside the existing reports tab. `src/services/study/method.ts` delegates exact evidence/facts/stored-content reads to the contained V6 owner parsers; the UI copies supplied facts and preserves immutable predecessors. The [Study consumer contract](study-workbench-contract.md) owns its permission, recovery and qualification boundaries.
+
+The SPA's Webpack resolver prefers real `.js` modules and falls back to `.ts` for portable ESM source specifiers. This permits the method renderer source in online previews while preserving retained renderer modules and immutable portable package bytes.

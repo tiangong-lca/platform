@@ -291,7 +291,11 @@ export async function recordJournalFailure(
 }
 
 /** Only the exact validated success clears unresolved state. */
-export async function completeJournal(identity: WriteIdentity, expected: StoredIntent) {
+export async function completeJournal(
+  identity: WriteIdentity,
+  expected: StoredIntent,
+  assertCurrent: () => void = () => {},
+) {
   const current = await readJournal(identity, expected.workflow);
   if (
     !current ||
@@ -299,6 +303,7 @@ export async function completeJournal(identity: WriteIdentity, expected: StoredI
     JSON.stringify(current.request) !== JSON.stringify(expected.request)
   )
     throw new StudyRequestError('RECOVERY_REQUIRED', false);
+  assertCurrent();
   try {
     storage().removeItem(key(identity, expected.workflow));
   } catch {

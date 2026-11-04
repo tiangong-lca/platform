@@ -1,8 +1,8 @@
 version: 1
 layout: repo
 lastReviewedAt: '2026-11-05'
-lastReviewedCommit: 'a8f2dbfb5c4b50d470a1adf027f402d74d224556'
-lastReviewedNote: 'Platform #1442: reviewed V6 owner77e268f reader/async facade, exact a33 schema compatibility, explicit method authoring, current core/runtime/resource fences, original-schema journals, mandatory20/25/58 disclosure and immutable report CAS/successors. Working-tree focused311tests and100% Study coverage pass; full gate, independent app review, actual parent runtime and delivery/root remain separate. Renderer94ce and retained1/2 bytes unchanged.'
+lastReviewedCommit: 'd715c6d3dbf5ec20cf3bda3f6c1d43ecb5eec8b6'
+lastReviewedNote: 'Platform #1442: independent d715 review confirmed pre-hash identity rebinding and duplicate-fact claim loss; reviewed working-tree fixes capture identity before owner hashing, retain it through response/checksum, preserve all retained claims and collision-free IDs. Focused322tests/100% Study coverage and exact installed Webpack fallback proof pass. Frozen renderer94ce bytes unchanged; final clean build, full gate, independent recheck, actual parent runtime and delivery/root remain separate.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.

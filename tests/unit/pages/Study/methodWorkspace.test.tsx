@@ -1,3 +1,4 @@
+import * as owner from '../../../../vendor/study-contract/v6/index.mjs';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import MethodWorkspace from '@/pages/Study/MethodWorkspace';
 import facts from '../../../fixtures/study-method/facts.json';
@@ -47,6 +48,8 @@ jest.mock('@umijs/max', () => ({
 jest.mock('@/services/study/api', () => ({
   ...jest.requireActual('@/services/study/api'),
   method: (...args: unknown[]) => mockMethod(...args),
+  prepareMethodRequest: async (prepare: () => Promise<unknown>, workflow: string) =>
+    mockMethod(await prepare(), workflow),
   recoverPendingStudyWrite: (...args: unknown[]) => mockRecover(...args),
   newWriteKey: () => 'fixed-key',
   readPendingStudyWrite: (...args: unknown[]) => mockPending(...args),
@@ -612,4 +615,43 @@ it('denies task cancellation when the selected assessment has no current cancel 
   await screen.findByRole('textbox', { name: 'pages.study.cancelReason' });
   change('pages.study.cancelReason', 'Reason');
   expect(screen.getByRole('button', { name: 'pages.study.cancelAssessment' })).toBeDisabled();
+});
+
+it('preserves distinct legitimate claims for one fact and allocates collision-free IDs for new facts', async () => {
+  const original = storedFixture.stored.content;
+  const first = { ...original.claims[0], claimId: 'fact-2' };
+  const duplicate = { ...first, claimId: 'second-authored-claim' };
+  const content = {
+    ...original,
+    claims: [first, duplicate],
+    sections: [
+      {
+        sectionId: 'authored',
+        title: 'Separate authored claims',
+        paragraphs: ['Both refer to the same supplied fact.'],
+        claimIds: [first.claimId, duplicate.claimId],
+      },
+    ],
+  };
+  mockReport.mockResolvedValue({ ...storedFixture.stored, content });
+  render(<MethodWorkspace studyId={studyId} canWrite />);
+  await screen.findByRole('button', { name: 'pages.study.recordEvidence' });
+  change('pages.study.reportId', reportId);
+  await screen.findByRole('textbox', { name: 'pages.study.reportTitle' });
+  fireEvent.click(screen.getByRole('checkbox', { name: facts.factCatalog[1].factId }));
+  click('pages.study.saveMethodReport');
+  await waitFor(() =>
+    expect(mockMethod.mock.calls.some(([q]) => q.operation === 'report.save')).toBe(true),
+  );
+  const saved = mockMethod.mock.calls.find(([q]) => q.operation === 'report.save')![0];
+  expect(saved.content.claims.slice(0, 2)).toEqual([first, duplicate]);
+  expect(saved.content.claims[2].claimId).toBe('fact-2-1');
+  expect(saved.content.sections).toEqual(content.sections);
+  expect(() =>
+    owner.parseRequest({
+      ...saved,
+      schemaVersion: 'lca.study-api.v6',
+      requestId: 'duplicate-fact-regression',
+    }),
+  ).not.toThrow();
 });

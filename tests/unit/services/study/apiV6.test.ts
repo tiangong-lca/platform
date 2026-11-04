@@ -1,10 +1,11 @@
 import * as owner from '../../../../vendor/study-contract/v6/index.mjs';
 import view from '../../../fixtures/study-report/view-v3.json';
 import { webcrypto } from 'node:crypto';
-import { TextEncoder } from 'node:util';
+import { TextEncoder, TextDecoder } from 'node:util';
 import {
   review,
   method,
+  prepareMethodRequest,
   readPendingStudyWrite,
   recoverPendingStudyWrite,
   retirePendingStudyWrite,
@@ -141,17 +142,12 @@ it('rejects a retained view.v1 inside a V6 envelope instead of using the legacy 
 });
 
 it('fences a V6 reply when the admitted session changes during its request', async () => {
-  mockSession
-    .mockResolvedValueOnce({
-      data: { session: { user: { id: actor }, access_token: 'current-session' } },
-    })
-    .mockResolvedValue({
+  mockInvoke.mockImplementation(async (_name, { body }) => {
+    mockSession.mockResolvedValue({
       data: { session: { user: { id: 'another-actor' }, access_token: 'replacement-session' } },
     });
-  mockInvoke.mockImplementation(async (_name, { body }) => ({
-    data: envelope(body, actions(body)),
-    error: null,
-  }));
+    return { data: envelope(body, actions(body)), error: null };
+  });
   await expect(
     review(
       { operation: 'resource.actions', resource: { type: 'reportRevision', id: reportId } },
@@ -358,4 +354,217 @@ it('rejects an owner config hash mismatch without disclosing success or retiring
     }),
   ).rejects.toThrow();
   expect((await readPendingStudyWrite(`study:${actor}`)).canRetire).toBe(false);
+});
+
+it.each(['actor', 'client', 'away-back'])(
+  'captures identity before deferred owner config hashing (%s)',
+  async (change) => {
+    let release!: () => void, started!: () => void;
+    const paused = new Promise<void>((resolve) => {
+        release = resolve;
+      }),
+      reached = new Promise<void>((resolve) => {
+        started = resolve;
+      });
+    const running = prepareMethodRequest(async () => {
+      started();
+      await paused;
+      return {
+        operation: 'method.assessment.request',
+        studyId: actor,
+        profileId: 'lca.study-method-pef-2021-ef31-cement-intermediate.v1',
+        config: view.methodAssessment.config as never,
+        configHash: await owner.methodConfigHash(view.methodAssessment.config),
+        idempotencyKey: 'prepared-original-key',
+      };
+    }, `study:${actor}`);
+    void running.catch(() => {});
+    await reached;
+    const listener = mockSubscribe.mock.calls[mockSubscribe.mock.calls.length - 1]![0];
+    const replacement = {
+      user: { id: change === 'actor' ? oldId : actor },
+      access_token: 'replacement-client-token',
+    };
+    mockSession.mockResolvedValue({ data: { session: replacement } });
+    listener('SIGNED_IN', replacement);
+    if (change === 'away-back') {
+      const original = { user: { id: actor }, access_token: 'current-session' };
+      mockSession.mockResolvedValue({ data: { session: original } });
+      listener('SIGNED_IN', original);
+    }
+    release();
+    await expect(running).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
+    expect(mockInvoke).not.toHaveBeenCalled();
+    expect(window.sessionStorage.length).toBe(0);
+    expect(
+      mockSubscribe.mock.results[mockSubscribe.mock.results.length - 1]!.value.data.subscription
+        .unsubscribe,
+    ).toHaveBeenCalledTimes(1);
+  },
+);
+
+it('prepares and submits under the same identity when the owner hash settles unchanged', async () => {
+  mockInvoke.mockImplementation(async (_name, { body }) => ({
+    error: null,
+    data: envelope(body, {
+      type: 'methodAssessment',
+      value: {
+        assessmentId: reportId,
+        studyId: actor,
+        profileId: body.profileId,
+        config: body.config,
+        configHash: body.configHash,
+        execution: { jobId: oldId, status: 'queued' },
+        factsRef: null,
+      },
+    }),
+  }));
+  await expect(
+    prepareMethodRequest(
+      async () => ({
+        operation: 'method.assessment.request',
+        studyId: actor,
+        profileId: 'lca.study-method-pef-2021-ef31-cement-intermediate.v1',
+        config: view.methodAssessment.config as never,
+        configHash: await owner.methodConfigHash(view.methodAssessment.config),
+        idempotencyKey: 'prepared-key',
+      }),
+      `study:${actor}`,
+    ),
+  ).resolves.toMatchObject({ type: 'methodAssessment' });
+  expect(window.sessionStorage.length).toBe(0);
+});
+
+it.each([
+  ['content', 'client'],
+  ['content', 'away-back'],
+  ['journal', 'client'],
+  ['journal', 'away-back'],
+])(
+  'retains the original write when identity changes during %s digest (%s)',
+  async (stage, change) => {
+    const content = {
+      schemaVersion: 'lca.study-method-evidence.v1' as const,
+      requirementId: 'PEF-01',
+      declaredKind: 'sourceRecord' as const,
+      title: 'Digest race source',
+      statement: 'No approval',
+      citations: [],
+    };
+    const ref = {
+      type: 'methodEvidence',
+      id: reportId,
+      contentHash: await owner.methodEvidenceHash(content),
+      digestScope: 'artifact_bytes_sha256',
+      byteSize: owner.canonicalBytes(content).length,
+      mediaType: 'application/json',
+      schemaVersion: content.schemaVersion,
+    };
+    mockInvoke.mockImplementation(async (_name, { body }) => ({
+      error: null,
+      data: envelope(body, {
+        type: 'methodEvidence',
+        value: {
+          schemaVersion: 'lca.study-method-evidence-record.v1',
+          evidenceId: reportId,
+          studyId: actor,
+          requirementId: content.requirementId,
+          declaredKind: content.declaredKind,
+          artifactRef: ref,
+          recordedAt: '2026-11-04T01:00:00Z',
+          status: 'recorded_unverified',
+        },
+      }),
+    }));
+    let release!: () => void,
+      started!: () => void,
+      held = false,
+      journalDigests = 0;
+    const paused = new Promise<void>((resolve) => {
+        release = resolve;
+      }),
+      reached = new Promise<void>((resolve) => {
+        started = resolve;
+      });
+    const actual = crypto.subtle.digest.bind(crypto.subtle);
+    const spy = jest.spyOn(crypto.subtle, 'digest').mockImplementation(async (algorithm, data) => {
+      const text = new TextDecoder().decode(data as ArrayBuffer);
+      const journal = text.includes('lca.study-write-intent.v1');
+      if (journal) journalDigests++;
+      if (
+        !held &&
+        ((stage === 'content' && !journal && text.includes('Digest race source')) ||
+          (stage === 'journal' && journal && journalDigests === 2))
+      ) {
+        held = true;
+        started();
+        await paused;
+      }
+      return actual(algorithm, data);
+    });
+    try {
+      const running = method({
+        operation: 'method.evidence.create',
+        studyId: actor,
+        content,
+        idempotencyKey: 'digest-race-key',
+      });
+      void running.catch(() => {});
+      await reached;
+      const original = mockInvoke.mock.calls[0][1].body;
+      const listener = mockSubscribe.mock.calls[mockSubscribe.mock.calls.length - 1]![0];
+      const replacement = { user: { id: actor }, access_token: 'replacement-client-token' };
+      mockSession.mockResolvedValue({ data: { session: replacement } });
+      listener('TOKEN_REFRESHED', replacement);
+      if (change === 'away-back') {
+        const originalSession = { user: { id: actor }, access_token: 'current-session' };
+        mockSession.mockResolvedValue({ data: { session: originalSession } });
+        listener('TOKEN_REFRESHED', originalSession);
+      }
+      release();
+      await expect(running).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
+      const retained = JSON.parse(journalSnapshot(identity(), `study:${actor}`)!);
+      expect(retained.request).toEqual(original);
+      expect(retained.everAmbiguous).toBe(true);
+      expect(mockInvoke).toHaveBeenCalledTimes(1);
+    } finally {
+      spy.mockRestore();
+    }
+  },
+);
+
+it('discards a read if the same actor changes clients while final claims settle', async () => {
+  let release!: () => void,
+    started!: () => void,
+    calls = 0;
+  const paused = new Promise<void>((resolve) => {
+      release = resolve;
+    }),
+    reached = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+  mockClaims.mockImplementation(async () => {
+    if (++calls === 3) {
+      started();
+      await paused;
+    }
+    return { data: { claims: { sub: actor } }, error: null };
+  });
+  mockInvoke.mockImplementation(async (_name, { body }) => ({
+    error: null,
+    data: envelope(body, actions(body)),
+  }));
+  const running = review(
+    { operation: 'resource.actions', resource: { type: 'reportRevision', id: reportId } },
+    undefined,
+    'v6',
+  );
+  void running.catch(() => {});
+  await reached;
+  const replacement = { user: { id: actor }, access_token: 'another-client' };
+  mockSession.mockResolvedValue({ data: { session: replacement } });
+  mockSubscribe.mock.calls[mockSubscribe.mock.calls.length - 1]![0]('TOKEN_REFRESHED', replacement);
+  release();
+  await expect(running).rejects.toMatchObject({ code: 'AUTH_REQUIRED' });
+  expect(mockInvoke).toHaveBeenCalledTimes(1);
 });

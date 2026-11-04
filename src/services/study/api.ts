@@ -224,12 +224,14 @@ async function invoke(
       v3.validateResponseForRequest(request as v3.StudyApiRequest, response as v3.StudyApiResponse);
     else if (version === 'v4')
       v4.validateResponseForRequest(request as v4.StudyApiRequest, response as v4.StudyApiResponse);
-    else if (version === 'v6')
+    else if (version === 'v6') {
       await v6.validateResponseContentForRequest(
         request as v6.StudyApiRequest,
         response as v6.StudyApiResponse,
       );
-    else
+      await guard!.assertCurrent();
+      guard!.assertUnchanged();
+    } else
       v5.validateResponseForRequest(request as v5.StudyApiRequest, response as v5.StudyApiResponse);
     if (!response.ok) {
       if (identity && intent)
@@ -253,7 +255,7 @@ async function invoke(
         generation !== getTaskCenterIdentityGeneration()
       )
         throw new StudyRequestError('AUTH_REQUIRED', false);
-      await completeJournal(identity, intent);
+      await completeJournal(identity, intent, guard?.assertUnchanged);
     }
     guard?.assertUnchanged();
     return response.data;
@@ -274,10 +276,21 @@ export const core = (body: CoreRequest, workflow?: string) =>
 export const analysis = (body: AnalysisRequest, workflow?: string) =>
   invoke('v3', body, workflow) as Promise<AnalysisData>;
 export const review = (body: ReviewRequest, workflow?: string, api: ReportApi = 'v4') =>
-  invoke(api, body, workflow) as Promise<ReviewData>;
+  (api === 'v6'
+    ? withStudyIdentity((guard) => invoke(api, body, workflow, guard))
+    : invoke(api, body, workflow)) as Promise<ReviewData>;
 
 export const method = (body: MethodRequest, workflow?: string) =>
-  invoke('v6', body, workflow) as Promise<MethodData>;
+  withStudyIdentity((guard) => invoke('v6', body, workflow, guard)) as Promise<MethodData>;
+
+/** Capture the admitted actor/client before asynchronous owner hashing prepares a write. */
+export const prepareMethodRequest = (prepare: () => Promise<MethodRequest>, workflow?: string) =>
+  withStudyIdentity(async (guard) => {
+    const body = await prepare();
+    await guard.assertCurrent();
+    guard.assertUnchanged();
+    return invoke('v6', body, workflow, guard) as Promise<MethodData>;
+  });
 
 export async function recoverPendingStudyWrite(workflow: string) {
   return withStudyIdentity(async (guard) => {
