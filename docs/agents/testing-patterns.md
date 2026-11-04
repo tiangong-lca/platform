@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: e2e3b439eb87fc2d0ffdccd0e8a9bc37ab7fd01e
-lastReviewedNote: 'Platform #1442: exact e2e hosted strict-act failure reproduced in three tests; reviewed test-only async-act/select-closure and report-query synchronization. Strict CI355 Study tests/100% focused coverage pass; guard, production, dependencies, timeouts and assertions remain unchanged. Parent reviewed two-file diff with no material finding. Canonical strict gate/current hosted CI pending; sealed e2e actual UI requires an explicit unchanged-production-input bridge, not a rebuilt-binary claim.'
+lastReviewedCommit: 50629bc4c4c2304beb4b127354c67131b961d61c
+lastReviewedNote: 'Platform #1442: strict act synchronization is test-only; canonical gate exposed source-bound locale validation digests needing regeneration. Reviewed16 JSON outputs:56 changed SHA fields only; copy, rules, flags, source digests, guard/timeouts and product/build inputs unchanged. Locale contracts19/19 and all4 activation checks pass. Existing fail-closed normalizer proves identical hosted/local mapped20668/20668 branches, no waiver. Updated sealed-e2e source bridge and fresh strict gate/hosted CI remain required; no rebuilt binary or runtime action.'
 ---
 
 # Testing Patterns Reference
