@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "3f1ba5bee79ee9d85025c946bf6d5e037145c421bac383ce64ca4338df721ea1",
+    "auditedInputDigest": "40a9788e891c2d42b2450984c48340d915a089c84fcb59c708b6f11ed42486bd",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -270310,7 +270310,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Study/Report.tsx",
-          "line": 507,
+          "line": 499,
           "column": 9,
           "symbol": "StudyReportPage",
           "defaultMessage": null,

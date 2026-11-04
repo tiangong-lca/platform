@@ -3,7 +3,7 @@
   "locale": "zh-CN",
   "validationClosure": {
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "3f1ba5bee79ee9d85025c946bf6d5e037145c421bac383ce64ca4338df721ea1",
+    "auditedInputDigest": "40a9788e891c2d42b2450984c48340d915a089c84fcb59c708b6f11ed42486bd",
     "validatedMessageCount": 3750,
     "validatedModules": [
       "$entry",
@@ -43,9 +43,9 @@
     "highRiskMessageCount": 1746,
     "highRiskMessageDigest": "bb6a978ac0da3fd72d806250bfcdf65db93d017d6e9732cf2312a8ed8d41408c",
     "catalogDigest": "013285b96b8147229644b285c7e83e0cf49f87851bbb7c573af4a8b5014b715b",
-    "dossierDigest": "b2a6bb3416c4e5a34943bd79483d754eefce7702d2e55fcc97be4b9ce682bcdc",
+    "dossierDigest": "55f48d357b024ba48c2a37da41659b4e74365a7e9150225a168a1b8bf52f5c39",
     "typedContentDossierDigest": "cea189a77b03f66042197c8383d684813c09e3a0356684d325e62eaf73af4c99",
-    "routeEvidenceDigest": "a5f989463edd88f2e3e9382f52cdc13d8e143e639d18bd1aa6a1049df6eed595",
+    "routeEvidenceDigest": "5d728936ddb879482bb4c28c76525261269b82377f6c03a56eb9b6b06e14abba",
     "scope": "deterministic structure only; semantic translation and rendered route review are separate production blockers owned by #635"
   },
   "validationLanes": [
@@ -100,7 +100,7 @@
         "messageDigest": "1e4f61823d55019f1fc4627cff02e0725da0d63ae0dbab37c26daaeb92bc3605",
         "highRiskMessageCount": 1746,
         "highRiskMessageDigest": "bb6a978ac0da3fd72d806250bfcdf65db93d017d6e9732cf2312a8ed8d41408c",
-        "dossierDigest": "b2a6bb3416c4e5a34943bd79483d754eefce7702d2e55fcc97be4b9ce682bcdc",
+        "dossierDigest": "55f48d357b024ba48c2a37da41659b4e74365a7e9150225a168a1b8bf52f5c39",
         "checks": {
           "nonEmptyTargets": true,
           "icuArgumentSignatureParity": true,
@@ -115,5 +115,5 @@
     }
   ],
   "blockedItems": [],
-  "validationDigest": "08df17045bcd79d75197a297e77a4eceddd58b668bb53cfee8e203dccffd0510"
+  "validationDigest": "231076bf8997ec3514f30d3431900dfc8f127ac16a38bb821ca16792e63e2c18"
 }
