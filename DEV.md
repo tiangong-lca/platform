@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 6a3de4d3c25045992bf0d579a880eb325388b919
-lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
+lastReviewedCommit: 98d806793377f65727caccd28d115e44c1052930
+lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
 ---
 
 # Development Bootstrap
@@ -167,6 +167,7 @@ If no push will occur and a standalone handoff needs final evidence, run `pnpm d
 | native TypeScript 7 web typecheck | `pnpm tsc` |
 | native TypeScript 7 Electron typecheck | `pnpm tsc:electron` |
 | shared CI-style test runner | `pnpm test` |
+| isolated online Study preview navigation/keyboard browser proof | `node --import tsx --test --test-concurrency=1 tests/browser/studyPreviewNavigation.test.mjs` (synthetic component proof only) |
 | direct/focused semantic localization E2E development | `pnpm e2e:dev <Playwright arguments>` (`pnpm test:e2e:i18n` remains the CI-compatible alias) |
 | scope-closure adapter unit proof | `pnpm test:qualification:scope-closure:unit` |
 | scope-closure loopback browser proof | `pnpm test:qualification:scope-closure:browser` (normally invoked by the exact-commit adapter) |

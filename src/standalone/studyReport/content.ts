@@ -1,4 +1,6 @@
-import type { ReportFact, ReportViewModel } from './viewModel.js';
+import type { ReportViewModel } from './viewModel.js';
+
+type ReportFact = ReportViewModel['facts'][number];
 
 export function escapeHtml(value: string): string {
   return value.replace(
@@ -11,11 +13,21 @@ export function escapeHtml(value: string): string {
 const e = escapeHtml;
 
 function factDetails(fact: ReportFact): string {
-  return `<details><summary>Evidence</summary><p>Fact ${e(fact.factId)}<br>Runs ${fact.runIds.map(e).join(', ')}<br>${fact.methodRef === null ? 'No LCIA method (activity or inventory fact)' : `Method ${e(fact.methodRef.id)} @ ${e(fact.methodRef.version)}`}<br>Source ${e(fact.provenance.type)} ${e(fact.provenance.id)}<br>SHA-256 ${e(fact.provenance.contentHash)}</p></details>`;
+  return `<details><summary>Evidence</summary><p>Fact ${e(fact.factId)}<br>Runs ${fact.runIds.map(e).join(', ')}<br>${fact.methodRef === null ? 'No LCIA method' : `Method ${e(fact.methodRef.id)} @ ${e(fact.methodRef.version)}`}<br>Source ${e(fact.provenance.type)} ${e(fact.provenance.id)}<br>SHA-256 ${e(fact.provenance.contentHash)}</p></details>`;
 }
 
-function factValue(fact: ReportFact): string {
-  return fact.canonicalValue === null ? 'Unknown' : e(fact.canonicalValue);
+function factValue(fact: ReportFact, view: ReportViewModel): string {
+  return fact.canonicalValue === null
+    ? view.schemaVersion === 'lca.study-report-view.v1'
+      ? 'Unknown'
+      : 'No numeric value'
+    : e(fact.canonicalValue);
+}
+
+function factReasons(fact: ReportFact): string {
+  return 'reasonCodes' in fact && fact.reasonCodes.length > 0
+    ? `<br><span class="reference">Reason codes: ${fact.reasonCodes.map(e).join(', ')}</span>`
+    : '';
 }
 
 function factTable(
@@ -24,7 +36,7 @@ function factTable(
   domKey: string,
 ): string {
   const facts = table.factIds.map((id) => view.facts.find((fact) => fact.factId === id)!);
-  return `<section id="table-${e(domKey)}" data-report-table><h2>${e(table.title)}</h2><div class="controls"><label>Filter facts<input type="search" placeholder="Label, value, unit or source" aria-controls="rows-${e(domKey)}"></label><label>Order<select aria-label="Order" aria-controls="rows-${e(domKey)}"><option value="original">Report order</option><option value="ascending">Label A to Z</option><option value="descending">Label Z to A</option></select></label><span role="status" aria-live="polite">${facts.length} of ${facts.length} facts shown</span></div><div class="table-scroll" tabindex="0" role="region" aria-label="${e(table.title)}"><table><caption>Supplied result facts; values are preserved without rounding</caption><thead><tr><th scope="col">Fact</th><th scope="col">Value and unit</th><th scope="col">Coverage</th><th scope="col">Provenance</th></tr></thead><tbody id="rows-${e(domKey)}">${facts.map((fact) => `<tr data-label="${e(fact.label)}"><th scope="row">${e(fact.label)}</th><td class="value">${factValue(fact)}<br>${e(fact.unit)}</td><td><span class="coverage ${fact.coverage}">${fact.coverage === 'partial' ? 'Characterized subtotal · incomplete coverage' : fact.coverage === 'unknown' ? 'Unknown · no numeric claim' : 'Complete coverage'}</span></td><td>${factDetails(fact)}</td></tr>`).join('')}</tbody></table></div></section>`;
+  return `<section id="table-${e(domKey)}" data-report-table><h2>${e(table.title)}</h2><div class="controls"><label>Filter facts<input type="search" placeholder="Label, value, unit or source" aria-controls="rows-${e(domKey)}"></label><label>Order<select aria-label="Order" aria-controls="rows-${e(domKey)}"><option value="original">Report order</option><option value="ascending">Label A to Z</option><option value="descending">Label Z to A</option></select></label><span role="status" aria-live="polite">${facts.length} of ${facts.length} facts shown</span></div><div class="table-scroll" tabindex="0" role="region" aria-label="${e(table.title)}"><table><caption>Supplied result facts; values are preserved without rounding</caption><thead><tr><th scope="col">Fact</th><th scope="col">Value and unit</th><th scope="col">Coverage</th><th scope="col">Provenance</th></tr></thead><tbody id="rows-${e(domKey)}">${facts.map((fact) => `<tr data-label="${e(fact.label)}"><th scope="row">${e(fact.label)}</th><td class="value">${factValue(fact, view)}<br>${e(fact.unit)}${factReasons(fact)}</td><td><span class="coverage ${fact.coverage}">${fact.coverage === 'partial' ? 'Characterized subtotal · incomplete coverage' : fact.coverage === 'unknown' ? 'Unknown · no numeric claim' : 'Complete coverage'}</span></td><td>${factDetails(fact)}</td></tr>`).join('')}</tbody></table></div></section>`;
 }
 
 function chart(view: ReportViewModel, specification: ReportViewModel['charts'][number]): string {
@@ -43,8 +55,8 @@ function chart(view: ReportViewModel, specification: ReportViewModel['charts'][n
       const shape =
         value === null || (value !== 0 && width < 0.5)
           ? '<span>Not plottable at this display range</span>'
-          : `<svg viewBox="0 0 300 24" role="img" aria-label="${e(fact.label)}: ${factValue(fact)} ${e(fact.unit)}"><path d="M150 0V24" stroke="#829ba8"/><rect x="${value < 0 ? 150 - width : 150}" y="4" width="${width}" height="16" rx="2" fill="${value < 0 ? '#8b4b06' : '#126c68'}"/></svg>`;
-      return `<div class="chart-row"><span>${e(fact.label)}</span>${shape}<span class="chart-value">${factValue(fact)} ${e(fact.unit)} · ${e(fact.coverage)}</span></div>`;
+          : `<svg viewBox="0 0 300 24" role="img" aria-label="${e(fact.label)}: ${factValue(fact, view)} ${e(fact.unit)}"><path d="M150 0V24" stroke="#829ba8"/><rect x="${value < 0 ? 150 - width : 150}" y="4" width="${width}" height="16" rx="2" fill="${value < 0 ? '#8b4b06' : '#126c68'}"/></svg>`;
+      return `<div class="chart-row"><span>${e(fact.label)}</span>${shape}<span class="chart-value">${factValue(fact, view)} ${e(fact.unit)} · ${e(fact.coverage)}</span></div>`;
     })
     .join('')}</section>`;
 }

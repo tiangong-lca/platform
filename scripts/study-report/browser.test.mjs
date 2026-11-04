@@ -65,7 +65,7 @@ test('packed HTML has local-only usable controls in fresh online/offline desktop
     execFileSync('tar', ['-xzf', path.join(built.output, built.archiveName), '-C', temporary]);
     const renderer = await import(pathToFileURL(path.join(temporary, 'package/index.js')).href);
     const view = JSON.parse(
-      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-v1.json'), 'utf8'),
+      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-v2.json'), 'utf8'),
     );
     const contextData = JSON.parse(
       fs.readFileSync(path.join(root, 'tests/fixtures/study-report/context-v1.json'), 'utf8'),
@@ -138,6 +138,62 @@ test('packed HTML has local-only usable controls in fresh online/offline desktop
           attempts: observations.attempts,
           sockets,
           errors,
+        });
+        await context.close();
+      }
+    }
+    const advanced = JSON.parse(
+      fs.readFileSync(path.join(root, 'tests/fixtures/study-report/view-advanced-v2.json'), 'utf8'),
+    );
+    const advancedHtml = await renderer.renderReport(advanced, contextData);
+    const advancedPath = path.join(temporary, 'advanced-report.html');
+    fs.writeFileSync(advancedPath, advancedHtml);
+    for (const offline of [false, true]) {
+      for (const width of [1280, 390]) {
+        const context = await browser.newContext({ offline, viewport: { width, height: 900 } });
+        const requests = [];
+        context.on('request', (request) => requests.push(request.url()));
+        await observeAttempts(context);
+        const page = await context.newPage();
+        await page.goto(pathToFileURL(advancedPath).href);
+        const parameter = page.locator('tbody tr').filter({ hasText: 'Parameter amount:' });
+        assert.match(await parameter.locator('.value').textContent(), /819\.6kg/u);
+        await parameter.locator('summary').focus();
+        await page.keyboard.press('Enter');
+        assert.equal(await parameter.locator('details').getAttribute('open'), '');
+        assert.match(await parameter.locator('details').textContent(), /No LCIA method/u);
+        assert.doesNotMatch(await parameter.textContent(), /activity or inventory fact/u);
+        const undefinedFact = page
+          .locator('tbody tr')
+          .filter({ hasText: 'Relative response undefined:' });
+        assert.match(await undefinedFact.locator('.value').textContent(), /No numeric value1/u);
+        assert.match(
+          await undefinedFact.locator('.value').textContent(),
+          /Reason codes: zero_baseline_relative_undefined/u,
+        );
+        assert.match(await undefinedFact.textContent(), /Complete coverage/u);
+        assert.match(
+          await page.locator('#section-advanced-settings').textContent(),
+          /No value is imputed/u,
+        );
+        assert.equal(await page.locator('#identity details').count(), 1);
+        assert.equal(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          true,
+        );
+        const observations = await page.evaluate(() => window.__studyObservation);
+        assert.deepEqual(observations, { violations: [], attempts: [] });
+        assert.deepEqual(
+          requests.filter((url) => url !== pathToFileURL(advancedPath).href),
+          [],
+        );
+        records.push({
+          regression: 'advanced-fact-contexts',
+          offline,
+          width,
+          htmlSha256: sha256(advancedHtml),
+          externalRequests: 0,
+          ...observations,
         });
         await context.close();
       }

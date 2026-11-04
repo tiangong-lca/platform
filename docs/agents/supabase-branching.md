@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: '2026-11-04'
-lastReviewedCommit: '1eec63a7f137e535c86fda6d21ccb629488bc9fc'
-lastReviewedNote: 'Platform #1419: reviewed qualified Dev 69753a4 version 0.0.152 with exact Process coverage-warning removal, complete three-way documentation bodies and canonical locale regeneration; Study runtime, renderer, codec and recovery semantics remain unchanged.'
+lastReviewedCommit: '44da4e489dde1f9bbc2ae5cce96912fc0860fa87'
+lastReviewedNote: 'Platform #1437: reviewed explicit V5 report/share links, contained Edge5.0.0 provenance, family-bound queries and original-schema journals, selected-client collaboration/download and unchanged project/auth fences. Old V4 links and intents remain; actual runtime qualification and Main/root delivery are separate.'
 ---
 
 # Supabase Environment And Database Workflow

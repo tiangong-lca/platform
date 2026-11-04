@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: '2026-11-04'
-lastReviewedCommit: 'd8be42ff848d5f45de70fb20aa545ed526f90b40'
-lastReviewedNote: 'Platform #1419: reviewed exact synthetic V2 Study-list first-page fixture and fail-closed owner-codec/transport checks; production guard, every Study write denial, canonical browser actions/timeouts and historical1396 diagnostic boundaries remain unchanged. Actual Study qualification and hosted complete-run evidence remain separate.'
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 98d806793377f65727caccd28d115e44c1052930
+lastReviewedNote: 'Platform #1437: reviewed explicit native chapter/filter/order/evidence proof and source-bound gesture limits: Chromium/Firefox ArrowRight and WebKit horizontal wheel, with failed/default-UA controls preserved. Online/portable runtime bytes unchanged by this test follow-up; actual V5 journal/current CI/Main/root remain separate.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -323,3 +323,5 @@ Result preview uses the shared data-list pagination defaults through the native 
 ## Frozen LCIA display metadata
 
 Private solver and published `process_all_impacts` rows retain optional `impact_version` through normalization. A result keeps its frozen numeric value, revision and unit; labels may be localized only from matching method ID/revision metadata. Saved rows for the same method are replaced by the returned solver rows without collapsing distinct revisions. Missing revisions remain unknown and do not block display. Historical saved results with no unit may use the exact static revision to fill that unit; explicit frozen units, including an empty unit, are never overwritten by this enrichment. These are result-display rules and do not change calculation eligibility or data-quality policy.
+
+The Study report/share adapter explicitly selects retained V4 or advanced V5 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` does not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
