@@ -385,6 +385,25 @@ export async function readArtifact(
   return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
 }
 
+/** Keep the captured identity through exact owner artifact parsing and its asynchronous hash. */
+export async function readMethodArtifact<T>(
+  studyId: string,
+  artifactRef: Extract<MethodRequest, { operation: 'artifact.read' }>['artifactRef'],
+  decode: (bytes: Uint8Array) => Promise<T>,
+): Promise<T> {
+  return withStudyIdentity(async (guard) => {
+    const artifact = expectType(
+      await invoke('v6', { operation: 'artifact.read', studyId, artifactRef }, undefined, guard),
+      'artifact',
+    );
+    const bytes = Uint8Array.from(atob(artifact.bytes), (character) => character.charCodeAt(0));
+    const value = await decode(bytes);
+    await guard.assertCurrent();
+    guard.assertUnchanged();
+    return value;
+  });
+}
+
 export function subscribeStudyIdentityChange(listener: () => void) {
   const stopAdmission = subscribeTaskCenterIdentity(listener);
   let token: string | null | undefined;

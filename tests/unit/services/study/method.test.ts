@@ -10,7 +10,14 @@ import provenance from '../../../fixtures/study-method/provenance.json';
 const mockMethod = jest.fn();
 jest.mock('@/services/study/api', () => ({
   ...jest.requireActual('@/services/study/api'),
-  method: (...a: unknown[]) => mockMethod(...a),
+  readMethodArtifact: async (
+    studyId: string,
+    artifactRef: unknown,
+    decode: (bytes: Uint8Array) => Promise<unknown>,
+  ) => {
+    const data = await mockMethod({ operation: 'artifact.read', studyId, artifactRef });
+    return decode(Uint8Array.from(atob(data.bytes), (c) => c.charCodeAt(0)));
+  },
 }));
 beforeAll(() => {
   Object.defineProperty(globalThis, 'crypto', { value: webcrypto, configurable: true });

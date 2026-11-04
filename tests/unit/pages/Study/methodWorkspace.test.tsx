@@ -5,7 +5,9 @@ import facts from '../../../fixtures/study-method/facts.json';
 import worker from '../../../fixtures/study-method/worker.json';
 import storedFixture from '@/standalone/studyReport/methodProtocol.fixture.json';
 
-const mockRecover = jest.fn();
+const mockRecover = jest.fn(),
+  mockNewKey = jest.fn();
+let keySequence = 0;
 const mockMethod = jest.fn(),
   mockPending = jest.fn(),
   mockFacts = jest.fn(),
@@ -51,7 +53,7 @@ jest.mock('@/services/study/api', () => ({
   prepareMethodRequest: async (prepare: () => Promise<unknown>, workflow: string) =>
     mockMethod(await prepare(), workflow),
   recoverPendingStudyWrite: (...args: unknown[]) => mockRecover(...args),
-  newWriteKey: () => 'fixed-key',
+  newWriteKey: () => mockNewKey(),
   readPendingStudyWrite: (...args: unknown[]) => mockPending(...args),
   subscribePendingStudyWrites: () => () => {},
   subscribeStudyIdentityChange: () => () => {},
@@ -69,6 +71,8 @@ jest.mock('@/services/auth/taskCenters', () => ({
 
 beforeEach(() => {
   jest.clearAllMocks();
+  keySequence = 0;
+  mockNewKey.mockImplementation(() => `write-key-${++keySequence}`);
   mockCanCreate = true;
   mockPending.mockResolvedValue({ pending: false, raw: null });
   mockFacts.mockResolvedValue(facts);
@@ -655,3 +659,66 @@ it('preserves distinct legitimate claims for one fact and allocates collision-fr
     }),
   ).not.toThrow();
 });
+
+it.each([
+  'method.evidence.create',
+  'method.assessment.request',
+  'task.cancel',
+  'report.create',
+  'report.save',
+  'report.freeze',
+])(
+  'retries %s with its original captured payload and key on the first click',
+  async (operation) => {
+    const base = mockMethod.getMockImplementation()!;
+    let attempts = 0;
+    mockMethod.mockImplementation(async (q, ...rest) => {
+      if (q.operation === operation && ++attempts === 1)
+        throw new Error('Reply lost after dispatch');
+      return base(q, ...rest);
+    });
+    render(<MethodWorkspace studyId={studyId} canWrite />);
+    await screen.findByRole('button', { name: 'pages.study.recordEvidence' });
+    let button = '';
+    if (operation === 'method.evidence.create') {
+      change('pages.study.evidenceTitle', 'Original evidence');
+      change('pages.study.statement', 'Original statement');
+      button = 'pages.study.recordEvidence';
+    } else if (operation === 'method.assessment.request') {
+      change('pages.study.baselineRun', assessment.config.baselineRunId);
+      button = 'pages.study.requestAssessment';
+    } else if (operation === 'task.cancel') {
+      change('pages.study.assessmentId', assessment.assessmentId);
+      await screen.findByRole('textbox', { name: 'pages.study.cancelReason' });
+      change('pages.study.cancelReason', 'Original cancellation');
+      button = 'pages.study.cancelAssessment';
+    } else if (operation === 'report.create') {
+      change('pages.study.assessmentId', assessment.assessmentId);
+      await screen.findByRole('button', { name: 'pages.study.readMethodFacts' });
+      click('pages.study.readMethodFacts');
+      await screen.findByRole('textbox', { name: 'pages.study.reportTitle' });
+      change('pages.study.reportTitle', 'Original report');
+      fireEvent.click(screen.getByRole('checkbox', { name: facts.factCatalog[0].factId }));
+      button = 'pages.study.createMethodReport';
+    } else {
+      change('pages.study.reportId', reportId);
+      await screen.findByRole('textbox', { name: 'pages.study.reportTitle' });
+      button =
+        operation === 'report.save'
+          ? 'pages.study.saveMethodReport'
+          : 'pages.study.freezeMethodReport';
+    }
+    click(button);
+    await screen.findByRole('button', { name: 'pages.study.retry' });
+    const original = mockMethod.mock.calls.find(([q]) => q.operation === operation)![0],
+      allocated = mockNewKey.mock.calls.length;
+    click('pages.study.retry');
+    await waitFor(() =>
+      expect(mockMethod.mock.calls.filter(([q]) => q.operation === operation)).toHaveLength(2),
+    );
+    expect(mockMethod.mock.calls.filter(([q]) => q.operation === operation)[1][0]).toEqual(
+      original,
+    );
+    expect(mockNewKey).toHaveBeenCalledTimes(allocated);
+  },
+);

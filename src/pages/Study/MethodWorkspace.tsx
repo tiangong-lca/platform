@@ -230,7 +230,8 @@ function MethodEvidence({
           disabled={
             !canWrite || write.busy || !!write.pending || !title.trim() || !statement.trim()
           }
-          onClick={() =>
+          onClick={() => {
+            const idempotencyKey = newWriteKey();
             write.run(async () => {
               const result = expectType(
                 await method(
@@ -245,15 +246,15 @@ function MethodEvidence({
                       statement,
                       citations,
                     },
-                    idempotencyKey: newWriteKey(),
+                    idempotencyKey,
                   },
                   `study:${studyId}`,
                 ),
                 'methodEvidence',
               ).value;
               setId(result.evidenceId);
-            })
-          }
+            });
+          }}
         >
           {t('recordEvidence')}
         </Button>
@@ -363,7 +364,8 @@ function MethodAssessment({
                     !reason.trim() ||
                     !query.data.actions.actions.includes('task.cancel')
                   }
-                  onClick={() =>
+                  onClick={() => {
+                    const idempotencyKey = newWriteKey();
                     write.run(() =>
                       method(
                         {
@@ -371,12 +373,12 @@ function MethodAssessment({
                           studyId,
                           resource: { type: 'methodAssessment', id },
                           reason,
-                          idempotencyKey: newWriteKey(),
+                          idempotencyKey,
                         },
                         `study:${studyId}`,
                       ),
-                    )
-                  }
+                    );
+                  }}
                 >
                   {t('cancelAssessment')}
                 </Button>
@@ -457,7 +459,8 @@ function MethodAssessment({
           <WriteState write={write} />
           <Button
             disabled={!canWrite || !canRequest || busy || !baselineRunId}
-            onClick={() =>
+            onClick={() => {
+              const idempotencyKey = newWriteKey();
               write.run(async () => {
                 const config: MethodConfig = {
                   schemaVersion: 'lca.study-method-assessment-config.v1',
@@ -491,15 +494,15 @@ function MethodAssessment({
                       profileId: 'lca.study-method-pef-2021-ef31-cement-intermediate.v1',
                       config,
                       configHash: await methodConfigHash(config),
-                      idempotencyKey: newWriteKey(),
+                      idempotencyKey,
                     }),
                     `study:${studyId}`,
                   ),
                   'methodAssessment',
                 ).value;
                 setId(result.assessmentId);
-              })
-            }
+              });
+            }}
           >
             {t('requestAssessment')}
           </Button>
@@ -590,8 +593,9 @@ function MethodDraftEditor({
         .filter((chart) => chart.claimIds.length),
     });
   };
-  const save = (freeze = false) =>
-    write.run(async () => {
+  const save = (freeze = false) => {
+    const idempotencyKey = newWriteKey();
+    return write.run(async () => {
       const result = expectType(
         await method(
           freeze
@@ -603,7 +607,7 @@ function MethodDraftEditor({
                   expectedRevision: report!.revision,
                 },
                 expectedContentHash: report!.contentHash,
-                idempotencyKey: newWriteKey(),
+                idempotencyKey,
               }
             : report && !successor
               ? {
@@ -614,7 +618,7 @@ function MethodDraftEditor({
                     expectedRevision: report.revision,
                   },
                   content: draft,
-                  idempotencyKey: newWriteKey(),
+                  idempotencyKey,
                 }
               : {
                   operation: 'report.create',
@@ -624,7 +628,7 @@ function MethodDraftEditor({
                   methodAssessmentIds: [assessment.assessmentId],
                   templateId: 'lca.study-method-report.v1',
                   content: draft,
-                  idempotencyKey: newWriteKey(),
+                  idempotencyKey,
                 },
           workflow,
         ),
@@ -632,6 +636,7 @@ function MethodDraftEditor({
       ).value;
       onSaved(result);
     });
+  };
   return (
     <Space orientation='vertical' size='middle' style={{ width: '100%' }}>
       <Typography.Paragraph>{t('mandatoryMethodNote')}</Typography.Paragraph>

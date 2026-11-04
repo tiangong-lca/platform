@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: 866f3218e5218da8379536073e71d97aa5af68e0
-lastReviewedNote: 'Platform #1442: parent-authorized qualified V2 archive acknowledgement adoption reviewed. Main-qualified Edge439f8112/manifest0cfe9a2d keeps exact schema2.0.0 request/response/declarations; wrong archive status/CAS retains ambiguous original intent. Red8negativefail/1positivepass becomes green9/9, retained-family provenance passes; V3–5 and renderer1–3 bytes unchanged. Clean866 build passed; final adopted-source gate, independent recheck and actual delivery/runtime remain separate.'
+lastReviewedCommit: 9f5d4230678038e1682f7c566110d2b56e2a9e53
+lastReviewedNote: 'Platform #1442: reviewed exact original-key local retries for all six method mutations and an outer identity fence spanning authorized artifact read plus owner hash/parse. Changing-key and held-reader-hash red regressions now pass with source/approval semantics unchanged; qualified V2 adoption and all renderer pins retained. Final full gate/current build and independent exact-source recheck remain pending; prior clean866 build is preserved and actual runtime/Main/root holds remain.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -403,3 +403,5 @@ The explicit V6 method consumer additionally requires exact source77e268f/manife
 V6 identity regressions must hold the owner config hash, response content digest, final claims and journal checksum while switching actor/client, including a switch away and back. Preparation races require zero POSTs and zero new journals; post-dispatch races retain the original ambiguous request instead of disclosing success or clearing it. Duplicate-fact authored claims must survive unrelated selections and produce a valid owner request with unique claim IDs. The actual installed Webpack resolver must resolve portable `.js` imports to SPA TypeScript and continue selecting retained real JavaScript modules.
 
 The qualified V2 archive acknowledgement adoption requires paired red/green core and original-V2 recovery tests: active status, old revision and skipped revision must be rejected without clearing the original ambiguous journal; only archived at expectedRevision+1 succeeds. Manifest/file provenance and unchanged request/response/declaration bytes remain explicit; V3–V5 and renderer artifacts remain untouched.
+
+Method local-retry proof must use a changing key allocator and an ambiguous first response for evidence, assessment, cancellation, report create/save/freeze, then assert that the first retry preserves the exact payload/key without another allocation. Owner evidence/facts/stored-content reads retain their identity fence through asynchronous hashing; held-hash actor/client/switch-away-back cases must return no parsed content after a switch and release every listener.

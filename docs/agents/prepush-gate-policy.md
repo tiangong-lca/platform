@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: 866f3218e5218da8379536073e71d97aa5af68e0
-lastReviewedNote: 'Platform #1442: parent-authorized qualified V2 archive acknowledgement adoption reviewed. Main-qualified Edge439f8112/manifest0cfe9a2d keeps exact schema2.0.0 request/response/declarations; wrong archive status/CAS retains ambiguous original intent. Red8negativefail/1positivepass becomes green9/9, retained-family provenance passes; V3–5 and renderer1–3 bytes unchanged. Clean866 build passed; final adopted-source gate, independent recheck and actual delivery/runtime remain separate.'
+lastReviewedCommit: 9f5d4230678038e1682f7c566110d2b56e2a9e53
+lastReviewedNote: 'Platform #1442: reviewed exact original-key local retries for all six method mutations and an outer identity fence spanning authorized artifact read plus owner hash/parse. Changing-key and held-reader-hash red regressions now pass with source/approval semantics unchanged; qualified V2 adoption and all renderer pins retained. Final full gate/current build and independent exact-source recheck remain pending; prior clean866 build is preserved and actual runtime/Main/root holds remain.'
 ---
 
 # Pre-Push Gate Policy
