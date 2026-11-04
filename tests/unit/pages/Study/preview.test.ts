@@ -5,7 +5,9 @@ import currentView from '../../../fixtures/study-report/view-v2.json';
 import advancedView from '../../../fixtures/study-report/view-advanced-v2.json';
 import context from '../../../fixtures/study-report/context-v1.json';
 import { renderStudyPreview } from '@/pages/Study/preview';
-import { renderReport } from '@/standalone/studyReport';
+import { renderReport as renderMethodReport } from '@/standalone/studyReport';
+import { renderReport } from '../../../../vendor/study-renderer/v2/index.js';
+import methodView from '../../../fixtures/study-report/view-v3.json';
 
 beforeAll(() => {
   Object.defineProperty(globalThis, 'crypto', { value: webcrypto, configurable: true });
@@ -64,4 +66,30 @@ it('binds online chapter navigation to srcdoc while preserving portable links an
   const portable = await renderReport(currentView, context);
   expect(portable).toContain('href="#results"');
   expect(portable).not.toContain('about:srcdoc');
+});
+
+it('renders exact view3 method evidence online without export verification framing', async () => {
+  const html = renderStudyPreview(methodView);
+  expect(html).toContain('All 20 method requirements');
+  expect(html).toContain('All 25 category roles');
+  expect(html).toContain('All 58 supplied method facts');
+  expect(html).toContain('about:srcdoc#method-assessment');
+  expect(html).toContain('not an exported or verified reading copy');
+  expect(html).not.toContain('Exporter recorded verification');
+  expect(html).not.toContain('Projection SHA-256');
+  expect(await renderMethodReport(methodView, context)).toContain('Renderer 3.0.0');
+  expect(() =>
+    renderStudyPreview({
+      ...currentView,
+      rendererVersion: '3.0.0',
+      schemaVersion: 'lca.study-report-view.v3',
+    }),
+  ).toThrow();
+  expect(() =>
+    renderStudyPreview({
+      ...methodView,
+      rendererVersion: '2.0.0',
+      schemaVersion: 'lca.study-report-view.v2',
+    }),
+  ).toThrow();
 });

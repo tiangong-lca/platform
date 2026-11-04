@@ -27,3 +27,7 @@ vendor/study-contract/
 
 # Exact retained renderer packages; provenance proof protects bytes.
 vendor/study-renderer/
+
+# Contained immutable Edge summary/view validator and its producer metadata.
+/src/standalone/studyReport/methodProtocol*
+/tests/fixtures/study-report/view-v3.json

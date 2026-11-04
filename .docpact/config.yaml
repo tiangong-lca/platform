@@ -27,6 +27,7 @@ ownership:
           - config/**
           - src/**
           - vendor/study-contract/**
+          - vendor/study-renderer/**
           - public/**
           - docker/**
           - electron/**
@@ -127,6 +128,7 @@ coverage:
     - config/**
     - src/**
     - vendor/study-contract/**
+    - vendor/study-renderer/**
     - public/**
     - public/maintenance.html
     - docker/**
@@ -192,6 +194,7 @@ routing:
       paths:
         - .github/workflows/study-report.yml
         - src/standalone/studyReport/**
+        - vendor/study-renderer/**
         - scripts/study-report/**
         - tests/unit/standalone/**
         - tests/fixtures/study-report/**
@@ -490,6 +493,8 @@ rules:
         kind: standalone-pr-contract-proof
       - path: src/standalone/studyReport/**
         kind: standalone-view-runtime
+      - path: vendor/study-renderer/**
+        kind: retained-renderer-artifact
       - path: scripts/study-report/**
         kind: standalone-package-proof
       - path: tests/unit/standalone/**

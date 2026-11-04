@@ -14,7 +14,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const require = createRequire(import.meta.url);
 const playwrightVersion = require('@playwright/test/package.json').version;
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const fixtureNames = ['view-v1.json', 'view-v2.json', 'view-advanced-v2.json'];
+const fixtureNames = ['view-v1.json', 'view-v2.json', 'view-advanced-v2.json', 'view-v3.json'];
 const fixtures = fixtureNames.map((name) => ({
   name,
   view: JSON.parse(fs.readFileSync(path.join(root, 'tests/fixtures/study-report', name), 'utf8')),
@@ -27,12 +27,14 @@ const sourcePaths = [
   '.nvmrc',
   'docker/e2e/environment.json',
   'tests/browser/studyPreviewNavigation.test.mjs',
-  ...execFileSync('git', ['ls-files', 'src/standalone/studyReport'], {
-    cwd: root,
-    encoding: 'utf8',
-  })
-    .trim()
-    .split('\n'),
+  ...fs
+    .readdirSync(path.join(root, 'src/standalone/studyReport'))
+    .sort()
+    .map((name) => 'src/standalone/studyReport/' + name),
+  ...fs
+    .readdirSync(path.join(root, 'vendor/study-renderer/v2'))
+    .sort()
+    .map((name) => 'vendor/study-renderer/v2/' + name),
   ...fixtureNames.map((name) => 'tests/fixtures/study-report/' + name),
 ];
 const sourceBindings = () =>
@@ -156,6 +158,15 @@ test(
                       ['Sources and limitations', 'evidence'],
                       ['Frozen identities', 'identity'],
                       ['Goal and scope', 'scope'],
+                      ...(view.rendererVersion === '3.0.0'
+                        ? [
+                            ['Method assessment', 'method-assessment'],
+                            ['All requirements', 'method-requirements'],
+                            ['Category roles', 'method-categories'],
+                            ['Method fact catalog', 'method-catalog'],
+                            ['Method source evidence', 'method-sources'],
+                          ]
+                        : []),
                     ];
               for (const [label, id] of sections) {
                 const expected =
@@ -201,11 +212,17 @@ test(
                 assert.ok(requests.length > startRequests);
                 assert.equal(page.url(), hostUrl);
               } else {
+                const method = view.rendererVersion === '3.0.0';
+                if (method) {
+                  assert.equal(await frame.locator('[data-requirement-id]').count(), 20);
+                  assert.equal(await frame.locator('[data-category-id]').count(), 25);
+                  assert.equal(await frame.locator('[data-catalog-id]').count(), 58);
+                }
                 const table = frame.locator('[data-report-table]').first();
                 const rows = table.locator('tbody tr');
                 const originalRows = await rows.allTextContents();
                 const label = (await rows.first().locator('th').textContent()).trim();
-                const filter = table.getByLabel('Filter facts');
+                const filter = table.getByLabel(method ? 'Filter method facts' : 'Filter facts');
                 await filter.focus();
                 await filter.pressSequentially(label);
                 const expectedVisible = originalRows.filter((text) =>
@@ -233,7 +250,9 @@ test(
                   .sort((left, right) =>
                     left.toLocaleLowerCase('en-US') < right.toLocaleLowerCase('en-US') ? -1 : 1,
                   );
-                const order = table.getByLabel('Order', { exact: true });
+                const order = table.getByLabel(method ? 'Method fact order' : 'Order', {
+                  exact: true,
+                });
                 await order.focus();
                 // Native select type-ahead cycles the two fixed English "Label" options.
                 // Popup/Home gestures vary between the pinned browser engines.
@@ -270,7 +289,8 @@ test(
                     await page.mouse.wheel(120, 0);
                   } else await scroll.press('ArrowRight');
                   await frame.waitForFunction(
-                    () => document.querySelector('.table-scroll').scrollLeft > 0,
+                    (selector) => document.querySelector(selector).scrollLeft > 0,
+                    method ? '#method-catalog .table-scroll' : '.table-scroll',
                   );
                 }
                 assert.equal(

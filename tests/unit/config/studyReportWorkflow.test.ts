@@ -76,7 +76,7 @@ describe('standalone report PR qualification', () => {
       const archive = {
         sourceCommit: head,
         sourceDirty: false,
-        archiveName: 'study-report-renderer-2.0.0.tgz',
+        archiveName: 'study-report-renderer-3.0.0.tgz',
         sha256: sha(archiveBytes),
         manifestSha256: sha(manifestBytes),
       };

@@ -22,6 +22,12 @@ const PERMANENT_ALLOWLIST_CONTRACTS = {
     entry.ownerIssue === '#606' && entry.path === 'scripts/i18n/locale-delivery.mjs',
   'standalone-icu-canonical-default': (entry) =>
     entry.ownerIssue === '#633' && entry.path === 'scripts/i18n/icu-message-parser.cjs',
+  'immutable-study-method-protocol-component': (entry) =>
+    entry.ownerIssue === '#1442' &&
+    entry.path === 'src/standalone/studyReport/methodProtocol.mjs' &&
+    entry.ruleId === 'language-keyed-map' &&
+    entry.nodeTextDigest === 'bbbe6305befbd72a4686c3425711d2efd6b04a646b8c822f2f6232b702942dcd' &&
+    entry.maxMatches === 1,
   'controlled-native-batch-fixture-locale': (entry) =>
     entry.ownerIssue === '#1396' &&
     entry.path === 'scripts/e2e/batch-allocation-native-worker.cjs' &&

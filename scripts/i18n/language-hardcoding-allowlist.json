@@ -500,6 +500,16 @@
       "reason": "The controlled native browser fixture uses fixed synthetic English translations and exact English control labels; this Playwright locale belongs only to that fixture and does not set a business-language default.",
       "status": "permanent-contract",
       "permanentContract": "controlled-native-batch-fixture-locale"
+    },
+    {
+      "ruleId": "language-keyed-map",
+      "path": "src/standalone/studyReport/methodProtocol.mjs",
+      "nodeTextDigest": "bbbe6305befbd72a4686c3425711d2efd6b04a646b8c822f2f6232b702942dcd",
+      "maxMatches": 1,
+      "ownerIssue": "#1442",
+      "reason": "Exact immutable Edge-owned contained Zod4.6.7 exports its internal validation-message locale map. This is third-party protocol implementation data, not application UI/content-language selection; the fixed English renderer and shared application locale registry remain authoritative. Producer manifest/file hashes protect the unchanged component bytes.",
+      "status": "permanent-contract",
+      "permanentContract": "immutable-study-method-protocol-component"
     }
   ]
 }

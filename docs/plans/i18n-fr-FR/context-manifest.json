@@ -5,8 +5,8 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "1f811e15dbc9f62c7e5d6c4fbfbde4a8cdafc05d4b8d22ede077064ea1bdab08",
-    "auditedInputDigest": "e6bef0350083472fb726fad14ebe65189b2117e90ee03d9e42d45578a1f54945"
+    "sourceManifestDigest": "f230d02f6231529459f462d831ec8330f92575d83b36346eaa6057b3b5bb31f6",
+    "auditedInputDigest": "967cc4fbbfde9cc0038a4808c395e88589d41af3bb154ff900459551449d840d"
   },
   "inventory": {
     "sourceMessageCount": 3750,
@@ -47,7 +47,7 @@
     "messageCount": 3750,
     "completeCount": 3750,
     "blockedCount": 0,
-    "dossierDigest": "eba8ce42a09d134333a5d09ec019075de23688c4fab2aec112512a18ea8b3447",
+    "dossierDigest": "3efa36b39f195a03d79d2c321571869eae5f3765127e6f7da2edbe0888620e84",
     "catalogDigest": "cf739251851ffcb6caa5017006181fae76de2590efc784829e77a7b3cfdb0770",
     "moduleCount": 33,
     "moduleDigest": "e83a9a44646c751e1cdbb2b832413fc0f20e143734d1fc62ea3e3c1f41f12e56",
@@ -1384,8 +1384,8 @@
     "src/services/referenceResources/generatedManifest.ts": "d128e2d169a3fac3cd0b7542d8c553b0f8ea429623ead1cff736f83b01eb13a0",
     "scripts/reference-data/reference-resource-pipeline.mjs": "ca0651a7cc48d1489b955b94bb66caf1cdb420e2a9bff33edb13232bd33fb532",
     "src/services/referenceResources/resolver.ts": "15ed3893a7f03969b1a83cc2c81921a994be891d16943da8a6784a84e09f08e1",
-    "scripts/i18n/audit-language-platform.mjs": "8f55cba8454246141dd7241b07a6c13f8699d8f36269910d3507f7baac2cd9e8",
-    "scripts/i18n/language-hardcoding-allowlist.json": "81a699a9c4ac3e236c0d39ab88b323a6abbeab1fc15c79028d0cbb2d3ebf051b",
+    "scripts/i18n/audit-language-platform.mjs": "fb56ca510bedb29cf78c5783829d622360eccda9f89e2cce53b30cad6d3ba255",
+    "scripts/i18n/language-hardcoding-allowlist.json": "2452b6d6812264a16b6685e23d902a6de3bd100a0f2aa38fce7e59360174fde2",
     "src/components/ImportTidasPackage/reportContent.ts": "3b08a703edbbfd6312f863c6b70aae4289fe411d077d1d37b576b37eeb856c3c",
     "docs/plans/i18n-de-DE/dynamic-families.json": "5e33a1945675ff345abe1734e4ef9d93fd7dc7ff653705ae76dfff030c7ba0ee",
     "docs/plans/i18n/route-view-coverage.json": "137722d0ef150baf1df8a4b8d2d7aa2bafee25a821b17d4252e7beb070bdf534",
@@ -1394,5 +1394,5 @@
     "docs/plans/i18n-fr-FR/style-guide.md": "3b651e352a50676ed7f6609dcad88145dbd6a9ad81177ad261526b59d7bf4db4"
   },
   "blockedContext": [],
-  "contextDigest": "29e05d5b1c52af197f980347257eadee3134b690e6c8a8056a649c39a794eb3e"
+  "contextDigest": "eff7d6f80ba88ea4d031d8e32b049546d90d61f2c166ddb4b58a16eba3e9a938"
 }

@@ -1,6 +1,10 @@
 /** Platform-owned view protocol. It is not a numerical or authorization protocol. */
-export const VIEW_SCHEMA = 'lca.study-report-view.v2' as const;
-export const RENDERER_VERSION = '2.0.0' as const;
+import { parseMethodView } from './methodProtocol.mjs';
+import type { MethodReportSummary } from './methodProtocol.mjs';
+export type { MethodReportSummary } from './methodProtocol.mjs';
+
+export const VIEW_SCHEMA = 'lca.study-report-view.v3' as const;
+export const RENDERER_VERSION = '3.0.0' as const;
 
 export type MethodRef = { id: string; version: string };
 export type CalculationContractRef = {
@@ -17,7 +21,9 @@ export type ReportFact = {
   unit: string;
   coverage: 'complete' | 'partial' | 'unknown';
   reasonCodes: string[];
-  provenance: { type: 'runResult' | 'analysisFacts'; id: string; contentHash: string };
+  provenance:
+    | { type: 'runResult' | 'analysisFacts'; id: string; contentHash: string }
+    | { type: 'methodAssessmentFacts'; id: string; contentHash: string; sourceFactId: string };
 };
 export type ReportViewModel = {
   report: {
@@ -68,18 +74,12 @@ export type ReportViewModel = {
     reviewIds: string[];
     finalization: 'not_finalized' | 'finalized';
   };
-} & (
-  | {
-      schemaVersion: typeof VIEW_SCHEMA;
-      rendererVersion: typeof RENDERER_VERSION;
-      facts: ReportFact[];
-    }
-  | {
-      schemaVersion: 'lca.study-report-view.v1';
-      rendererVersion: '1.0.0';
-      facts: Omit<ReportFact, 'reasonCodes'>[];
-    }
-);
+} & {
+  schemaVersion: typeof VIEW_SCHEMA;
+  rendererVersion: typeof RENDERER_VERSION;
+  facts: ReportFact[];
+  methodAssessment: MethodReportSummary;
+};
 
 /** Separate from projection bytes; no embedded key, signature or trust assertion is accepted. */
 export type RenderContext = {
@@ -205,7 +205,7 @@ export function isCanonicalDecimal(value: unknown): value is string {
 
 export function validateReportView(
   input: unknown,
-  expectedRendererVersion: ReportViewModel['rendererVersion'] = RENDERER_VERSION,
+  expectedRendererVersion: string = RENDERER_VERSION,
 ): ReportViewModel {
   const v = record(
     input,
@@ -224,14 +224,14 @@ export function validateReportView(
       'cutoffs',
       'limitations',
       'snapshot',
+      'methodAssessment',
     ],
     '/',
   );
   requireValue(
-    (expectedRendererVersion === RENDERER_VERSION || expectedRendererVersion === '1.0.0') &&
-      v.schemaVersion ===
-        (expectedRendererVersion === '1.0.0' ? 'lca.study-report-view.v1' : VIEW_SCHEMA) &&
-      v.rendererVersion === expectedRendererVersion,
+    expectedRendererVersion === RENDERER_VERSION &&
+      v.schemaVersion === VIEW_SCHEMA &&
+      v.rendererVersion === RENDERER_VERSION,
     '/version',
   );
   const report = record(
@@ -305,7 +305,7 @@ export function validateReportView(
         'canonicalValue',
         'unit',
         'coverage',
-        ...(expectedRendererVersion === '1.0.0' ? [] : ['reasonCodes']),
+        'reasonCodes',
         'provenance',
       ],
       p,
@@ -329,19 +329,26 @@ export function validateReportView(
       `${p}/canonicalValue`,
     );
     choice(fact.coverage, ['complete', 'partial', 'unknown'], `${p}/coverage`);
-    requireValue(
-      expectedRendererVersion === '1.0.0'
-        ? (fact.canonicalValue === null) === (fact.coverage === 'unknown')
-        : fact.coverage !== 'unknown' || fact.canonicalValue === null,
-      `${p}/coverage`,
+    requireValue(fact.coverage !== 'unknown' || fact.canonicalValue === null, `${p}/coverage`);
+    array(fact.reasonCodes, `${p}/reasonCodes`, 32).forEach((code, index) =>
+      text(code, `${p}/reasonCodes/${index}`, 128),
     );
-    if (expectedRendererVersion !== '1.0.0') {
-      array(fact.reasonCodes, `${p}/reasonCodes`, 32).forEach((code, index) =>
-        text(code, `${p}/reasonCodes/${index}`, 128),
-      );
-    }
-    const source = record(fact.provenance, ['type', 'id', 'contentHash'], `${p}/provenance`);
-    choice(source.type, ['runResult', 'analysisFacts'], `${p}/provenance/type`);
+    const methodSource =
+      fact.provenance !== null &&
+      typeof fact.provenance === 'object' &&
+      'type' in fact.provenance &&
+      fact.provenance.type === 'methodAssessmentFacts';
+    const source = record(
+      fact.provenance,
+      methodSource ? ['type', 'id', 'contentHash', 'sourceFactId'] : ['type', 'id', 'contentHash'],
+      `${p}/provenance`,
+    );
+    choice(
+      source.type,
+      methodSource ? ['methodAssessmentFacts'] : ['runResult', 'analysisFacts'],
+      `${p}/provenance/type`,
+    );
+    if (methodSource) id(source.sourceFactId, `${p}/provenance/sourceFactId`);
     id(source.id, `${p}/provenance/id`);
     hash(source.contentHash, `${p}/provenance/contentHash`);
     return fact;
@@ -445,6 +452,11 @@ export function validateReportView(
   const reviews = ids(snapshot.reviewIds, '/snapshot/reviewIds', 64);
   requireValue((snapshot.review === 'reviewed') === reviews.length > 0, '/snapshot/reviewIds');
   choice(snapshot.finalization, ['not_finalized', 'finalized'], '/snapshot/finalization');
+  try {
+    parseMethodView(input);
+  } catch {
+    throw new ReportViewError('/methodAssessment');
+  }
   // Bound total serialized disclosure as well as individual fields.
   requireValue(new TextEncoder().encode(JSON.stringify(input)).length <= 2_000_000, '/size');
   return input as ReportViewModel;

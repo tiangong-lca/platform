@@ -87,6 +87,8 @@ module.exports = async () => {
       ...(config.modulePathIgnorePatterns || []),
       ...dockerPathIgnores,
       '<rootDir>/vendor/study-contract/.*/package.json',
+      '<rootDir>/vendor/study-renderer/.*/package.json',
+      '<rootDir>/dist-study-report/package/package.json',
     ],
     moduleNameMapper: {
       '^@tiangong-lca/tidas-sdk/core$': '<rootDir>/tests/mocks/tidas-sdk-core.js',
