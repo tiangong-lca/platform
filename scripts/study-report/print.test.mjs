@@ -185,6 +185,9 @@ test(
               } else {
                 assert.equal(await page.locator('.controls:visible').count(), 0);
                 assert.equal(await page.getByText(/^Read-only reading copy:/u).isVisible(), true);
+                const nativeDetails = page.locator('#method-catalog details').first();
+                await nativeDetails.locator('summary').click();
+                assert.equal(await nativeDetails.getAttribute('open'), '');
               }
               const before = await interactiveState(page);
               await page.emulateMedia({ media: 'print' });
