@@ -541,6 +541,8 @@ export default {
   'pages.dataProcessing.workspace.reviewCalculation': '查看计算任务',
   'pages.dataProcessing.workspace.fileCount': '共 {count} 个文件。可逐个下载，导出清单描述完整导出内容。',
   'pages.dataProcessing.workspace.downloadFile': '下载 {name}',
+  'pages.dataProcessing.resultView.exportLcia': '导出 LCIA',
+  'pages.dataProcessing.resultView.exportLci': '导出 LCI',
   'pages.dataProcessing.resultView.flow': '流名称',
   'pages.dataProcessing.resultView.input': '输入',
   'pages.dataProcessing.resultView.output': '输出',

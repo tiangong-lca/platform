@@ -583,10 +583,33 @@ it('uses finalization-bound export result for named share creation and exact rev
     finalization: { finalizationId: 'final-exact' },
     acceptance: 'current',
   };
+  let shareCommitted = false;
+  let releaseShareRefresh!: (value: unknown) => void;
+  const heldShareRefresh = new Promise((resolve) => {
+    releaseShareRefresh = resolve;
+  });
+  const base = mockReview.getMockImplementation()!;
+  mockReview.mockImplementation(async (request) => {
+    if (request.operation === 'share.create') {
+      const result = await base(request);
+      shareCommitted = true;
+      return result;
+    }
+    if (request.operation === 'report.view' && shareCommitted) return heldShareRefresh;
+    return base(request);
+  });
+  const performRefreshedWrite = async (operation: string, action: () => void) => {
+    const previousReads = requestCalls('report.view').length;
+    await act(async () => action());
+    await waitFor(() => expect(requestCalls(operation)).toHaveLength(1));
+    await waitFor(() => expect(requestCalls('report.view')).toHaveLength(previousReads + 1));
+    await waitForReport();
+  };
   render(<ReportPage />);
   await waitForReport();
-  fireEvent.click(screen.getByRole('button', { name: 'pages.study.export' }));
-  await completeWrite('export.request');
+  await performRefreshedWrite('export.request', () =>
+    fireEvent.click(screen.getByRole('button', { name: 'pages.study.export' })),
+  );
   expect(screen.getByLabelText('pages.study.exportId')).toHaveValue('export-new');
   expect(requestCalls('export.request')[0]).toEqual({
     operation: 'export.request',
@@ -598,14 +621,23 @@ it('uses finalization-bound export result for named share creation and exact rev
     viewModelVersion: 'lca.study-report-view.v1',
     idempotencyKey: 'write-1',
   });
-  fireEvent.change(screen.getByLabelText('pages.study.recipient'), {
-    target: { value: 'recipient-explicit' },
+  await act(async () => {
+    fireEvent.change(screen.getByLabelText('pages.study.recipient'), {
+      target: { value: 'recipient-explicit' },
+    });
+    fireEvent.change(screen.getByLabelText('pages.study.expires'), {
+      target: { value: '2026-11-05T12:00' },
+    });
   });
-  fireEvent.change(screen.getByLabelText('pages.study.expires'), {
-    target: { value: '2026-11-05T12:00' },
-  });
-  fireEvent.click(screen.getByRole('button', { name: 'pages.study.share' }));
-  await completeWrite('share.create');
+  const previousReads = requestCalls('report.view').length;
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: 'pages.study.share' })));
+  await waitFor(() => expect(requestCalls('share.create')).toHaveLength(1));
+  await waitFor(() => expect(requestCalls('report.view')).toHaveLength(previousReads + 1));
+  // An acknowledged write is followed by an actual pending refresh. Its old preview
+  // cannot establish readiness for the next revocation interaction.
+  expect(screen.queryByTitle('pages.study.preview')).toBeNull();
+  expect(screen.queryByLabelText('pages.study.shares')).toBeNull();
+  expect(requestCalls('share.revoke')).toHaveLength(0);
   expect(requestCalls('share.create')[0]).toEqual({
     operation: 'share.create',
     reportRevisionId: view.report.reportRevisionId,
@@ -616,14 +648,21 @@ it('uses finalization-bound export result for named share creation and exact rev
     expiresAt: new Date('2026-11-05T12:00').toISOString(),
     idempotencyKey: 'write-2',
   });
-  fireEvent.change(screen.getByLabelText('pages.study.shares'), {
-    target: { value: 'share-exact' },
+  await act(async () =>
+    releaseShareRefresh({ type: 'view', view, state: mockCurrentState, share: null }),
+  );
+  await waitForReport();
+  await act(async () => {
+    fireEvent.change(screen.getByLabelText('pages.study.shares'), {
+      target: { value: 'share-exact' },
+    });
+    fireEvent.change(screen.getByLabelText('pages.study.reason'), {
+      target: { value: 'Recipient access withdrawn' },
+    });
   });
-  fireEvent.change(screen.getByLabelText('pages.study.reason'), {
-    target: { value: 'Recipient access withdrawn' },
-  });
-  fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.revoke' })[1]);
-  await completeWrite('share.revoke');
+  await performRefreshedWrite('share.revoke', () =>
+    fireEvent.click(screen.getAllByRole('button', { name: 'pages.study.revoke' })[1]),
+  );
   expect(requestCalls('share.revoke')[0]).toEqual({
     operation: 'share.revoke',
     shareId: 'share-exact',

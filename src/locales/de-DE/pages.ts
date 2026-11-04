@@ -541,6 +541,8 @@ export default {
   'pages.dataProcessing.workspace.reviewCalculation': 'Berechnung prüfen',
   'pages.dataProcessing.workspace.fileCount': '{count} Dateien. Laden Sie die Dateien einzeln herunter; das Manifest beschreibt den vollständigen Export.',
   'pages.dataProcessing.workspace.downloadFile': '{name} herunterladen',
+  'pages.dataProcessing.resultView.exportLcia': 'LCIA exportieren',
+  'pages.dataProcessing.resultView.exportLci': 'LCI exportieren',
   'pages.dataProcessing.resultView.flow': 'Fluss',
   'pages.dataProcessing.resultView.input': 'Eingang',
   'pages.dataProcessing.resultView.output': 'Ausgang',

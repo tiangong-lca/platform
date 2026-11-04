@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 3f59d44a753e871f6962329f06e1c027624dfb39
-lastReviewedNote: 'Platform #1419: reviewed canonical locale regeneration after bounded source/test changes, exact 64-assertion inventory and staged export-authority test synchronization; shipped runtime and single checked-push full-gate ownership remain unchanged.'
+lastReviewedCommit: cec3bac0c001beb051bf49f125523f8f5ff8d564
+lastReviewedNote: 'Platform #1419: reviewed exact qualified Dev 316b486 version 0.0.151 and unchanged Process Drawer source, complete three-way documentation merge, deterministic share-write refresh proof and regenerated locale inputs; Study/renderer behavior and single checked-push gate ownership remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 7d9555df452809e013a2985db4110e4352f77d4f
-lastReviewedNote: 'Platform #1419: reviewed exact-identity recovery and final download fences, immutable selection/ID-bound edit continuation, JSON bundle semantics and focused regressions; full checked-push and actual owned-stack acceptance remain separate.'
+lastReviewedCommit: cec3bac0c001beb051bf49f125523f8f5ff8d564
+lastReviewedNote: 'Platform #1419: reviewed exact qualified Dev 316b486 version 0.0.151 and unchanged Process Drawer source, complete three-way documentation merge, deterministic share-write refresh proof and regenerated locale inputs; Study/renderer behavior and single checked-push gate ownership remain unchanged.'
 ---
 
 # Supabase Environment And Database Workflow
