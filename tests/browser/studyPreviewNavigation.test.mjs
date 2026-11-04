@@ -227,6 +227,29 @@ test(
                   await table.locator('tbody tr:not([hidden])').count(),
                   originalRows.length,
                 );
+                const originalLabels = await rows.locator('th').allTextContents();
+                const ascending = originalLabels
+                  .slice()
+                  .sort((left, right) =>
+                    left.toLocaleLowerCase('en-US') < right.toLocaleLowerCase('en-US') ? -1 : 1,
+                  );
+                const order = table.getByLabel('Order', { exact: true });
+                await order.focus();
+                // Native select type-ahead cycles the two fixed English "Label" options.
+                // Popup/Home gestures vary between the pinned browser engines.
+                await page.keyboard.press('l');
+                assert.equal(await order.inputValue(), 'ascending');
+                assert.deepEqual(await rows.locator('th').allTextContents(), ascending);
+                await page.keyboard.press('l');
+                assert.equal(await order.inputValue(), 'descending');
+                assert.deepEqual(
+                  await rows.locator('th').allTextContents(),
+                  ascending.slice().reverse(),
+                );
+                assert.deepEqual(
+                  (await rows.allTextContents()).slice().sort(),
+                  originalRows.slice().sort(),
+                );
                 const summary = rows.first().locator('summary');
                 assert.equal(await rows.first().locator('details').getAttribute('open'), null);
                 await summary.focus();
@@ -240,7 +263,12 @@ test(
                     node.scrollLeft = 0;
                   });
                   assert.equal(await scroll.evaluate((node) => node.scrollLeft), 0);
-                  await scroll.press('ArrowRight');
+                  if (engine === 'webkit') {
+                    // The unmodified browser baseline has no ArrowRight scrolling.
+                    // This case claims native wheel access, never a universal arrow gesture.
+                    await scroll.hover();
+                    await page.mouse.wheel(120, 0);
+                  } else await scroll.press('ArrowRight');
                   await frame.waitForFunction(
                     () => document.querySelector('.table-scroll').scrollLeft > 0,
                   );
@@ -269,6 +297,14 @@ test(
                 additionalRequests: requests.length - startRequests,
                 parentUnchanged: page.url() === hostUrl,
                 frameUrl: frame.url(),
+                horizontalInput:
+                  entry.width === 390
+                    ? engine === 'webkit'
+                      ? 'nativeHorizontalWheel'
+                      : 'nativeArrowRight'
+                    : null,
+                orderInput: entry.control === 'current' ? 'nativeTypeaheadRepeatedL' : null,
+                tableKeyboard: entry.control === 'current' ? ['filter', 'order', 'evidence'] : [],
                 passed: true,
               });
             } finally {
