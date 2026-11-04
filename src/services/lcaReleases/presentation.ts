@@ -14,12 +14,15 @@ export const resultReferenceKey = (reference: ResultReference) =>
 
 // Keep this reader scoped to one mounted result panel. Failures are retryable.
 export function createResultMetadataReader(language: string) {
-  const cache = new Map<string, Promise<ResultMetadata | null>>();
+  const cache = new Map<
+    string,
+    { pending: Promise<ResultMetadata | null>; value?: ResultMetadata }
+  >();
   const read = (kind: 'processes' | 'flows', reference: ResultReference) => {
     if (!reference.id || !reference.version) return Promise.resolve(null);
     const key = `${kind}:${resultReferenceKey(reference)}`;
     const existing = cache.get(key);
-    if (existing) return existing;
+    if (existing) return existing.pending;
     const pending = getDataDetail(reference.id, reference.version, kind)
       .then((result) => {
         if (
@@ -40,14 +43,18 @@ export function createResultMetadataReader(language: string) {
       })
       .catch(() => null)
       .then((result) => {
-        if (!result) cache.delete(key);
+        const entry = cache.get(key);
+        if (entry?.pending === pending) {
+          if (result) entry.value = result;
+          else cache.delete(key);
+        }
         return result;
       });
     if (cache.size >= 500) cache.delete(cache.keys().next().value!);
-    cache.set(key, pending);
+    cache.set(key, { pending });
     return pending;
   };
-  return async (kind: 'processes' | 'flows', references: ResultReference[]) => {
+  const readBatch = async (kind: 'processes' | 'flows', references: ResultReference[]) => {
     const unique = [...new Map(references.map((ref) => [resultReferenceKey(ref), ref])).values()];
     const result: Record<string, ResultMetadata> = {};
     for (let offset = 0; offset < unique.length; offset += 6) {
@@ -60,6 +67,10 @@ export function createResultMetadataReader(language: string) {
     }
     return result;
   };
+  return Object.assign(readBatch, {
+    cachedFlowName: (ref: ResultReference) =>
+      cache.get(`flows:${resultReferenceKey(ref)}`)?.value?.name,
+  });
 }
 
 export function resultMethodMetadata(reference: ResultReference, language: string) {

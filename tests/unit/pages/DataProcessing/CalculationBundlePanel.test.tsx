@@ -9,7 +9,19 @@ import CalculationBundlePanel, {
 } from '@/pages/DataProcessing/CalculationBundlePanel';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-jest.mock('antd', () => require('../../../mocks/antd').createAntdMock());
+jest.mock('antd', () => ({
+  ...require('../../../mocks/antd').createAntdMock(),
+  Dropdown: ({ children, menu, disabled }: any) => (
+    <>
+      {children}
+      {menu.items.map((item: any) => (
+        <button type='button' key={item.key} disabled={disabled} onClick={item.onClick}>
+          {item.label}
+        </button>
+      ))}
+    </>
+  ),
+}));
 jest.mock('@ant-design/icons', () =>
   require('../../../mocks/antDesignIcons').createAntDesignIconsMock(),
 );
@@ -265,12 +277,12 @@ describe('CalculationBundlePanel', () => {
       ).not.toBeInTheDocument(),
     );
     expect(screen.queryByText(method.method_id)).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Current process JSON' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Export JSON' }));
     expect(URL.createObjectURL).toHaveBeenCalledTimes(1);
     fireEvent.change(screen.getByRole('combobox', { name: 'Process' }), { target: { value: '1' } });
     fireEvent.click(screen.getByTestId('tab-lci'));
     expect(await screen.findByText('12.500000')).toBeInTheDocument();
-    expect(screen.getByText('Input')).toBeInTheDocument();
+    expect(screen.getByText('Input', { selector: 'td' })).toBeInTheDocument();
   });
 
   it.each(['bundle', 'axis', 'records'] as const)(
@@ -323,7 +335,7 @@ describe('CalculationBundlePanel', () => {
       });
       fireEvent.click(screen.getByTestId('tab-lci'));
       expect(screen.queryByText('stale-flow')).not.toBeInTheDocument();
-      expect(screen.getByText('flow-0')).toBeInTheDocument();
+      expect(screen.getByText('flow-0', { selector: 'summary' })).toBeInTheDocument();
     },
   );
 
@@ -335,7 +347,7 @@ describe('CalculationBundlePanel', () => {
     mockFetchRecords.mockResolvedValue([]);
     render(<CalculationBundlePanel packageId='empty' />);
     expect(await screen.findByText('Process results')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Current process JSON' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Export JSON' })).toBeDisabled();
     expect(mockFetchText).not.toHaveBeenCalled();
     expect(screen.getByText('Incomplete / blocked')).toBeInTheDocument();
   });
@@ -356,10 +368,9 @@ describe('CalculationBundlePanel', () => {
         : baseRead(artifact),
     );
     const view = render(<CalculationBundlePanel packageId='unknown-direction' view='results' />);
-    expect(await screen.findByText('Process results')).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('tab-lci'));
+    fireEvent.click(await screen.findByTestId('tab-lci'));
     expect(await screen.findByText('Other')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Current process CSV' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Export CSV' }));
     expect(screen.queryByTestId('tab-downloads')).not.toBeInTheDocument();
     mockFetchRecords.mockImplementation((artifact) =>
       artifact.kind === 'process_axis'
@@ -415,8 +426,10 @@ describe('CalculationBundlePanel', () => {
 
     expect(await screen.findByText('Process results')).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('tab-lci'));
-    await waitFor(() => expect(screen.getByText('flow-1')).toBeInTheDocument());
-    expect(screen.getByText('CN')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByText('flow-1', { selector: 'summary' })).toBeInTheDocument(),
+    );
+    expect(screen.getByText(/Location · CN/)).toBeInTheDocument();
     expect(screen.getByText('12.500000')).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('tab-lcia'));
@@ -456,9 +469,12 @@ describe('CalculationBundlePanel', () => {
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('tab-lci'));
-    fireEvent.click(screen.getByRole('button', { name: 'Current process CSV' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Current process JSON' }));
-    expect(URL.createObjectURL).toHaveBeenCalledTimes(downloadButtons.length + 2);
+    fireEvent.click(screen.getByRole('button', { name: 'Export CSV' }));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Export JSON' })).toBeEnabled());
+    fireEvent.click(screen.getByRole('button', { name: 'Export JSON' }));
+    await waitFor(() =>
+      expect(URL.createObjectURL).toHaveBeenCalledTimes(downloadButtons.length + 2),
+    );
     expect(HTMLAnchorElement.prototype.click).toHaveBeenCalledTimes(downloadButtons.length + 2);
 
     rerender(
@@ -468,8 +484,10 @@ describe('CalculationBundlePanel', () => {
         initialProcessVersion={processRows[0].rootProcess.version}
       />,
     );
-    await waitFor(() => expect(screen.getByText('flow-0')).toBeInTheDocument());
-    expect(screen.getAllByText('-').length).toBeGreaterThan(0);
+    await waitFor(() =>
+      expect(screen.getByText('flow-0', { selector: 'summary' })).toBeInTheDocument(),
+    );
+    expect(screen.queryByText(/Location ·/)).not.toBeInTheDocument();
 
     expect(screen.queryByRole('button', { name: 'Refresh secure links' })).not.toBeInTheDocument();
   });
@@ -548,6 +566,7 @@ describe('CalculationBundlePanel', () => {
     });
     mockFetchRecords.mockResolvedValueOnce(processRows);
     rerender(<CalculationBundlePanel packageId='large' />);
+    fireEvent.click(await screen.findByTestId('tab-lci'));
     expect(await screen.findByText(/too large for inline preview/)).toBeInTheDocument();
 
     mockGetCalculationBundle.mockResolvedValueOnce({ data: bundleProjection(), error: null });

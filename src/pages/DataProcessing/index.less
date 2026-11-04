@@ -271,11 +271,6 @@
   width: 100%;
 }
 
-.bundleCard {
-  width: 100%;
-  border-top: 3px solid var(--ant-color-primary);
-}
-
 .closureCard {
   margin-top: 12px;
   border-left: 3px solid var(--ant-color-primary);
@@ -322,12 +317,56 @@
   font-size: 11px;
 }
 
-.bundleToolbar {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--ant-color-border-secondary);
-  border-radius: 8px;
-  background: var(--ant-color-fill-quaternary);
+.processSummary {
+  overflow-wrap: anywhere;
+  dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 16px;
+    margin-bottom: 0;
+  }
+  dt {
+    color: var(--ant-color-text-secondary);
+  }
+  dd,
+  dd :global(.ant-typography) {
+    margin: 0;
+    min-width: 0;
+  }
+}
+
+.inventoryControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  > :first-child {
+    width: min(200px, 100%);
+  }
+  > :global(.ant-select) {
+    min-width: 100px;
+  }
+  > button {
+    margin-inline-start: auto;
+  }
+}
+
+.flowIdentity {
+  overflow-wrap: anywhere;
+  summary {
+    display: list-item;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+  code {
+    user-select: all;
+  }
+}
+
+.resultNumber {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .bundleProcessSelect {

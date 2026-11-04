@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 import methods from '../../../public/lciamethods/cache_manifest.json';
 
@@ -32,18 +33,20 @@ const processRecord = {
     exchangeInternalId: '0',
   },
 };
+const inventory = Array.from({ length: 71 }, (_, index) => ({
+  processIndex: 0,
+  flow: {
+    id: index === 0 ? flowId : `33333333-3333-4333-8333-${String(index).padStart(12, '0')}`,
+    version,
+  },
+  direction: 'Output',
+  unit: 'kg',
+  meanAmount: index === 0 ? 1.25 : -1.234567e-18,
+  location: 'GLO',
+}));
 const rows = {
   process_axis: [processRecord],
-  lci: [
-    {
-      processIndex: 0,
-      flow: { id: flowId, version },
-      direction: 'Output',
-      unit: 'kg',
-      meanAmount: 1.25,
-      location: 'GLO',
-    },
-  ],
+  lci: inventory,
   lcia: [
     {
       processIndex: 0,
@@ -146,6 +149,13 @@ test('opens exact process results with readable names, units and a usable narrow
       },
     },
   );
+  let releaseNames: (() => void) | undefined;
+  let pendingNames = Promise.resolve();
+  const holdNames = () => {
+    pendingNames = new Promise<void>((resolve) => {
+      releaseNames = resolve;
+    });
+  };
   const unexpected: string[] = [];
   let previewUnavailable = false;
   const previewRequests: Array<{ rowOffset: number; rowLimit: number }> = [];
@@ -175,16 +185,28 @@ test('opens exact process results with readable names, units and a usable narrow
     if (url.pathname === '/rest/v1/flows' || url.pathname === '/rest/v1/processes') {
       expect(url.searchParams.get('version')).toBe(`eq.${version}`);
       const flow = url.pathname.endsWith('/flows');
+      const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+      if (flow) await pendingNames;
+      const index = inventory.findIndex((row) => row.flow.id === id);
       return reply([
         {
-          id: flow ? flowId : processId,
+          id,
           version,
           json: {
             [flow ? 'flowDataSet' : 'processDataSet']: {
               [flow ? 'flowInformation' : 'processInformation']: {
                 dataSetInformation: {
                   name: {
-                    baseName: [{ '@xml:lang': 'en', '#text': flow ? 'Cement, at plant' : name }],
+                    baseName: [
+                      {
+                        '@xml:lang': 'en',
+                        '#text': flow
+                          ? index === 0
+                            ? 'Cement, at plant'
+                            : `Inventory flow ${index + 1}`
+                          : name,
+                      },
+                    ],
                   },
                 },
               },
@@ -309,10 +331,87 @@ test('opens exact process results with readable names, units and a usable narrow
     fullPage: true,
     animations: 'disabled',
   });
+  await expect(dialog.getByText('Technical evidence')).toHaveCount(0);
+  const downloadResult = async (kind: string, format: string) => {
+    await dialog.getByRole('button', { name: `Export ${kind}`, exact: true }).click();
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page
+        .getByRole('menu', { name: `Export ${kind}`, exact: true })
+        .getByRole('menuitem', { name: `Export ${format}` })
+        .click(),
+    ]);
+    expect(download.suggestedFilename()).toContain(`${kind.toLowerCase()}-${processId}-${version}`);
+    return readFile((await download.path())!, 'utf8');
+  };
+  expect(await downloadResult('LCIA', 'CSV')).toContain(method.method_id);
+  expect(JSON.parse(await downloadResult('LCIA', 'JSON'))).toEqual(rows.lcia);
   await dialog.getByRole('tab', { name: 'LCI', exact: true }).click();
-  await expect(dialog.getByRole('cell', { name: 'Cement, at plant', exact: true })).toBeVisible();
+  await expect(dialog.getByText('Cement, at plant', { exact: true }).last()).toBeVisible();
   await expect(dialog.getByRole('cell', { name: '1.2500000', exact: true })).toBeVisible();
+
+  const completeAmount = async () => {
+    const cell = dialog.getByRole('cell', { name: '-1.234567e-18', exact: true }).first();
+    await expect(cell).toBeVisible();
+    expect(
+      await cell.evaluate((el) => {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const text = range.getBoundingClientRect();
+        const body = el.closest('.ant-table-body')!.getBoundingClientRect();
+        const cellBox = el.getBoundingClientRect();
+        return (
+          text.left >= Math.max(body.left, cellBox.left, 0) &&
+          text.right <= Math.min(body.right, cellBox.right, window.innerWidth)
+        );
+      }),
+    ).toBe(true);
+  };
+  for (const [number, cached] of [
+    [2, false],
+    [3, false],
+    [2, true],
+  ] as const) {
+    if (!cached) holdNames();
+    // Keyboard activation keeps the pointer stationary throughout the page change.
+    await dialog.locator(`li.ant-pagination-item-${number}`).press('Enter');
+    const first = dialog.locator('tbody summary').first();
+    if (!cached) {
+      await expect(first).toHaveText('…');
+    }
+    releaseNames?.();
+    await expect(first).toHaveText(`Inventory flow ${(number - 1) * 25 + 1}`);
+    await completeAmount();
+  }
+  const csv = await downloadResult('LCI', 'CSV');
+  expect(csv.trimEnd().split('\n')).toHaveLength(72);
+  expect(csv).toContain('Inventory flow 71');
+  expect(JSON.parse(await downloadResult('LCI', 'JSON'))).toEqual(rows.lci);
+  await expect(page.getByRole('menu', { name: 'Export LCI', exact: true })).toHaveCount(0);
+  await page.setViewportSize({ width: 1280, height: 960 });
+  await dialog.locator('.ant-drawer-body').evaluate((body) => (body.scrollTop = 0));
+  await page.screenshot({
+    path: testInfo.outputPath('process-lci-desktop.png'),
+    animations: 'disabled',
+  });
   await page.setViewportSize({ width: 390, height: 844 });
+  await completeAmount();
+  await dialog.locator('.ant-drawer-body').evaluate((body) => (body.scrollTop = 0));
+  await expect
+    .poll(() =>
+      dialog
+        .locator('tbody summary')
+        .first()
+        .evaluate((summary) => {
+          const range = document.createRange();
+          range.selectNodeContents(summary);
+          return (
+            range.getBoundingClientRect().right <=
+            summary.closest('td')!.getBoundingClientRect().right
+          );
+        }),
+    )
+    .toBe(true);
   await expect(dialog.getByRole('tab', { name: 'LCI', exact: true })).toBeVisible();
   await page.screenshot({
     path: testInfo.outputPath('narrow-diagnostic.png'),
@@ -324,7 +423,6 @@ test('opens exact process results with readable names, units and a usable narrow
     .toBe(true);
   await page.screenshot({
     path: testInfo.outputPath('process-lci-narrow.png'),
-    fullPage: true,
     animations: 'disabled',
   });
   await dialog.getByRole('button', { name: 'Close', exact: true }).click();
