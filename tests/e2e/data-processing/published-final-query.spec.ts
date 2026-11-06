@@ -6,7 +6,7 @@ const publicationId = '22222222-2222-4222-8222-222222222222';
 const runtimeRevision = '33333333-3333-4333-8333-333333333333';
 const resultId = '44444444-4444-4444-8444-444444444444';
 const otherId = '55555555-5555-4555-8555-555555555555';
-test('original Process selects processed Results, reads pinned HDF5 pages and downloads only authorized ZIPs', async ({
+test('original Process selects processed Results, reads pinned HDF5 pages and downloads only authorized 7z archives', async ({
   page,
   context,
 }, testInfo) => {
@@ -46,9 +46,9 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
   await page.route('https://result-download.invalid/**', (route) =>
     route.fulfill({
       status: 200,
-      contentType: 'application/zip',
-      headers: { 'content-disposition': 'attachment; filename="result.tidas.zip"' },
-      body: 'synthetic ZIP download transport only',
+      contentType: 'application/x-7z-compressed',
+      headers: { 'content-disposition': 'attachment; filename="result.tidas.7z"' },
+      body: 'synthetic 7z download transport only',
     }),
   );
   await page.route('**/functions/v1/lca_release_results**', async (route) => {
@@ -93,8 +93,8 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
           mode: body.mode,
           data: {
             publicationId,
-            file: { name: 'result.tidas.zip', sha256: 'a'.repeat(64), byteSize: 100 },
-            url: 'https://result-download.invalid/frozen.zip?ephemeral=1',
+            file: { name: 'result.tidas.7z', sha256: 'a'.repeat(64), byteSize: 100 },
+            url: 'https://result-download.invalid/frozen.7z?ephemeral=1',
             expiresAt: new Date(Date.now() + 60000).toISOString(),
           },
         },
@@ -195,16 +195,16 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
   await expect(page.getByRole('cell', { name: '-3.5', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Next page', exact: true }).click();
   await expect(page.getByText('Next processed flow', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Download TIDAS ZIP', exact: true }).click();
+  await page.getByRole('button', { name: 'Download TIDAS 7z', exact: true }).click();
   await expect(
     page.getByText(
-      'A complete ZIP is not available for this publication and your access permissions.',
+      'A complete 7z archive is not available for this publication and your access permissions.',
     ),
   ).toBeVisible();
   allowZip = true;
   const download = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Download TIDAS ZIP', exact: true }).click();
-  expect((await download).suggestedFilename()).toBe('result.tidas.zip');
+  await page.getByRole('button', { name: 'Download TIDAS 7z', exact: true }).click();
+  expect((await download).suggestedFilename()).toBe('result.tidas.7z');
   await page.getByRole('combobox', { name: 'Select a published result' }).click();
   await expect(
     page.getByRole('option', { name: `${otherId} · 01.00.000`, exact: true }),

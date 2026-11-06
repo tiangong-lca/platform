@@ -29,7 +29,7 @@ checkPaths:
   - .github/workflows/build.yml
 lastReviewedAt: '2026-11-04'
 lastReviewedCommit: '1eec63a7f137e535c86fda6d21ccb629488bc9fc'
-lastReviewedNote: 'Platform #1419: reviewed qualified Dev 69753a4 version 0.0.152 with exact Process coverage-warning removal, complete three-way documentation bodies and canonical locale regeneration; Study runtime, renderer, codec and recovery semantics remain unchanged.'
+lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
 ---
 
 # LCIA Method Bundle and Calculation Evidence Contract
@@ -107,4 +107,4 @@ Data Processing opens process results from the result list using an exact proces
 
 The original Process published-results tab consumes the exact release-bound query envelope. Its units, names, method versions and reference quantity come from frozen artifact metadata, never the current static method catalog. It does not reinterpret the persisted numeric evidence as a new calculation input. LCIA zero, negative and small finite values remain numeric; sparse LCI omits exact zero without conflating filtering/pagination with scientific absence.
 
-Release-owned v2 publication selects exact processed Result identities separately from source processes. Only direct relations appear under an original source; lineage is not a permission grant. The Result view uses its own frozen resultingAmount reference, never parent-Bundle or live-source values. Unit metadata preserves flow-property/version, unit-group/version and internal unit ID even when labels match. Missing LCIA is explicitly unavailable, while a present zero is displayed. Publication/runtime-pinned pagination and live backend checks prevent mixing changed publications; raw query artifacts remain server-side. ZIPs are available only when the whole prebuilt Candidate is authorized.
+Release-owned v2 publication selects exact processed Result identities separately from source processes. Only direct relations appear under an original source; lineage is not a permission grant. The Result view uses its own frozen resultingAmount reference, never parent-Bundle or live-source values. Unit metadata preserves flow-property/version, unit-group/version and internal unit ID even when labels match. Missing LCIA is explicitly unavailable, while a present zero is displayed. Publication/runtime-pinned pagination and live backend checks prevent mixing changed publications; raw query artifacts remain server-side. Complete 7z archives (TIDAS/eILCD, LZMA2 with a 256 MiB dictionary) are available only when the whole prebuilt Candidate is authorized. Final download DTOs require the exact `.7z` filename and current publication; HDF5 query behavior is unchanged.
