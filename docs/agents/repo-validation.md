@@ -48,7 +48,7 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-07
-lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
+lastReviewedCommit: b3cd4bf38f43eb35d97ed91c93e120df31b6b6ee
 lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
 related:
   - ../AGENTS.md
