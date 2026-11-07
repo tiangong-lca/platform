@@ -14,7 +14,6 @@ import {
   updateLifeCycleModel,
 } from '@/services/lifeCycleModels/api';
 import type {
-  LifeCycleModelCheckDataOptions,
   LifeCycleModelDetailResponse,
   LifeCycleModelEditorFormState,
   LifeCycleModelGraphEdge,
@@ -2082,22 +2081,50 @@ const ToolbarEdit: FC<Props> = ({
     setSpinning(false);
   };
 
-  const handleCheckData = async (options?: { silent?: boolean }) => {
-    const silent = options?.silent ?? false;
-    setSpinning(true);
-    const saveResult = await saveData(false, { silent, langIntent: 'validation' });
-    const checkOptions: LifeCycleModelCheckDataOptions = {
-      silent,
-      validationSnapshot: saveResult.validationSnapshot,
+  const currentValidationSnapshot = () => {
+    const currentNodes = graph
+      ? graph
+          .getNodes()
+          .map((node: X6Node) =>
+            typeof node.toJSON === 'function'
+              ? (node.toJSON() as LifeCycleModelGraphNode)
+              : (node as unknown as LifeCycleModelGraphNode),
+          )
+      : nodes;
+    const currentEdges = graph
+      ? graph
+          .getEdges()
+          .map((edge: X6Edge) =>
+            typeof edge.toJSON === 'function'
+              ? (edge.toJSON() as LifeCycleModelGraphEdge)
+              : (edge as unknown as LifeCycleModelGraphEdge),
+          )
+      : edges;
+    return {
+      currentNodes,
+      currentEdges,
+      validationSnapshot: {
+        modelId: thisId,
+        version: thisVersion,
+        payload: buildSavePayload(infoData, currentNodes, currentEdges),
+      },
     };
-    const checkDataResult = await editInfoRef.current?.handleCheckData(
-      'checkData',
-      saveResult.currentNodes,
-      saveResult.currentEdges,
-      checkOptions,
-    );
-    setProblemNodes(checkDataResult?.problemNodes ?? []);
-    setSpinning(false);
+  };
+
+  const handleCheckData = async (options?: { silent?: boolean }) => {
+    setSpinning(true);
+    try {
+      const current = currentValidationSnapshot();
+      const checkDataResult = await editInfoRef.current?.handleCheckData(
+        'checkData',
+        current.currentNodes,
+        current.currentEdges,
+        { silent: options?.silent ?? false, validationSnapshot: current.validationSnapshot },
+      );
+      setProblemNodes(checkDataResult?.problemNodes ?? []);
+    } finally {
+      setSpinning(false);
+    }
   };
 
   useEffect(() => {
@@ -2114,27 +2141,34 @@ const ToolbarEdit: FC<Props> = ({
   }, [autoCheckRequired, autoCheckTriggered, drawerVisible, handleCheckData, infoData]);
 
   const handelSubmitReview = async () => {
-    setSpinning(true);
-    const saveResult = await saveData(false, { langIntent: 'validation' });
-    const reviewResult = await editInfoRef.current?.handleCheckData(
-      'review',
-      saveResult.currentNodes,
-      saveResult.currentEdges,
-      {
-        validationSnapshot: saveResult.validationSnapshot,
-      },
-    );
-    const checkResult = reviewResult?.checkResult;
-    const unReview = reviewResult?.unReview ?? [];
-    setProblemNodes(reviewResult?.problemNodes ?? []);
-
-    if (checkResult && saveResult.saveSucceeded) {
-      const submitSucceeded = await editInfoRef.current?.submitReview(unReview);
-      if (submitSucceeded) {
-        onSubmitReviewSuccess();
-      }
+    if (!isSave) {
+      message.info(
+        intl.formatMessage({
+          id: 'pages.lifecyclemodel.review.saveFirst',
+          defaultMessage: 'Save your changes before submitting for review.',
+        }),
+      );
+      return;
     }
-    setSpinning(false);
+    setSpinning(true);
+    try {
+      const current = currentValidationSnapshot();
+      const reviewResult = await editInfoRef.current?.handleCheckData(
+        'review',
+        current.currentNodes,
+        current.currentEdges,
+        { validationSnapshot: current.validationSnapshot },
+      );
+      setProblemNodes(reviewResult?.problemNodes ?? []);
+      if (reviewResult?.checkResult) {
+        const submitSucceeded = await editInfoRef.current?.submitReview(
+          reviewResult.unReview ?? [],
+        );
+        if (submitSucceeded) onSubmitReviewSuccess();
+      }
+    } finally {
+      setSpinning(false);
+    }
   };
 
   const getShowResult = () => {
@@ -2322,8 +2356,12 @@ const ToolbarEdit: FC<Props> = ({
             .filter((submodel) => submodel.type !== 'allocated')
             .map((submodel) => ({
               id: submodel.id,
+              type: submodel.type,
               version: submodel.version ?? thisVersion,
             }))}
+          resultingProcesses={
+            infoData?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess
+          }
           modelId={thisId}
           modelVersion={thisVersion}
           lang={lang}

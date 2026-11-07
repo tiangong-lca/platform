@@ -1346,14 +1346,14 @@ describe('ToolbarEdit', () => {
     );
   });
 
-  it('runs footer data-check through the edit info ref after saving', async () => {
+  it('runs footer data-check through the edit info ref without saving', async () => {
     mockUpdateLifeCycleModel.mockResolvedValueOnce({
       ok: true,
       modelId: 'model-1',
-      version: '1.1',
+      version: '1.0',
       lifecycleModel: {
         id: 'model-1',
-        version: '1.1',
+        version: '1.0',
         json_tg: {
           xflow: {
             edges: [],
@@ -1378,7 +1378,7 @@ describe('ToolbarEdit', () => {
           silent: false,
           validationSnapshot: expect.objectContaining({
             modelId: 'model-1',
-            version: '1.1',
+            version: '1.0',
             payload: expect.objectContaining({
               model: expect.objectContaining({
                 nodes: expect.arrayContaining([
@@ -1463,7 +1463,7 @@ describe('ToolbarEdit', () => {
       problemNodes: [],
     });
 
-    render(<ToolbarEdit {...baseProps} />);
+    render(<ToolbarEdit {...baseProps} isSave={true} />);
 
     await userEvent.click(screen.getByRole('button', { name: 'send-icon' }));
 
@@ -1475,7 +1475,7 @@ describe('ToolbarEdit', () => {
         expect.objectContaining({
           validationSnapshot: expect.objectContaining({
             modelId: 'model-1',
-            version: '1.1',
+            version: '1.0',
           }),
         }),
       ),
@@ -1496,6 +1496,7 @@ describe('ToolbarEdit', () => {
     render(
       <ToolbarEdit
         {...baseProps}
+        isSave={true}
         drawerVisible={true}
         onSubmitReviewSuccess={onSubmitReviewSuccess}
       />,
@@ -1511,7 +1512,7 @@ describe('ToolbarEdit', () => {
         expect.objectContaining({
           validationSnapshot: expect.objectContaining({
             modelId: 'model-1',
-            version: '1.1',
+            version: '1.0',
           }),
         }),
       ),
@@ -1532,6 +1533,7 @@ describe('ToolbarEdit', () => {
     render(
       <ToolbarEdit
         {...baseProps}
+        isSave={true}
         drawerVisible={true}
         onSubmitReviewSuccess={onSubmitReviewSuccess}
       />,
@@ -1548,7 +1550,7 @@ describe('ToolbarEdit', () => {
       checkResult: true,
     });
 
-    render(<ToolbarEdit {...baseProps} />);
+    render(<ToolbarEdit {...baseProps} isSave={true} />);
 
     await userEvent.click(screen.getByRole('button', { name: 'send-icon' }));
 
@@ -1562,14 +1564,14 @@ describe('ToolbarEdit', () => {
       problemNodes: [],
     });
 
-    const { rerender } = render(<ToolbarEdit {...baseProps} />);
+    const { rerender } = render(<ToolbarEdit {...baseProps} isSave={true} />);
 
     await userEvent.click(screen.getByRole('button', { name: 'send-icon' }));
 
     await waitFor(() => expect(mockToolbarHandleCheckData).toHaveBeenCalled());
     expect(mockToolbarSubmitReview).not.toHaveBeenCalled();
 
-    rerender(<ToolbarEdit {...baseProps} hideReviewButton />);
+    rerender(<ToolbarEdit {...baseProps} isSave={true} hideReviewButton />);
 
     expect(screen.queryByRole('button', { name: 'send-icon' })).not.toBeInTheDocument();
   });
@@ -4012,4 +4014,12 @@ describe('ToolbarEdit', () => {
       expect(destroy).toHaveBeenCalled();
     },
   );
+  test('unsaved review requests stop before validation or persistence', async () => {
+    render(<ToolbarEdit {...baseProps} isSave={false} />);
+    await userEvent.click(screen.getByRole('button', { name: 'send-icon' }));
+    expect(mockToolbarHandleCheckData).not.toHaveBeenCalled();
+    expect(mockToolbarSubmitReview).not.toHaveBeenCalled();
+    expect(mockUpdateLifeCycleModel).not.toHaveBeenCalled();
+    expect(mockCreateLifeCycleModel).not.toHaveBeenCalled();
+  });
 });

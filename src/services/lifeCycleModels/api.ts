@@ -37,7 +37,6 @@ import {
   getLangText,
   jsonToList,
 } from '../general/util';
-import { getProcessDetailByIdsAndVersion } from '../processes/api';
 import { addOpenDataCatalogScope, queryMappedOpenDataCatalog } from '../openDataCatalog/api';
 import { genProcessName } from '../processes/util';
 import type {
@@ -603,7 +602,7 @@ export async function updateLifeCycleModel(
     rawLifeCycleModelJsonOrdered,
   );
   const currentModelResult = await publicEntity('lifecyclemodels')
-    .select('id, json_tg->submodels')
+    .select('id,json,json_tg->submodels')
     .eq('id', data.id)
     .eq('version', data.version);
 
@@ -628,6 +627,43 @@ export async function updateLifeCycleModel(
   }
 
   const oldSubmodels = jsonToList(currentModelResult.data[0].submodels);
+  const currentResultRefs = jsonToList(
+    currentModelResult.data[0].json?.lifeCycleModelDataSet?.lifeCycleModelInformation
+      ?.dataSetInformation?.referenceToResultingProcess,
+  );
+  if (!oldSubmodels.some((item) => item.type === 'primary') && currentResultRefs.length > 0) {
+    if (
+      currentResultRefs.length !== 1 ||
+      !currentResultRefs[0]['@refObjectId'] ||
+      !currentResultRefs[0]['@version']
+    ) {
+      return attachLangNormalizationMetadata(
+        buildMutationError(
+          'RESULT_IDENTITY_AMBIGUOUS',
+          'The current primary result cannot be identified uniquely',
+        ),
+        langMetadata,
+        options,
+      );
+    }
+    const ref = currentResultRefs[0];
+    const existing = oldSubmodels.find(
+      (item) =>
+        item.id === ref['@refObjectId'] && (item.version ?? data.version) === ref['@version'],
+    );
+    if (existing && existing.type && existing.type !== 'primary') {
+      return attachLangNormalizationMetadata(
+        buildMutationError(
+          'RESULT_IDENTITY_AMBIGUOUS',
+          'The current result role conflicts with its stored membership',
+        ),
+        langMetadata,
+        options,
+      );
+    }
+    if (existing) existing.type = 'primary';
+    else oldSubmodels.push({ id: ref['@refObjectId'], version: ref['@version'], type: 'primary' });
+  }
   if (validationError) {
     return attachLangNormalizationMetadata(
       buildLangValidationError(validationError),
@@ -655,11 +691,54 @@ export async function updateLifeCycleModel(
   }
   const { lifeCycleModelProcesses, up2DownEdges } = calculation;
 
-  const oldProcessesResult = await getProcessDetailByIdsAndVersion(
-    lifeCycleModelProcesses.map((process: any) => process.modelInfo.id),
-    data.version,
-  );
-  const oldProcesses = oldProcessesResult?.data ?? [];
+  const oldKeys = oldSubmodels.map((item) => ({
+    id: item.id,
+    version: item.version ?? data.version,
+  }));
+  const oldProcessesResult =
+    oldKeys.length > 0
+      ? await publicEntity('processes')
+          .select('id,version,json,model_id,model_version')
+          .or(oldKeys.map((item) => `and(id.eq.${item.id},version.eq.${item.version})`).join(','))
+      : { data: [], error: null };
+  if (oldProcessesResult.error) {
+    return attachLangNormalizationMetadata(
+      buildMutationError(
+        'PROCESS_LOOKUP_FAILED',
+        'Failed to load current model results',
+        oldProcessesResult.error,
+      ),
+      langMetadata,
+      options,
+    );
+  }
+  const oldProcesses = oldProcessesResult.data ?? [];
+  if (
+    oldKeys.some(
+      (key) =>
+        !oldProcesses.some(
+          (row: {
+            id: string;
+            version: string;
+            model_id: string | null;
+            model_version: string | null;
+          }) =>
+            row.id === key.id &&
+            row.version === key.version &&
+            row.model_id === data.id &&
+            (row.model_version ?? row.version) === data.version,
+        ),
+    )
+  ) {
+    return attachLangNormalizationMetadata(
+      buildMutationError(
+        'PROCESS_NOT_FOUND',
+        'A current result is missing or does not belong to this model version',
+      ),
+      langMetadata,
+      options,
+    );
+  }
   const persistenceGraph = options?.persistenceGraph ?? data?.model;
 
   const planResult = await buildSaveLifeCycleModelPersistencePlan({

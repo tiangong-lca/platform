@@ -21,9 +21,9 @@ checkPaths:
   - src/services/lciaMethods/**
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
-lastReviewedAt: 2026-10-26
-lastReviewedCommit: 81bf639b80946bad144dd67e393d884148192696
-lastReviewedNote: 'Platform #1342: reviewed frozen result revision and unit display, exact-version optional enrichment and legacy unknown revisions. Calculation, data-quality policy, database ownership, release and validation gates remain unchanged.'
+lastReviewedAt: 2026-11-07
+lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
+lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
 ---
 
 # Lifecycle Model Calculation Reference
@@ -100,6 +100,7 @@ Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `Cal
 - Each result scenario solves its own final-demand vector, including all connected upstream suppliers and cycles. The primary scenario uses the Model target; a secondary boundary-product or terminal-process scenario uses its source reference quantity. The net reference exchange records that scenario's functional unit.
 - `productSystemPersistence.ts` materializes evaluated provider exchanges with `dataDerivationTypeStatus = Calculated`, removes executable allocation/formula fields, preserves source inventory metadata, and clears inherited review claims. Provider identity combines source instance, exact source Process version and product exchange. Existing provider IDs are reused for matching identities.
 - `json_tg.xflow` keeps source nodes and links; standard `processInstance` references the projected providers and supplies the scalar for each complete referenced inventory. Allocated provider records are saved in the same bundle and tracked separately from primary/secondary result records. Result selectors and `referenceToResultingProcess` include only result records.
+- Updating an existing bundle retains each declared result/provider ID and its own version; only new results use the Model version. Queries and mutations use exact `id + version`, and a missing or foreign old member rejects the save rather than creating a replacement. Standard resulting references and UI membership carry those same result versions.
 - Bundle version creation assigns one parent version to its created Processes. The database save function rewrites exact same-bundle Process references in standard instances and included-process provenance; external reference versions remain pinned.
 
 ## Hard Rules
