@@ -342,9 +342,7 @@ async function buildProcessMutations(args: {
       version: args.version,
       lifeCycleModelJsonOrdered: args.lifeCycleModelJsonOrdered,
       process,
-      oldProcess: oldProcessesById.get(
-        `${process.modelInfo.id}@${process.modelInfo.version ?? args.version}`,
-      ),
+      oldProcess: oldProcessesById.get(`${process.modelInfo.id}@${process.modelInfo.version}`),
     });
 
     if (!mutation.ok) {
@@ -403,11 +401,11 @@ async function buildProcessMutation(args: {
     return {
       ok: false,
       code: 'PROCESS_NOT_FOUND',
-      message: `Missing current result ${args.process.modelInfo.id}@${args.process.modelInfo.version ?? args.version}`,
+      message: `Missing current result ${args.process.modelInfo.id}@${args.process.modelInfo.version}`,
     };
   }
 
-  const resultVersion = args.process.modelInfo.version ?? args.version;
+  const resultVersion = args.process.modelInfo.version;
   if (resultVersion) {
     processDataSet.administrativeInformation ??= {};
     processDataSet.administrativeInformation.publicationAndOwnership ??= {};

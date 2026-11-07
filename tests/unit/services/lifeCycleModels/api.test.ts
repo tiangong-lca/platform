@@ -1487,6 +1487,81 @@ describe('createLifeCycleModel', () => {
 });
 
 describe('updateLifeCycleModel', () => {
+  it.each([true, false])(
+    'recovers legacy primary membership using its exact standard reference (explicit version: %s)',
+    async (explicitVersion) => {
+      const storedJson: any = buildLifecycleModelJsonOrdered();
+      storedJson.lifeCycleModelDataSet.lifeCycleModelInformation.dataSetInformation.referenceToResultingProcess =
+        { '@refObjectId': 'result', '@version': sampleVersion };
+      mockFrom.mockReturnValueOnce(
+        createQueryBuilder({
+          data: [
+            {
+              json: storedJson,
+              submodels: [{ id: 'result', ...(explicitVersion ? { version: sampleVersion } : {}) }],
+            },
+          ],
+          error: null,
+        }),
+      );
+      mockFrom.mockReturnValueOnce(
+        createQueryBuilder({
+          data: [
+            { id: 'result', version: sampleVersion, model_id: sampleModelId, model_version: null },
+          ],
+          error: null,
+        }),
+      );
+      mockFunctionsInvoke.mockResolvedValueOnce(createMockEdgeFunctionResponse(buildSaveResult()));
+      await lifeCycleModelsApi.updateLifeCycleModel({
+        id: sampleModelId,
+        version: sampleVersion,
+        model: { nodes: [], edges: [] },
+      });
+      expect(mockGenLifeCycleModelProcesses.mock.calls[0][3][0]).toMatchObject({
+        id: 'result',
+        type: 'primary',
+      });
+      expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('rejects conflicting result roles without calculating or writing', async () => {
+    const storedJson: any = buildLifecycleModelJsonOrdered();
+    storedJson.lifeCycleModelDataSet.lifeCycleModelInformation.dataSetInformation.referenceToResultingProcess =
+      { '@refObjectId': 'result', '@version': sampleVersion };
+    mockFrom.mockReturnValueOnce(
+      createQueryBuilder({
+        data: [
+          {
+            json: storedJson,
+            submodels: [{ id: 'result', version: sampleVersion, type: 'secondary' }],
+          },
+        ],
+        error: null,
+      }),
+    );
+    expect(
+      await lifeCycleModelsApi.updateLifeCycleModel({ id: sampleModelId, version: sampleVersion }),
+    ).toMatchObject({ ok: false, code: 'RESULT_IDENTITY_AMBIGUOUS' });
+    expect(mockGenLifeCycleModelProcesses).not.toHaveBeenCalled();
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+  });
+
+  it('rejects null current result readback without sending a mutation', async () => {
+    mockFrom.mockReturnValueOnce(
+      createQueryBuilder({
+        data: [{ submodels: [{ id: 'result', version: sampleVersion, type: 'primary' }] }],
+        error: null,
+      }),
+    );
+    mockFrom.mockReturnValueOnce(createQueryBuilder({ data: null, error: null }));
+    expect(
+      await lifeCycleModelsApi.updateLifeCycleModel({ id: sampleModelId, version: sampleVersion }),
+    ).toMatchObject({ ok: false, code: 'PROCESS_NOT_FOUND' });
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+  });
+
   it.each(['independent-result', sampleModelId])(
     'preserves the declared result %s at its own version when UI membership is absent',
     async (resultId) => {

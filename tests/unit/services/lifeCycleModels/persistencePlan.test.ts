@@ -1932,3 +1932,35 @@ test('result identity/version survive Model version changes and retain authored 
     ]),
   );
 });
+
+describe('result version on sparse generated metadata', () => {
+  it.each([undefined, {}])(
+    'writes the result version even when publication metadata is sparse: %s',
+    async (admin) => {
+      const dataset: any = buildProcessDataSet();
+      dataset.administrativeInformation = admin;
+      const result = await buildSaveLifeCycleModelPersistencePlan({
+        mode: 'create',
+        modelId: sampleModelId,
+        version: sampleVersion,
+        lifeCycleModelJsonOrdered: buildLifecycleModelJsonOrdered(),
+        nodes: [],
+        edges: [],
+        up2DownEdges: [],
+        lifeCycleModelProcesses: [
+          {
+            option: 'create',
+            modelInfo: { id: 'new-result', version: '08.00.000', type: 'primary' },
+            data: { processDataSet: dataset },
+          },
+        ],
+      });
+      expect(result.ok).toBe(true);
+      if (!result.ok) throw new Error(result.code);
+      expect(
+        asUpsertMutation(result.plan.processMutations[0]).jsonOrdered.processDataSet
+          .administrativeInformation.publicationAndOwnership['common:dataSetVersion'],
+      ).toBe('08.00.000');
+    },
+  );
+});

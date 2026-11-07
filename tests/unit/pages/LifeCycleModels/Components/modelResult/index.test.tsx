@@ -775,6 +775,49 @@ describe('ModelResult', () => {
     );
   });
 
+  it('uses array standard references and deduplicates only the same exact legacy member', async () => {
+    renderWithProviders(
+      <ModelResult
+        submodels={[
+          { id: 'result', version: '08.00.000' },
+          { id: 'result', version: '07.00.000' },
+          { id: 'other', version: '04.00.000' },
+        ]}
+        resultingProcesses={[{ '@refObjectId': 'result', '@version': '08.00.000' }]}
+        modelId='model'
+        modelVersion='06.00.000'
+        lang='en'
+        actionType='view'
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /model result/i }));
+    await waitFor(() =>
+      expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+        [{ id: 'result', version: '08.00.000' }],
+        'en',
+        { classification: [], keyword: '' },
+      ),
+    );
+    expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+      [
+        { id: 'result', version: '07.00.000' },
+        { id: 'other', version: '04.00.000' },
+      ],
+      'en',
+      { classification: [], keyword: '' },
+    );
+    const table = mockModelTableProps['pages.lifeCycleModel.modelResults.mainProduct'];
+    const { submodels: members, ...params } = table.params;
+    expect(members).toHaveLength(3);
+    await act(async () => {
+      await table.request(params, {});
+    });
+    expect(mockGetProcessesByIdAndVersion).toHaveBeenLastCalledWith([], 'en', {
+      classification: [],
+      keyword: '',
+    });
+  });
+
   it('uses result roles and exact versions even when the primary UUID differs from the Model', async () => {
     renderWithProviders(
       <ModelResult
