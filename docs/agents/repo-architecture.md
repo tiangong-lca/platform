@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 7ce24ea3940269d488a045ba2dadf6a0b01c027e
-lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
+lastReviewedAt: 2026-11-06
+lastReviewedCommit: 24f71c6022f065a354e2cb6fc6946a8ccd7613cb
+lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

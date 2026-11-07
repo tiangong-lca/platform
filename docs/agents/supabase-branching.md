@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: a6fc599ad70931a1915944725fc6d3568740757e
-lastReviewedNote: 'Platform #1442: corrected owner V6 c322ec2/manifest003deb09 deliberately adopted after clean a6fc build. Only runtime index/manifest change; all six non-index outputs,33 operations and readers match77e. Owner create/save scalar negatives reject before POST/journal, paired Unicode preserved; red12fail/20pass becomes green32/32. No local scalar/domain policy or renderer/V2 repin. Current full gate/build and independent recheck remain pending; original a33/77/build proofs and actual runtime/Main/root holds retained.'
+lastReviewedAt: 2026-11-06
+lastReviewedCommit: 24f71c6022f065a354e2cb6fc6946a8ccd7613cb
+lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
 ---
 
 # Supabase Environment And Database Workflow

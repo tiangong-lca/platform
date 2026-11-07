@@ -291,7 +291,7 @@ export async function finalResultDownload(
       publicationId: uuid,
       file: z
         .object({
-          name: z.literal(`result.${format}.zip`),
+          name: z.literal(`result.${format}.7z`),
           sha256: z.string().regex(/^[0-9a-f]{64}$/),
           byteSize: z
             .number()

@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "3ac5fdef24f8a46d40f0c602b4e0d0c6fc6f6db6129bb737024200928f34b3ea",
+    "auditedInputDigest": "8b4f26de940a31e4a5c1efdd19029c8b5ace745d01b2a5da7cae1216c6b08bfa",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -232533,7 +232533,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "Download ILCD ZIP",
+          "value": "Download ILCD 7z",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232544,7 +232544,7 @@
           }
         },
         "zh-CN": {
-          "value": "下载 ILCD ZIP",
+          "value": "下载 ILCD 7z",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232555,7 +232555,7 @@
           }
         },
         "de-DE": {
-          "value": "ILCD-ZIP herunterladen",
+          "value": "ILCD-7z herunterladen",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232566,7 +232566,7 @@
           }
         },
         "fr-FR": {
-          "value": "Télécharger le ZIP ILCD",
+          "value": "Télécharger le 7z ILCD",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232592,7 +232592,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "Download TIDAS ZIP",
+          "value": "Download TIDAS 7z",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232603,7 +232603,7 @@
           }
         },
         "zh-CN": {
-          "value": "下载 TIDAS ZIP",
+          "value": "下载 TIDAS 7z",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232614,7 +232614,7 @@
           }
         },
         "de-DE": {
-          "value": "TIDAS-ZIP herunterladen",
+          "value": "TIDAS-7z herunterladen",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -232625,7 +232625,7 @@
           }
         },
         "fr-FR": {
-          "value": "Télécharger le ZIP TIDAS",
+          "value": "Télécharger le 7z TIDAS",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -233966,7 +233966,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "A complete ZIP is not available for this publication and your access permissions.",
+          "value": "A complete 7z archive is not available for this publication and your access permissions.",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -233977,7 +233977,7 @@
           }
         },
         "zh-CN": {
-          "value": "当前发布范围和您的访问权限不支持下载完整 ZIP 包。",
+          "value": "当前发布范围和您的访问权限不支持下载完整 7z 包。",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -233988,7 +233988,7 @@
           }
         },
         "de-DE": {
-          "value": "Für diese Veröffentlichung und Ihre Zugriffsrechte ist kein vollständiges ZIP-Paket verfügbar.",
+          "value": "Für diese Veröffentlichung und Ihre Zugriffsrechte ist kein vollständiges 7z-Paket verfügbar.",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -233999,7 +233999,7 @@
           }
         },
         "fr-FR": {
-          "value": "Aucun ZIP complet n’est disponible pour cette publication avec vos droits d’accès.",
+          "value": "Aucun 7z complet n’est disponible pour cette publication avec vos droits d’accès.",
           "argumentSignature": [],
           "placeholders": [],
           "source": {

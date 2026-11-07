@@ -241,11 +241,11 @@ it('rejects source ancestors, duplicate/backward keys, wrong publication and v2 
 });
 const zip = () => ({
   publicationId,
-  file: { name: 'result.tidas.zip', sha256: 'a'.repeat(64), byteSize: 900 },
-  url: 'https://storage.example.invalid/frozen.zip?synthetic-signature=1',
+  file: { name: 'result.tidas.7z', sha256: 'a'.repeat(64), byteSize: 900 },
+  url: 'https://storage.example.invalid/frozen.7z?synthetic-signature=1',
   expiresAt: new Date(Date.now() + 60000).toISOString(),
 });
-it('only returns a fresh exact authorized ZIP and never stores its signed URL', async () => {
+it('only returns a fresh exact authorized 7z archive and never stores its signed URL', async () => {
   const data = zip();
   mockInvoke.mockResolvedValue({ data: { ok: true, mode: 'final_download', data } });
   expect(await finalResultDownload(publicationId, 'tidas', signal())).toEqual({
@@ -260,7 +260,8 @@ it('only returns a fresh exact authorized ZIP and never stores its signed URL', 
 it('rejects unsafe links, stale/long-lived URLs, wrong files and identity', async () => {
   for (const patch of [
     { publicationId: id },
-    { file: { ...zip().file, name: 'result.ilcd.zip' } },
+    { file: { ...zip().file, name: 'result.ilcd.7z' } },
+    { file: { ...zip().file, name: 'result.tidas.zip' } },
     { url: 'http://outside.invalid/x' },
     { url: 'https://user:secret@storage.invalid/x' },
     { url: 'javascript:alert(1)' },
