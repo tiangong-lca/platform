@@ -218,7 +218,7 @@ export const genReferenceToResultingProcess = (
         '@refObjectId': process?.modelInfo?.id,
         '@type': 'process data set',
         '@uri': `../processes/${process?.modelInfo?.id}.xml`,
-        '@version': version,
+        '@version': process?.modelInfo?.version ?? version,
         'common:shortDescription': genProcessNameJson(
           process?.data?.processDataSet?.processInformation?.dataSetInformation?.name,
         ),

@@ -265,7 +265,7 @@ describe('ModelResult', () => {
     );
     renderWithProviders(
       <ModelResult
-        submodels={submodels}
+        submodels={[{ id: 'main', version: '02.00.000', type: 'primary' }, ...submodels]}
         modelId='main'
         modelVersion='02.00.000'
         lang='en'
@@ -328,7 +328,7 @@ describe('ModelResult', () => {
     );
     renderWithProviders(
       <ModelResult
-        submodels={submodels}
+        submodels={[{ id: 'main', version: '02.00.000', type: 'primary' }, ...submodels]}
         modelId='main'
         modelVersion='02.00.000'
         lang='en'
@@ -451,7 +451,10 @@ describe('ModelResult', () => {
     );
     const view = renderWithProviders(
       <ModelResult
-        submodels={[{ id: 'sub-old', version: '01.00.000' }]}
+        submodels={[
+          { id: 'model-old', version: '01.00.000', type: 'primary' },
+          { id: 'sub-old', version: '01.00.000' },
+        ]}
         modelId='model-old'
         modelVersion='01.00.000'
         lang='en'
@@ -461,7 +464,10 @@ describe('ModelResult', () => {
     await userEvent.click(screen.getByRole('button', { name: /model result/i }));
     view.rerender(
       <ModelResult
-        submodels={[{ id: 'sub-new', version: '02.00.000' }]}
+        submodels={[
+          { id: 'model-new', version: '02.00.000', type: 'primary' },
+          { id: 'sub-new', version: '02.00.000' },
+        ]}
         modelId='model-new'
         modelVersion='02.00.000'
         lang='en'
@@ -522,6 +528,11 @@ describe('ModelResult', () => {
   });
 
   it('loads main and sub process tables and renders edit actions in edit mode', async () => {
+    mockGetProcessesByIdAndVersion.mockImplementation(async (references: any[]) => ({
+      data: references.map((reference) => ({ ...reference, name: reference.id })),
+      success: true,
+      total: references.length,
+    }));
     renderWithProviders(
       <ModelResult
         submodels={[
@@ -547,7 +558,7 @@ describe('ModelResult', () => {
     await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledTimes(2));
     expect(mockGetProcessesByIdAndVersion).toHaveBeenNthCalledWith(
       1,
-      [{ id: 'model-1', version: '1.0.0' }],
+      [{ id: 'model-1', version: '0.9.0' }],
       'en',
       { classification: [], keyword: '' },
     );
@@ -563,7 +574,7 @@ describe('ModelResult', () => {
 
     await waitFor(() => expect(screen.getAllByTestId('process-view')).toHaveLength(3));
     expect(screen.getAllByTestId('process-edit')).toHaveLength(3);
-    expect(screen.getByText('view:model-1:1.0.0')).toBeInTheDocument();
+    expect(screen.getByText('view:model-1:0.9.0')).toBeInTheDocument();
     expect(screen.getByText('edit:sub-2:0.7.0')).toBeInTheDocument();
 
     await userEvent.click(screen.getAllByTestId('process-edit')[0]);
@@ -699,7 +710,7 @@ describe('ModelResult', () => {
     await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledTimes(2));
     expect(mockGetProcessesByIdAndVersion).toHaveBeenNthCalledWith(
       1,
-      [{ id: 'model-1', version: '1.0.0' }],
+      [{ id: 'model-1', version: '0.9.0' }],
       'en',
       { classification: [], keyword: '' },
     );
@@ -737,6 +748,106 @@ describe('ModelResult', () => {
     expect(await screen.findByRole('dialog', { name: /model results/i })).toBeInTheDocument();
 
     await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledTimes(6));
+  });
+  it('shows a sole standard result reference even when CLI supplies no UI members', async () => {
+    renderWithProviders(
+      <ModelResult
+        submodels={[]}
+        resultingProcesses={{ '@refObjectId': 'cli-result', '@version': '08.00.000' }}
+        modelId='model'
+        modelVersion='06.00.000'
+        lang='en'
+        actionType='view'
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /model result/i }));
+    await waitFor(() =>
+      expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+        [{ id: 'cli-result', version: '08.00.000' }],
+        'en',
+        { classification: [], keyword: '' },
+      ),
+    );
+    expect(mockGetProcessesByIdAndVersion).not.toHaveBeenCalledWith(
+      [{ id: 'model', version: '06.00.000' }],
+      expect.anything(),
+      expect.anything(),
+    );
+  });
+
+  it('uses array standard references and deduplicates only the same exact legacy member', async () => {
+    renderWithProviders(
+      <ModelResult
+        submodels={[
+          { id: 'result', version: '08.00.000' },
+          { id: 'result', version: '07.00.000' },
+          { id: 'other', version: '04.00.000' },
+        ]}
+        resultingProcesses={[{ '@refObjectId': 'result', '@version': '08.00.000' }]}
+        modelId='model'
+        modelVersion='06.00.000'
+        lang='en'
+        actionType='view'
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /model result/i }));
+    await waitFor(() =>
+      expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+        [{ id: 'result', version: '08.00.000' }],
+        'en',
+        { classification: [], keyword: '' },
+      ),
+    );
+    expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+      [
+        { id: 'result', version: '07.00.000' },
+        { id: 'other', version: '04.00.000' },
+      ],
+      'en',
+      { classification: [], keyword: '' },
+    );
+    const table = mockModelTableProps['pages.lifeCycleModel.modelResults.mainProduct'];
+    const { submodels: members, ...params } = table.params;
+    expect(members).toHaveLength(3);
+    await act(async () => {
+      await table.request(params, {});
+    });
+    expect(mockGetProcessesByIdAndVersion).toHaveBeenLastCalledWith([], 'en', {
+      classification: [],
+      keyword: '',
+    });
+  });
+
+  it('uses result roles and exact versions even when the primary UUID differs from the Model', async () => {
+    renderWithProviders(
+      <ModelResult
+        submodels={[
+          { id: 'secondary', version: '04.00.000', type: 'secondary' },
+          { id: 'primary', version: '08.00.000', type: 'primary' },
+          { id: 'provider', version: '03.00.000', type: 'allocated' },
+        ]}
+        modelId='model'
+        modelVersion='06.00.000'
+        lang='en'
+        actionType='view'
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: /model result/i }));
+    await waitFor(() =>
+      expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+        [{ id: 'primary', version: '08.00.000' }],
+        'en',
+        { classification: [], keyword: '' },
+      ),
+    );
+    expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
+      [
+        { id: 'secondary', version: '04.00.000' },
+        { id: 'provider', version: '03.00.000' },
+      ],
+      'en',
+      { classification: [], keyword: '' },
+    );
   });
 });
 

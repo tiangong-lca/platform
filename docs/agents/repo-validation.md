@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-07
-lastReviewedCommit: f5d485d1fd3d6b3112e5bf6ad8c9ac9bb6db5606
-lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
+lastReviewedCommit: b3cd4bf38f43eb35d97ed91c93e120df31b6b6ee
+lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

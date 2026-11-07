@@ -1,4 +1,5 @@
 export default {
+  'pages.lifecyclemodel.review.saveFirst': '请先保存修改，再提交审核。',
   'pages.lifeCycleModel.modelResults.subProduct': '子产品',
   'pages.lifeCycleModel.modelResults.mainProduct': '主产品',
   'pages.lifeCycleModel.drawer.title.create': '创建模型',

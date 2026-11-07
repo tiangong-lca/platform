@@ -714,8 +714,12 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
           .filter((submodel) => submodel.type !== 'allocated')
           .map((submodel) => ({
             id: submodel.id,
+            type: submodel.type,
             version: submodel.version ?? version,
           }))}
+        resultingProcesses={
+          infoData?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess
+        }
         modelId={id}
         modelVersion={version}
         lang={lang}

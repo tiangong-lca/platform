@@ -117,11 +117,12 @@ export const materializeProductSystem = (
         validation: { review: { '@type': 'Not reviewed' } },
         complianceDeclarations: compliance.length ? { compliance } : undefined,
       };
+      if (old?.version) record.modelInfo.version = old.version;
       allocatedProcesses.push(record);
       referenceToProcess = {
         '@type': 'process data set',
         '@refObjectId': id,
-        '@version': modelVersion,
+        '@version': old?.version ?? modelVersion,
         '@uri': `../processes/${id}.xml`,
         'common:shortDescription': baseName,
       };

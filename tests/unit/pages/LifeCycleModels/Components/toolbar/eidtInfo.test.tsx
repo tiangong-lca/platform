@@ -475,6 +475,8 @@ const mockGetLangText = jest.fn((langTexts: any, lang: string) => {
   return langTexts?.['#text'] ?? '-';
 });
 jest.mock('@/services/general/util', () => ({
+  jsonToList: (value: any) =>
+    value === null || value === undefined ? [] : Array.isArray(value) ? value : [value],
   __esModule: true,
   getLang: (...args: any[]) => mockGetLang(...args),
   getLangText: (...args: any[]) => mockGetLangText(...args),
@@ -569,7 +571,10 @@ describe('ToolbarEditInfo', () => {
       version: '1.0',
       stateCode: 10,
       teamId: 'team-1',
-      json_tg: { xflow: { nodes: [], edges: [] }, submodels: [] },
+      json_tg: {
+        xflow: { nodes: [], edges: [] },
+        submodels: [{ id: 'model-1', version: '1.0', type: 'primary' }],
+      },
       json: {
         lifeCycleModelDataSet: {
           lifeCycleModelInformation: { dataSetInformation: { name: {} } },
@@ -916,12 +921,12 @@ describe('ToolbarEditInfo', () => {
     });
 
     expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0');
-    expect(mockGetProcessDetail).toHaveBeenCalledWith('model-1', '1.0');
+    expect(mockGetProcessDetail).not.toHaveBeenCalled();
     expect(mockCheckReferences).toHaveBeenCalled();
     expect(mockGenLifeCycleModelJsonOrdered).toHaveBeenCalled();
     expect(mockGetUserTeamId).toHaveBeenCalled();
     expect(mockDealModel).toHaveBeenCalled();
-    expect(mockDealProcress).toHaveBeenCalled();
+    expect(mockDealProcress).not.toHaveBeenCalled();
     expect(mockAntdMessage.error).toHaveBeenCalledWith('Data check failed, please check the data!');
     expect(result.checkResult).toBe(false);
     expect(Array.isArray(result.unReview)).toBe(true);
@@ -963,7 +968,7 @@ describe('ToolbarEditInfo', () => {
 
     expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('', '');
     expect(mockGenLifeCycleModelJsonOrdered).toHaveBeenCalledWith('', expect.any(Object));
-    expect(mockGetProcessDetail).toHaveBeenCalledWith('', '');
+    expect(mockGetProcessDetail).toHaveBeenCalledWith('model-1', '1.0');
     expect(mockCheckReferences).toHaveBeenCalledTimes(1);
     expect(result.checkResult).toBe(true);
   });
@@ -974,7 +979,10 @@ describe('ToolbarEditInfo', () => {
       createModelDetail({
         json_tg: {
           xflow: { nodes: [], edges: [] },
-          submodels: [{ id: 'sub-1', type: 'secondary' }],
+          submodels: [
+            { id: 'sub-1', type: 'secondary' },
+            { id: 'model-saved', version: '2.0', type: 'primary' },
+          ],
         },
       }),
     );
@@ -1028,20 +1036,11 @@ describe('ToolbarEditInfo', () => {
       validationSnapshot.payload,
     );
     expect(mockNormalizeLangPayloadForSave).not.toHaveBeenCalled();
-    expect(mockGenLifeCycleModelProcesses).toHaveBeenCalledWith(
-      'model-saved',
-      validationSnapshot.payload.model.nodes,
-      rawOrderedJson,
-      [{ id: 'sub-1', type: 'secondary' }],
-    );
-    expect(mockGenReferenceToResultingProcess).toHaveBeenCalledWith(
-      [{ modelInfo: { id: 'primary-process' } }],
-      '2.0',
-      rawOrderedJson,
-    );
+    expect(mockGenLifeCycleModelProcesses).not.toHaveBeenCalled();
+    expect(mockGenReferenceToResultingProcess).not.toHaveBeenCalled();
     expect(mockValidateDatasetWithSdk).toHaveBeenCalledWith(
       'lifeCycleModel data set',
-      finalOrderedJson,
+      rawOrderedJson,
     );
   });
 
@@ -1115,14 +1114,13 @@ describe('ToolbarEditInfo', () => {
         await ref.current?.handleCheckData('checkData', nodes, [{}]);
       });
 
-      expect(structuredCloneSpy).toHaveBeenCalledWith(rawOrderedJson);
-      expect(mockGenLifeCycleModelProcesses).toHaveBeenCalledWith(
-        'model-1',
-        [],
+      expect(structuredCloneSpy).not.toHaveBeenCalled();
+      expect(mockGenLifeCycleModelProcesses).not.toHaveBeenCalled();
+      expect(mockGenReferenceToResultingProcess).not.toHaveBeenCalled();
+      expect(mockValidateDatasetWithSdk).toHaveBeenCalledWith(
+        'lifeCycleModel data set',
         rawOrderedJson,
-        [],
       );
-      expect(mockGenReferenceToResultingProcess).toHaveBeenCalledWith([], '1.0', rawOrderedJson);
     } finally {
       global.structuredClone = originalStructuredClone;
     }
@@ -1149,7 +1147,7 @@ describe('ToolbarEditInfo', () => {
         result = await ref.current?.handleCheckData('checkData', nodes, [{}]);
       });
 
-      expect(mockGenReferenceToResultingProcess).toHaveBeenCalledWith([], '1.0', undefined);
+      expect(mockGenReferenceToResultingProcess).not.toHaveBeenCalled();
       expect(mockValidateDatasetWithSdk).toHaveBeenCalledWith('lifeCycleModel data set', undefined);
       expect(result.checkResult).toBe(true);
     } finally {
@@ -1526,7 +1524,7 @@ describe('ToolbarEditInfo', () => {
         },
       ],
     });
-    mockGenReferenceToResultingProcess.mockReturnValueOnce({
+    mockGenLifeCycleModelJsonOrdered.mockReturnValueOnce({
       lifeCycleModelDataSet: {
         lifeCycleModelInformation: {
           technology: {
@@ -1680,7 +1678,10 @@ describe('ToolbarEditInfo', () => {
         version: '1.0',
         stateCode: 10,
         teamId: 'team-1',
-        json_tg: { xflow: { nodes: [], edges: [] }, submodels: [] },
+        json_tg: {
+          xflow: { nodes: [], edges: [] },
+          submodels: [{ id: 'model-1', version: '1.0', type: 'primary' }],
+        },
         json: {
           lifeCycleModelDataSet: {
             lifeCycleModelInformation: { dataSetInformation: { name: {} } },

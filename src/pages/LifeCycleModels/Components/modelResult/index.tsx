@@ -36,10 +36,14 @@ type ModelResultTableParams = ContentLanguageAwareTableParams & {
   submodels?: Props['submodels'];
 };
 
+type ResultReference = { '@refObjectId'?: string; '@version'?: string };
+
 type Props = {
+  resultingProcesses?: ResultReference | ResultReference[];
   submodels: Array<{
     id: string;
     version: string;
+    type?: string;
   }>;
   modelId: string;
   modelVersion: string;
@@ -56,13 +60,32 @@ type Props = {
 };
 
 const ModelResult: FC<Props> = ({
-  submodels,
+  submodels: storedSubmodels,
+  resultingProcesses,
   modelId,
   modelVersion,
   lang,
   actionType,
   showPreviousResultNotice = false,
 }) => {
+  const resultRefs = Array.isArray(resultingProcesses)
+    ? resultingProcesses
+    : resultingProcesses
+      ? [resultingProcesses]
+      : [];
+  const soleResult = resultRefs.length === 1 ? resultRefs[0] : undefined;
+  const submodels =
+    !storedSubmodels.some((item) => item.type === 'primary') &&
+    soleResult?.['@refObjectId'] &&
+    soleResult?.['@version']
+      ? [
+          { id: soleResult['@refObjectId'], version: soleResult['@version'], type: 'primary' },
+          ...storedSubmodels.filter(
+            (item) =>
+              item.id !== soleResult['@refObjectId'] || item.version !== soleResult['@version'],
+          ),
+        ]
+      : storedSubmodels;
   const intl = useIntl();
   const [mainClassification, setMainClassification] = useState<DatasetClassificationFilterValue[]>(
     [],
@@ -179,7 +202,16 @@ const ModelResult: FC<Props> = ({
               buttonType='icon'
               lang={lang}
               disabled={false}
-              actionRef={record.id === modelId ? mainProcuctTableRef : subProcuctTableRef}
+              actionRef={
+                submodels.some(
+                  (item) =>
+                    item.id === record.id &&
+                    item.version === record.version &&
+                    (item.type === 'primary' || (!item.type && item.id === modelId)),
+                )
+                  ? mainProcuctTableRef
+                  : subProcuctTableRef
+              }
               setViewDrawerVisible={() => {}}
             />,
           );
@@ -241,6 +273,7 @@ const ModelResult: FC<Props> = ({
             ...contentLanguageParams,
             modelId,
             modelVersion,
+            submodels,
             classification: mainClassification,
             keyword: appliedMainKeyword,
           }}
@@ -283,7 +316,12 @@ const ModelResult: FC<Props> = ({
               mainProductRequestEpochRef,
               () =>
                 getProcessesByIdAndVersion(
-                  [{ id: params.modelId, version: params.modelVersion }],
+                  (params.submodels ?? [])
+                    .filter(
+                      (entry) =>
+                        entry.type === 'primary' || (!entry.type && entry.id === params.modelId),
+                    )
+                    .map(({ id, version }) => ({ id, version })),
                   params.contentLanguage,
                   { classification: params.classification, keyword: params.keyword },
                 ),
@@ -340,7 +378,10 @@ const ModelResult: FC<Props> = ({
               actionRef={subProcuctTableRef}
               request={async (params) => {
                 const subProducts = (params.submodels ?? []).filter(
-                  (entry) => entry.id !== params.modelId,
+                  (entry) =>
+                    entry.type === 'secondary' ||
+                    entry.type === 'allocated' ||
+                    (!entry.type && entry.id !== params.modelId),
                 );
                 return guardLocaleMaterializedTableRequest(
                   params.contentLanguage,

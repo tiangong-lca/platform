@@ -46,6 +46,7 @@ type RawLifeCycleModelProcess = {
   option?: 'create' | 'update';
   modelInfo: {
     id: string;
+    version?: string;
     type?: 'primary' | 'secondary' | string;
     finalId?: {
       nodeId?: string;
@@ -118,8 +119,18 @@ export async function buildSaveLifeCycleModelPersistencePlan(
 ): Promise<PlanBuildResult> {
   const lifecycleModelVersion =
     args.version || getLifecycleModelVersion(args.lifeCycleModelJsonOrdered) || undefined;
+  const processes = args.lifeCycleModelProcesses.map((process) => ({
+    ...process,
+    modelInfo: {
+      ...process.modelInfo,
+      version:
+        process.modelInfo.version ??
+        args.oldSubmodels?.find((item) => item.id === process.modelInfo.id)?.version ??
+        lifecycleModelVersion,
+    },
+  }));
   const parentJsonOrdered = genReferenceToResultingProcess(
-    args.lifeCycleModelProcesses,
+    processes,
     lifecycleModelVersion ?? '',
     clone(args.lifeCycleModelJsonOrdered),
   );
@@ -130,7 +141,7 @@ export async function buildSaveLifeCycleModelPersistencePlan(
     modelId: args.modelId,
     version: args.version,
     lifeCycleModelJsonOrdered: parentJsonOrdered,
-    lifeCycleModelProcesses: args.lifeCycleModelProcesses,
+    lifeCycleModelProcesses: processes,
     oldSubmodels: args.oldSubmodels ?? [],
     oldProcesses: args.oldProcesses ?? [],
   });
@@ -150,10 +161,7 @@ export async function buildSaveLifeCycleModelPersistencePlan(
           nodes: args.nodes,
           edges: decorateEdges(args.edges, args.up2DownEdges),
         },
-        submodels: args.lifeCycleModelProcesses.map((process) => ({
-          ...process.modelInfo,
-          version: lifecycleModelVersion,
-        })),
+        submodels: processes.map((process) => ({ ...process.modelInfo })),
       },
       ruleVerification: parentRuleVerification,
     },
@@ -311,7 +319,9 @@ async function buildProcessMutations(args: {
   | { ok: true; processMutations: LifeCycleModelProcessMutation[] }
   | { ok: false; code: string; message: string; details?: unknown }
 > {
-  const oldProcessesById = new Map(args.oldProcesses.map((item) => [item.id, item]));
+  const oldProcessesById = new Map(
+    args.oldProcesses.map((item) => [`${item.id}@${item.version}`, item]),
+  );
   const processMutations: LifeCycleModelProcessMutation[] = [];
 
   if (args.version) {
@@ -320,7 +330,7 @@ async function buildProcessMutations(args: {
       .map((oldSubmodel): LifeCycleModelProcessMutation => ({
         op: 'delete',
         id: oldSubmodel.id,
-        version: args.version!,
+        version: oldSubmodel.version ?? args.version!,
       }));
     processMutations.push(...deleteMutations);
   }
@@ -332,7 +342,7 @@ async function buildProcessMutations(args: {
       version: args.version,
       lifeCycleModelJsonOrdered: args.lifeCycleModelJsonOrdered,
       process,
-      oldProcess: oldProcessesById.get(process.modelInfo.id),
+      oldProcess: oldProcessesById.get(`${process.modelInfo.id}@${process.modelInfo.version}`),
     });
 
     if (!mutation.ok) {
@@ -380,7 +390,7 @@ async function buildProcessMutation(args: {
     };
   }
 
-  let operation = args.process.option === 'update' ? 'update' : 'create';
+  const operation = args.process.option === 'update' ? 'update' : 'create';
   if (
     operation === 'update' &&
     args.oldProcess?.json &&
@@ -388,9 +398,20 @@ async function buildProcessMutation(args: {
   ) {
     overrideWithOldProcess({ processDataSet }, args.oldProcess.json);
   } else if (operation === 'update' && !args.oldProcess) {
-    operation = 'create';
+    return {
+      ok: false,
+      code: 'PROCESS_NOT_FOUND',
+      message: `Missing current result ${args.process.modelInfo.id}@${args.process.modelInfo.version}`,
+    };
   }
 
+  const resultVersion = args.process.modelInfo.version;
+  if (resultVersion) {
+    processDataSet.administrativeInformation ??= {};
+    processDataSet.administrativeInformation.publicationAndOwnership ??= {};
+    processDataSet.administrativeInformation.publicationAndOwnership['common:dataSetVersion'] =
+      resultVersion;
+  }
   const rawProcessJsonOrdered = genProcessJsonOrdered(args.process.modelInfo.id, processDataSet);
   const normalizedResult = await normalizeLangPayloadForSave(rawProcessJsonOrdered, {
     intent: args.langIntent,
@@ -406,13 +427,13 @@ async function buildProcessMutation(args: {
   }
 
   const processMutationRuleVerification = getProcessRuleVerification(normalizedJson);
-  if (operation === 'update' && args.version) {
+  if (operation === 'update' && resultVersion) {
     return {
       ok: true,
       processMutation: {
         op: 'update',
         id: args.process.modelInfo.id,
-        version: args.version,
+        version: resultVersion,
         modelId: args.modelId,
         jsonOrdered: normalizedJson,
         ruleVerification: processMutationRuleVerification,

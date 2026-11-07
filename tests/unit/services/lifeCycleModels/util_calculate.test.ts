@@ -402,7 +402,7 @@ describe('genLifeCycleModelProcesses (matrix calculation)', () => {
     const secondary = lifeCycleModelProcesses.find((item) => item?.modelInfo?.type === 'secondary');
 
     expect(primary).toBeDefined();
-    expect(primary?.option).toBe('update');
+    expect(primary?.option).toBe('create');
     expect(primary?.modelInfo?.id).toBe('model-123');
 
     const primaryRefExchange = primary?.data?.processDataSet?.exchanges?.exchange?.find(
@@ -475,6 +475,19 @@ describe('genLifeCycleModelProcesses (matrix calculation)', () => {
     expect(edgeByFlow.get('flow-B-to-C')?.exchangeAmount).toBe(0);
     expect(edgeByFlow.get('flow-B-to-C')?.upstreamNodeId).toBe('graph-node-b');
     expect(edgeByFlow.get('flow-B-to-C')?.downstreamNodeId).toBe('graph-node-c');
+    mockOr.mockResolvedValue({ data: clone(databaseProcesses) });
+    const reused = await genLifeCycleModelProcesses(
+      'model-123',
+      createIndexedModelNodes() as any,
+      createLifeCycleModelData(),
+      [{ id: 'independent-primary', version: '08.00.000', type: 'primary' }, ...oldSubmodels],
+    );
+    expect(
+      reused.lifeCycleModelProcesses.find((item) => item.modelInfo.type === 'primary'),
+    ).toMatchObject({
+      option: 'update',
+      modelInfo: { id: 'independent-primary', version: '08.00.000', type: 'primary' },
+    });
   });
 
   it('creates a new secondary id when no previous secondary matches', async () => {

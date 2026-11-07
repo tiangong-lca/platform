@@ -123,10 +123,21 @@ it('persists independent providers, reuses identities and recalculates the stand
   const again = materializeProductSystem(
     outcome.result.productSystem,
     sourceModel,
-    providers.map((p) => p.modelInfo),
+    providers.map((p) => ({ ...p.modelInfo, version: '08.00.000' })),
   );
   expect(again.map((p) => p.modelInfo.id)).toEqual(providers.map((p) => p.modelInfo.id));
   expect(again.every((p) => p.option === 'update')).toBe(true);
+  expect(again.every((p) => p.modelInfo.version === '08.00.000')).toBe(true);
+  expect(
+    jsonToList(
+      sourceModel.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes
+        .processInstance,
+    )
+      .filter((instance) =>
+        providers.some((p) => p.modelInfo.id === instance.referenceToProcess['@refObjectId']),
+      )
+      .every((instance) => instance.referenceToProcess['@version'] === '08.00.000'),
+  ).toBe(true);
   const refs = genReferenceToResultingProcess(
     [
       ...providers,

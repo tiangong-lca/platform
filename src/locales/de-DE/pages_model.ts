@@ -1,4 +1,5 @@
 export default {
+  'pages.lifecyclemodel.review.saveFirst': 'Speichern Sie Ihre Änderungen, bevor Sie sie zur Prüfung einreichen.',
   'pages.lifeCycleModel.modelResults.subProduct': 'Nebenprodukt',
   'pages.lifeCycleModel.modelResults.mainProduct': 'Hauptprodukt',
 

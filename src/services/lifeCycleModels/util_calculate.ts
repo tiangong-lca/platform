@@ -411,8 +411,9 @@ export async function genLifeCycleModelProcesses(
       let option: 'create' | 'update' = 'create';
       let newId = v4();
       if (isPrimary) {
-        option = 'update';
-        newId = id;
+        const primary = oldSubmodels?.find((item: any) => item.type === 'primary');
+        option = primary ? 'update' : 'create';
+        newId = primary?.id ?? id;
       } else {
         const reusedId = findOldSecondaryId(finalId);
         if (reusedId) {
@@ -421,7 +422,7 @@ export async function genLifeCycleModelProcesses(
         }
       }
 
-      return buildLifeCycleModelSubmodelRecord({
+      const record = buildLifeCycleModelSubmodelRecord({
         option,
         modelId: newId,
         type,
@@ -433,6 +434,9 @@ export async function genLifeCycleModelProcesses(
         lifeCycleModelJsonOrdered,
         refProcesses,
       });
+      const previous = oldSubmodels?.find((item: any) => item.id === newId);
+      if (previous?.version) record.modelInfo.version = previous.version;
+      return record;
     }),
   );
 

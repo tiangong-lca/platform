@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-10-26
-lastReviewedCommit: 81bf639b80946bad144dd67e393d884148192696
-lastReviewedNote: 'Platform #1342: reviewed frozen result revision and unit display, exact-version optional enrichment and legacy unknown revisions. Calculation, data-quality policy, database ownership, release and validation gates remain unchanged.'
+lastReviewedAt: 2026-11-07
+lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
+lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md
@@ -226,6 +226,8 @@ Model 的数据有三种相互关联的表达：
 保存结果表示上一次成功计算的清单。重新计算需要明确当前所引用过程的产品归属。若非参考产品缺少分配，需在源过程中补全分配或选用已分配的产品过程；若旧式统一分配仅声明其他产品的份额，需明确参考产品的份额（可以为 0），并使所有产品份额合计为 100%。模型节点引用修复后的过程版本，再进行计算。
 
 计算诊断显示涉及的过程与产品，并提供节点定位和对应的处理说明。计算失败时保持已保存的模型与结果；成功计算并保存后，结果才反映新的过程版本、需求和分配依据。
+
+保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主/副结果角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
 
 ## 10. 计算流程
 

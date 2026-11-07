@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-06
-lastReviewedCommit: 24f71c6022f065a354e2cb6fc6946a8ccd7613cb
-lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
+lastReviewedAt: 2026-11-07
+lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
+lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
