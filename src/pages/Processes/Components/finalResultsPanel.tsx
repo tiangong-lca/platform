@@ -364,7 +364,7 @@ export function FinalResultDetails({
           <Button
             aria-label={t({
               id: 'pages.publishedResults.downloadTidas',
-              defaultMessage: 'Download TIDAS ZIP',
+              defaultMessage: 'Download TIDAS 7z',
             })}
             loading={downloadStatus === 'loading'}
             disabled={downloadStatus === 'loading'}
@@ -372,11 +372,11 @@ export function FinalResultDetails({
           >
             {t({
               id: 'pages.publishedResults.downloadTidas',
-              defaultMessage: 'Download TIDAS ZIP',
+              defaultMessage: 'Download TIDAS 7z',
             })}
           </Button>
           <Button disabled={downloadStatus === 'loading'} onClick={() => void download('ilcd')}>
-            {t({ id: 'pages.publishedResults.downloadIlcd', defaultMessage: 'Download ILCD ZIP' })}
+            {t({ id: 'pages.publishedResults.downloadIlcd', defaultMessage: 'Download ILCD 7z' })}
           </Button>
         </Space>
       )}
@@ -386,7 +386,7 @@ export function FinalResultDetails({
           title={t({
             id: 'pages.publishedResults.packageUnavailable',
             defaultMessage:
-              'A complete ZIP is not available for this publication and your access permissions.',
+              'A complete 7z archive is not available for this publication and your access permissions.',
           })}
         />
       )}

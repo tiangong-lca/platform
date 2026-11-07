@@ -373,14 +373,14 @@ it('transport failure permits manual retry without relaxing exact pins', async (
   fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
 });
-it('signed ZIP links are refreshed per click, withheld on denied permissions, and never retained', async () => {
+it('signed 7z links are refreshed per click, withheld on denied permissions, and never retained', async () => {
   const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
   mockDownload
     .mockResolvedValueOnce({
       status: 'ready',
       download: {
-        url: 'https://storage.invalid/result.tidas.zip?ephemeral',
-        file: { name: 'result.tidas.zip' },
+        url: 'https://storage.invalid/result.tidas.7z?ephemeral',
+        file: { name: 'result.tidas.7z' },
       },
     })
     .mockResolvedValueOnce({ status: 'unavailable' })
@@ -388,17 +388,17 @@ it('signed ZIP links are refreshed per click, withheld on denied permissions, an
     .mockRejectedValueOnce(new Error('offline'));
   render(<PublishedResultsPanel {...props} />);
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
-  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS ZIP' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS 7z' }));
   await waitFor(() => expect(click).toHaveBeenCalledTimes(1));
   expect(document.querySelector('a[href*="ephemeral"]')).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Download ILCD ZIP' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download ILCD 7z' }));
   await screen.findByText(
-    'A complete ZIP is not available for this publication and your access permissions.',
+    'A complete 7z archive is not available for this publication and your access permissions.',
   );
   expect(mockDownload.mock.calls[1].slice(0, 2)).toEqual([publicationId, 'ilcd']);
-  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS ZIP' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS 7z' }));
   await screen.findByText('The download link could not be refreshed. Please retry.');
-  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS ZIP' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS 7z' }));
   await waitFor(() => expect(mockDownload).toHaveBeenCalledTimes(4));
   expect(click).toHaveBeenCalledTimes(1);
 });
@@ -431,14 +431,14 @@ it('unmount cancels result reads and download links before late completion', asy
   );
   const { unmount } = render(<PublishedResultsPanel {...props} />);
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
-  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS ZIP' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download TIDAS 7z' }));
   const s = mockDownload.mock.calls[0][2];
   unmount();
   expect(s.aborted).toBe(true);
   await act(async () =>
     done({
       status: 'ready',
-      download: { url: 'https://storage.invalid/x', file: { name: 'result.tidas.zip' } },
+      download: { url: 'https://storage.invalid/x', file: { name: 'result.tidas.7z' } },
     }),
   );
   expect(click).not.toHaveBeenCalled();
@@ -507,7 +507,7 @@ it('late source and download failures after closing are ignored', async () => {
   );
   const second = render(<PublishedResultsPanel {...props} />);
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
-  fireEvent.click(screen.getByRole('button', { name: 'Download ILCD ZIP' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Download ILCD 7z' }));
   second.unmount();
   await act(async () => rejectDownload(new Error('late download failure')));
   expect(
