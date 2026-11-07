@@ -46,8 +46,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-06
-lastReviewedCommit: 24f71c6022f065a354e2cb6fc6946a8ccd7613cb
+lastReviewedAt: 2026-11-07
+lastReviewedCommit: f5d485d1fd3d6b3112e5bf6ad8c9ac9bb6db5606
 lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
 ---
 
