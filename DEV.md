@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-07
-lastReviewedCommit: f5d485d1fd3d6b3112e5bf6ad8c9ac9bb6db5606
-lastReviewedNote: 'Platform #1450: reviewed 7z download change against existing serial build/test and managed push requirements.'
+lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
+lastReviewedNote: 'Platform #1129: reviewed existing focused component/service proof and full pre-push requirements; no gate or test policy change.'
 ---
 
 # Development Bootstrap

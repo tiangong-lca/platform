@@ -60,11 +60,8 @@ import type {
   LifeCycleModelToolbarEditInfoHandle,
   LifeCycleModelValidationIssue,
 } from '@/services/lifeCycleModels/data';
-import {
-  genLifeCycleModelJsonOrdered,
-  genReferenceToResultingProcess,
-} from '@/services/lifeCycleModels/util';
-import { genLifeCycleModelProcesses } from '@/services/lifeCycleModels/util_calculate';
+import { genLifeCycleModelJsonOrdered } from '@/services/lifeCycleModels/util';
+import { jsonToList } from '@/services/general/util';
 import { getProcessDetail } from '@/services/processes/api';
 import { getUserTeamId } from '@/services/roles/api';
 
@@ -93,37 +90,13 @@ type ValidationPayload = LifeCycleModelFormState & {
   };
 };
 
-const cloneValidationValue = <T,>(value: T): T => {
-  if (typeof structuredClone === 'function') {
-    return structuredClone(value);
-  }
-
-  if (value === undefined) {
-    return value;
-  }
-
-  return JSON.parse(JSON.stringify(value)) as T;
-};
-
-const getLifecycleModelDatasetVersion = (jsonOrdered: any, fallbackVersion: string): string => {
-  return (
-    jsonOrdered?.lifeCycleModelDataSet?.administrativeInformation?.publicationAndOwnership?.[
-      'common:dataSetVersion'
-    ] ?? fallbackVersion
-  );
-};
-
 const buildSdkValidationDataset = async ({
   modelId,
-  version,
   payload,
-  oldSubmodels,
   skipLangNormalization = false,
 }: {
   modelId: string;
-  version: string;
   payload: ValidationPayload;
-  oldSubmodels: LifeCycleModelSubModel[];
   skipLangNormalization?: boolean;
 }) => {
   const rawLifeCycleModelJsonOrdered = genLifeCycleModelJsonOrdered(modelId, payload);
@@ -135,18 +108,7 @@ const buildSdkValidationDataset = async ({
         })
       )?.payload ?? rawLifeCycleModelJsonOrdered);
 
-  const { lifeCycleModelProcesses } = await genLifeCycleModelProcesses(
-    modelId,
-    payload?.model?.nodes ?? [],
-    normalizedLifeCycleModelJsonOrdered,
-    oldSubmodels,
-  );
-
-  return genReferenceToResultingProcess(
-    lifeCycleModelProcesses,
-    getLifecycleModelDatasetVersion(normalizedLifeCycleModelJsonOrdered, version),
-    cloneValidationValue(normalizedLifeCycleModelJsonOrdered),
-  );
+  return normalizedLifeCycleModelJsonOrdered;
 };
 
 /* istanbul ignore next -- tiny parser helper is exercised indirectly by modal navigation flows */
@@ -453,9 +415,7 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
             });
       const orderedValidationDataset = await buildSdkValidationDataset({
         modelId: validationModelId,
-        version: validationVersion,
         payload: sdkValidationSource,
-        oldSubmodels: currentModelDetail?.json_tg?.submodels ?? [],
         skipLangNormalization: Boolean(validationSnapshot?.payload),
       });
       const sdkValidation = validateDatasetWithSdk(
@@ -520,10 +480,23 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
         dealModel(currentModelDetail, unReview, underReview, unRuleVerification, nonExistentRef);
       }
 
-      const sameProcressWithModelResult = await getProcessDetail(
-        validationModelId,
-        validationVersion,
+      const submodels: LifeCycleModelSubModel[] = currentModelDetail?.json_tg?.submodels ?? [];
+      const primaryMember = submodels.find(
+        (item) => item.type === 'primary' || (!item.type && item.id === validationModelId),
       );
+      const resultRefs = jsonToList(
+        currentModelDetail?.json?.lifeCycleModelDataSet?.lifeCycleModelInformation
+          ?.dataSetInformation?.referenceToResultingProcess,
+      );
+      const primaryRef = primaryMember
+        ? { id: primaryMember.id, version: primaryMember.version ?? validationVersion }
+        : resultRefs.length === 1
+          ? { id: resultRefs[0]['@refObjectId'], version: resultRefs[0]['@version'] }
+          : undefined;
+      const sameProcressWithModelResult =
+        primaryRef?.id && primaryRef.version
+          ? await getProcessDetail(primaryRef.id, primaryRef.version)
+          : undefined;
       const sameProcressWithModel = sameProcressWithModelResult?.data;
       if (sameProcressWithModel) {
         dealProcress(
@@ -552,7 +525,7 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
       );
       allRefs.add(`${validationModelId}:${validationVersion}:lifeCycleModel data set`);
       if (sameProcressWithModel) {
-        allRefs.add(`${validationModelId}:${validationVersion}:process data set`);
+        allRefs.add(`${primaryRef!.id}:${primaryRef!.version}:process data set`);
       }
       await checkVersions(allRefs, path);
 
@@ -592,13 +565,12 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
         setRefCheckData([]);
       }
 
-      const submodels: LifeCycleModelSubModel[] = currentModelDetail?.json_tg?.submodels ?? [];
       if (submodels) {
         submodels.forEach((item) => {
           if (item.type === 'secondary') {
             unReview.push({
               '@refObjectId': item.id,
-              '@version': data.version ?? '',
+              '@version': item.version ?? validationVersion,
               '@type': 'process data set',
             });
           }
@@ -647,8 +619,8 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
       } else if (unRuleVerification && unRuleVerification.length > 0) {
         const unRuleVerificationMainProduce = unRuleVerification.find((item) => {
           return (
-            item['@refObjectId'] === data.id &&
-            item['@version'] === data.version &&
+            item['@refObjectId'] === primaryRef?.id &&
+            item['@version'] === primaryRef?.version &&
             item['@type'] === 'process data set'
           );
         });
@@ -657,6 +629,7 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
             (sub) =>
               sub.type === 'secondary' &&
               sub.id === item['@refObjectId'] &&
+              (sub.version ?? validationVersion) === item['@version'] &&
               item['@type'] === 'process data set',
           );
         });

@@ -629,7 +629,7 @@ describe('buildReviewUpdateLifeCycleModelPersistencePlan', () => {
 });
 
 describe('buildSaveLifeCycleModelPersistencePlan', () => {
-  it('builds delete, update, and fallback-create process mutations plus decorated edges', async () => {
+  it('builds delete, update, and explicit-create process mutations plus decorated edges', async () => {
     const oldSubmodels = [
       { id: 'primary-legacy', type: 'primary', finalId: { nodeId: 'primary-node' } },
       {
@@ -768,7 +768,7 @@ describe('buildSaveLifeCycleModelPersistencePlan', () => {
           data: { processDataSet: buildProcessDataSet() },
         },
         {
-          option: 'update',
+          option: 'create',
           modelInfo: {
             id: 'new-secondary',
             type: 'secondary',
@@ -940,6 +940,10 @@ describe('buildSaveLifeCycleModelPersistencePlan', () => {
     expect(typedCreateMutation.jsonOrdered).toEqual({
       processDataSet: {
         ...buildProcessDataSet(),
+        administrativeInformation: {
+          dataEntryBy: {},
+          publicationAndOwnership: { 'common:dataSetVersion': sampleVersion },
+        },
         processInformation: {
           ...buildProcessDataSet().processInformation,
           technology: {
@@ -1175,7 +1179,7 @@ describe('buildSaveLifeCycleModelPersistencePlan', () => {
     expect(mockGenReferenceToResultingProcess).toHaveBeenNthCalledWith(2, [], '', versionlessJson);
   });
 
-  it('falls back to a create mutation when an update process has no matching old process snapshot', async () => {
+  it('rejects missing old results instead of silently recreating them', async () => {
     const result = await buildSaveLifeCycleModelPersistencePlan({
       mode: 'update',
       modelId: sampleModelId,
@@ -1199,18 +1203,7 @@ describe('buildSaveLifeCycleModelPersistencePlan', () => {
       oldProcesses: [],
     });
 
-    expect(result.ok).toBe(true);
-    if (!result.ok) {
-      throw new Error('Expected a successful plan for orphan update fallback');
-    }
-
-    expect(result.plan.processMutations).toEqual([
-      expect.objectContaining({
-        op: 'create',
-        id: 'orphan-update',
-        modelId: sampleModelId,
-      }),
-    ]);
+    expect(result).toMatchObject({ ok: false, code: 'PROCESS_NOT_FOUND' });
   });
 
   it('uses empty edge and ref-process defaults plus raw normalized process payloads', async () => {
@@ -1260,7 +1253,7 @@ describe('buildSaveLifeCycleModelPersistencePlan', () => {
             },
             administrativeInformation: {
               dataEntryBy: {},
-              publicationAndOwnership: {},
+              publicationAndOwnership: { 'common:dataSetVersion': sampleVersion },
             },
           },
         },
@@ -1875,4 +1868,67 @@ describe('allocated provider persistence', () => {
         .referenceToIncludedProcesses,
     ).toEqual([expect.objectContaining({ '@refObjectId': 'source-a', '@version': '01.00.000' })]);
   });
+});
+
+test('result identity/version survive Model version changes and retain authored metadata', async () => {
+  const processDataSet = buildProcessDataSet();
+  const oldJson = {
+    processDataSet: {
+      ...buildProcessDataSet(),
+      processInformation: {
+        ...buildProcessDataSet().processInformation,
+        time: { 'common:referenceYear': '2020' },
+        geography: { locationOfOperationSupplyOrProduction: { '@location': 'CN' } },
+      },
+    },
+  };
+  const result = await buildSaveLifeCycleModelPersistencePlan({
+    mode: 'update',
+    modelId: sampleModelId,
+    version: '06.00.000',
+    lifeCycleModelJsonOrdered: buildLifecycleModelJsonOrdered(),
+    nodes: [],
+    edges: [],
+    up2DownEdges: [],
+    lifeCycleModelProcesses: [
+      {
+        option: 'update',
+        modelInfo: { id: 'independent-result', type: 'primary', version: '08.00.000' },
+        data: { processDataSet },
+      },
+    ],
+    oldSubmodels: [
+      { id: 'independent-result', type: 'primary', version: '08.00.000' },
+      { id: 'obsolete-result', type: 'secondary', version: '04.00.000' },
+    ],
+    oldProcesses: [{ id: 'independent-result', version: '08.00.000', json: oldJson }],
+  });
+  expect(result.ok).toBe(true);
+  if (!result.ok) throw new Error(result.message);
+  expect(result.plan.parent.jsonTg.submodels).toEqual([
+    { id: 'independent-result', type: 'primary', version: '08.00.000' },
+  ]);
+  expect(result.plan.processMutations).toEqual(
+    expect.arrayContaining([
+      { op: 'delete', id: 'obsolete-result', version: '04.00.000' },
+      expect.objectContaining({
+        op: 'update',
+        id: 'independent-result',
+        version: '08.00.000',
+        jsonOrdered: expect.objectContaining({
+          processDataSet: expect.objectContaining({
+            processInformation: expect.objectContaining({
+              time: oldJson.processDataSet.processInformation.time,
+              geography: oldJson.processDataSet.processInformation.geography,
+            }),
+            administrativeInformation: expect.objectContaining({
+              publicationAndOwnership: expect.objectContaining({
+                'common:dataSetVersion': '08.00.000',
+              }),
+            }),
+          }),
+        }),
+      }),
+    ]),
+  );
 });

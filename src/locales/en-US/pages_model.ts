@@ -1,4 +1,5 @@
 export default {
+  'pages.lifecyclemodel.review.saveFirst': 'Save your changes before submitting for review.',
   'pages.lifeCycleModel.modelResults.subProduct': 'Sub Product',
   'pages.lifeCycleModel.modelResults.mainProduct': 'Main Product',
 

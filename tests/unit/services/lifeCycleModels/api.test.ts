@@ -1139,7 +1139,7 @@ describe('createLifeCycleModel', () => {
         return {
           lifeCycleModelProcesses: [
             {
-              option: 'update',
+              option: 'create',
               modelInfo: { id: sampleProcessId, type: 'primary', finalId: {} },
               data: { processDataSet: buildProcessDataSet() },
             },
@@ -1487,6 +1487,119 @@ describe('createLifeCycleModel', () => {
 });
 
 describe('updateLifeCycleModel', () => {
+  it.each(['independent-result', sampleModelId])(
+    'preserves the declared result %s at its own version when UI membership is absent',
+    async (resultId) => {
+      const resultVersion = '08.00.000';
+      const storedJson: any = buildLifecycleModelJsonOrdered();
+      storedJson.lifeCycleModelDataSet.lifeCycleModelInformation.dataSetInformation.referenceToResultingProcess =
+        {
+          '@refObjectId': resultId,
+          '@version': resultVersion,
+          '@type': 'process data set',
+        };
+      mockFrom.mockReturnValueOnce(
+        createQueryBuilder({ data: [{ json: storedJson, submodels: [] }], error: null }),
+      );
+      const processQuery = createQueryBuilder({
+        data: [
+          {
+            id: resultId,
+            version: resultVersion,
+            model_id: sampleModelId,
+            model_version: sampleVersion,
+            json: { processDataSet: buildProcessDataSet() },
+          },
+        ],
+        error: null,
+      });
+      mockFrom.mockReturnValueOnce(processQuery);
+      mockGenLifeCycleModelProcesses.mockResolvedValueOnce({
+        lifeCycleModelProcesses: [
+          {
+            option: 'update',
+            modelInfo: { id: resultId, version: resultVersion, type: 'primary' },
+            data: { processDataSet: buildProcessDataSet() },
+          },
+        ],
+        up2DownEdges: [],
+      });
+      mockFunctionsInvoke.mockResolvedValueOnce(createMockEdgeFunctionResponse(buildSaveResult()));
+      await lifeCycleModelsApi.updateLifeCycleModel({
+        id: sampleModelId,
+        version: sampleVersion,
+        model: { nodes: [], edges: [] },
+      });
+      expect(mockGenLifeCycleModelProcesses.mock.calls[0][3]).toEqual([
+        { id: resultId, version: resultVersion, type: 'primary' },
+      ]);
+      expect(processQuery.or).toHaveBeenCalledWith(
+        `and(id.eq.${resultId},version.eq.${resultVersion})`,
+      );
+      expect(mockFunctionsInvoke.mock.calls[0][1].body.processMutations).toEqual([
+        expect.objectContaining({ op: 'update', id: resultId, version: resultVersion }),
+      ]);
+    },
+  );
+
+  it.each(['missing', 'external', 'other-model-version', 'lookup-error'])(
+    'refuses %s result membership without sending a bundle mutation',
+    async (scenario) => {
+      mockFrom.mockReturnValueOnce(
+        createQueryBuilder({
+          data: [{ submodels: [{ id: 'old-result', version: '08.00.000', type: 'primary' }] }],
+          error: null,
+        }),
+      );
+      mockFrom.mockReturnValueOnce(
+        createQueryBuilder({
+          data:
+            scenario === 'missing'
+              ? []
+              : [
+                  {
+                    id: 'old-result',
+                    version: '08.00.000',
+                    model_id: scenario === 'external' ? null : sampleModelId,
+                    model_version: scenario === 'other-model-version' ? '09.00.000' : sampleVersion,
+                  },
+                ],
+          error: scenario === 'lookup-error' ? { message: 'unavailable' } : null,
+        }),
+      );
+      const result = await lifeCycleModelsApi.updateLifeCycleModel({
+        id: sampleModelId,
+        version: sampleVersion,
+        model: { nodes: [], edges: [] },
+      });
+      expect(result).toMatchObject({
+        ok: false,
+        code: scenario === 'lookup-error' ? 'PROCESS_LOOKUP_FAILED' : 'PROCESS_NOT_FOUND',
+      });
+      expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+    },
+  );
+
+  it('refuses ambiguous standard result references before calculation or writes', async () => {
+    const storedJson: any = buildLifecycleModelJsonOrdered();
+    storedJson.lifeCycleModelDataSet.lifeCycleModelInformation.dataSetInformation.referenceToResultingProcess =
+      [
+        { '@refObjectId': 'one', '@version': sampleVersion },
+        { '@refObjectId': 'two', '@version': sampleVersion },
+      ];
+    mockFrom.mockReturnValueOnce(
+      createQueryBuilder({ data: [{ json: storedJson, submodels: [] }], error: null }),
+    );
+    const result = await lifeCycleModelsApi.updateLifeCycleModel({
+      id: sampleModelId,
+      version: sampleVersion,
+      model: { nodes: [], edges: [] },
+    });
+    expect(result).toMatchObject({ ok: false, code: 'RESULT_IDENTITY_AMBIGUOUS' });
+    expect(mockGenLifeCycleModelProcesses).not.toHaveBeenCalled();
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+  });
+
   it('returns a targeted Flow version error before querying the current model', async () => {
     const details = {
       edgeId: 'edge-2',
@@ -1652,25 +1765,36 @@ describe('updateLifeCycleModel', () => {
         };
       },
     );
-    mockGetProcessDetailByIdsAndVersion.mockResolvedValueOnce({
-      data: [
-        {
-          id: 'old-secondary-keep',
-          version: sampleVersion,
-          json: {
-            processDataSet: {
-              ...buildProcessDataSet(),
-              processInformation: {
-                dataSetInformation: {
-                  identifierOfSubDataSet: 'legacy-id',
+    mockFrom.mockReturnValueOnce(
+      createQueryBuilder({
+        data: [
+          {
+            id: 'old-secondary-keep',
+            model_id: sampleModelId,
+            model_version: sampleVersion,
+            version: sampleVersion,
+            json: {
+              processDataSet: {
+                ...buildProcessDataSet(),
+                processInformation: {
+                  dataSetInformation: {
+                    identifierOfSubDataSet: 'legacy-id',
+                  },
+                  technology: {},
                 },
-                technology: {},
               },
             },
           },
-        },
-      ],
-    });
+          {
+            id: 'old-secondary-delete',
+            version: sampleVersion,
+            model_id: sampleModelId,
+            model_version: sampleVersion,
+          },
+        ],
+        error: null,
+      }),
+    );
     const edgePayload = buildSaveResult();
     mockFunctionsInvoke.mockResolvedValueOnce(createMockEdgeFunctionResponse(edgePayload));
 
@@ -1692,10 +1816,6 @@ describe('updateLifeCycleModel', () => {
       (item: any) => item.id === 'new-secondary-id',
     );
 
-    expect(mockGetProcessDetailByIdsAndVersion).toHaveBeenCalledWith(
-      ['old-secondary-keep', 'new-secondary-id'],
-      sampleVersion,
-    );
     expect(body.mode).toBe('update');
     expect(body.version).toBe(sampleVersion);
     expect(
@@ -1749,7 +1869,7 @@ describe('updateLifeCycleModel', () => {
     mockGenLifeCycleModelProcesses.mockResolvedValueOnce({
       lifeCycleModelProcesses: [
         {
-          option: 'update',
+          option: 'create',
           modelInfo: { id: sampleProcessId, type: 'primary', finalId: {} },
           data: { processDataSet: buildProcessDataSet() },
         },
@@ -1808,7 +1928,7 @@ describe('updateLifeCycleModel', () => {
     });
 
     expect(mockGenLifeCycleModelProcesses).toHaveBeenCalledWith(sampleModelId, [], rawJson, []);
-    expect(mockGetProcessDetailByIdsAndVersion).toHaveBeenCalledWith([], sampleVersion);
+    expect(mockGetProcessDetailByIdsAndVersion).not.toHaveBeenCalled();
     expect(mockValidateDatasetRuleVerification.mock.calls[0]?.[0]).toBe('lifeCycleModel data set');
     expect(mockValidateDatasetRuleVerification.mock.calls[0]?.[2]).toBe('');
     expect(mockFunctionsInvoke.mock.calls[0][1].body).toMatchObject({
