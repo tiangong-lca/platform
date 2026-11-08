@@ -31,6 +31,7 @@ type ProcessDataSetLike = {
     dataSetInformation?: {
       name?: unknown;
     };
+    quantitativeReference?: { referenceToReferenceFlow?: unknown };
   };
   exchanges?: {
     exchange?: ProcessExchangeData | ProcessExchangeData[];
@@ -77,6 +78,45 @@ const isQuantitativeReference = (value: unknown): boolean =>
 const getProcessDataSet = (
   detail: ProcessDisplayDetail | undefined,
 ): ProcessDataSetLike | undefined => detail?.json?.processDataSet as ProcessDataSetLike | undefined;
+
+type CanonicalInstance = {
+  '@dataSetInternalID'?: unknown;
+  '@multiplicationFactor'?: unknown;
+  referenceToProcess?: { '@refObjectId'?: unknown; '@version'?: unknown };
+};
+
+const positiveQuantity = (value: unknown): number | undefined => {
+  const token = normalizeToken(value);
+  if (!token || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(token)) {
+    return undefined;
+  }
+  const quantity = Number(token);
+  return Number.isFinite(quantity) && quantity > 0 ? quantity : undefined;
+};
+
+// Canonical multipliers scale the whole referenced inventory, including its
+// reference exchange. Hydration never substitutes another Process revision.
+const referenceQuantities = (
+  instance: CanonicalInstance | undefined,
+  detail: ProcessDisplayDetail | undefined,
+) => {
+  const source = getProcessDataSet(detail);
+  const referenceId = normalizeToken(
+    source?.processInformation?.quantitativeReference?.referenceToReferenceFlow,
+  );
+  const exchanges = jsonToList(source?.exchanges?.exchange).filter(
+    (exchange: ProcessExchangeData) =>
+      referenceId !== undefined && normalizeToken(exchange?.['@dataSetInternalID']) === referenceId,
+  );
+  const originalAmount =
+    exchanges.length === 1 ? positiveQuantity(exchanges[0].meanAmount) : undefined;
+  const scalingFactor = positiveQuantity(instance?.['@multiplicationFactor']);
+  if (originalAmount === undefined || scalingFactor === undefined) return {};
+  const targetAmount = originalAmount * scalingFactor;
+  return Number.isFinite(targetAmount) && targetAmount > 0
+    ? { originalAmount, scalingFactor, targetAmount }
+    : {};
+};
 
 const buildFlowRequirements = (edges: LifeCycleModelGraphEdge[]): Map<string, FlowRequirements> => {
   const requirements = new Map<string, FlowRequirements>();
@@ -241,6 +281,20 @@ export const normalizeLifeCycleModelGraphForDisplay = ({
     )?.lifeCycleModelInformation?.quantitativeReference?.referenceToReferenceProcess,
   );
 
+  const instances = jsonToList(
+    (
+      lifeCycleModelDataSet as
+        | {
+            lifeCycleModelInformation?: {
+              technology?: {
+                processes?: { processInstance?: CanonicalInstance | CanonicalInstance[] };
+              };
+            };
+          }
+        | undefined
+    )?.lifeCycleModelInformation?.technology?.processes?.processInstance,
+  ) as CanonicalInstance[];
+
   const nodes = originalNodes.map((node) => {
     const nodeId = normalizeToken(node.id);
     const internalId = getNodeInternalId(node);
@@ -255,8 +309,22 @@ export const normalizeLifeCycleModelGraphForDisplay = ({
     const hasReferenceProcess = referenceProcessId !== undefined;
     const isReference = hasReferenceProcess && internalId === referenceProcessId;
     const nextHeight = hydratedItems.length > 0 ? 60 + hydratedItems.length * 20 : undefined;
+    const matchingInstances = instances.filter(
+      (instance) =>
+        toReferenceProcessKey(instance?.['@dataSetInternalID']) === internalId &&
+        detailKey !== undefined &&
+        processKey(
+          instance.referenceToProcess?.['@refObjectId'],
+          instance.referenceToProcess?.['@version'],
+        ) === detailKey,
+    );
+    const quantities =
+      isReference && node.data?.targetAmount === undefined && matchingInstances.length === 1
+        ? referenceQuantities(matchingInstances[0], detail)
+        : {};
     const nextData = {
       ...node.data,
+      ...quantities,
       ...(node.data?.index === undefined && internalId !== undefined ? { index: internalId } : {}),
       ...(node.data?.label === undefined && processName !== undefined
         ? { label: processName }

@@ -4014,6 +4014,27 @@ describe('ToolbarEdit', () => {
       expect(destroy).toHaveBeenCalled();
     },
   );
+  it('offers visible cancellation and target repair without retrying or discarding edits', async () => {
+    const modal = jest.requireMock('antd').modal;
+    const destroy = jest.fn();
+    modal.error.mockReset().mockReturnValue({ destroy });
+    mockUpdateLifeCycleModel.mockResolvedValueOnce({ ok: false, code: 'INVALID_TARGET_AMOUNT' });
+    render(<ToolbarEdit {...baseProps} drawerVisible={true} />);
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+    await waitFor(() => expect(modal.error).toHaveBeenCalled());
+    const config = modal.error.mock.calls[0][0];
+    expect(config).toMatchObject({
+      okCancel: true,
+      closable: true,
+      cancelText: 'pages.lifecyclemodel.calculation.action.close',
+    });
+    render(config.content);
+    await userEvent.click(
+      screen.getByRole('button', { name: 'pages.lifeCycleModel.targetAmount' }),
+    );
+    expect(destroy).toHaveBeenCalledTimes(1);
+    expect(mockUpdateLifeCycleModel).toHaveBeenCalledTimes(1);
+  });
   test('unsaved review requests stop before validation or persistence', async () => {
     render(<ToolbarEdit {...baseProps} isSave={false} />);
     await userEvent.click(screen.getByRole('button', { name: 'send-icon' }));
