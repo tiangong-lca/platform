@@ -44,7 +44,7 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-08
-lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
+lastReviewedCommit: 4169f99bfe3fadecb33b8ccad282fbde5c40f576
 lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
 ---
 
