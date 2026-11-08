@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "d6b8d98d9b249b990fae0ea2debb46352b42fcae91f6993191d3dca186d4df47",
+    "auditedInputDigest": "e129d2c483218a795c16048e2c2bc4787f8e3c19eff5e8a5064d84a4d009b56a",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -75,7 +75,7 @@
     "activeDynamicKeyCount": 416,
     "reservedKeyCount": 956,
     "productionSourceFileCount": 552,
-    "literalReferenceCount": 4475,
+    "literalReferenceCount": 4476,
     "dynamicCallsiteCount": 39,
     "dynamicCallsiteSummaryCount": 39,
     "registeredDynamicCallsiteCount": 39,
@@ -48913,7 +48913,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2372,
+          "line": 2384,
           "column": 18,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Data Check",
@@ -48973,7 +48973,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 2372,
+              "line": 2384,
               "column": 18,
               "kind": "FormattedMessage"
             },
@@ -50255,7 +50255,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1233,
+          "line": 1245,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": "Data with the same ID and version already exists.",
@@ -50315,7 +50315,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 1233,
+              "line": 1245,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -53616,7 +53616,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2307,
+          "line": 2319,
           "column": 13,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Delete element",
@@ -53631,7 +53631,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 2307,
+              "line": 2319,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -54886,7 +54886,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2326,
+          "line": 2338,
           "column": 18,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Save data",
@@ -54901,7 +54901,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 2326,
+              "line": 2338,
               "column": 18,
               "kind": "FormattedMessage"
             }
@@ -56053,7 +56053,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2385,
+          "line": 2397,
           "column": 20,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Submit for Review",
@@ -56077,7 +56077,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 2385,
+              "line": 2397,
               "column": 20,
               "kind": "FormattedMessage"
             },
@@ -57408,7 +57408,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2293,
+          "line": 2305,
           "column": 13,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Update Reference",
@@ -57513,7 +57513,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 2293,
+              "line": 2305,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -126326,7 +126326,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1955,
+          "line": 1967,
           "column": 39,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Automatically generated",
@@ -126341,7 +126341,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 1955,
+              "line": 1967,
               "column": 39,
               "kind": "formatMessage"
             }
@@ -137445,6 +137445,15 @@
       },
       "references": [
         {
+          "kind": "formatMessage",
+          "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
+          "line": 1029,
+          "column": 18,
+          "symbol": "errorModal",
+          "defaultMessage": null,
+          "defaultMessageExpression": null
+        },
+        {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editTargetAmount.tsx",
           "line": 79,
@@ -142785,7 +142794,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1075,
+          "line": 1087,
           "column": 17,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -142854,7 +142863,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2429,
+          "line": 2441,
           "column": 16,
           "symbol": "ToolbarEdit",
           "defaultMessage": null,
@@ -142923,7 +142932,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1081,
+          "line": 1093,
           "column": 21,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -142992,7 +143001,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1054,
+          "line": 1066,
           "column": 26,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -143179,7 +143188,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1567,
+          "line": 1579,
           "column": 11,
           "symbol": "ToolbarEdit",
           "defaultMessage": null,
@@ -144133,7 +144142,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1040,
+          "line": 1052,
           "column": 33,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -144261,7 +144270,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1035,
+          "line": 1047,
           "column": 27,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -144330,7 +144339,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1031,
+          "line": 1043,
           "column": 27,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -144517,7 +144526,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2421,
+          "line": 2433,
           "column": 18,
           "symbol": "ToolbarEdit",
           "defaultMessage": null,
@@ -144586,7 +144595,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1186,
+          "line": 1198,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": null,
@@ -144655,7 +144664,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1364,
+          "line": 1376,
           "column": 17,
           "symbol": "saveData",
           "defaultMessage": null,
@@ -144664,7 +144673,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1450,
+          "line": 1462,
           "column": 17,
           "symbol": "saveData",
           "defaultMessage": null,
@@ -144816,7 +144825,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1193,
+          "line": 1205,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": null,
@@ -144885,7 +144894,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1069,
+          "line": 1081,
           "column": 16,
           "symbol": "errorModal",
           "defaultMessage": null,
@@ -145023,7 +145032,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1212,
+          "line": 1224,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": null,
@@ -145092,7 +145101,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1205,
+          "line": 1217,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": null,
@@ -145161,7 +145170,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1358,
+          "line": 1370,
           "column": 15,
           "symbol": "saveData",
           "defaultMessage": null,
@@ -145170,7 +145179,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1444,
+          "line": 1456,
           "column": 15,
           "symbol": "saveData",
           "defaultMessage": null,
@@ -145322,7 +145331,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1222,
+          "line": 1234,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": "The model is missing reference process information. Complete or rebind the reference process, then try again.",
@@ -145337,7 +145346,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 1222,
+              "line": 1234,
               "column": 13,
               "kind": "formatMessage"
             }
@@ -145405,7 +145414,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1885,
+          "line": 1897,
           "column": 15,
           "symbol": "ToolbarEdit",
           "defaultMessage": "Model is not public",
@@ -145429,7 +145438,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 1885,
+              "line": 1897,
               "column": 15,
               "kind": "formatMessage"
             },
@@ -145728,7 +145737,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 2146,
+          "line": 2158,
           "column": 9,
           "symbol": "handelSubmitReview",
           "defaultMessage": "Save your changes before submitting for review.",
@@ -145743,7 +145752,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 2146,
+              "line": 2158,
               "column": 9,
               "kind": "formatMessage"
             }
@@ -244016,7 +244025,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1243,
+          "line": 1255,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": "This data is open data, save failed",
@@ -244082,7 +244091,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 1243,
+              "line": 1255,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -256634,7 +256643,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-          "line": 1253,
+          "line": 1265,
           "column": 13,
           "symbol": "showMutationError",
           "defaultMessage": "Data is under review, save failed",
@@ -256700,7 +256709,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
-              "line": 1253,
+              "line": 1265,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -309136,7 +309145,7 @@
       "count": 1,
       "file": "src/pages/LifeCycleModels/Components/toolbar/editIndex.tsx",
       "expression": "getAllocationRepairMessageId(item.issue)",
-      "locations": ["1061:26"],
+      "locations": ["1073:26"],
       "category": "active-dynamic",
       "family": "lifecycleModelAllocationRepair",
       "reviewStatus": "reviewed"

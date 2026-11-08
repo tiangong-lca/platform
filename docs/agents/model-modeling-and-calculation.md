@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-07
-lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
-lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
+lastReviewedAt: 2026-11-08
+lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
+lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md

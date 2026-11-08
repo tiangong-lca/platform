@@ -508,3 +508,110 @@ describe('normalizeLifeCycleModelGraphForDisplay', () => {
     });
   });
 });
+
+describe('canonical reference quantity hydration', () => {
+  const hydrate = (
+    factor: unknown = '2',
+    amount: unknown = '1000',
+    target?: unknown,
+    options: {
+      version?: string;
+      duplicate?: boolean;
+      reference?: unknown;
+      exchangeId?: unknown;
+      factorMissing?: boolean;
+    } = {},
+  ) => {
+    const instance = {
+      '@dataSetInternalID': '1',
+      '@multiplicationFactor': options.factorMissing ? undefined : factor,
+      referenceToProcess: { '@refObjectId': 'source', '@version': options.version ?? '04.00.000' },
+    };
+    const jsonTg = {
+      xflow: {
+        nodes: [
+          {
+            id: '1',
+            data: {
+              id: 'source',
+              version: '04.00.000',
+              ...(target === undefined ? {} : { targetAmount: target }),
+            },
+          },
+        ],
+      },
+    };
+    const model = {
+      lifeCycleModelInformation: {
+        quantitativeReference: { referenceToReferenceProcess: 1 },
+        technology: {
+          processes: { processInstance: options.duplicate ? [instance, instance] : instance },
+        },
+      },
+    };
+    const detail = {
+      id: 'source',
+      version: '04.00.000',
+      json: {
+        processDataSet: {
+          processInformation: {
+            quantitativeReference: { referenceToReferenceFlow: options.reference ?? 0 },
+          },
+          exchanges: {
+            exchange: { '@dataSetInternalID': options.exchangeId ?? '0', meanAmount: amount },
+          },
+        },
+      },
+    };
+    const snapshot = JSON.stringify({ jsonTg, model, detail });
+    const result = normalizeLifeCycleModelGraphForDisplay({
+      jsonTg: jsonTg as any,
+      lifeCycleModelDataSet: model,
+      processDetails: [detail],
+    });
+    expect(JSON.stringify({ jsonTg, model, detail })).toBe(snapshot);
+    return result.xflow!.nodes![0].data!;
+  };
+
+  it.each([
+    ['2', '1000', 2000],
+    ['0.25', '4e2', 100],
+    [3, 0.5, 1.5],
+  ])('restores target from multiplier %s and reference quantity %s', (factor, amount, expected) => {
+    expect(hydrate(factor, amount)).toMatchObject({
+      originalAmount: Number(amount),
+      scalingFactor: Number(factor),
+      targetAmount: expected,
+    });
+  });
+  it.each([7, 0, '', 'invalid', null])(
+    'preserves explicit target %s for validation/editor intent',
+    (target) => {
+      expect(hydrate('2', '1000', target).targetAmount).toBe(target);
+    },
+  );
+  it.each([undefined, null, '', 'bad', '0', '-2', '1e999', '0x10', true])(
+    'does not invent a target from invalid factor %s',
+    (factor) => {
+      expect(
+        hydrate(factor, '1000', undefined, { factorMissing: factor === undefined }).targetAmount,
+      ).toBeUndefined();
+    },
+  );
+  it.each(['', 'bad', '0', '-1', '1e999', null])(
+    'rejects invalid reference amount %s',
+    (amount) => {
+      expect(hydrate('2', amount).targetAmount).toBeUndefined();
+    },
+  );
+  it.each([{ version: '05.00.000' }, { duplicate: true }, { reference: 9 }, { exchangeId: '' }])(
+    'requires exact unique instance and reference exchange %o',
+    (options) => {
+      expect(hydrate('2', '1000', undefined, options).targetAmount).toBeUndefined();
+    },
+  );
+  it('does not overflow or underflow a valid pair', () => {
+    expect(hydrate('1e308', '1e308').targetAmount).toBeUndefined();
+    expect(hydrate('1e-300', '1e-300').targetAmount).toBeUndefined();
+  });
+});

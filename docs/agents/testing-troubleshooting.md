@@ -43,9 +43,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-07
-lastReviewedCommit: b3cd4bf38f43eb35d97ed91c93e120df31b6b6ee
-lastReviewedNote: 'Platform #1129: reviewed existing focused component/service proof and full pre-push requirements; no gate or test policy change.'
+lastReviewedAt: 2026-11-08
+lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
+lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
 ---
 
 # Testing Troubleshooting

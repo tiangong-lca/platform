@@ -1014,9 +1014,21 @@ const ToolbarEdit: FC<Props> = ({
       calculationErrorModalRef.current?.destroy();
 
       const errorModal = modal.error({
+        okCancel: true,
+        closable: true,
         title: errorMessage,
         content: (
           <div>
+            {result.code === 'INVALID_TARGET_AMOUNT' ? (
+              <Button
+                onClick={() => {
+                  calculationErrorModalRef.current?.destroy();
+                  setTargetAmountDrawerVisible(true);
+                }}
+              >
+                {intl.formatMessage({ id: 'pages.lifeCycleModel.targetAmount' })}
+              </Button>
+            ) : null}
             {resolvedIssues.length > 0 ? (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
                 {resolvedIssues.map((item: ResolvedCalculationIssue, index: number) => (
