@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-07
-lastReviewedCommit: b3cd4bf38f43eb35d97ed91c93e120df31b6b6ee
-lastReviewedNote: 'Platform #1129: reviewed existing focused component/service proof and full pre-push requirements; no gate or test policy change.'
+lastReviewedAt: 2026-11-08
+lastReviewedCommit: 4169f99bfe3fadecb33b8ccad282fbde5c40f576
+lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
 ---
 
 # Development Bootstrap

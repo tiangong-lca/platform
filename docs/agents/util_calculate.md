@@ -23,7 +23,7 @@ checkPaths:
   - src/pages/Processes/Analysis/**
 lastReviewedAt: 2026-11-07
 lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
-lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
+lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
 ---
 
 # Lifecycle Model Calculation Reference
@@ -70,6 +70,8 @@ lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and c
 | function | `genLifeCycleModelProcesses(id, modelNodes, lifeCycleModelJsonOrdered, oldSubmodels)` |
 | primary output | `{ lifeCycleModelProcesses, up2DownEdges, lciaIncomplete }` |
 | side effects | writes `@multiplicationFactor` per `processInstance[*]` into `lifeCycleModelJsonOrdered` |
+
+On editor load, `viewCompatibility.ts` restores a missing reference-node target from the unique canonical instance multiplier and the exact referenced Process revision's reference exchange quantity (`target = multiplier × reference quantity`). It preserves explicit targets, performs no persistence, and leaves missing, ambiguous, non-positive or non-finite evidence for the existing calculation validation to reject. Calculation failures provide cancel/close back to retained edits; `INVALID_TARGET_AMOUNT` also opens the target-quantity editor without retrying the save.
 
 Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `CalculationCancelledError`; the save shell maps them to mutation results. Failures never mutate saved results.
 

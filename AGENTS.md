@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-07
-lastReviewedCommit: b3cd4bf38f43eb35d97ed91c93e120df31b6b6ee
-lastReviewedNote: 'Platform #1129: reviewed narrow result identity/version and check/review side-effect fixes; retained solver, analysis, environment and delivery boundaries.'
+lastReviewedAt: 2026-11-08
+lastReviewedCommit: 4169f99bfe3fadecb33b8ccad282fbde5c40f576
+lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
