@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-08
-lastReviewedCommit: 4169f99bfe3fadecb33b8ccad282fbde5c40f576
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
+lastReviewedNote: 'Platform #1483 reviewed the LCA calculations workbench labels against the current localization, branch and validation rules.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

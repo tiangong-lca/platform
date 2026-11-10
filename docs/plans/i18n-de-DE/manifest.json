@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "e129d2c483218a795c16048e2c2bc4787f8e3c19eff5e8a5064d84a4d009b56a",
+    "auditedInputDigest": "3a0b7b9e32dd0f84928ab843fa195243b83fa22af8e6da10cd75b084be25e2f8",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -31540,7 +31540,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "Studies",
+          "value": "LCA calculations",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -31551,7 +31551,7 @@
           }
         },
         "zh-CN": {
-          "value": "研究",
+          "value": "LCA计算",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -31562,7 +31562,7 @@
           }
         },
         "de-DE": {
-          "value": "Studien",
+          "value": "LCA-Berechnungen",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -31573,7 +31573,7 @@
           }
         },
         "fr-FR": {
-          "value": "Études",
+          "value": "Calculs d’ACV",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -273795,7 +273795,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "This named share contains only its authorized report summary. It grants no Study or source access.",
+          "value": "This named share grants access only to its report summary. Access to the calculation project or its sources requires separate authorization.",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -273806,7 +273806,7 @@
           }
         },
         "zh-CN": {
-          "value": "此指定共享仅包含获授权的报告摘要，不授予研究或来源访问权限。",
+          "value": "此指定共享仅授权查看报告摘要。访问计算项目或来源需要单独授权。",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -273817,7 +273817,7 @@
           }
         },
         "de-DE": {
-          "value": "Diese benannte Freigabe enthält nur die autorisierte Berichtszusammenfassung. Sie gewährt keinen Zugriff auf Studie oder Quellen.",
+          "value": "Diese benannte Freigabe gewährt nur Zugriff auf die Berichtszusammenfassung. Der Zugriff auf das Berechnungsprojekt oder seine Quellen erfordert eine separate Berechtigung.",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -273828,7 +273828,7 @@
           }
         },
         "fr-FR": {
-          "value": "Ce partage nominatif contient uniquement le résumé de rapport autorisé. Il ne donne aucun accès à l’étude ni aux sources.",
+          "value": "Ce partage nominatif donne uniquement accès au résumé du rapport. L’accès au projet de calcul ou à ses sources nécessite une autorisation distincte.",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276627,7 +276627,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "Study title",
+          "value": "Calculation project name",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276638,7 +276638,7 @@
           }
         },
         "zh-CN": {
-          "value": "研究标题",
+          "value": "计算项目名称",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276649,7 +276649,7 @@
           }
         },
         "de-DE": {
-          "value": "Studientitel",
+          "value": "Name des Berechnungsprojekts",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276660,7 +276660,7 @@
           }
         },
         "fr-FR": {
-          "value": "Titre de l’étude",
+          "value": "Nom du projet de calcul",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276863,7 +276863,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "Studies",
+          "value": "LCA calculations",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276874,7 +276874,7 @@
           }
         },
         "zh-CN": {
-          "value": "研究",
+          "value": "LCA计算",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276885,7 +276885,7 @@
           }
         },
         "de-DE": {
-          "value": "Studien",
+          "value": "LCA-Berechnungen",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -276896,7 +276896,7 @@
           }
         },
         "fr-FR": {
-          "value": "Études",
+          "value": "Calculs d’ACV",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
