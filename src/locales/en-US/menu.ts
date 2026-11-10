@@ -1,5 +1,5 @@
 export default {
-  'menu.studies': 'Studies',
+  'menu.studies': 'LCA calculations',
   'menu.supportingData': 'Supporting Data',
   'menu.welcome': 'Welcome',
   'menu.more-blocks': 'More Blocks',

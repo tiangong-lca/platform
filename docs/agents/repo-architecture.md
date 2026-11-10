@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-08
-lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
+lastReviewedNote: 'Platform #1483 reviewed how the localized LCA calculations entry maps to the authenticated Study workbench and exact report and share routes.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

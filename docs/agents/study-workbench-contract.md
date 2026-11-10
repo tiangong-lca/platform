@@ -9,7 +9,7 @@ language: en
 whenToUse:
   - implementing authenticated Study, exact report review, or named recipient routes
 whenToUpdate:
-  - Study route, codec, identity, lightweight editing, or report presentation boundaries change
+  - Study route, product terminology, codec, identity, lightweight editing, or report presentation boundaries change
 checkPaths:
   - src/pages/Study/**
   - src/services/study/**
@@ -17,9 +17,9 @@ checkPaths:
   - config/routes.ts
   - tests/unit/pages/Study/**
   - tests/unit/services/study/**
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 7ce24ea3940269d488a045ba2dadf6a0b01c027e
-lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
+lastReviewedNote: 'Platform #1483 reviewed the calculation project label, report summary permission wording and compatibility with existing Study, Run and report identities.'
 related:
   - repo-architecture.md
   - repo-validation.md
@@ -27,6 +27,8 @@ related:
 ---
 
 # Study workbench
+
+The application presents this workbench as LCA calculations. A calculation project is the user-facing name for a Study, which can contain scenarios, calculation runs and reports. Method declarations retain their scientific study terminology.
 
 Platform owns authenticated `/studies`, `/study-report?id=<reportRevisionId>&hash=<contentHash>` and `/study-share?id=<shareId>`. Valid existing report/share links without a selector retain V4. The explicit advanced and method forms add exactly one `api=5` or `api=6`; ID/hash/family fields are validated before requests, and duplicate, malformed or unknown query fields fail. `reportHref` / `shareHref` generate these stable same-object links; the report identity and share-result/recipient links retain their selected family. The selector binds the resource protocol, never a backend URL, credential or permission. Existing AuthGuard, application admission, Supabase session and layout remain authoritative. `/studies?id=<studyId>&view=<overview|model|results|reports>` uses the shared finite route-view registry. A reviewer can open an exact report independently of core Study access; a named share performs only resource-action, projection and download calls for that share.
 

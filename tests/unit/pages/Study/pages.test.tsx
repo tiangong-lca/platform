@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import StudyPage from '@/pages/Study';
 import ReportPage from '@/pages/Study/Report';
 import SharePage from '@/pages/Study/Share';
+import { E2E_LOCALE_CATALOG_ADAPTER } from '../../../e2e/i18n/locale-catalog-adapter';
 import view from '../../../fixtures/study-report/view-v1.json';
 import {
   resolveRouteViewState,
@@ -15,9 +16,11 @@ const mockCore = jest.fn(),
   mockPush = jest.fn();
 let mockSearch = '',
   mockActor = 'reviewer-a';
+let mockMessages: Readonly<Record<string, string>> = {};
+const mockFormatMessage = ({ id }: { id: string }) => mockMessages[id] ?? id;
 jest.mock('@umijs/max', () => ({
-  FormattedMessage: ({ id }: { id: string }) => id,
-  useIntl: () => ({ formatMessage: ({ id }: { id: string }) => id }),
+  FormattedMessage: (props: { id: string }) => mockFormatMessage(props),
+  useIntl: () => ({ formatMessage: mockFormatMessage }),
   useModel: () => ({ initialState: { currentUser: { userid: mockActor } } }),
   useLocation: () => ({ search: mockSearch }),
   history: { push: (...args: unknown[]) => mockPush(...args) },
@@ -49,6 +52,12 @@ const study = {
   title: 'Exact frozen study',
   status: 'active',
   currentRevisionId: 'revision-a',
+};
+const calculationLabels = {
+  'zh-CN': { title: 'LCA计算', projectName: '计算项目名称' },
+  'en-US': { title: 'LCA calculations', projectName: 'Calculation project name' },
+  'de-DE': { title: 'LCA-Berechnungen', projectName: 'Name des Berechnungsprojekts' },
+  'fr-FR': { title: 'Calculs d’ACV', projectName: 'Nom du projet de calcul' },
 };
 const revision = {
   revisionId: 'revision-a',
@@ -92,6 +101,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockSearch = '';
   mockActor = 'reviewer-a';
+  mockMessages = {};
   actions = [];
   mockCore.mockImplementation(async (request) => {
     if (request.operation === 'study.list')
@@ -148,6 +158,22 @@ it('closes all four typed views and falls back safely', () => {
   expect(resolveRouteViewState('study-view', 'foreign')).toBe('overview');
   expect(resolveRouteViewState('study-view', null)).toBe('overview');
 });
+it.each(E2E_LOCALE_CATALOG_ADAPTER.locales)(
+  'uses the same LCA calculations name in navigation and the list for %s',
+  async (locale) => {
+    mockMessages = E2E_LOCALE_CATALOG_ADAPTER.catalogs[locale];
+    const labels = calculationLabels[locale];
+    expect(mockMessages['menu.studies']).toBe(labels.title);
+
+    render(<StudyPage />);
+    expect(screen.getByText(labels.title)).toBeVisible();
+    expect(await screen.findByRole('columnheader', { name: labels.projectName })).toBeVisible();
+    expect(screen.getByRole('link', { name: study.title })).toHaveAttribute(
+      'href',
+      '#/studies?id=study-a',
+    );
+  },
+);
 it('lists authenticated exact identities and supports a direct reviewer report link independent of core read', async () => {
   render(<StudyPage />);
   expect(await screen.findByText(study.title)).toHaveAttribute('href', '#/studies?id=study-a');
@@ -239,6 +265,10 @@ it('fails closed on missing exact report/share identities', () => {
 });
 it('named recipient sees only authorized share projection and requests only share download', async () => {
   mockSearch = '?id=share-a';
+  mockMessages = {
+    'pages.study.projectionOnly':
+      E2E_LOCALE_CATALOG_ADAPTER.catalogs['en-US']['pages.study.projectionOnly'],
+  };
   const share = {
     shareId: 'share-a',
     recipientId: 'reviewer-a',
@@ -259,6 +289,11 @@ it('named recipient sees only authorized share projection and requests only shar
   );
   render(<SharePage />);
   await screen.findByTitle('pages.study.preview');
+  expect(
+    screen.getByText(
+      'This named share grants access only to its report summary. Access to the calculation project or its sources requires separate authorization.',
+    ),
+  ).toBeVisible();
   fireEvent.click(screen.getByRole('button', { name: 'pages.study.download' }));
   await waitFor(() => expect(mockDownload).toHaveBeenCalledWith('share', 'share-a'));
   expect(mockCore).not.toHaveBeenCalled();
