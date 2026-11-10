@@ -1,5 +1,5 @@
 export default {
-  'menu.studies': 'Études',
+  'menu.studies': 'Calculs d’ACV',
   'menu.supportingData': 'Données complémentaires',
   'menu.welcome': 'Bienvenue',
   'menu.more-blocks': 'Plus de blocs',
