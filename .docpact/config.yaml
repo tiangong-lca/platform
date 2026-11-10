@@ -1,7 +1,7 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-11-10"
-lastReviewedCommit: "3fe123129525a5e08d3808841dbe592918cf3802"
+lastReviewedCommit: "2cd0c3256c7248c2fcc3fc1fc1775f04a7b9e129"
 lastReviewedNote: 'Platform #1483 reviewed locale ownership, Study consumer routing and the affected test governance for the LCA calculations labels.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
