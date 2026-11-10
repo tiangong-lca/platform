@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-08
-lastReviewedCommit: 4169f99bfe3fadecb33b8ccad282fbde5c40f576
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
+lastReviewedNote: 'Platform #1483 reviewed current proof coverage for the localized workbench and exact-link regression tests.'
 ---
 
 # Testing Execution State

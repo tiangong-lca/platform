@@ -17,9 +17,9 @@ checkPaths:
   - config/routes.ts
   - tests/unit/pages/Study/**
   - tests/unit/services/study/**
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 7ce24ea3940269d488a045ba2dadf6a0b01c027e
-lastReviewedNote: 'Platform #1442: hosted7ce packed-browser proof read prior hash immediately after native Enter; qualification harness now awaits actual URL completion before the unchanged exact hash assertion. Native keyboard, default deadlines, runtime and product remain unchanged. Local original proof and500 settled diagnostic navigations had no captured early race; updated three-engine12-case matrix passes. All31 runtime/resource files equal selected94ce; frozen3f195 archive retained. Harness is a changed renderer provenance/sourceDigest input, not a runtime/UI change or repin; clean-head proof/strict gate/current CI and explicit bridge required.'
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
+lastReviewedNote: 'Platform #1483 reviewed the calculation project label, report summary permission wording and compatibility with existing Study, Run and report identities.'
 related:
   - repo-architecture.md
   - repo-validation.md
