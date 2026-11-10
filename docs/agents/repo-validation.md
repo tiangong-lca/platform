@@ -48,7 +48,7 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-10
-lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
+lastReviewedCommit: 2cd0c3256c7248c2fcc3fc1fc1775f04a7b9e129
 lastReviewedNote: 'Platform #1483 reviewed the locale bundle, Study component, browser and checked-push proof for the localized workbench labels.'
 related:
   - ../AGENTS.md
