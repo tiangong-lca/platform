@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "4cee4e01ac58a9b15d5bedcca0fb480475832a0f327b8b932ef5e5fb4a1c47ad",
+    "auditedInputDigest": "d9a061b5c448347d1200462b8221dcb64184927eb839ef4afadf9317c6295b0f",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -232241,7 +232241,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 238,
+          "line": 242,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Amount",
@@ -232250,7 +232250,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 303,
+          "line": 307,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Amount",
@@ -232265,13 +232265,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 238,
+              "line": 242,
               "column": 17,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 303,
+              "line": 307,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -232599,7 +232599,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 280,
+          "line": 284,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Direction",
@@ -232614,7 +232614,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 280,
+              "line": 284,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -232859,7 +232859,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 329,
+          "line": 333,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Release files",
@@ -232874,7 +232874,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 329,
+              "line": 333,
               "column": 17,
               "kind": "FormattedMessage"
             }
@@ -232942,7 +232942,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 205,
+          "line": 209,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "Published results could not be loaded. Please retry.",
@@ -232957,7 +232957,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 205,
+              "line": 209,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -233025,7 +233025,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 315,
+          "line": 319,
           "column": 16,
           "symbol": "ResultSession",
           "defaultMessage": "First page",
@@ -233040,7 +233040,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 315,
+              "line": 319,
               "column": 16,
               "kind": "FormattedMessage"
             }
@@ -233108,7 +233108,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 268,
+          "line": 272,
           "column": 24,
           "symbol": "ResultSession",
           "defaultMessage": "Flow",
@@ -233123,7 +233123,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 268,
+              "line": 272,
               "column": 24,
               "kind": "FormattedMessage"
             }
@@ -233309,7 +233309,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 287,
+          "line": 291,
           "column": 21,
           "symbol": "ResultSession",
           "defaultMessage": "Input",
@@ -233324,7 +233324,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 287,
+              "line": 291,
               "column": 21,
               "kind": "FormattedMessage"
             }
@@ -233534,8 +233534,8 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 151,
-          "column": 20,
+          "line": 154,
+          "column": 15,
           "symbol": "ResultSession",
           "defaultMessage": "LCI results",
           "defaultMessageExpression": null
@@ -233549,8 +233549,8 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 151,
-              "column": 20,
+              "line": 154,
+              "column": 15,
               "kind": "FormattedMessage"
             }
           ]
@@ -233617,8 +233617,8 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 146,
-          "column": 20,
+          "line": 147,
+          "column": 15,
           "symbol": "ResultSession",
           "defaultMessage": "LCIA results",
           "defaultMessageExpression": null
@@ -233632,8 +233632,8 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 146,
-              "column": 20,
+              "line": 147,
+              "column": 15,
               "kind": "FormattedMessage"
             }
           ]
@@ -233700,7 +233700,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 294,
+          "line": 298,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Location",
@@ -233715,7 +233715,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 294,
+              "line": 298,
               "column": 19,
               "kind": "FormattedMessage"
             }
@@ -233783,7 +233783,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 223,
+          "line": 227,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Impact category",
@@ -233798,7 +233798,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 223,
+              "line": 227,
               "column": 17,
               "kind": "FormattedMessage"
             }
@@ -233925,7 +233925,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 318,
+          "line": 322,
           "column": 16,
           "symbol": "ResultSession",
           "defaultMessage": "Next page",
@@ -233940,7 +233940,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 318,
+              "line": 322,
               "column": 16,
               "kind": "FormattedMessage"
             }
@@ -234067,7 +234067,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 254,
+          "line": 258,
           "column": 15,
           "symbol": "ResultSession",
           "defaultMessage": "Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.",
@@ -234082,7 +234082,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 254,
+              "line": 258,
               "column": 15,
               "kind": "FormattedMessage"
             }
@@ -234209,7 +234209,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 289,
+          "line": 293,
           "column": 21,
           "symbol": "ResultSession",
           "defaultMessage": "Output",
@@ -234224,7 +234224,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 289,
+              "line": 293,
               "column": 21,
               "kind": "FormattedMessage"
             }
@@ -234351,7 +234351,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 181,
+          "line": 185,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "Preparing published results. Please retry shortly.",
@@ -234366,7 +234366,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 181,
+              "line": 185,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -234777,7 +234777,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 160,
+          "line": 164,
           "column": 23,
           "symbol": "ResultSession",
           "defaultMessage": "Search inventory",
@@ -234786,7 +234786,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 165,
+          "line": 169,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "Search inventory",
@@ -234801,13 +234801,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 160,
+              "line": 164,
               "column": 23,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 165,
+              "line": 169,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -235100,7 +235100,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 193,
+          "line": 197,
           "column": 13,
           "symbol": "ResultSession",
           "defaultMessage": "No published results are available for this exact version.",
@@ -235115,7 +235115,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 193,
+              "line": 197,
               "column": 13,
               "kind": "FormattedMessage"
             }
@@ -235183,7 +235183,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 243,
+          "line": 247,
           "column": 22,
           "symbol": "ResultSession",
           "defaultMessage": "Unit",
@@ -235192,7 +235192,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 308,
+          "line": 312,
           "column": 24,
           "symbol": "ResultSession",
           "defaultMessage": "Unit",
@@ -235207,13 +235207,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 243,
+              "line": 247,
               "column": 22,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 308,
+              "line": 312,
               "column": 24,
               "kind": "FormattedMessage"
             }
@@ -235281,7 +235281,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 232,
+          "line": 236,
           "column": 17,
           "symbol": "ResultSession",
           "defaultMessage": "Version",
@@ -235290,7 +235290,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-          "line": 274,
+          "line": 278,
           "column": 19,
           "symbol": "ResultSession",
           "defaultMessage": "Version",
@@ -235305,13 +235305,13 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 232,
+              "line": 236,
               "column": 17,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/publishedResultsPanel.tsx",
-              "line": 274,
+              "line": 278,
               "column": 19,
               "kind": "FormattedMessage"
             }

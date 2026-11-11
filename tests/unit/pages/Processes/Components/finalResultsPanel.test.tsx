@@ -1,5 +1,7 @@
 import PublishedResultsPanel from '@/pages/Processes/Components/publishedResultsPanel';
-import { FinalResultDetails } from '@/pages/Processes/Components/finalResultsPanel';
+import FinalSourceResults, {
+  FinalResultDetails,
+} from '@/pages/Processes/Components/finalResultsPanel';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 const mockSource = jest.fn(),
   mockQuery = jest.fn(),
@@ -77,16 +79,22 @@ jest.mock('antd', () => ({
       ))}
     </div>
   ),
-  Pagination: ({ current, total, onChange }: any) => (
-    <div>
-      <button type='button' disabled={current === 1} onClick={() => onChange(current - 1)}>
-        Previous page
-      </button>
-      <button type='button' disabled={current === total} onClick={() => onChange(current + 1)}>
-        Next page
-      </button>
-    </div>
-  ),
+  Pagination: ({ current, total, onChange, itemRender, hideOnSinglePage }: any) =>
+    hideOnSinglePage && total === 1 ? null : (
+      <nav aria-label='Inventory pages'>
+        <span onClick={() => current > 1 && onChange(current - 1)}>
+          {itemRender(current - 1, 'prev', null)}
+        </span>
+        {Array.from({ length: total }, (_, index) => (
+          <span key={index} onClick={() => onChange(index + 1)}>
+            {itemRender(index + 1, 'page', <button type='button'>{index + 1}</button>)}
+          </span>
+        ))}
+        <span onClick={() => current < total && onChange(current + 1)}>
+          {itemRender(current + 1, 'next', null)}
+        </span>
+      </nav>
+    ),
   Input: {
     Search: ({ onSearch }: any) => (
       <input aria-label='search' onChange={(event) => onSearch(event.target.value)} />
@@ -530,4 +538,28 @@ it('late source and download failures after closing are ignored', async () => {
   expect(
     screen.queryByText('The download link could not be refreshed. Please retry.'),
   ).not.toBeInTheDocument();
+});
+
+it('keeps one final Result compact and does not expose a legacy publication in the Process entry', async () => {
+  const view = render(<FinalSourceResults id={id} version={props.version} />);
+  await screen.findByText(`Frozen climate ${id}`, { exact: false });
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /LCI results/ }));
+  await screen.findByText('Flow:Frozen water');
+  expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+  await screen.findByText('Flow:Second flow');
+  fireEvent.click(screen.getByRole('button', { name: '1', exact: true }));
+  await screen.findByText('Flow:Frozen water');
+  fireEvent.click(screen.getByRole('button', { name: '2', exact: true }));
+  await screen.findByText('Flow:Second flow');
+  expect(mockQuery.mock.calls.at(-1)[1].cursor).toBe('bound-cursor');
+  view.unmount();
+  mockSource.mockResolvedValue({
+    status: 'ready',
+    page: { ...page, publication: { ...page.publication, format: 'legacy-four-zip.v1' } },
+  });
+  render(<FinalSourceResults id={id} version={props.version} />);
+  await screen.findByText('No published results are available for this exact version.');
+  expect(mockLegacy).not.toHaveBeenCalled();
 });
