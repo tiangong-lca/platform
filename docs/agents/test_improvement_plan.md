@@ -47,7 +47,7 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-11
-lastReviewedCommit: 7775c8cbd118d3d7c8021fdf01b5857b3190e90d
+lastReviewedCommit: a5d14e20a5bdb6fc037df2f16c3b15794a8d1979
 lastReviewedNote: 'Platform #1489 reviewed unified public Process results, compact controls and cursor pagination proof; existing delivery and full-coverage gates remain unchanged.'
 ---
 
