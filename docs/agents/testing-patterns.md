@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-10
-lastReviewedCommit: 2cd0c3256c7248c2fcc3fc1fc1775f04a7b9e129
-lastReviewedNote: 'Platform #1483 reviewed registry-driven locale assertions using the product catalogs, visible list copy and the existing exact link contract.'
+lastReviewedAt: 2026-11-11
+lastReviewedCommit: a5d14e20a5bdb6fc037df2f16c3b15794a8d1979
+lastReviewedNote: 'Platform #1489 reviewed unified public Process results, compact controls and cursor pagination proof; existing delivery and full-coverage gates remain unchanged.'
 ---
 
 # Testing Patterns Reference

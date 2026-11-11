@@ -56,6 +56,15 @@ const mockMergeCommentsToData = jest.fn();
 const mockUseLocation = jest.fn(() => ({ pathname: '/', search: '' }));
 const mockGetClassificationValues = jest.fn(() => []);
 
+jest.mock('@/pages/Processes/Components/finalResultsPanel', () => ({
+  __esModule: true,
+  default: ({ id, version }: any) => (
+    <div data-testid='final-source-results'>
+      {id}@{version}
+    </div>
+  ),
+}));
+
 jest.mock('umi', () => ({
   __esModule: true,
   FormattedMessage: ({ defaultMessage, id }: any) => defaultMessage ?? id,
@@ -470,7 +479,7 @@ describe('ProcessView component', () => {
     );
     mockIsLcaFunctionInvokeError.mockImplementation(() => false);
     mockGetProcessDetail.mockResolvedValue({
-      data: { json: { processDataSet: processDataSet } },
+      data: { stateCode: 100, json: { processDataSet: processDataSet } },
     });
     mockGenProcessFromData.mockReturnValue(processDataSet);
     mockGenProcessExchangeTableData.mockReturnValue([{ id: 'row-1' }]);
@@ -587,16 +596,50 @@ describe('ProcessView component', () => {
     render(<ProcessView {...defaultProps} />);
     fireEvent.click(screen.getByRole('button'));
 
-    const lciaTab = screen.getByRole('button', { name: 'LCIA Results' });
+    const lciaTab = await screen.findByRole('button', { name: 'Calculation results' });
     fireEvent.click(lciaTab);
 
     await waitFor(() => {
-      expect(screen.getAllByTestId('card')[0]).toHaveAttribute('data-active-key', 'lciaResults');
+      expect(screen.getAllByTestId('card')[0]).toHaveAttribute(
+        'data-active-key',
+        'calculationResults',
+      );
     });
 
     await waitFor(() => {
-      expect(screen.getByText('LCIA Profile')).toBeInTheDocument();
+      expect(screen.getByTestId('final-source-results')).toBeInTheDocument();
     });
+  });
+
+  it.each([0, 10, 20, 99, undefined])(
+    'hides calculation results for non-public or unknown state %s',
+    async (stateCode) => {
+      mockUseLocation.mockReturnValue({ pathname: '/tgdata/processes', search: '' });
+      mockGetProcessDetail.mockResolvedValueOnce({ data: { stateCode, json: { processDataSet } } });
+      render(<ProcessView {...defaultProps} />);
+      fireEvent.click(screen.getByRole('button'));
+      await waitFor(() =>
+        expect(screen.getByTestId('spin')).toHaveAttribute('data-spinning', 'false'),
+      );
+      expect(screen.queryByRole('button', { name: 'Calculation results' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Published results' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'LCIA Results' })).not.toBeInTheDocument();
+      expect(mockQueryLcaResults).not.toHaveBeenCalled();
+      expect(mockGetPublishedLciaResultPackage).not.toHaveBeenCalled();
+    },
+  );
+
+  it('uses the Release reader for an already public record even from My data', async () => {
+    mockUseLocation.mockReturnValue({ pathname: '/mydata/processes', search: '' });
+    render(<ProcessView {...defaultProps} />);
+    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(await screen.findByRole('button', { name: 'Calculation results' }));
+    expect(screen.getByTestId('final-source-results')).toHaveTextContent(
+      `${defaultProps.id}@${defaultProps.version}`,
+    );
+    expect(mockQueryLcaResults).not.toHaveBeenCalled();
+    expect(mockGetPublishedLciaResultPackage).not.toHaveBeenCalled();
+    expect(screen.queryByRole('button', { name: 'Published results' })).not.toBeInTheDocument();
   });
 
   it('does not expose release controls from the Process drawer', async () => {
@@ -670,107 +713,6 @@ describe('ProcessView component', () => {
       [{ message: 'Rejected once' }],
       processDataSet,
     );
-  });
-
-  it('shows solver metadata when latest LCIA results load successfully', async () => {
-    mockUseLocation.mockReturnValue({ pathname: '/mydata/processes', search: '' });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() =>
-      expect(mockQueryLcaResults).toHaveBeenCalledWith({
-        scope: 'full_library',
-        data_scope: 'public_plus_owner_draft',
-        mode: 'process_all_impacts',
-        process_id: 'process-1',
-        process_version: '1.0.0',
-        allow_fallback: false,
-      }),
-    );
-    expect(
-      screen.getByLabelText('Calculated result details').closest('[data-testid="tooltip"]'),
-    ).toHaveAttribute(
-      'data-title',
-      expect.stringContaining('source=all_unit, snapshot=snapshot-1, result=result-1'),
-    );
-  });
-
-  it('uses the published LCIA package reader on the tgdata route even when the old flag is false', async () => {
-    process.env.APP_PUBLIC_LCIA_RESULTS_ENABLED = 'false';
-    mockUseLocation.mockReturnValue({ pathname: '/tgdata/processes', search: '' });
-    mockGetPublishedLciaResultPackage.mockResolvedValueOnce({
-      data: {
-        publication: { id: 'publication-flag-false' },
-        package: { id: 'package-flag-false' },
-        rowCount: 1,
-        values: [
-          {
-            impact_id: 'impact-1',
-            impact_index: 0,
-            impact_name: 'Published climate change',
-            unit: 'kg CO2-eq',
-            value: 52,
-          },
-        ],
-      },
-      error: null,
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() =>
-      expect(mockGetPublishedLciaResultPackage).toHaveBeenCalledWith({
-        processId: 'process-1',
-        processVersion: '1.0.0',
-      }),
-    );
-    expect(mockQueryLcaResults).not.toHaveBeenCalled();
-  });
-
-  it('uses published LCIA package reader on the tgdata route by default', async () => {
-    delete process.env.APP_PUBLIC_LCIA_RESULTS_ENABLED;
-    mockUseLocation.mockReturnValue({ pathname: '/tgdata/processes', search: '' });
-    mockGetPublishedLciaResultPackage.mockResolvedValueOnce({
-      data: {
-        publication: { id: 'publication-1' },
-        package: { id: 'package-1' },
-        rowCount: 1,
-        values: [
-          {
-            impact_id: 'impact-1',
-            impact_index: 0,
-            impact_name: 'Published climate change',
-            unit: 'kg CO2-eq',
-            value: 52,
-          },
-        ],
-      },
-      error: null,
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() =>
-      expect(mockGetPublishedLciaResultPackage).toHaveBeenCalledWith({
-        processId: 'process-1',
-        processVersion: '1.0.0',
-      }),
-    );
-
-    expect(mockQueryLcaResults).not.toHaveBeenCalled();
-    expect(screen.queryByText(/source=published_package/)).not.toBeInTheDocument();
-    expect(
-      screen.getByLabelText('Published result details').closest('[data-testid="tooltip"]'),
-    ).toHaveAttribute('data-title', expect.stringContaining('source=published_package'));
-    expect(screen.getAllByText('Published climate change').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('52').length).toBeGreaterThan(0);
   });
 
   it('opens with the result-icon trigger and renders fallback labels for unsupported option codes', async () => {
@@ -887,128 +829,6 @@ describe('ProcessView component', () => {
     expect(getDescriptionItemValue('License type')).toHaveTextContent(
       'Free of charge for all users and uses',
     );
-  });
-
-  it('refreshes solver LCIA results on demand even after initial load completed', async () => {
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() => expect(mockQueryLcaResults).toHaveBeenCalledTimes(1));
-
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh latest calculated results' }));
-
-    await waitFor(() => expect(mockQueryLcaResults).toHaveBeenCalledTimes(2));
-  });
-
-  it('normalizes sparse solver rows and string failures for the LCIA tab', async () => {
-    mockGenProcessFromData.mockReturnValueOnce({
-      ...processDataSet,
-      LCIAResults: { LCIAResult: [] },
-    });
-    mockGetDecompressedMethod.mockResolvedValueOnce({
-      files: [
-        {
-          id: '',
-          version: 'ignored',
-          referenceQuantity: { 'common:shortDescription': { '#text': 'ignored' } },
-        },
-        {
-          id: 'other-impact',
-          version: 'ignored',
-          referenceQuantity: { 'common:shortDescription': { '#text': 'ignored' } },
-        },
-      ],
-    });
-    mockQueryLcaResults
-      .mockResolvedValueOnce({
-        snapshot_id: 'snapshot-sparse',
-        result_id: 'result-sparse',
-        source: 'latest_ready',
-        meta: { computed_at: '2026-03-10T00:00:00Z' },
-        data: {
-          values: [{ impact_id: 'impact-sparse' }, {}],
-        },
-      })
-      .mockRejectedValueOnce('solver string failure');
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() => expect(screen.getByTestId('pro-row-impact-sparse@')).toBeInTheDocument());
-    expect(
-      within(screen.getByTestId('pro-row-impact-sparse@')).getByText('impact-sparse'),
-    ).toBeInTheDocument();
-    expect(
-      within(screen.getByTestId('pro-row-impact-sparse@')).getByTestId('aligned-number'),
-    ).toHaveTextContent('0');
-    expect(within(screen.getByTestId('pro-row-impact-sparse@')).getByText('-')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh latest calculated results' }));
-    await waitFor(() =>
-      expect(screen.getByText('Result query failed: {message}')).toBeInTheDocument(),
-    );
-  });
-
-  it('shows a solver error message when latest LCIA query fails', async () => {
-    mockQueryLcaResults.mockRejectedValueOnce(new Error('solver failed'));
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() =>
-      expect(screen.getByText('Result query failed: {message}')).toBeInTheDocument(),
-    );
-  });
-
-  it('retries automatically when LCIA snapshot building is queued', async () => {
-    jest.useFakeTimers();
-    const queuedError = {
-      code: 'snapshot_build_queued',
-      body: {
-        build_job_id: 'job-1',
-        build_snapshot_id: 'snapshot-pending',
-      },
-    };
-    mockIsLcaFunctionInvokeError.mockImplementation(
-      (error: any) => error?.code === 'snapshot_build_queued',
-    );
-    mockQueryLcaResults.mockRejectedValueOnce(queuedError).mockResolvedValueOnce({
-      snapshot_id: 'snapshot-ready',
-      result_id: 'result-ready',
-      source: 'latest_ready',
-      meta: { computed_at: '2026-03-12T00:00:00Z' },
-      data: { values: [] },
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() =>
-      expect(
-        screen.getByText('Snapshot is rebuilding (job {jobId}). Retrying automatically...'),
-      ).toBeInTheDocument(),
-    );
-
-    await act(async () => {
-      jest.advanceTimersByTime(4000);
-    });
-
-    await waitFor(() => expect(mockQueryLcaResults).toHaveBeenCalledTimes(2));
-    await waitFor(() =>
-      expect(
-        screen.getByLabelText('Calculated result details').closest('[data-testid="tooltip"]'),
-      ).toHaveAttribute(
-        'data-title',
-        expect.stringContaining(
-          'source=latest_ready, snapshot=snapshot-ready, result=result-ready',
-        ),
-      ),
-    );
-    jest.useRealTimers();
   });
 
   it('loads both input and output exchange tables with flow state lookups', async () => {
@@ -1182,258 +1002,10 @@ describe('ProcessView component', () => {
       expect(screen.getByTestId('spin')).toHaveAttribute('data-spinning', 'false');
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-    await waitFor(() => expect(screen.getByTestId('pro-table')).toBeInTheDocument());
+    expect(screen.queryByRole('button', { name: 'Calculation results' })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Inputs and Outputs' }));
     await waitFor(() => expect(mockGetProcessExchange.mock.calls.length).toBeGreaterThanOrEqual(2));
-  });
-
-  it('falls back to solver metadata-free LCIA rows when the method list cache cannot be refreshed', async () => {
-    mockGenProcessFromData.mockReturnValueOnce({
-      ...processDataSet,
-      LCIAResults: { LCIAResult: [] },
-    });
-    mockGetDecompressedMethod.mockResolvedValueOnce(null);
-    mockCacheAndDecompressMethod.mockResolvedValueOnce(false);
-    mockQueryLcaResults.mockResolvedValueOnce({
-      snapshot_id: 'snapshot-fallback',
-      result_id: 'result-fallback',
-      source: 'latest_ready',
-      meta: { computed_at: '2026-03-10T00:00:00Z' },
-      data: {
-        values: [
-          {
-            impact_id: 'impact-1',
-            impact_index: '2',
-            impact_name: ' Impact Name ',
-            unit: 'kg',
-            value: '12.5',
-          },
-        ],
-      },
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() => expect(screen.getByTestId('pro-row-impact-1@')).toBeInTheDocument());
-    expect(
-      within(screen.getByTestId('pro-row-impact-1@')).getByText('Impact Name'),
-    ).toBeInTheDocument();
-    expect(within(screen.getByTestId('pro-row-impact-1@')).getByText('kg')).toBeInTheDocument();
-    expect(
-      within(screen.getByTestId('pro-row-impact-1@')).getByTestId('aligned-number'),
-    ).toHaveTextContent('12.5');
-  });
-
-  it('sorts fallback solver LCIA rows by impact index before rendering', async () => {
-    mockGenProcessFromData.mockReturnValueOnce({
-      ...processDataSet,
-      LCIAResults: { LCIAResult: [] },
-    });
-    mockGetDecompressedMethod.mockResolvedValueOnce(null);
-    mockCacheAndDecompressMethod.mockResolvedValueOnce(false);
-    mockQueryLcaResults.mockResolvedValueOnce({
-      snapshot_id: 'snapshot-sorted',
-      result_id: 'result-sorted',
-      source: 'latest_ready',
-      meta: { computed_at: '2026-03-10T00:00:00Z' },
-      data: {
-        values: [
-          {
-            impact_id: 'impact-2',
-            impact_index: 2,
-            impact_name: 'Second',
-            unit: 'kg',
-            value: 22,
-          },
-          {
-            impact_id: 'impact-1',
-            impact_index: 1,
-            impact_name: 'First',
-            unit: 'kg',
-            value: 11,
-          },
-        ],
-      },
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() => expect(screen.getByTestId('pro-row-impact-1@')).toBeInTheDocument());
-    expect(
-      screen.getAllByTestId(/^pro-row-/).map((node) => node.getAttribute('data-testid')),
-    ).toEqual(['pro-row-impact-1@', 'pro-row-impact-2@']);
-  });
-
-  it('refreshes the method cache and merges solver rows into existing LCIA rows', async () => {
-    mockGenProcessFromData.mockReturnValueOnce({
-      ...processDataSet,
-      LCIAResults: {
-        LCIAResult: [
-          {
-            key: 'base-key',
-            meanAmount: 1,
-            referenceToLCIAMethodDataSet: {
-              '@refObjectId': 'impact-1',
-              '@version': '',
-            },
-          },
-        ],
-      },
-    });
-    mockGetDecompressedMethod
-      .mockResolvedValueOnce({
-        files: [{ id: 'impact-1', version: 'old-version' }],
-      })
-      .mockResolvedValueOnce({
-        files: [
-          {
-            id: 'impact-1',
-            version: '2.0.0',
-            description: { '#text': 'Method description' },
-            referenceQuantity: {
-              'common:shortDescription': { '#text': 'kg CO2 eq' },
-            },
-          },
-          {
-            id: '',
-            version: 'ignored',
-          },
-          {
-            id: 'impact-2',
-            version: 'other',
-          },
-        ],
-      });
-    mockCacheAndDecompressMethod.mockResolvedValueOnce(true);
-    mockQueryLcaResults.mockResolvedValue({
-      snapshot_id: 'snapshot-merge',
-      result_id: 'result-merge',
-      source: 'latest_ready',
-      meta: { computed_at: '2026-03-11T00:00:00Z' },
-      data: {
-        values: [
-          {
-            impact_id: 'impact-1',
-            impact_version: '2.0.0',
-            impact_index: 1,
-            impact_name: '',
-            unit: 'kg CO2 eq',
-            value: 42,
-          },
-          {
-            impact_id: '',
-            impact_index: 2,
-            impact_name: 'Ignored',
-            unit: 'kg',
-            value: 3,
-          },
-        ],
-      },
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('spin')).toHaveAttribute('data-spinning', 'false');
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Refresh latest calculated results' }));
-
-    await waitFor(() =>
-      expect(
-        screen.getByLabelText('Calculated result details').closest('[data-testid="tooltip"]'),
-      ).toHaveAttribute(
-        'data-title',
-        expect.stringContaining(
-          'source=latest_ready, snapshot=snapshot-merge, result=result-merge',
-        ),
-      ),
-    );
-    expect(mockCacheAndDecompressMethod).toHaveBeenCalledWith('list.json');
-    expect(
-      within(screen.getByTestId('pro-row-impact-1@2.0.0')).getByText('Method description'),
-    ).toBeInTheDocument();
-    expect(
-      within(screen.getByTestId('pro-row-impact-1@2.0.0')).getByText('2.0.0'),
-    ).toBeInTheDocument();
-    expect(
-      within(screen.getByTestId('pro-row-impact-1@2.0.0')).getByText('kg CO2 eq'),
-    ).toBeInTheDocument();
-    expect(
-      within(screen.getByTestId('pro-row-impact-1@2.0.0')).getByTestId('aligned-number'),
-    ).toHaveTextContent('42');
-    expect(screen.getAllByTestId(/^pro-row-/)).toHaveLength(1);
-  });
-
-  it('keeps base LCIA rows when solver payload values are not an array and uses row.key as the table row key', async () => {
-    mockGenProcessFromData.mockReturnValueOnce({
-      ...processDataSet,
-      LCIAResults: {
-        LCIAResult: [
-          {
-            key: 'base-key',
-            meanAmount: 9,
-            referenceToLCIAMethodDataSet: {},
-          },
-        ],
-      },
-    });
-    mockQueryLcaResults.mockResolvedValueOnce({
-      snapshot_id: 'snapshot-empty',
-      result_id: 'result-empty',
-      source: 'latest_ready',
-      meta: { computed_at: '2026-03-12T00:00:00Z' },
-      data: {
-        values: null,
-      },
-    });
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('spin')).toHaveAttribute('data-spinning', 'false');
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() => expect(screen.getByTestId('pro-row-base-key@')).toBeInTheDocument());
-    expect(
-      within(screen.getByTestId('pro-row-base-key@')).getByTestId('aligned-number'),
-    ).toHaveTextContent('9');
-  });
-
-  it('falls back to a generic solver error when queued snapshot metadata is incomplete', async () => {
-    const queuedError = {
-      code: 'snapshot_build_queued',
-      body: {
-        build_job_id: 123,
-        build_snapshot_id: null,
-      },
-    };
-    mockIsLcaFunctionInvokeError.mockImplementation(
-      (error: any) => error?.code === 'snapshot_build_queued',
-    );
-    mockQueryLcaResults.mockRejectedValueOnce(queuedError);
-
-    render(<ProcessView {...defaultProps} />);
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'LCIA Results' }));
-
-    await waitFor(() =>
-      expect(screen.getByText('Result query failed: {message}')).toBeInTheDocument(),
-    );
-    expect(
-      screen.queryByText('Snapshot is rebuilding (job {jobId}). Retrying automatically...'),
-    ).not.toBeInTheDocument();
   });
 
   it('supports the text button variant and closes the drawer through both close actions', async () => {

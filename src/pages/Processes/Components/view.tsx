@@ -10,8 +10,7 @@ import {
   ContentLanguageAwareTableParams,
   getContentLanguageAwareTableParams,
 } from '@/services/general/data';
-import { getUnitData, jsonToList } from '@/services/general/util';
-import type { LCIAResultTable } from '@/services/lciaMethods/data';
+import { getUnitData } from '@/services/general/util';
 import { getProcessDetail, getProcessExchange } from '@/services/processes/api';
 import {
   FormProcess,
@@ -40,7 +39,7 @@ import {
 import type { ButtonType } from 'antd/es/button';
 import type { FC, ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { FormattedMessage, useLocation } from 'umi';
+import { FormattedMessage } from 'umi';
 import ComplianceItemView from './Compliance/view';
 import ProcessExchangeView from './Exchange/view';
 import {
@@ -55,7 +54,6 @@ import ReviewItemView from './Review/view';
 import { getExchangeColumns, PROCESS_EXCHANGE_TABLE_SCROLL } from './Exchange/column';
 import {
   buildMergedLcaRows as buildMergedLciaRows,
-  getDefaultLcaDataScopeForPath,
   getLcaMethodMetaMap,
 } from './lcaAnalysisShared';
 import {
@@ -65,9 +63,7 @@ import {
   licenseTypeOptions,
   processtypeOfDataSetOptions,
 } from './optiondata';
-import PublishedResultsPanel from './publishedResultsPanel';
-import ProcessLciaResultsPanel from './processLciaResultsPanel';
-import { shouldUsePublishedLciaResults } from './publishedLciaResults';
+import FinalSourceResults from './finalResultsPanel';
 
 type Props = {
   id: string;
@@ -164,8 +160,6 @@ const ProcessView: FC<Props> = ({
   autoOpen = false,
   onDrawerClose,
 }) => {
-  const location = useLocation();
-  const defaultLcaDataScope = getDefaultLcaDataScopeForPath(location.pathname);
   const [drawerVisible, setDrawerVisible] = useState(false);
   // const [footerButtons, setFooterButtons] = useState<JSX.Element>();
   const [activeTabKey, setActiveTabKey] = useState<string>('processInformation');
@@ -182,14 +176,17 @@ const ProcessView: FC<Props> = ({
     initData.processInformation?.dataSetInformation?.classificationInformation?.[
       'common:classification'
     ];
-  const [lciaResultDataSource, setLciaResultDataSource] = useState<LCIAResultTable[]>([]);
+  const [loadedProcess, setLoadedProcess] = useState<{
+    id: string;
+    version: string;
+    stateCode?: number;
+  }>();
+  const showCalculationResults =
+    loadedProcess?.id === id &&
+    loadedProcess?.version === version &&
+    typeof loadedProcess.stateCode === 'number' &&
+    loadedProcess.stateCode >= 100;
   const tabList = [
-    {
-      key: 'publishedResults',
-      tab: (
-        <FormattedMessage id='pages.publishedResults.title' defaultMessage='Published results' />
-      ),
-    },
     {
       key: 'processInformation',
       tab: (
@@ -223,10 +220,19 @@ const ProcessView: FC<Props> = ({
         <FormattedMessage id='pages.process.view.exchanges' defaultMessage='Inputs and Outputs' />
       ),
     },
-    {
-      key: 'lciaResults',
-      tab: <FormattedMessage id='pages.process.view.lciaresults' defaultMessage='LCIA Results' />,
-    },
+    ...(showCalculationResults
+      ? [
+          {
+            key: 'calculationResults',
+            tab: (
+              <FormattedMessage
+                id='pages.process.view.calculationResults'
+                defaultMessage='Calculation results'
+              />
+            ),
+          },
+        ]
+      : []),
     {
       key: 'validation',
       tab: <FormattedMessage id='pages.process.validation' defaultMessage='Validation' />,
@@ -1862,17 +1868,9 @@ const ProcessView: FC<Props> = ({
         />
       </>
     ),
-    publishedResults: <PublishedResultsPanel id={id} version={version} lang={lang} />,
-    lciaResults: (
-      <ProcessLciaResultsPanel
-        baseCalculationEvidence={initData?.LCIAResults?.['common:other']}
-        baseRows={lciaResultDataSource}
-        enablePublishedPackageReader={shouldUsePublishedLciaResults(defaultLcaDataScope)}
-        lang={lang}
-        processId={id}
-        processVersion={version}
-      />
-    ),
+    calculationResults: showCalculationResults ? (
+      <FinalSourceResults key={`${id}@${version}`} id={id} version={version} />
+    ) : null,
     validation: (
       <ReviewItemView
         data={initData?.modellingAndValidation?.validation?.review ?? []}
@@ -1897,7 +1895,7 @@ const ProcessView: FC<Props> = ({
     setDrawerVisible(true);
     setActiveTabKey('processInformation');
     setSpinning(true);
-    setLciaResultDataSource([]);
+    setLoadedProcess(undefined);
     setDownloadableReviewReportKeys([]);
     getProcessDetail(id, version).then(async (result: ProcessDetailResponse) => {
       const formData = genProcessFromData(result.data?.json?.processDataSet ?? {});
@@ -1912,10 +1910,9 @@ const ProcessView: FC<Props> = ({
         ]);
         mergeCommentsToData(rejectedCommentsRes, formData);
       }
+      setLoadedProcess({ id, version, stateCode: result.data?.stateCode });
       setInitData({ ...formData, id: id });
       setExchangeDataSource([...(formData?.exchanges?.exchange ?? [])]);
-      const sourceData = jsonToList(formData?.LCIAResults?.LCIAResult) as LCIAResultTable[];
-      setLciaResultDataSource(sourceData);
       // if (dataSource === 'my') {
       //   setFooterButtons(
       //     <>
@@ -2039,6 +2036,7 @@ const ProcessView: FC<Props> = ({
             style={{ width: '100%' }}
             tabList={tabList}
             activeTabKey={activeTabKey}
+            styles={activeTabKey === 'calculationResults' ? { body: { paddingTop: 8 } } : undefined}
             onTabChange={onTabChange}
           >
             {contentList[activeTabKey]}

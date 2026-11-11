@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-10
-lastReviewedCommit: 2cd0c3256c7248c2fcc3fc1fc1775f04a7b9e129
-lastReviewedNote: 'Platform #1483 reviewed the locale bundle, Study component, browser and checked-push proof for the localized workbench labels.'
+lastReviewedAt: 2026-11-11
+lastReviewedCommit: a5d14e20a5bdb6fc037df2f16c3b15794a8d1979
+lastReviewedNote: 'Platform #1489 reviewed unified public Process results, compact controls and cursor pagination proof; existing delivery and full-coverage gates remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
