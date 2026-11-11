@@ -143,12 +143,16 @@ function ResultSession({
         items={[
           {
             key: 'lcia',
-            label: <FormattedMessage id='pages.publishedResults.lcia' defaultMessage='LCIA' />,
+            label: (
+              <FormattedMessage id='pages.publishedResults.lcia' defaultMessage='LCIA results' />
+            ),
             disabled: canRead?.lciaAvailable === false,
           },
           {
             key: 'lci',
-            label: <FormattedMessage id='pages.publishedResults.lci' defaultMessage='LCI' />,
+            label: (
+              <FormattedMessage id='pages.publishedResults.lci' defaultMessage='LCI results' />
+            ),
             disabled: canRead?.lciAvailable === false,
           },
         ]}

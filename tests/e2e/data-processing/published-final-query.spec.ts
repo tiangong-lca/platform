@@ -37,7 +37,7 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
     },
     { user, token },
   );
-  await installDatasetListFixture(page);
+  await installDatasetListFixture(page, { processStateCode: 100 });
   await page.route('**/auth/v1/user', (route) => route.fulfill({ json: user }));
   const requests: Record<string, any>[] = [];
   let first = true,
@@ -183,15 +183,33 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
   });
   await page.goto(`${app}/#/tgdata/processes`);
   await page.getByRole('button', { name: 'profile', exact: true }).first().click();
-  await page.getByRole('tab', { name: 'Published results', exact: true }).click();
+  await page.getByRole('tab', { name: 'Calculation results', exact: true }).click();
   await expect(page.getByText('Preparing published results. Please retry shortly.')).toBeVisible();
   await expect(page.getByText('Final climate', { exact: true })).toBeVisible();
   await expect(page.getByRole('cell', { name: '0', exact: true })).toBeVisible();
   await expect(
     page.getByText('-2 frozen kg · Processed product · 01.00.000', { exact: true }),
+  ).not.toBeVisible();
+  await page.getByRole('button', { name: 'Result information', exact: true }).hover();
+  await expect(
+    page.getByText('-2 frozen kg · Processed product · 01.00.000', { exact: true }),
   ).toBeVisible();
-  await page.getByRole('tab', { name: 'LCI', exact: true }).click();
+  await page.getByRole('tab', { name: /LCI results/ }).click();
   await expect(page.getByText('Processed water', { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(
+      'Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.',
+      { exact: true },
+    ),
+  ).not.toBeVisible();
+  await page.getByLabel('Inventory display information', { exact: true }).hover();
+  await expect(
+    page.getByText(
+      'Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.',
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await page.getByText('Processed water', { exact: true }).hover();
   await expect(page.getByRole('cell', { name: '-3.5', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Next page', exact: true }).click();
   await expect(page.getByText('Next processed flow', { exact: true })).toBeVisible();
@@ -212,12 +230,12 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
   await page.getByRole('combobox', { name: 'Select a published result' }).press('ArrowDown');
   await page.getByRole('combobox', { name: 'Select a published result' }).press('Enter');
   await expect(page.getByText('This result has no LCIA data.')).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'LCIA', exact: true })).toBeDisabled();
+  await expect(page.getByRole('tab', { name: 'LCIA results', exact: true })).toBeDisabled();
   await expect(page.getByRole('combobox', { name: 'Select a published result' })).toHaveAttribute(
     'aria-expanded',
     'false',
   );
-  await expect(page.getByRole('tab', { name: 'LCI', exact: true })).toHaveAttribute(
+  await expect(page.getByRole('tab', { name: /LCI results/ })).toHaveAttribute(
     'aria-selected',
     'true',
   );
@@ -237,7 +255,9 @@ test('original Process selects processed Results, reads pinned HDF5 pages and do
   await page.goto(
     `${app}/#/published-results?resultId=${id}&resultVersion=01.00.000&publicationId=${publicationId}`,
   );
+  await page.getByRole('button', { name: 'Result information', exact: true }).hover();
   await expect(page.getByText('Derived result', { exact: true })).toBeVisible();
+  await page.getByRole('tab', { name: /LCI results/ }).hover();
   await expect(page.getByText('Processed water', { exact: true })).toBeVisible();
   expect(requests.filter((r) => r.mode === 'source_results')).toHaveLength(sourceReads);
   expect(requests.some((r) => r.mode === 'query')).toBe(false);

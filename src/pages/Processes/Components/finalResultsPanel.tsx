@@ -9,10 +9,20 @@ import {
   type SourceFinalResults,
 } from '@/services/lcaReleases/finalResults';
 import {
+  DownloadOutlined,
+  InfoCircleOutlined,
+  LeftOutlined,
+  RightOutlined,
+  LinkOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
+import {
   Alert,
   Button,
   Descriptions,
   Input,
+  Popover,
+  Pagination,
   Select,
   Space,
   Spin,
@@ -77,7 +87,13 @@ export function FinalResultDetails({
   const [overview, setOverview] = useState<FinalResult>();
   const [response, setResponse] = useState<FinalResult>();
   const [kind, setKind] = useState<'lci' | 'lcia'>('lcia');
-  const [cursor, setCursor] = useState<string | null>(null);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageCursors, setPageCursors] = useState<(string | null)[]>([null]);
+  const cursor = pageCursors[pageIndex];
+  const resetPages = () => {
+    setPageIndex(0);
+    setPageCursors([null]);
+  };
   const [filter, setFilter] = useState('');
   const [status, setStatus] = useState<Status>('loading');
   const [retry, setRetry] = useState(0);
@@ -161,68 +177,172 @@ export function FinalResultDetails({
   };
   const unitTitle = (unit: NonNullable<typeof basis>['unit']) =>
     `${unit.flowPropertyId}@${unit.flowPropertyVersion} · ${unit.unitGroupId}@${unit.unitGroupVersion} · ${unit.internalId}`;
+  const infoLabel = t({ id: 'pages.publishedResults.info', defaultMessage: 'Result information' });
+  const refreshLabel = t({
+    id: 'pages.publishedResults.refreshSelection',
+    defaultMessage: 'Refresh results',
+  });
+  const linkLabel = t({
+    id: 'pages.publishedResults.openResult',
+    defaultMessage: 'Open result link',
+  });
+  const tidasLabel = t({
+    id: 'pages.publishedResults.downloadTidas',
+    defaultMessage: 'Download TIDAS 7z',
+  });
+  const ilcdLabel = t({
+    id: 'pages.publishedResults.downloadIlcd',
+    defaultMessage: 'Download ILCD 7z',
+  });
   return (
     <Space orientation='vertical' style={{ width: '100%' }}>
-      {overview && !['unavailable', 'changed', 'error'].includes(status) && (
-        <Descriptions
-          size='small'
-          column={1}
-          items={[
-            {
-              key: 'release',
-              label: t({
-                id: 'pages.publishedResults.release',
-                defaultMessage: 'Published release',
-              }),
-              children: overview.releaseVersion,
-            },
-            {
-              key: 'result',
-              label: t({
-                id: 'pages.publishedResults.resultIdentity',
-                defaultMessage: 'Result dataset',
-              }),
-              children: `${result.uuid} · ${result.version}`,
-            },
-            {
-              key: 'relation',
-              label: t({
-                id: 'pages.publishedResults.relation',
-                defaultMessage: 'Result relationship',
-              }),
-              children:
-                overview.data.result.relationKind === 'derived'
-                  ? t({ id: 'pages.publishedResults.derived', defaultMessage: 'Derived result' })
-                  : t({ id: 'pages.publishedResults.direct', defaultMessage: 'Direct result' }),
-            },
-            {
-              key: 'basis',
-              label: t({
-                id: 'pages.publishedResults.basis',
-                defaultMessage: 'Reference quantity',
-              }),
-              children: basis && (
-                <Tooltip title={unitTitle(basis.unit)}>
-                  {`${basis.value} ${basis.unit.name} · ${basis.flowName} · ${basis.flowVersion}`}
-                </Tooltip>
-              ),
-            },
-          ]}
-        />
-      )}
       <Tabs
+        tabBarExtraContent={
+          <Space size={4} wrap>
+            <Tooltip title={refreshLabel}>
+              <Button
+                type='text'
+                icon={<ReloadOutlined />}
+                aria-label={refreshLabel}
+                onClick={onRestart}
+              />
+            </Tooltip>
+            {ready && (
+              <>
+                <Tooltip title={tidasLabel}>
+                  <Button
+                    type='text'
+                    icon={<DownloadOutlined />}
+                    aria-label={tidasLabel}
+                    loading={downloadStatus === 'loading'}
+                    disabled={downloadStatus === 'loading'}
+                    onClick={() => void download('tidas')}
+                  />
+                </Tooltip>
+                <Tooltip title={ilcdLabel}>
+                  <Button
+                    type='text'
+                    icon={<DownloadOutlined />}
+                    aria-label={ilcdLabel}
+                    disabled={downloadStatus === 'loading'}
+                    onClick={() => void download('ilcd')}
+                  />
+                </Tooltip>
+                <Tooltip title={linkLabel}>
+                  <Button
+                    type='text'
+                    icon={<LinkOutlined />}
+                    aria-label={linkLabel}
+                    href={finalResultLink(result, publicationId)}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  />
+                </Tooltip>
+              </>
+            )}
+            {overview && !['unavailable', 'changed', 'error'].includes(status) && (
+              <Popover
+                trigger={['hover', 'focus']}
+                placement='bottomLeft'
+                title={infoLabel}
+                content={
+                  <div
+                    style={{ width: 480, maxWidth: 'calc(100vw - 64px)', overflowWrap: 'anywhere' }}
+                  >
+                    <Descriptions
+                      size='small'
+                      column={1}
+                      items={[
+                        {
+                          key: 'release',
+                          label: t({
+                            id: 'pages.publishedResults.release',
+                            defaultMessage: 'Published release',
+                          }),
+                          children: overview.releaseVersion,
+                        },
+                        {
+                          key: 'result',
+                          label: t({
+                            id: 'pages.publishedResults.resultIdentity',
+                            defaultMessage: 'Result dataset',
+                          }),
+                          children: `${result.uuid} · ${result.version}`,
+                        },
+                        {
+                          key: 'relation',
+                          label: t({
+                            id: 'pages.publishedResults.relation',
+                            defaultMessage: 'Result relationship',
+                          }),
+                          children:
+                            overview.data.result.relationKind === 'derived'
+                              ? t({
+                                  id: 'pages.publishedResults.derived',
+                                  defaultMessage: 'Derived result',
+                                })
+                              : t({
+                                  id: 'pages.publishedResults.direct',
+                                  defaultMessage: 'Direct result',
+                                }),
+                        },
+                        {
+                          key: 'basis',
+                          label: t({
+                            id: 'pages.publishedResults.basis',
+                            defaultMessage: 'Reference quantity',
+                          }),
+                          children: basis && (
+                            <Tooltip title={unitTitle(basis.unit)}>
+                              {`${basis.value} ${basis.unit.name} · ${basis.flowName} · ${basis.flowVersion}`}
+                            </Tooltip>
+                          ),
+                        },
+                      ]}
+                    />
+                  </div>
+                }
+              >
+                <Button type='text' icon={<InfoCircleOutlined />} aria-label={infoLabel} />
+              </Popover>
+            )}
+          </Space>
+        }
         activeKey={kind}
         onChange={(key) => {
           setKind(key as 'lci' | 'lcia');
-          setCursor(null);
+          resetPages();
         }}
         items={[
           {
             key: 'lcia',
-            label: t({ id: 'pages.publishedResults.lcia', defaultMessage: 'LCIA' }),
+            label: t({ id: 'pages.publishedResults.lcia', defaultMessage: 'LCIA results' }),
             disabled: canRead?.lciaAvailable === false,
           },
-          { key: 'lci', label: t({ id: 'pages.publishedResults.lci', defaultMessage: 'LCI' }) },
+          {
+            key: 'lci',
+            label: (
+              <Space size={6}>
+                {t({ id: 'pages.publishedResults.lci', defaultMessage: 'LCI results' })}
+                <Tooltip
+                  trigger={['hover', 'focus']}
+                  title={t({
+                    id: 'pages.publishedResults.nonzero',
+                    defaultMessage:
+                      'Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.',
+                  })}
+                >
+                  <InfoCircleOutlined
+                    tabIndex={0}
+                    aria-label={t({
+                      id: 'pages.publishedResults.inventoryHelp',
+                      defaultMessage: 'Inventory display information',
+                    })}
+                  />
+                </Tooltip>
+              </Space>
+            ),
+          },
         ]}
       />
       {canRead?.lciaAvailable === false && (
@@ -248,7 +368,7 @@ export function FinalResultDetails({
           })}
           onSearch={(value) => {
             setFilter(value);
-            setCursor(null);
+            resetPages();
           }}
         />
       )}
@@ -289,14 +409,6 @@ export function FinalResultDetails({
       )}
       {ready && 'items' in ready && (
         <>
-          <Alert
-            type='info'
-            title={t({
-              id: 'pages.publishedResults.nonzero',
-              defaultMessage:
-                'Zero-valued inventory entries are omitted; search and pagination select from nonzero entries.',
-            })}
-          />
           <Table
             size='small'
             pagination={false}
@@ -342,43 +454,49 @@ export function FinalResultDetails({
               },
             ]}
           />
-          <Space>
-            <Button disabled={!cursor} onClick={() => setCursor(null)}>
-              {t({ id: 'pages.publishedResults.first', defaultMessage: 'First page' })}
-            </Button>
-            <Button disabled={!ready.nextCursor} onClick={() => setCursor(ready.nextCursor)}>
-              {t({ id: 'pages.publishedResults.next', defaultMessage: 'Next page' })}
-            </Button>
-          </Space>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+            <Pagination
+              size='small'
+              hideOnSinglePage
+              current={pageIndex + 1}
+              pageSize={1}
+              // Only known cursor pages and the next page are navigable. The API's
+              // nonzeroCount is not a filtered total, so do not invent a last page.
+              total={Math.max(pageCursors.length, pageIndex + 1 + (ready.nextCursor ? 1 : 0))}
+              showSizeChanger={false}
+              showQuickJumper={false}
+              onChange={(page) => {
+                const nextIndex = page - 1;
+                if (nextIndex < pageCursors.length) setPageIndex(nextIndex);
+                else if (nextIndex === pageIndex + 1 && ready.nextCursor) {
+                  setPageCursors([...pageCursors, ready.nextCursor]);
+                  setPageIndex(nextIndex);
+                }
+              }}
+              itemRender={(_page, type, original) => {
+                if (type !== 'prev' && type !== 'next') return original;
+                const previous = type === 'prev';
+                return (
+                  <button
+                    type='button'
+                    className='ant-pagination-item-link'
+                    disabled={previous ? pageIndex === 0 : !ready.nextCursor}
+                    aria-label={
+                      previous
+                        ? t({
+                            id: 'pages.process.lca.hotspots.action.previous',
+                            defaultMessage: 'Previous page',
+                          })
+                        : t({ id: 'pages.publishedResults.next', defaultMessage: 'Next page' })
+                    }
+                  >
+                    {previous ? <LeftOutlined /> : <RightOutlined />}
+                  </button>
+                );
+              }}
+            />
+          </div>
         </>
-      )}
-      {ready && (
-        <Space wrap>
-          <Button
-            href={finalResultLink(result, publicationId)}
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            {t({ id: 'pages.publishedResults.openResult', defaultMessage: 'Open result link' })}
-          </Button>
-          <Button
-            aria-label={t({
-              id: 'pages.publishedResults.downloadTidas',
-              defaultMessage: 'Download TIDAS 7z',
-            })}
-            loading={downloadStatus === 'loading'}
-            disabled={downloadStatus === 'loading'}
-            onClick={() => void download('tidas')}
-          >
-            {t({
-              id: 'pages.publishedResults.downloadTidas',
-              defaultMessage: 'Download TIDAS 7z',
-            })}
-          </Button>
-          <Button disabled={downloadStatus === 'loading'} onClick={() => void download('ilcd')}>
-            {t({ id: 'pages.publishedResults.downloadIlcd', defaultMessage: 'Download ILCD 7z' })}
-          </Button>
-        </Space>
       )}
       {downloadStatus === 'unavailable' && (
         <Alert
@@ -410,7 +528,7 @@ export default function FinalSourceResults({
 }: {
   id: string;
   version: string;
-  legacy: (publicationId: string) => ReactNode;
+  legacy?: (publicationId: string) => ReactNode;
 }) {
   const { formatMessage: t } = useIntl();
   const [page, setPage] = useState<SourceFinalResults>();
@@ -461,42 +579,47 @@ export default function FinalSourceResults({
   }, [id, version, continuation, retry]);
   if (status !== 'ready') return <StatusMessage status={status} retry={restart} />;
   if (page?.publication?.format === 'legacy-four-zip.v1')
-    return <>{legacy(page.publication.publicationId)}</>;
+    return legacy ? (
+      <>{legacy(page.publication.publicationId)}</>
+    ) : (
+      <StatusMessage status='unavailable' retry={restart} />
+    );
   if (!page?.publication || !page.results.length)
     return <StatusMessage status='unavailable' retry={restart} />;
   const chosen = page.results.find((r) => `${r.uuid}@${r.version}` === selected);
   return (
     <Space orientation='vertical' style={{ width: '100%' }}>
-      <Space wrap style={{ width: '100%' }}>
-        <Select
-          aria-label={t({
-            id: 'pages.publishedResults.selectResult',
-            defaultMessage: 'Select a published result',
-          })}
-          value={selected}
-          style={{ minWidth: 300, maxWidth: '100%' }}
-          onChange={setSelected}
-          options={page.results.map((r) => ({
-            value: `${r.uuid}@${r.version}`,
-            label: `${r.uuid} · ${r.version}`,
-          }))}
-        />
-        {page.nextResultKey && (
-          <Button
-            onClick={() =>
-              setContinuation({
-                publicationId: page.publication!.publicationId,
-                afterKey: page.nextResultKey!,
-              })
-            }
-          >
-            {t({ id: 'pages.publishedResults.moreResults', defaultMessage: 'Load more results' })}
-          </Button>
-        )}
-        <Button onClick={restart}>
-          {t({ id: 'pages.publishedResults.refreshSelection', defaultMessage: 'Refresh results' })}
-        </Button>
-      </Space>
+      {(page.results.length > 1 || page.nextResultKey) && (
+        <Space wrap style={{ width: '100%' }}>
+          {(page.results.length > 1 || page.nextResultKey) && (
+            <Select
+              aria-label={t({
+                id: 'pages.publishedResults.selectResult',
+                defaultMessage: 'Select a published result',
+              })}
+              value={selected}
+              style={{ minWidth: 300, maxWidth: '100%' }}
+              onChange={setSelected}
+              options={page.results.map((r) => ({
+                value: `${r.uuid}@${r.version}`,
+                label: `${r.uuid} · ${r.version}`,
+              }))}
+            />
+          )}
+          {page.nextResultKey && (
+            <Button
+              onClick={() =>
+                setContinuation({
+                  publicationId: page.publication!.publicationId,
+                  afterKey: page.nextResultKey!,
+                })
+              }
+            >
+              {t({ id: 'pages.publishedResults.moreResults', defaultMessage: 'Load more results' })}
+            </Button>
+          )}
+        </Space>
+      )}
       {chosen && (
         <FinalResultDetails
           key={`${page.publication.publicationId}/${chosen.uuid}@${chosen.version}`}

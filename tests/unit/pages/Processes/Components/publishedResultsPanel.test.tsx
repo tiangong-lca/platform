@@ -147,7 +147,7 @@ it('pins a release, renders frozen signed values, switches to LCI, pages and res
   expect(screen.getByText(/Amount:-1e-20/)).toBeInTheDocument();
   expect(screen.getByText(/2 frozen kg/)).toBeInTheDocument();
   expect(screen.getByText('download:release')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'LCI' }));
+  fireEvent.click(screen.getByRole('button', { name: 'LCI results' }));
   await screen.findByText(/Frozen flow/);
   expect(screen.getByText(/Localized frozen flow/)).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
@@ -173,7 +173,7 @@ it('selects LCI when this completed artifact has no LCIA', async () => {
     .mockResolvedValue(lci());
   render(<PublishedResultsPanel {...props} />);
   await screen.findByText(/Frozen flow/);
-  expect(screen.getByRole('button', { name: 'LCIA' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'LCIA results' })).toBeDisabled();
 });
 it('shows denial/error separately and permits an explicit retry', async () => {
   mockQuery

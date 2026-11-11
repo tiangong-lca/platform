@@ -26,6 +26,12 @@ jest.mock('umi', () => ({
 }));
 jest.mock('antd', () => ({
   Tooltip: ({ children }: any) => <span>{children}</span>,
+  Popover: ({ children, content }: any) => (
+    <div>
+      {children}
+      {content}
+    </div>
+  ),
   Select: ({ options, value, onChange, ...props }: any) => (
     <select
       aria-label={props['aria-label']}
@@ -41,8 +47,8 @@ jest.mock('antd', () => ({
   ),
   Space: ({ children }: any) => <div>{children}</div>,
   Spin: () => <div>loading</div>,
-  Button: ({ children, onClick, disabled }: any) => (
-    <button type='button' onClick={onClick} disabled={disabled}>
+  Button: ({ children, onClick, disabled, 'aria-label': label }: any) => (
+    <button type='button' aria-label={label} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   ),
@@ -61,13 +67,24 @@ jest.mock('antd', () => ({
       ))}
     </div>
   ),
-  Tabs: ({ items, onChange }: any) => (
+  Tabs: ({ items, onChange, tabBarExtraContent }: any) => (
     <div>
+      {tabBarExtraContent}
       {items.map((x: any) => (
         <button type='button' key={x.key} disabled={x.disabled} onClick={() => onChange(x.key)}>
           {x.label}
         </button>
       ))}
+    </div>
+  ),
+  Pagination: ({ current, total, onChange }: any) => (
+    <div>
+      <button type='button' disabled={current === 1} onClick={() => onChange(current - 1)}>
+        Previous page
+      </button>
+      <button type='button' disabled={current === total} onClick={() => onChange(current + 1)}>
+        Next page
+      </button>
     </div>
   ),
   Input: {
@@ -206,7 +223,7 @@ it('selects exact direct Results and renders frozen units, zero LCIA, signed LCI
   expect(
     screen.getByText('-2 frozen kg · Product · 01.00.000', { exact: false }),
   ).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'LCI' }));
+  fireEvent.click(screen.getByRole('button', { name: /LCI results/ }));
   await screen.findByText('Flow:Frozen water');
   expect(screen.getByText('Amount:-1e-20')).toBeInTheDocument();
   expect(screen.getByText('Function type:General reminder flow')).toBeInTheDocument();
@@ -214,7 +231,7 @@ it('selects exact direct Results and renders frozen units, zero LCIA, signed LCI
   await screen.findByText('Flow:Second flow');
   expect(mockQuery.mock.calls.slice(-1)[0][3]).toEqual({ publicationId, runtimeRevision });
   expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled();
-  fireEvent.click(screen.getByRole('button', { name: 'First page' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Previous page' }));
   await screen.findByText('Flow:Frozen water');
   fireEvent.change(screen.getByRole('textbox', { name: 'search' }), { target: { value: 'water' } });
   await waitFor(() =>
@@ -316,7 +333,7 @@ it('missing LCIA selects LCI and displays absence; Derived display never loads s
   await screen.findByText('Flow:Input flow');
   expect(screen.getByText('Derived result', { exact: false })).toBeInTheDocument();
   expect(screen.getByText('This result has no LCIA data.')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'LCIA' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'LCIA results' })).toBeDisabled();
   expect(mockSource).not.toHaveBeenCalled();
 });
 it('cold cache retries are bounded and pin runtime across manual retry; unmount cancels timers', async () => {
@@ -348,7 +365,7 @@ it('reader changes or withdrawal hide old values and reselect rather than mixing
   );
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
   mockQuery.mockResolvedValueOnce({ status: 'changed' });
-  fireEvent.click(screen.getByRole('button', { name: 'LCI' }));
+  fireEvent.click(screen.getByRole('button', { name: /LCI results/ }));
   await screen.findByText('The publication or result reader changed. Reload the result selection.');
   expect(screen.queryByText('historical kg')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
