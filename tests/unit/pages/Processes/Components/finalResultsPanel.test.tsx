@@ -549,11 +549,11 @@ it('keeps one final Result compact and does not expose a legacy publication in t
   expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled();
   fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
   await screen.findByText('Flow:Second flow');
-  fireEvent.click(screen.getByRole('button', { name: '1', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: '1' }));
   await screen.findByText('Flow:Frozen water');
-  fireEvent.click(screen.getByRole('button', { name: '2', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: '2' }));
   await screen.findByText('Flow:Second flow');
-  expect(mockQuery.mock.calls.at(-1)[1].cursor).toBe('bound-cursor');
+  expect(mockQuery.mock.calls.slice(-1)[0][1].cursor).toBe('bound-cursor');
   view.unmount();
   mockSource.mockResolvedValue({
     status: 'ready',
