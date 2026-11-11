@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-10
-lastReviewedCommit: 2cd0c3256c7248c2fcc3fc1fc1775f04a7b9e129
-lastReviewedNote: 'Platform #1483 reviewed current proof coverage for the localized workbench and exact-link regression tests.'
+lastReviewedAt: 2026-11-11
+lastReviewedCommit: 7775c8cbd118d3d7c8021fdf01b5857b3190e90d
+lastReviewedNote: 'Platform #1489 reviewed unified public Process results, compact controls and cursor pagination proof; existing delivery and full-coverage gates remain unchanged.'
 ---
 
 # Testing Execution State

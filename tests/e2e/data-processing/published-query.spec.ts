@@ -3,7 +3,7 @@ import { installDatasetListFixture } from '../dataset-lists/fixture';
 const app = process.env.RESULT_PREVIEW_BASE_URL ?? 'http://127.0.0.1:8012';
 const id = '11111111-1111-4111-8111-111111111111';
 const publicationId = '22222222-2222-4222-8222-222222222222';
-test('original process browses frozen HDF5 result pages without downloading matrices', async ({
+test('Process calculation results never falls back to a legacy publication', async ({
   page,
   context,
 }, testInfo) => {
@@ -34,7 +34,7 @@ test('original process browses frozen HDF5 result pages without downloading matr
     },
     { user, token },
   );
-  await installDatasetListFixture(page);
+  await installDatasetListFixture(page, { processStateCode: 100 });
   await page.route('**/auth/v1/user', (route) => route.fulfill({ json: user }));
   const requests: Record<string, any>[] = [];
   await page.route('**/functions/v1/lca_release_results**', async (route) => {
@@ -131,19 +131,10 @@ test('original process browses frozen HDF5 result pages without downloading matr
   });
   await page.goto(`${app}/#/tgdata/processes`);
   await page.getByRole('button', { name: 'profile', exact: true }).first().click();
-  await page.getByRole('tab', { name: 'Published results', exact: true }).click();
-  await expect(page.getByText('Preparing published results. Please retry shortly.')).toBeVisible();
-  await expect(page.getByText('Frozen climate', { exact: true })).toBeVisible();
-  await expect(page.getByText('-1e-20', { exact: true })).toBeVisible();
-  await expect(page.getByText('historical kg', { exact: true })).toBeVisible();
-  await page.getByRole('tab', { name: 'LCI', exact: true }).click();
-  await expect(page.getByText('Frozen water', { exact: true })).toBeVisible();
-  await page.getByRole('button', { name: 'Next page', exact: true }).click();
-  await expect(page.getByText('Second flow', { exact: true })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Next page', exact: true })).toBeDisabled();
-  expect(
-    requests.filter((r) => r.mode === 'query').every((r) => r.processVersion === '01.00.000'),
-  ).toBe(true);
-  expect(requests.some((r) => r.query?.cursor === 'bound-cursor')).toBe(true);
-  await page.screenshot({ path: testInfo.outputPath('published-lci.png'), fullPage: true });
+  await page.getByRole('tab', { name: 'Calculation results', exact: true }).click();
+  await expect(
+    page.getByText('No published results are available for this exact version.'),
+  ).toBeVisible();
+  expect(requests.some((r) => r.mode === 'query')).toBe(false);
+  await page.screenshot({ path: testInfo.outputPath('legacy-unavailable.png'), fullPage: true });
 });

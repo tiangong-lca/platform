@@ -1,6 +1,6 @@
 // @ts-nocheck
 import ProcessLciaResultsPanel from '@/pages/Processes/Components/processLciaResultsPanel';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockGetDataSource = jest.fn();
 const mockGetLangText = jest.fn();
@@ -814,5 +814,91 @@ describe('ProcessLciaResultsPanel', () => {
 
     expect(mockGetReferenceQuantityFromMethod).toHaveBeenCalledTimes(1);
     expect(mockQueryLcaResults).not.toHaveBeenCalled();
+  });
+  it('coalesces refresh while loading and keeps base rows when a refreshed solver payload has no values', async () => {
+    let resolve;
+    mockQueryLcaResults.mockReturnValueOnce(
+      new Promise((done) => {
+        resolve = done;
+      }),
+    );
+    render(
+      <ProcessLciaResultsPanel
+        baseRows={[{ key: 'base-only', meanAmount: 9, referenceToLCIAMethodDataSet: {} }]}
+        lang='en'
+        processId='process-1'
+      />,
+    );
+    await waitFor(() => expect(mockQueryLcaResults).toHaveBeenCalledTimes(1));
+    fireEvent.click(screen.getByText('Refresh latest calculated results'));
+    expect(mockQueryLcaResults).toHaveBeenCalledTimes(1);
+    await act(async () =>
+      resolve({
+        snapshot_id: 's',
+        result_id: 'r',
+        source: 'latest_ready',
+        meta: {},
+        data: { values: [{}, { impact_id: 'new-impact', impact_index: 1 }] },
+      }),
+    );
+    await screen.findByLabelText('Calculated result details');
+    mockQueryLcaResults.mockResolvedValueOnce({
+      snapshot_id: 's2',
+      result_id: 'r2',
+      source: 'latest_ready',
+      meta: {},
+      data: { values: null },
+    });
+    fireEvent.click(screen.getByText('Refresh latest calculated results'));
+    await waitFor(() => expect(mockQueryLcaResults).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(screen.getByTestId('pro-row-base-only@')).toBeInTheDocument());
+  });
+
+  it('retries a queued snapshot and retains fallback rows when its identifiers are incomplete', async () => {
+    jest.useFakeTimers();
+    mockIsLcaFunctionInvokeError.mockImplementation(
+      (error) => error?.code === 'snapshot_build_queued',
+    );
+    mockQueryLcaResults.mockRejectedValueOnce({
+      code: 'snapshot_build_queued',
+      body: { build_job_id: ' job ', build_snapshot_id: ' snapshot ' },
+    });
+    render(<ProcessLciaResultsPanel baseRows={[]} lang='en' processId='process-1' />);
+    await screen.findByText('Snapshot is rebuilding (job {jobId}). Retrying automatically...');
+    await act(async () => {
+      jest.advanceTimersByTime(4000);
+    });
+    await screen.findByLabelText('Calculated result details');
+    mockQueryLcaResults.mockRejectedValueOnce({
+      code: 'snapshot_build_queued',
+      body: { build_job_id: 3, build_snapshot_id: null },
+    });
+    fireEvent.click(screen.getByText('Refresh latest calculated results'));
+    await screen.findByText('Result query failed: {message}');
+    jest.useRealTimers();
+  });
+  it('defers a manual refresh until base-row enrichment is ready and sends the explicit scope', async () => {
+    let resolve;
+    mockGetReferenceQuantityFromMethod.mockReturnValueOnce(
+      new Promise((done) => {
+        resolve = done;
+      }),
+    );
+    render(
+      <ProcessLciaResultsPanel
+        baseRows={[]}
+        lang='en'
+        processId='process-1'
+        lcaDataScope='current_user'
+      />,
+    );
+    fireEvent.click(screen.getByText('Refresh latest calculated results'));
+    expect(mockQueryLcaResults).not.toHaveBeenCalled();
+    await act(async () => resolve(undefined));
+    await waitFor(() =>
+      expect(mockQueryLcaResults).toHaveBeenCalledWith(
+        expect.objectContaining({ data_scope: 'current_user' }),
+      ),
+    );
   });
 });

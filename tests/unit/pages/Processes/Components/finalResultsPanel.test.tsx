@@ -1,5 +1,7 @@
 import PublishedResultsPanel from '@/pages/Processes/Components/publishedResultsPanel';
-import { FinalResultDetails } from '@/pages/Processes/Components/finalResultsPanel';
+import FinalSourceResults, {
+  FinalResultDetails,
+} from '@/pages/Processes/Components/finalResultsPanel';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 const mockSource = jest.fn(),
   mockQuery = jest.fn(),
@@ -26,6 +28,12 @@ jest.mock('umi', () => ({
 }));
 jest.mock('antd', () => ({
   Tooltip: ({ children }: any) => <span>{children}</span>,
+  Popover: ({ children, content }: any) => (
+    <div>
+      {children}
+      {content}
+    </div>
+  ),
   Select: ({ options, value, onChange, ...props }: any) => (
     <select
       aria-label={props['aria-label']}
@@ -41,8 +49,8 @@ jest.mock('antd', () => ({
   ),
   Space: ({ children }: any) => <div>{children}</div>,
   Spin: () => <div>loading</div>,
-  Button: ({ children, onClick, disabled }: any) => (
-    <button type='button' onClick={onClick} disabled={disabled}>
+  Button: ({ children, onClick, disabled, 'aria-label': label }: any) => (
+    <button type='button' aria-label={label} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   ),
@@ -61,8 +69,9 @@ jest.mock('antd', () => ({
       ))}
     </div>
   ),
-  Tabs: ({ items, onChange }: any) => (
+  Tabs: ({ items, onChange, tabBarExtraContent }: any) => (
     <div>
+      {tabBarExtraContent}
       {items.map((x: any) => (
         <button type='button' key={x.key} disabled={x.disabled} onClick={() => onChange(x.key)}>
           {x.label}
@@ -70,6 +79,22 @@ jest.mock('antd', () => ({
       ))}
     </div>
   ),
+  Pagination: ({ current, total, onChange, itemRender, hideOnSinglePage }: any) =>
+    hideOnSinglePage && total === 1 ? null : (
+      <nav aria-label='Inventory pages'>
+        <span onClick={() => current > 1 && onChange(current - 1)}>
+          {itemRender(current - 1, 'prev', null)}
+        </span>
+        {Array.from({ length: total }, (_, index) => (
+          <span key={index} onClick={() => onChange(index + 1)}>
+            {itemRender(index + 1, 'page', <button type='button'>{index + 1}</button>)}
+          </span>
+        ))}
+        <span onClick={() => current < total && onChange(current + 1)}>
+          {itemRender(current + 1, 'next', null)}
+        </span>
+      </nav>
+    ),
   Input: {
     Search: ({ onSearch }: any) => (
       <input aria-label='search' onChange={(event) => onSearch(event.target.value)} />
@@ -206,7 +231,7 @@ it('selects exact direct Results and renders frozen units, zero LCIA, signed LCI
   expect(
     screen.getByText('-2 frozen kg · Product · 01.00.000', { exact: false }),
   ).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'LCI' }));
+  fireEvent.click(screen.getByRole('button', { name: /LCI results/ }));
   await screen.findByText('Flow:Frozen water');
   expect(screen.getByText('Amount:-1e-20')).toBeInTheDocument();
   expect(screen.getByText('Function type:General reminder flow')).toBeInTheDocument();
@@ -214,7 +239,7 @@ it('selects exact direct Results and renders frozen units, zero LCIA, signed LCI
   await screen.findByText('Flow:Second flow');
   expect(mockQuery.mock.calls.slice(-1)[0][3]).toEqual({ publicationId, runtimeRevision });
   expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled();
-  fireEvent.click(screen.getByRole('button', { name: 'First page' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Previous page' }));
   await screen.findByText('Flow:Frozen water');
   fireEvent.change(screen.getByRole('textbox', { name: 'search' }), { target: { value: 'water' } });
   await waitFor(() =>
@@ -316,7 +341,7 @@ it('missing LCIA selects LCI and displays absence; Derived display never loads s
   await screen.findByText('Flow:Input flow');
   expect(screen.getByText('Derived result', { exact: false })).toBeInTheDocument();
   expect(screen.getByText('This result has no LCIA data.')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'LCIA' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'LCIA results' })).toBeDisabled();
   expect(mockSource).not.toHaveBeenCalled();
 });
 it('cold cache retries are bounded and pin runtime across manual retry; unmount cancels timers', async () => {
@@ -348,7 +373,7 @@ it('reader changes or withdrawal hide old values and reselect rather than mixing
   );
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
   mockQuery.mockResolvedValueOnce({ status: 'changed' });
-  fireEvent.click(screen.getByRole('button', { name: 'LCI' }));
+  fireEvent.click(screen.getByRole('button', { name: /LCI results/ }));
   await screen.findByText('The publication or result reader changed. Reload the result selection.');
   expect(screen.queryByText('historical kg')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
@@ -513,4 +538,28 @@ it('late source and download failures after closing are ignored', async () => {
   expect(
     screen.queryByText('The download link could not be refreshed. Please retry.'),
   ).not.toBeInTheDocument();
+});
+
+it('keeps one final Result compact and does not expose a legacy publication in the Process entry', async () => {
+  const view = render(<FinalSourceResults id={id} version={props.version} />);
+  await screen.findByText(`Frozen climate ${id}`, { exact: false });
+  expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /LCI results/ }));
+  await screen.findByText('Flow:Frozen water');
+  expect(screen.getByRole('button', { name: 'Previous page' })).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+  await screen.findByText('Flow:Second flow');
+  fireEvent.click(screen.getByRole('button', { name: '1' }));
+  await screen.findByText('Flow:Frozen water');
+  fireEvent.click(screen.getByRole('button', { name: '2' }));
+  await screen.findByText('Flow:Second flow');
+  expect(mockQuery.mock.calls.slice(-1)[0][1].cursor).toBe('bound-cursor');
+  view.unmount();
+  mockSource.mockResolvedValue({
+    status: 'ready',
+    page: { ...page, publication: { ...page.publication, format: 'legacy-four-zip.v1' } },
+  });
+  render(<FinalSourceResults id={id} version={props.version} />);
+  await screen.findByText('No published results are available for this exact version.');
+  expect(mockLegacy).not.toHaveBeenCalled();
 });

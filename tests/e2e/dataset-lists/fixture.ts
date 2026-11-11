@@ -136,6 +136,7 @@ export type QueryObservation = {
 type DatasetListFixtureOptions = {
   /** Visible evidence that a response belongs to the applied query. */
   labelSearchResults?: boolean;
+  processStateCode?: number;
 };
 export async function installDatasetListFixture(
   page: Page,
@@ -212,6 +213,9 @@ export async function installDatasetListFixture(
         const metadata = numbered.json[dataRoots[kind]][infoNames[kind]].dataSetInformation;
         return {
           ...numbered,
+          ...(kind === 'process' && options.processStateCode !== undefined
+            ? { state_code: options.processStateCode }
+            : {}),
           id: reference.id,
           version: reference.version,
           ...(kind === 'lifecyclemodel'
