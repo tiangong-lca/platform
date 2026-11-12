@@ -1,4 +1,5 @@
 import {
+  getLifeCycleModelSdkIssueTabName,
   lifeCycleModelSdkValidationTestUtils,
   normalizeLifeCycleModelProcessInstanceSdkValidationDetails,
   normalizeLifeCycleModelSdkValidationDetails,
@@ -6,6 +7,37 @@ import {
 import { LOCALE_CAPABILITY_MATRIX } from '@/services/general/localeCapabilities';
 
 describe('LifeCycleModels sdkValidation', () => {
+  it('keeps ordinary metadata and unknown paths separate from reviewer tabs', () => {
+    expect(getLifeCycleModelSdkIssueTabName()).toBeUndefined();
+    expect(getLifeCycleModelSdkIssueTabName([0])).toBeUndefined();
+    expect(
+      getLifeCycleModelSdkIssueTabName(['lifeCycleModelDataSet', 'administrativeInformation']),
+    ).toBe('administrativeInformation');
+    expect(getLifeCycleModelSdkIssueTabName(['modellingAndValidation'])).toBe(
+      'modellingAndValidation',
+    );
+    expect(getLifeCycleModelSdkIssueTabName(['other', 'complianceDeclarations'])).toBe('other');
+  });
+  it.each([
+    ['validation', [], 'validation'],
+    ['validation', ['review', 0, '@type'], 'validation'],
+    ['complianceDeclarations', [], 'complianceDeclarations'],
+    ['complianceDeclarations', [0, 'compliance', 0], 'complianceDeclarations'],
+    ['dataSourcesTreatmentEtc', ['useAdviceForDataSet'], 'modellingAndValidation'],
+  ])('maps %s SDK errors to their actual form tab', (section, suffix, tabName) => {
+    const details = normalizeLifeCycleModelSdkValidationDetails(
+      [
+        {
+          code: 'required_missing',
+          path: ['lifeCycleModelDataSet', 'modellingAndValidation', section, ...suffix],
+        },
+      ],
+      { lifeCycleModelDataSet: {} },
+    );
+    expect(details).toHaveLength(1);
+    expect(details[0].tabName).toBe(tabName);
+  });
+
   const {
     getProcessInstanceDisplayLabel,
     toLocaleLang,

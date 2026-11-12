@@ -815,7 +815,11 @@ const normalizeSdkIssuePathSegments = (path: PropertyKey[] | string | undefined)
 const isValidationOrComplianceSdkIssue = (issue: SdkValidationIssue): boolean => {
   return normalizeSdkIssuePathSegments(issue?.path as PropertyKey[] | string | undefined).some(
     (segment) => {
-      return segment === 'validation' || segment === 'compliance';
+      // The SDK can report a missing/empty declaration on its container, before
+      // descending into compliance. Both paths belong to reviewer metadata.
+      return (
+        segment === 'validation' || segment === 'compliancedeclarations' || segment === 'compliance'
+      );
     },
   );
 };

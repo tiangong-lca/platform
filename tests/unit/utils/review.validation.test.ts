@@ -14,6 +14,7 @@ import {
   validateDatasetWithSdk,
 } from '@/pages/Utils/review';
 import { getAppOrigin } from '@/utils/appUrl';
+import modelFixture from '../../data-workflows/fixtures/data/lifeCycleModels/002_check_data_success.json';
 
 const mockCreateContact = jest.fn();
 const mockCreateFlow = jest.fn();
@@ -986,6 +987,87 @@ describe('review helper coverage', () => {
       issues: [],
     });
   });
+
+  it.each([undefined, {}, [], [{}]])(
+    'accepts author-complete lifecycle models with empty reviewer metadata through the installed SDK: %j',
+    (complianceDeclarations) => {
+      const installedSdk = jest.requireActual(
+        `${process.cwd()}/node_modules/@tiangong-lca/tidas-sdk/dist/core/index.js`,
+      );
+      mockCreateLifeCycleModel.mockImplementation(installedSdk.createLifeCycleModel);
+      const input = JSON.parse(JSON.stringify(modelFixture.payload.parent.jsonOrdered));
+      const information = input.lifeCycleModelDataSet.lifeCycleModelInformation;
+      information.dataSetInformation['common:UUID'] = '11111111-1111-4111-8111-111111111111';
+      information.quantitativeReference.referenceToReferenceProcess = 0;
+      information.technology.processes.processInstance.referenceToProcess = {
+        ...information.technology.processes.processInstance.referenceToProcess,
+        '@refObjectId': '22222222-2222-4222-8222-222222222222',
+        '@version': '01.00.000',
+      };
+      input.lifeCycleModelDataSet.modellingAndValidation = { complianceDeclarations };
+      const original = JSON.stringify(input);
+
+      // Bind the regression to the actual SDK parent-path error, outside the default SDK mapper.
+      const raw = installedSdk.createLifeCycleModel(JSON.parse(original)).validateEnhanced();
+      expect(raw.validationIssues).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            path: ['lifeCycleModelDataSet', 'modellingAndValidation', 'complianceDeclarations'],
+          }),
+        ]),
+      );
+      expect(validateDatasetWithSdk('lifeCycleModel data set', input)).toEqual({
+        success: true,
+        issues: [],
+      });
+      expect(JSON.stringify(input)).toBe(original);
+
+      delete information.dataSetInformation.name.baseName;
+      expect(validateDatasetWithSdk('lifeCycleModel data set', input)).toEqual({
+        success: false,
+        issues: expect.arrayContaining([
+          expect.objectContaining({
+            path: [
+              'lifeCycleModelDataSet',
+              'lifeCycleModelInformation',
+              'dataSetInformation',
+              'name',
+              'baseName',
+            ],
+          }),
+        ]),
+      });
+    },
+  );
+
+  it.each(['process', 'lifeCycleModel'])(
+    'filters %s compliance parent and array errors without suppressing other modelling errors',
+    (kind) => {
+      const factory = kind === 'process' ? mockCreateProcess : mockCreateLifeCycleModel;
+      const root = `${kind}DataSet`;
+      factory.mockImplementation(
+        makeSdkFactory({
+          success: false,
+          error: {
+            issues: [
+              { path: [root, 'modellingAndValidation', 'complianceDeclarations'] },
+              { path: [root, 'modellingAndValidation', 'complianceDeclarations', 0] },
+              { path: `${root}.modellingAndValidation.complianceDeclarations[0]` },
+              { path: [root, 'modellingAndValidation', 'dataSourcesTreatmentEtc'] },
+            ],
+          },
+        }),
+      );
+      expect(validateDatasetWithSdk(`${kind} data set`, {})).toEqual({
+        success: false,
+        issues: [
+          expect.objectContaining({
+            path: [root, 'modellingAndValidation', 'dataSourcesTreatmentEtc'],
+          }),
+        ],
+      });
+    },
+  );
 
   it('keeps process/model sdk errors for compliance child fields when the compliance field itself is not in the path', () => {
     mockCreateProcess.mockImplementation(
