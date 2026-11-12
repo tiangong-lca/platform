@@ -394,3 +394,15 @@ describe('ImportTidasPackage Component', () => {
     expect(mockMessage.success).toHaveBeenCalledTimes(1);
   });
 });
+
+it('submits an embedded import without opening a modal', async () => {
+  render(<ImportTidasPackage embedded />);
+  expect(screen.queryByTestId('import-modal')).not.toBeInTheDocument();
+  const button = screen.getByRole('button', { name: 'Import' });
+  expect(button).toBeDisabled();
+  fireEvent.click(screen.getByTestId(PICK_FILE_TEST_ID));
+  fireEvent.click(button);
+  await waitFor(() =>
+    expect(submitTidasPackageImportTask).toHaveBeenCalledWith(expect.any(File), undefined),
+  );
+});

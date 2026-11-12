@@ -461,7 +461,7 @@
       "schemaVersion": "tiangong.i18n-semantic-e2e-evidence.v2",
       "schemaPath": "docs/plans/i18n/semantic-e2e-evidence.schema.json",
       "evidencePath": ".local/e2e-release/semantic-e2e-evidence.json",
-      "requiredAssertionCount": 64,
+      "requiredAssertionCount": 65,
       "requiredLocales": ["zh-CN", "en-US", "de-DE", "fr-FR"],
       "requiredBrowsers": ["chromium", "firefox", "webkit"],
       "browserCoverage": {
@@ -1886,6 +1886,26 @@
         "kind": "locale-messages",
         "messageIds": ["pages.study.invalidLink"]
       }
+    },
+    "rv.data-transfer.import-export": {
+      "kind": "localized-view",
+      "session": "authenticated",
+      "navigate": {
+        "hashPath": "/data-transfer",
+        "hashQuery": {}
+      },
+      "expected": {
+        "hashPath": "/data-transfer",
+        "hashQuery": {}
+      },
+      "visible": {
+        "kind": "locale-messages",
+        "messageIds": [
+          "component.dataTransfer.title",
+          "component.dataTransfer.import",
+          "component.dataTransfer.export"
+        ]
+      }
     }
   },
   "routeFamilies": [
@@ -2887,6 +2907,55 @@
         ],
         "plannedBrowserAssertions": [
           "standard authenticated actor receives the existing role-denied boundary"
+        ]
+      },
+      "unownedStaticContent": 0,
+      "blockedContext": 0
+    },
+    {
+      "id": "data-transfer",
+      "routes": ["/data-transfer"],
+      "executableAssertionIds": {
+        "/data-transfer": "rv.data-transfer.import-export"
+      },
+      "viewState": "import-export",
+      "pageOwnedMessageIds": ["component.dataTransfer.title"],
+      "trigger": "Open the account-menu data-transfer page and switch import/export tabs; inspect current and historical result database versions.",
+      "component": "src/pages/DataTransfer/index.tsx",
+      "accessContext": "authenticated-session-required",
+      "copySources": {
+        "sourcePaths": [
+          "config/routes.ts",
+          "src/pages/DataTransfer/index.tsx",
+          "src/pages/DataTransfer/PublicationHistory.tsx",
+          "src/components/ImportTidasPackage/index.tsx"
+        ],
+        "localeMessageIds": [],
+        "localeMessageIdPrefixes": ["component.dataTransfer."],
+        "declaredFallbacks": []
+      },
+      "visibleStates": [
+        "loading",
+        "ready",
+        "empty",
+        "error",
+        "retry",
+        "history-expanded",
+        "download-pending",
+        "import",
+        "export"
+      ],
+      "targetCoverage": {
+        "localeScope": "all-registry-locales",
+        "ownership": "shared locale catalog",
+        "structureAudit": "Import/export controls, current and historical versions, permission-based public export visibility and localized status messages.",
+        "missingContent": 0
+      },
+      "proof": {
+        "requiredEvidenceScope": "internal-localization",
+        "focusedTests": ["tests/unit/pages/DataTransfer/DataTransfer.test.tsx"],
+        "plannedBrowserAssertions": [
+          "Localized import/export tabs and history rows; account-menu navigation; hidden public export for ordinary actors."
         ]
       },
       "unownedStaticContent": 0,

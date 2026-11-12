@@ -128,9 +128,10 @@ it('round-trips a synthetic current report through producer receipt, private pro
   const written = JSON.parse(fs.readFileSync(proof, 'utf8'));
   expect(written.assertionBrowsers['rv.login.password-forgot']).toEqual(['chromium']);
   expect(written.assertionBrowsers['rv.login.password-reset']).toEqual(['chromium']);
-  expect(written.assertionIds).toHaveLength(64);
+  expect(written.assertionIds).toHaveLength(65);
   expect(written.assertionIds).toEqual(
     expect.arrayContaining([
+      'rv.data-transfer.import-export',
       'rv.studies.localized',
       'rv.study-report.localized',
       'rv.study-share.localized',

@@ -1,0 +1,110 @@
+.history {
+  margin-top: 20px;
+  border-top: 1px solid #8882;
+
+  .historyHeader {
+    padding: 14px 0 !important;
+    align-items: center !important;
+    border-radius: 0 !important;
+    transition: color 160ms;
+
+    &:hover {
+      color: var(--ant-color-primary, #5b2b73);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ant-color-primary, #5b2b73);
+      outline-offset: 3px;
+      border-radius: 4px !important;
+    }
+  }
+
+  .historyBody {
+    padding: 0 !important;
+  }
+}
+
+.historyLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+
+  > :global(.anticon) {
+    opacity: 0.55;
+    font-size: 14px;
+  }
+}
+
+.historyChevron {
+  font-size: 10px;
+  opacity: 0.55;
+}
+
+.historyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 58px;
+  padding: 12px;
+  border-top: 1px solid #8881;
+}
+
+.historyIdentity {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  font-variant-numeric: tabular-nums;
+
+  > :last-child {
+    font-size: 12px;
+  }
+}
+
+.archiveAction {
+  font-size: 12px;
+}
+
+@media (max-width: 575px) {
+  .historyRow {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .historyIdentity {
+    gap: 4px 12px;
+  }
+}
+
+.currentRow {
+  padding: 12px;
+  border: 1px solid #9254b022;
+  border-radius: 6px;
+  background: #9254b00b;
+
+  .archiveAction {
+    color: var(--ant-color-primary, #722f8a);
+  }
+}
+
+.currentIdentity {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.currentBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #9254b014;
+  color: var(--ant-color-primary, #722f8a);
+  font-size: 11px;
+  line-height: 18px;
+}

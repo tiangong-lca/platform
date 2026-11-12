@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-11
-lastReviewedCommit: a5d14e20a5bdb6fc037df2f16c3b15794a8d1979
-lastReviewedNote: 'Platform #1489 reviewed unified public Process results, compact controls and cursor pagination proof; existing delivery and full-coverage gates remain unchanged.'
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
+lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
 ---
 
 # Testing Execution State

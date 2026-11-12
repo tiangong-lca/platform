@@ -3,6 +3,7 @@ import {
   LogoutOutlined,
   SettingOutlined,
   TeamOutlined,
+  SwapOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { history, useIntl, useLocation, useModel } from '@umijs/max';
@@ -115,6 +116,10 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ children }) =
           setInitialState((s) => ({ ...s, currentUser: undefined }));
         });
         loginOut();
+        return;
+      }
+      if (key === 'data-transfer') {
+        history.push('/data-transfer');
         return;
       }
       if (key === 'system') {
@@ -264,6 +269,11 @@ export const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ children }) =
       key: 'team',
       icon: <TeamOutlined />,
       label: <FormattedMessage id='menu.account.team' defaultMessage='My Team' />,
+    },
+    {
+      key: 'data-transfer',
+      icon: <SwapOutlined />,
+      label: <FormattedMessage id='menu.dataTransfer' defaultMessage='Import and export' />,
     },
     ...(canViewSystemManagement
       ? [

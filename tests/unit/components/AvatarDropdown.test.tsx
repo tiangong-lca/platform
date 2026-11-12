@@ -301,6 +301,8 @@ describe('AvatarDropdown', () => {
 
     await user.click(screen.getByRole('button', { name: 'Account Profile' }));
     expect(mockHistoryPush).toHaveBeenCalledWith('/account');
+    await user.click(screen.getByRole('button', { name: 'Import and export' }));
+    expect(mockHistoryPush).toHaveBeenCalledWith('/data-transfer');
 
     mockHistoryPush.mockClear();
 

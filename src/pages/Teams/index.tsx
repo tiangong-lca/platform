@@ -1,3 +1,4 @@
+import accountPageStyles from '@/components/AccountPage/index.less';
 import LangTextItemForm from '@/components/LangTextItem/form';
 import { useAntdAppApi } from '@/contexts/AntdAppContext';
 import RequiredMark from '@/components/RequiredMark';
@@ -1059,7 +1060,10 @@ const Team = () => {
   }
 
   return (
-    <PageContainer title={<FormattedMessage id='menu.account.team' defaultMessage='My Team' />}>
+    <PageContainer
+      className={accountPageStyles.page}
+      title={<FormattedMessage id='menu.account.team' defaultMessage='My Team' />}
+    >
       <Tabs
         activeKey={activeTabKey}
         className='team-page-tabs'

@@ -27,9 +27,9 @@ checkPaths:
   - src/services/processes/api.ts
   - .github/workflows/ci.yml
   - .github/workflows/build.yml
-lastReviewedAt: '2026-11-04'
-lastReviewedCommit: '1eec63a7f137e535c86fda6d21ccb629488bc9fc'
-lastReviewedNote: 'Platform #1450: reviewed final Result 7z download DTO and localized controls; publication/query pins and existing validation ownership remain unchanged.'
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
+lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
 ---
 
 # LCIA Method Bundle and Calculation Evidence Contract
