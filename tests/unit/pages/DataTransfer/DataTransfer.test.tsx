@@ -1,3 +1,4 @@
+import { Grid } from 'antd';
 import DataTransfer from '@/pages/DataTransfer';
 import { act, fireEvent, renderWithProviders, screen, waitFor } from '../../../helpers/testUtils';
 const mockCatalog = jest.fn();
@@ -251,4 +252,29 @@ it('does not start a stale download when signing completes after unmount', async
   expect(mockDownload.mock.calls[0][2].aborted).toBe(true);
   expect(click).not.toHaveBeenCalled();
   click.mockRestore();
+});
+
+it('shows the empty history after retrying the initial request on a wide screen', async () => {
+  const breakpoint = jest.spyOn(Grid, 'useBreakpoint').mockReturnValue({ md: true });
+  mockHistory
+    .mockResolvedValueOnce({ status: 'error' })
+    .mockResolvedValueOnce({ status: 'ready', page: { publications: [], nextCursor: null } });
+  renderWithProviders(<DataTransfer />);
+  fireEvent.click(screen.getByText('component.dataTransfer.history'));
+  await screen.findByText('component.dataTransfer.historyError');
+  fireEvent.click(screen.getByText('component.dataTransfer.retry'));
+  expect(await screen.findByText('component.dataTransfer.noHistory')).toBeInTheDocument();
+  expect(mockHistory).toHaveBeenLastCalledWith(expect.any(AbortSignal), undefined);
+  breakpoint.mockRestore();
+});
+it('keeps a historical version visible when its archives are unavailable', async () => {
+  mockHistory.mockResolvedValueOnce({
+    status: 'ready',
+    page: { publications: [{ ...oldRelease, formats: [] }], nextCursor: null },
+  });
+  renderWithProviders(<DataTransfer />);
+  fireEvent.click(screen.getByText('component.dataTransfer.history'));
+  expect(await screen.findByText('2026.10.0')).toBeInTheDocument();
+  expect(screen.getByText('component.dataTransfer.archiveUnavailable')).toBeInTheDocument();
+  expect(screen.getAllByRole('button', { name: 'download ILCD 7z' })).toHaveLength(1);
 });
