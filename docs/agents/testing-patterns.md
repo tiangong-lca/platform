@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed real installed-SDK regression controls and component navigation assertions against the existing unit and component patterns.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed mixed reviewer and author-path errors, dataset-root isolation and legacy path-format regression controls.'
 ---
 
 # Testing Patterns Reference

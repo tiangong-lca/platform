@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed the model submission repair against frontend ownership, separate reviewer validation and existing delivery gates.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed the narrower reviewer-field exclusions against frontend ownership and separate reviewer validation; delivery gates remain unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

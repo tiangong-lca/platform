@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed isolated worktree setup, frozen dependency install and serial validation for the model review repair; bootstrap commands remain unchanged.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed the serial focused-test and checked-push workflow for the filter refinement; bootstrap commands remain unchanged.'
 ---
 
 # Development Bootstrap

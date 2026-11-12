@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed the model validation regression additions; historical baseline and testing queue remain unchanged.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed the additional reviewer-filter regressions; historical baseline and testing queue remain unchanged.'
 ---
 
 # Testing Execution State

@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed the local-only model validation repair; the no-push handoff retains Docpact and the complete pre-push gate.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed the filter refinement delivery through the checked-push hook; Docpact and the complete pre-push gate remain required.'
 ---
 
 # Pre-Push Gate Policy

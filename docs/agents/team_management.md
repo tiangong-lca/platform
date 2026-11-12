@@ -20,8 +20,8 @@ checkPaths:
   - src/pages/Review/**
   - src/pages/ManageSystem/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed the model validation repair and foreign-owner notification behavior; team and review role boundaries remain unchanged.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed the narrowed author-stage filter; team permissions and reviewer role boundaries remain unchanged.'
 ---
 
 # Team Management Reference

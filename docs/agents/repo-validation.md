@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Added focused installed-SDK, reviewer-boundary and local-navigation proof for model submission validation.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Added proof retaining same-named fields outside the current dataset reviewer subtrees.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -225,7 +225,7 @@ If a coverage change excludes framework-heavy wrapper files from `collectCoverag
 
 ## Author review validation
 
-For author-review validation changes, run the focused `review.validation`, `review`, Lifecycle Model `sdkValidation` and toolbar `eidtInfo`, `ValidationIssueModal`, and review `reviewPayload`/`validateComment` suites. Exercise the installed SDK with absent, empty-object, empty-array and empty-item compliance containers, retain rejection of missing author fields and malformed reviewer metadata, and prove local field/tab/node navigation alongside exact reference links and foreign-owner notifications. Keep the installed-package contract outside Jest's SDK mapper and the unchanged full gate.
+For author-review validation changes, run the focused `review.validation`, `review`, Lifecycle Model `sdkValidation` and toolbar `eidtInfo`, `ValidationIssueModal`, and review `reviewPayload`/`validateComment` suites. Exercise the installed SDK with absent, empty-object, empty-array and empty-item compliance containers, retain rejection of missing author fields and malformed reviewer metadata, and prove local field/tab/node navigation alongside exact reference links and foreign-owner notifications. Filtering regressions must retain same-named fields outside the current dataset's two reviewer subtrees, including other/rootless dataset paths, nested author fields, and legacy dotted/slash paths. Keep the installed-package contract outside Jest's SDK mapper and the unchanged full gate.
 
 ## Minimum PR Validation Note
 

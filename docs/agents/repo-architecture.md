@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed SDK adapters, lifecycle-model drawer navigation and the shared issue modal; service and review-command boundaries remain unchanged.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed current-dataset SDK path anchoring; service and review-command boundaries remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

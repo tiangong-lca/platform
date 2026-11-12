@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
-lastReviewedNote: 'Reviewed SDK parent-container and navigation regressions; focused behavior tests preserve the existing coverage strategy.'
+lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedNote: 'Reviewed six path-scope regressions; focused behavior tests preserve the existing coverage strategy.'
 ---
 
 # Testing Strategy
