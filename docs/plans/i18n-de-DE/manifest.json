@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "b2ff6884bbcfaac2123d61a2421c3fbcc8359146033a266d00be69a5761fee38",
+    "auditedInputDigest": "135bdb9b0c028694271a57395efa2e2360899962fb339f979e3635f9bdd51d4a",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -50409,7 +50409,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 805,
+          "line": 807,
           "column": 17,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Cancel",
@@ -50679,7 +50679,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 805,
+              "line": 807,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -51043,7 +51043,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 598,
+          "line": 600,
           "column": 28,
           "symbol": "validationHint",
           "defaultMessage": "Data check failed, please check the data!",
@@ -51103,7 +51103,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 598,
+              "line": 600,
               "column": 28,
               "kind": "formatMessage"
             },
@@ -51299,7 +51299,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 588,
+          "line": 590,
           "column": 13,
           "symbol": "handleCheckData",
           "defaultMessage": "Data validation passed.",
@@ -51359,7 +51359,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 588,
+              "line": 590,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -56151,7 +56151,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 734,
+          "line": 736,
           "column": 13,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Basic information",
@@ -56184,7 +56184,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 734,
+              "line": 736,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -58198,7 +58198,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 817,
+          "line": 819,
           "column": 17,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Save",
@@ -58381,7 +58381,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 817,
+              "line": 819,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -59374,7 +59374,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 791,
+          "line": 793,
           "column": 21,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Update Reference",
@@ -59476,7 +59476,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 791,
+              "line": 793,
               "column": 21,
               "kind": "FormattedMessage"
             },
@@ -94985,7 +94985,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 752,
+          "line": 754,
           "column": 13,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Model base information",
@@ -95018,7 +95018,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 752,
+              "line": 754,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -147205,7 +147205,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 387,
+          "line": 389,
           "column": 13,
           "symbol": "handleCheckData",
           "defaultMessage": "This data set is under review and cannot be validated",
@@ -147220,7 +147220,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 387,
+              "line": 389,
               "column": 13,
               "kind": "formatMessage"
             }
@@ -147528,7 +147528,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 637,
+          "line": 639,
           "column": 28,
           "symbol": "handleCheckData",
           "defaultMessage": "Please complete the main product process data in the model results",
@@ -147543,7 +147543,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 637,
+              "line": 639,
               "column": 28,
               "kind": "formatMessage"
             }
@@ -147611,7 +147611,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 615,
+          "line": 617,
           "column": 26,
           "symbol": "handleCheckData",
           "defaultMessage": "Please complete the process instance data",
@@ -147626,7 +147626,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 615,
+              "line": 617,
               "column": 26,
               "kind": "formatMessage"
             }
@@ -147777,7 +147777,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 642,
+          "line": 644,
           "column": 28,
           "symbol": "handleCheckData",
           "defaultMessage": "Please complete the sub product process data in the model results",
@@ -147792,7 +147792,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 642,
+              "line": 644,
               "column": 28,
               "kind": "formatMessage"
             }
@@ -147860,7 +147860,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 683,
+          "line": 685,
           "column": 36,
           "symbol": "fallbackErrorMessage",
           "defaultMessage": "Submit review failed",
@@ -147875,7 +147875,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 683,
+              "line": 685,
               "column": 36,
               "kind": "formatMessage"
             }
@@ -149321,7 +149321,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 342,
+          "line": 344,
           "column": 15,
           "symbol": "handleCheckData",
           "defaultMessage": "Please select a node as reference",
@@ -149336,7 +149336,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 342,
+              "line": 344,
               "column": 15,
               "kind": "formatMessage"
             }
@@ -149404,7 +149404,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 354,
+          "line": 356,
           "column": 13,
           "symbol": "handleCheckData",
           "defaultMessage": "Please add node",
@@ -149419,7 +149419,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 354,
+              "line": 356,
               "column": 13,
               "kind": "formatMessage"
             }
@@ -195078,7 +195078,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 707,
+          "line": 709,
           "column": 11,
           "symbol": "submitReview",
           "defaultMessage": "Review submitted successfully",
@@ -195108,7 +195108,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 707,
+              "line": 709,
               "column": 11,
               "kind": "formatMessage"
             },
