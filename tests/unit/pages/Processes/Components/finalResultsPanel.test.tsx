@@ -402,7 +402,9 @@ it('transport failure permits manual retry without relaxing exact pins', async (
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
 });
 it('exports the selected result and reports incomplete export failures', async () => {
-  mockDownload.mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error('offline'));
+  mockDownload
+    .mockImplementationOnce(async (_overview, _signal, _source, progress) => progress(25, 25))
+    .mockRejectedValueOnce(new Error('offline'));
   render(<PublishedResultsPanel {...props} />);
   await screen.findByText(`Frozen climate ${id}`, { exact: false });
   fireEvent.click(

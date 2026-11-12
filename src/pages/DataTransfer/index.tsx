@@ -66,8 +66,7 @@ export default function DataTransfer() {
     }
   };
   const publication = release;
-  const download = async (format: 'tidas' | 'ilcd', publicationId = publication?.publicationId) => {
-    if (!publicationId) return;
+  const download = async (format: 'tidas' | 'ilcd', publicationId: string) => {
     downloadController.current?.abort();
     const controller = new AbortController();
     downloadController.current = controller;
@@ -180,7 +179,7 @@ export default function DataTransfer() {
                             icon={<DownloadOutlined />}
                             loading={downloading === `${publication.publicationId}:${format}`}
                             disabled={!!downloading}
-                            onClick={() => void download(format)}
+                            onClick={() => void download(format, publication.publicationId)}
                           >
                             {intl.formatMessage(
                               { id: 'component.dataTransfer.archiveLabel' },

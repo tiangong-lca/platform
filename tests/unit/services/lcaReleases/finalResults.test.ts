@@ -396,3 +396,15 @@ it('reads bounded publication history and preserves the exact continuation curso
   });
   expect(await finalPublicationHistory(signal())).toEqual({ status: 'error' });
 });
+
+it('rejects invalid history cursors before transport and preserves unavailable responses', async () => {
+  expect(
+    await finalPublicationHistory(new AbortController().signal, {
+      publishedAt: 'bad',
+      publicationId: id,
+    }),
+  ).toEqual({ status: 'error' });
+  expect(mockInvoke).not.toHaveBeenCalled();
+  mockInvoke.mockResolvedValue({ error: { context: { status: 503 } } });
+  expect(await finalPublicationHistory(new AbortController().signal)).toEqual({ status: 'error' });
+});

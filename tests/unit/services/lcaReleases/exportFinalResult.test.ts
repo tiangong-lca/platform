@@ -1,4 +1,8 @@
-import { collectFinalResult } from '@/services/lcaReleases/exportFinalResult';
+import { queryFinalResult } from '@/services/lcaReleases/finalResults';
+import {
+  collectFinalResult,
+  exportFinalResultJson,
+} from '@/services/lcaReleases/exportFinalResult';
 jest.mock('@/services/lcaReleases/finalResults', () => ({ queryFinalResult: jest.fn() }));
 const identity = { uuid: '11111111-1111-4111-8111-111111111111', version: '01.00.000' };
 const row = { ...identity, relationKind: 'direct', quantitativeReference: { value: 1 } };
@@ -68,4 +72,76 @@ it('preserves unavailable LCIA as null and stops on cancellation', async () => {
   controller.abort();
   await expect(run(query, overview, controller.signal)).rejects.toThrow();
   expect(query).toHaveBeenCalledTimes(1);
+});
+
+it('rejects a non-overview and missing or changing result sections', async () => {
+  await expect(run(jest.fn(), { ...overview, data: { result: row } })).rejects.toThrow(
+    'Invalid result overview',
+  );
+  await expect(run(jest.fn().mockResolvedValue(reply({})))).rejects.toThrow('Missing LCIA');
+  await expect(
+    run(
+      jest
+        .fn()
+        .mockResolvedValueOnce(reply({ impacts: [] }))
+        .mockResolvedValueOnce(reply({})),
+    ),
+  ).rejects.toThrow('Missing LCI');
+  await expect(
+    run(
+      jest
+        .fn()
+        .mockResolvedValueOnce(reply({ impacts: [] }))
+        .mockResolvedValueOnce(
+          reply({ items: [{ amount: 1 }], nextCursor: 'next', nonzeroCount: 2 }),
+        )
+        .mockResolvedValueOnce(reply({ items: [], nextCursor: null, nonzeroCount: 3 })),
+    ),
+  ).rejects.toThrow('LCI changed');
+});
+it('creates a complete JSON download with source and reference metadata, then releases its URL', async () => {
+  jest
+    .mocked(queryFinalResult)
+    .mockResolvedValueOnce(reply({ impacts: [{ amount: 0 }] }) as any)
+    .mockResolvedValueOnce(
+      reply({ items: [{ amount: -2 }], nextCursor: null, nonzeroCount: 1 }) as any,
+    );
+  const create = jest.spyOn(URL, 'createObjectURL').mockReturnValue('blob:result');
+  const previousRevoke = URL.revokeObjectURL;
+  const revoke = jest.fn();
+  URL.revokeObjectURL = revoke;
+  const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+    this: HTMLAnchorElement,
+  ) {
+    expect(this.download).toBe(`result-${identity.uuid}-${identity.version}.json`);
+    expect(this.href).toBe('blob:result');
+  });
+  await exportFinalResultJson(overview, new AbortController().signal, {
+    ...identity,
+    name: 'Source',
+  });
+  const blob = create.mock.calls[0][0] as Blob;
+  const contents = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = reject;
+    reader.readAsText(blob);
+  });
+  expect(JSON.parse(contents)).toMatchObject({
+    schemaVersion: 'tiangong.calculation-result-export.v1',
+    publication: { id: 'pub', version: '2026.11.0' },
+    sourceProcess: { ...identity, name: 'Source' },
+    result: row,
+    lcia: [{ amount: 0 }],
+    lci: { items: [{ amount: -2 }], nonzeroCount: 1 },
+  });
+  expect(click).toHaveBeenCalledTimes(1);
+  expect(document.querySelector('a[download]')).toBeNull();
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1050);
+  });
+  expect(revoke).toHaveBeenCalledWith('blob:result');
+  create.mockRestore();
+  URL.revokeObjectURL = previousRevoke;
+  click.mockRestore();
 });

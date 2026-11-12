@@ -35,6 +35,7 @@ const publication = {
 };
 beforeEach(() => {
   jest.clearAllMocks();
+  mockSubmit.mockReset();
   mockRole.mockResolvedValue({ role: 'member' });
   mockHistory.mockResolvedValue({ status: 'ready', page: { publications: [], nextCursor: null } });
   mockCatalog.mockResolvedValue({ status: 'ready', publication });
@@ -192,4 +193,62 @@ it('refresh cancels history loading and ignores stale results', async () => {
     resolveOld({ status: 'ready', page: { publications: [oldRelease], nextCursor: null } }),
   );
   expect(screen.queryByText('2026.10.0')).not.toBeInTheDocument();
+});
+
+it('reports rejected configuration reads and export submission errors', async () => {
+  mockCatalog.mockRejectedValueOnce(new Error('offline'));
+  mockRole.mockRejectedValueOnce(new Error('offline'));
+  mockSubmit.mockImplementationOnce(() => {
+    throw new Error('submission failed');
+  });
+  renderWithProviders(<DataTransfer />);
+  await screen.findByText('component.dataTransfer.error');
+  expect(screen.queryByText('component.dataTransfer.publicData')).not.toBeInTheDocument();
+  fireEvent.click(
+    screen.getByRole('button', { name: 'download component.dataTransfer.exportTidas' }),
+  );
+  expect(mockSubmit).toHaveBeenCalledWith({ scope: 'current_user' });
+  expect(mockMessage.error).toHaveBeenCalledWith('component.dataTransfer.error');
+  fireEvent.click(screen.getByRole('tab', { name: 'component.dataTransfer.import' }));
+  expect(await screen.findByText('Importer')).toBeInTheDocument();
+});
+it('downloads the signed exact archive and removes the temporary anchor', async () => {
+  const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+    this: HTMLAnchorElement,
+  ) {
+    expect(this.href).toBe('https://download.example/result.7z');
+    expect(this.download).toBe('result.tidas.7z');
+    expect(document.body.contains(this)).toBe(true);
+  });
+  mockDownload.mockResolvedValueOnce({
+    status: 'ready',
+    download: { url: 'https://download.example/result.7z', file: { name: 'result.tidas.7z' } },
+  });
+  renderWithProviders(<DataTransfer />);
+  fireEvent.click(await screen.findByRole('button', { name: 'download TIDAS 7z' }));
+  await waitFor(() => expect(click).toHaveBeenCalledTimes(1));
+  expect(document.querySelector('a[download]')).toBeNull();
+  click.mockRestore();
+});
+it('does not start a stale download when signing completes after unmount', async () => {
+  let resolve: (value: unknown) => void = () => {};
+  mockDownload.mockImplementationOnce(
+    () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  );
+  const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+  const view = renderWithProviders(<DataTransfer />);
+  fireEvent.click(await screen.findByRole('button', { name: 'download TIDAS 7z' }));
+  view.unmount();
+  await act(async () =>
+    resolve({
+      status: 'ready',
+      download: { url: 'https://download.example/result.7z', file: { name: 'result.7z' } },
+    }),
+  );
+  expect(mockDownload.mock.calls[0][2].aborted).toBe(true);
+  expect(click).not.toHaveBeenCalled();
+  click.mockRestore();
 });

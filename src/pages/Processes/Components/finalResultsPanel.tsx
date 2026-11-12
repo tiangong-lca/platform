@@ -152,15 +152,14 @@ export function FinalResultDetails({
   const basis = overview?.data.result.quantitativeReference;
   const canRead = overview && 'lciaAvailable' in overview.data ? overview.data : undefined;
   const [exportProgress, setExportProgress] = useState('');
-  const download = async () => {
-    if (!overview) return;
+  const download = async (selectedOverview: FinalResult) => {
     downloading.current?.abort();
     const controller = new AbortController();
     downloading.current = controller;
     setDownloadStatus('loading');
     setExportProgress('');
     try {
-      await exportFinalResultJson(overview, controller.signal, source, (loaded, total) =>
+      await exportFinalResultJson(selectedOverview, controller.signal, source, (loaded, total) =>
         setExportProgress(`${loaded} / ${total}`),
       );
       if (!controller.signal.aborted) setDownloadStatus('idle');
@@ -201,7 +200,7 @@ export function FinalResultDetails({
                 onClick={onRestart}
               />
             </Tooltip>
-            {ready && (
+            {ready && overview && (
               <>
                 <Tooltip title={exportLabel}>
                   <Button
@@ -210,7 +209,7 @@ export function FinalResultDetails({
                     aria-label={exportLabel}
                     loading={downloadStatus === 'loading'}
                     disabled={downloadStatus === 'loading'}
-                    onClick={() => void download()}
+                    onClick={() => void download(overview)}
                   />
                 </Tooltip>
                 <Tooltip title={linkLabel}>
