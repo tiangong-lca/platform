@@ -20,8 +20,8 @@ checkPaths:
   - src/pages/Review/**
   - src/pages/ManageSystem/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
+lastReviewedNote: 'Reviewed the model validation repair and foreign-owner notification behavior; team and review role boundaries remain unchanged.'
 ---
 
 # Team Management Reference

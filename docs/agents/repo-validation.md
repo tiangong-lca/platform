@@ -48,8 +48,8 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 23d4f2bed0dac39001bc2bee87a7038d555888d5
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
+lastReviewedNote: 'Added focused installed-SDK, reviewer-boundary and local-navigation proof for model submission validation.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -222,6 +222,10 @@ Clean-checkout Jest, active German validation, new-locale activation, and the re
 For active German, do not reinterpret or delete the inherited Issue #601/#602/#606 evidence. The accepted current boundary is pinned at `c26f306e82ac66f50a56aafe8f89ea96c0b0c67d` in `docs/plans/i18n/corrections.json`. New source messages pass the shared context closure. Any post-baseline change to an existing `zh-CN` or `de-DE` value must add one compact dossier with exact before/after text, evidence, affected closure, tests, and digest. `pnpm i18n:corrections:check` proves that the ledger exactly matches the active catalog; no new human confirmation is requested or inferred.
 
 If a coverage change excludes framework-heavy wrapper files from `collectCoverageFrom`, document why those files are excluded and re-check the affected save, validation, navigation, and highlighting flows with focused tests before relying on `pnpm prepush:gate`.
+
+## Author review validation
+
+For author-review validation changes, run the focused `review.validation`, `review`, Lifecycle Model `sdkValidation` and toolbar `eidtInfo`, `ValidationIssueModal`, and review `reviewPayload`/`validateComment` suites. Exercise the installed SDK with absent, empty-object, empty-array and empty-item compliance containers, retain rejection of missing author fields and malformed reviewer metadata, and prove local field/tab/node navigation alongside exact reference links and foreign-owner notifications. Keep the installed-package contract outside Jest's SDK mapper and the unchanged full gate.
 
 ## Minimum PR Validation Note
 

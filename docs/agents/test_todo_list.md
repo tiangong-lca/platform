@@ -45,8 +45,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 23d4f2bed0dac39001bc2bee87a7038d555888d5
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
+lastReviewedNote: 'Reviewed the model validation regression additions; historical baseline and testing queue remain unchanged.'
 ---
 
 # Testing Execution State

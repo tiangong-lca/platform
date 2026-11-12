@@ -19,8 +19,8 @@ checkPaths:
   - src/pages/Review/**
   - src/pages/ManageSystem/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
+lastReviewedNote: 'Clarified author versus reviewer validation of review and compliance containers; workflow transitions remain unchanged.'
 ---
 
 # Audit Status Reference
@@ -101,6 +101,8 @@ Review Member outcomes are advisory. Review Admin final approval requires at lea
 - Batch actions reuse the same state transitions, authorization, rejection-reason rules, and Process/Lifecycle Model metadata requirements as the corresponding single-item command.
 
 Process and Lifecycle Model Root Reviews retain their metadata form and metadata writeback. Shared comment commands remove recursively empty optional fields for drafts and submissions. Approval submission validates the supplied review/compliance sections against the installed TIDAS SDK, without applying dataset defaults to the saved comment or requiring unrelated dataset fields. Both forms validate before reference checks and display field-level issues. Partial references and noncanonical enum values must be corrected; drafts and rejection opinions remain editable without approval validation. Database #900 owns the authoritative submission/writeback guard. Contact, Source, Unit Group, Flow Property, Flow, and every Reference Review use only approve/reject actions: approve requires no opinion; reject requires a reason.
+
+Author data checks and review submission for Process and Lifecycle Model exclude the reviewer-owned `modellingAndValidation.validation` and `modellingAndValidation.complianceDeclarations` subtrees, including SDK errors on their containers. Supplied Process complete-review-report references retain their existing validation. Author fields, model instances and reference checks remain required; reviewer approval uses the separate comment-validation boundary described above.
 
 ## Review Admin Quality Diagnostic
 

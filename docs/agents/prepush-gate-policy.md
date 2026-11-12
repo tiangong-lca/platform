@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 23d4f2bed0dac39001bc2bee87a7038d555888d5
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedCommit: 378a67b821d39430152f0277cd5d7623133f579d
+lastReviewedNote: 'Reviewed the local-only model validation repair; the no-push handoff retains Docpact and the complete pre-push gate.'
 ---
 
 # Pre-Push Gate Policy
