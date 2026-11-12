@@ -1,4 +1,5 @@
 export default {
+  'menu.dataTransfer': 'Import und Export',
   'menu.studies': 'LCA-Berechnungen',
   'menu.supportingData': 'Begleitdaten',
   'menu.welcome': 'Willkommen',

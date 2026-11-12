@@ -179,6 +179,30 @@ async function invoke(
   if (response.data?.ok !== true || response.data?.mode !== body.mode) return { status: 'error' };
   return { status: 'ready', data: response.data.data };
 }
+const currentPublicationSchema = z
+  .object({
+    publication: z
+      .object({
+        publicationId: uuid,
+        releaseVersion,
+        format: z.literal('final-result-pair.v2'),
+      })
+      .strict()
+      .nullable(),
+  })
+  .strict();
+export type CurrentFinalPublication = z.infer<typeof currentPublicationSchema>['publication'];
+export async function currentFinalPublication(
+  signal: AbortSignal,
+): Promise<FinalFailure | { status: 'ready'; publication: CurrentFinalPublication }> {
+  const response = await invoke({ mode: 'final_current' }, signal);
+  if (response.status !== 'ready') return response;
+  const parsed = currentPublicationSchema.safeParse(response.data);
+  return parsed.success
+    ? { status: 'ready', publication: parsed.data.publication }
+    : { status: 'error' };
+}
+
 export async function sourceFinalResults(
   source: { id: string; version: string },
   signal: AbortSignal,
@@ -279,11 +303,12 @@ export async function queryFinalResult(
   return { status: 'ready', result: { ...parsed.data, data: parsed.data.data } };
 }
 export async function finalResultDownload(
-  publicationId: string,
+  publicationId: string | undefined,
   format: 'tidas' | 'ilcd',
   signal: AbortSignal,
 ) {
-  if (!uuid.safeParse(publicationId).success) return { status: 'error' } as FinalFailure;
+  if (publicationId !== undefined && !uuid.safeParse(publicationId).success)
+    return { status: 'error' } as FinalFailure;
   const response = await invoke({ mode: 'final_download', publicationId, format }, signal);
   if (response.status !== 'ready') return response;
   const parsed = z
@@ -305,7 +330,10 @@ export async function finalResultDownload(
     })
     .strict()
     .safeParse(response.data);
-  if (!parsed.success || parsed.data.publicationId !== publicationId)
+  if (
+    !parsed.success ||
+    (publicationId !== undefined && parsed.data.publicationId !== publicationId)
+  )
     return { status: 'error' } as FinalFailure;
   const url = new URL(parsed.data.url),
     expiresAt = Date.parse(parsed.data.expiresAt);
@@ -320,4 +348,43 @@ export async function finalResultDownload(
   )
     return { status: 'error' } as FinalFailure;
   return { status: 'ready' as const, download: parsed.data };
+}
+
+const historyCursorSchema = z
+  .object({ publishedAt: z.iso.datetime({ offset: true }), publicationId: uuid })
+  .strict();
+const historySchema = z
+  .object({
+    publications: z
+      .array(
+        z
+          .object({
+            publicationId: uuid,
+            releaseVersion,
+            publishedAt: z.iso.datetime({ offset: true }),
+            status: z.literal('superseded'),
+            formats: z.array(z.enum(['tidas', 'ilcd'])).max(2),
+          })
+          .strict(),
+      )
+      .max(20),
+    nextCursor: historyCursorSchema.nullable(),
+  })
+  .strict();
+export type PublicationHistoryPage = z.infer<typeof historySchema>;
+export type PublicationHistoryCursor = z.infer<typeof historyCursorSchema>;
+export async function finalPublicationHistory(
+  signal: AbortSignal,
+  before?: PublicationHistoryCursor,
+): Promise<FinalFailure | { status: 'ready'; page: PublicationHistoryPage }> {
+  if (before !== undefined && !historyCursorSchema.safeParse(before).success)
+    return { status: 'error' };
+  const response = await invoke(
+    { mode: 'final_history', limit: 20, ...(before ? { before } : {}) },
+    signal,
+  );
+  if (response.status !== 'ready') return response;
+  const parsed = historySchema.safeParse(response.data);
+  if (!parsed.success) return { status: 'error' };
+  return { status: 'ready', page: parsed.data };
 }

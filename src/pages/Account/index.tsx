@@ -1,3 +1,4 @@
+import accountPageStyles from '@/components/AccountPage/index.less';
 import { resolveBrandMessage } from '@/locales/brandMessages';
 import { changeEmail, changePassword, getAccountProfile, setProfile } from '@/services/auth';
 import { useAntdAppApi } from '@/contexts/AntdAppContext';
@@ -803,7 +804,7 @@ const Profile: FC = () => {
 
   return (
     <PageContainer
-      className={styles.accountPage}
+      className={`${styles.accountPage} ${accountPageStyles.page}`}
       title={<FormattedMessage id='menu.account.profile' defaultMessage='Account Profile' />}
     >
       <Spin spinning={spinning}>

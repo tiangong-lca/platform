@@ -1,4 +1,6 @@
 import {
+  currentFinalPublication,
+  finalPublicationHistory,
   finalResultDownload,
   finalResultLink,
   parseFinalResultLink,
@@ -309,4 +311,88 @@ it('exact Result links bind publication and reject missing, duplicate, unknown o
     search.replace(result.version, 'latest'),
   ])
     expect(parseFinalResultLink(value)).toBeNull();
+});
+
+it('reads only the current final publication using the actor session', async () => {
+  for (const publication of [page.publication, null]) {
+    mockInvoke.mockResolvedValue({
+      data: { ok: true, mode: 'final_current', data: { publication } },
+    });
+    expect(await currentFinalPublication(signal())).toEqual({ status: 'ready', publication });
+    expect(mockInvoke).toHaveBeenLastCalledWith(
+      'lca_release_results',
+      expect.objectContaining({
+        body: { mode: 'final_current' },
+        headers: { Authorization: 'Bearer synthetic-actor' },
+      }),
+    );
+  }
+});
+it('rejects malformed/legacy catalog data and preserves request failures', async () => {
+  for (const publication of [
+    { ...page.publication, format: 'legacy-four-zip.v1' },
+    { ...page.publication, candidateHash: 'private' },
+    { publicationId },
+  ]) {
+    mockInvoke.mockResolvedValue({
+      data: { ok: true, mode: 'final_current', data: { publication } },
+    });
+    expect(await currentFinalPublication(signal())).toEqual({ status: 'error' });
+  }
+  mockInvoke.mockResolvedValue({ error: { context: { status: 503 } } });
+  expect(await currentFinalPublication(signal())).toEqual({ status: 'error' });
+  mockSession.mockResolvedValue({ data: { session: null } });
+  mockInvoke.mockClear();
+  expect(await currentFinalPublication(signal())).toEqual({ status: 'unavailable' });
+  expect(mockInvoke).not.toHaveBeenCalled();
+});
+
+it('omitted download publication uses the server-selected exact current identity', async () => {
+  const download = zip();
+  mockInvoke.mockResolvedValue({ data: { ok: true, mode: 'final_download', data: download } });
+  expect(await finalResultDownload(undefined, 'tidas', signal())).toEqual({
+    status: 'ready',
+    download,
+  });
+  expect(mockInvoke).toHaveBeenLastCalledWith(
+    'lca_release_results',
+    expect.objectContaining({
+      body: expect.objectContaining({ mode: 'final_download', format: 'tidas' }),
+    }),
+  );
+  expect(
+    mockInvoke.mock.calls[mockInvoke.mock.calls.length - 1][1].body.publicationId,
+  ).toBeUndefined();
+});
+it('reads bounded publication history and preserves the exact continuation cursor', async () => {
+  const before = { publishedAt: '2026-11-01T00:00:00+00:00', publicationId };
+  const page = {
+    publications: [
+      {
+        publicationId: id,
+        releaseVersion: '2026.10.0',
+        publishedAt: '2026-10-01T00:00:00+00:00',
+        status: 'superseded',
+        formats: ['tidas', 'ilcd'],
+      },
+    ],
+    nextCursor: null,
+  };
+  mockInvoke.mockResolvedValue({ data: { ok: true, mode: 'final_history', data: page } });
+  expect(await finalPublicationHistory(signal(), before)).toEqual({ status: 'ready', page });
+  expect(mockInvoke).toHaveBeenLastCalledWith(
+    'lca_release_results',
+    expect.objectContaining({ body: { mode: 'final_history', limit: 20, before } }),
+  );
+  mockInvoke.mockResolvedValue({
+    data: {
+      ok: true,
+      mode: 'final_history',
+      data: {
+        ...page,
+        publications: [{ ...page.publications[0], status: 'unpublished', formats: [] }],
+      },
+    },
+  });
+  expect(await finalPublicationHistory(signal())).toEqual({ status: 'error' });
 });

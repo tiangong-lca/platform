@@ -352,6 +352,13 @@ export default [
     hideInMenu: true,
   },
   {
+    path: '/data-transfer',
+    name: 'dataTransfer',
+    menu: false,
+    wrappers: ['@/wrappers/AuthGuard'],
+    component: './DataTransfer',
+  },
+  {
     path: '/account',
     name: 'account',
     menu: false,

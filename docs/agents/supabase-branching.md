@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-08
-lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
+lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
 ---
 
 # Supabase Environment And Database Workflow

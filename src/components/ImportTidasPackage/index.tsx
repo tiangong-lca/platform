@@ -7,7 +7,7 @@ import {
 } from '@/services/tidasPackage/taskCenter';
 import { getDocumentationUrl } from '@/services/general/runtimeLocale';
 import { CloudUploadOutlined, InboxOutlined } from '@ant-design/icons';
-import { Alert, Flex, Modal, Typography, Upload, theme } from 'antd';
+import { Alert, Button, Flex, Modal, Typography, Upload, theme } from 'antd';
 import type { RcFile, UploadProps } from 'antd/es/upload';
 import type { FC } from 'react';
 import { useRef, useState } from 'react';
@@ -15,6 +15,7 @@ import { FormattedMessage, useIntl } from 'umi';
 
 type Props = {
   onImported?: () => void;
+  embedded?: boolean;
 };
 
 const TIDAS_PACKAGE_IMPORT_DOCS_PATH = '/docs/openapi/tidas-package-import';
@@ -22,7 +23,7 @@ const TIDAS_PACKAGE_IMPORT_DOCS_PATH = '/docs/openapi/tidas-package-import';
 const getDocsUrl = (locale?: string | null) =>
   `${getDocumentationUrl(locale)}${TIDAS_PACKAGE_IMPORT_DOCS_PATH}`;
 
-const ImportTidasPackage: FC<Props> = ({ onImported }) => {
+const ImportTidasPackage: FC<Props> = ({ onImported, embedded = false }) => {
   const { message } = useAntdAppApi();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -99,6 +100,66 @@ const ImportTidasPackage: FC<Props> = ({ onImported }) => {
     },
   };
 
+  const content = (
+    <Flex vertical gap={token.marginMD}>
+      <Upload.Dragger {...uploadProps} prefixCls='tg-tidas-import-upload'>
+        <p className='tg-tidas-import-upload-drag-icon'>
+          <InboxOutlined />
+        </p>
+        <p className='tg-tidas-import-upload-text'>
+          <FormattedMessage
+            id='component.tidasPackage.import.uploadText'
+            defaultMessage='Click or drag a ZIP package to this area to upload'
+          />
+        </p>
+        <p className='tg-tidas-import-upload-hint'>
+          <FormattedMessage
+            id='component.tidasPackage.import.uploadHint'
+            defaultMessage='The package will be validated before any data is imported'
+          />
+        </p>
+      </Upload.Dragger>
+      <Alert
+        description={
+          <Flex vertical gap={token.marginXXS}>
+            <Typography.Text>
+              <FormattedMessage
+                id='component.tidasPackage.import.apiGuide.summary'
+                defaultMessage='See the English API import documentation for the full request flow and integration details.'
+              />
+            </Typography.Text>
+            <Typography.Link href={docsUrl} rel='noreferrer' target='_blank'>
+              <FormattedMessage
+                id='component.tidasPackage.import.apiGuide.docs'
+                defaultMessage='Open English API import docs'
+              />
+            </Typography.Link>
+          </Flex>
+        }
+        title={
+          <FormattedMessage
+            id='component.tidasPackage.import.apiGuide.title'
+            defaultMessage='API import'
+          />
+        }
+        showIcon
+        type='info'
+      />
+    </Flex>
+  );
+  if (embedded)
+    return (
+      <Flex vertical gap={token.marginMD}>
+        {content}
+        <Button type='primary' loading={loading} disabled={!fileList.length} onClick={handleImport}>
+          {intl.formatMessage({
+            id: 'component.tidasPackage.import.confirm',
+            defaultMessage: 'Import',
+          })}
+        </Button>
+      </Flex>
+    );
+
   return (
     <>
       <HeaderActionIcon
@@ -138,51 +199,7 @@ const ImportTidasPackage: FC<Props> = ({ onImported }) => {
           defaultMessage: 'Cancel',
         })}
       >
-        <Flex vertical gap={token.marginMD}>
-          <Upload.Dragger {...uploadProps} prefixCls='tg-tidas-import-upload'>
-            <p className='tg-tidas-import-upload-drag-icon'>
-              <InboxOutlined />
-            </p>
-            <p className='tg-tidas-import-upload-text'>
-              <FormattedMessage
-                id='component.tidasPackage.import.uploadText'
-                defaultMessage='Click or drag a ZIP package to this area to upload'
-              />
-            </p>
-            <p className='tg-tidas-import-upload-hint'>
-              <FormattedMessage
-                id='component.tidasPackage.import.uploadHint'
-                defaultMessage='The package will be validated before any data is imported'
-              />
-            </p>
-          </Upload.Dragger>
-          <Alert
-            description={
-              <Flex vertical gap={token.marginXXS}>
-                <Typography.Text>
-                  <FormattedMessage
-                    id='component.tidasPackage.import.apiGuide.summary'
-                    defaultMessage='See the English API import documentation for the full request flow and integration details.'
-                  />
-                </Typography.Text>
-                <Typography.Link href={docsUrl} rel='noreferrer' target='_blank'>
-                  <FormattedMessage
-                    id='component.tidasPackage.import.apiGuide.docs'
-                    defaultMessage='Open English API import docs'
-                  />
-                </Typography.Link>
-              </Flex>
-            }
-            title={
-              <FormattedMessage
-                id='component.tidasPackage.import.apiGuide.title'
-                defaultMessage='API import'
-              />
-            }
-            showIcon
-            type='info'
-          />
-        </Flex>
+        {content}
       </Modal>
     </>
   );
