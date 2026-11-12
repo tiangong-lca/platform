@@ -1097,6 +1097,56 @@ describe('review helper coverage', () => {
     });
   });
 
+  it.each(
+    (['process', 'lifeCycleModel'] as const).flatMap((kind) =>
+      ['validation', 'complianceDeclarations', 'compliance'].map((field) => ({ kind, field })),
+    ),
+  )('retains $kind errors for $field outside its reviewer-owned subtrees', ({ kind, field }) => {
+    const root = `${kind}DataSet`;
+    const otherRoot = kind === 'process' ? 'lifeCycleModelDataSet' : 'processDataSet';
+    const information = kind === 'process' ? 'processInformation' : 'lifeCycleModelInformation';
+    const authorPaths: Array<PropertyKey[] | string> = [
+      [field],
+      [root, field],
+      ['modellingAndValidation', field],
+      [root, information, field],
+      [root, 'administrativeInformation', field],
+      [root, 'modellingAndValidation', 'dataSourcesTreatmentEtc', field],
+      [root, information, 'modellingAndValidation', field],
+      [otherRoot, 'modellingAndValidation', field],
+      [root, 'modellingAndValidationExtra', field],
+      `${root}.${information}.${field}`,
+      `${root}/modellingAndValidation/dataSourcesTreatmentEtc/${field}`,
+    ];
+    if (field === 'compliance') {
+      // The schema places compliance inside complianceDeclarations, not directly here.
+      authorPaths.push([root, 'modellingAndValidation', field]);
+    }
+    const authorIssues = authorPaths.map((path) => ({
+      path,
+      message: `Retain error at ${Array.isArray(path) ? path.join('.') : path}`,
+    }));
+    const factory = kind === 'process' ? mockCreateProcess : mockCreateLifeCycleModel;
+    factory.mockImplementation(
+      makeSdkFactory({
+        success: false,
+        error: {
+          issues: [
+            { path: [root, 'modellingAndValidation', 'validation', 'review'] },
+            { path: [root, 'modellingAndValidation', 'complianceDeclarations'] },
+            ...authorIssues,
+          ],
+        },
+      }),
+    );
+
+    const result = validateDatasetWithSdk(`${kind} data set`, {});
+    expect(result.success).toBe(false);
+    expect(result.issues.map((issue) => issue.message)).toEqual(
+      authorIssues.map((issue) => issue.message),
+    );
+  });
+
   it('keeps process/model sdk issues when their path is undefined', () => {
     mockCreateProcess.mockImplementation(
       makeSdkFactory({
