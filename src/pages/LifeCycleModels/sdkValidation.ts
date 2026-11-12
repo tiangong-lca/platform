@@ -153,6 +153,18 @@ const toProcessInstanceFieldDetail = (
   };
 };
 
+export const getLifeCycleModelSdkIssueTabName = (issuePath?: PropertyKey[] | string) => {
+  const path = toPathArray(issuePath);
+  const [section, child] = path[0] === 'lifeCycleModelDataSet' ? path.slice(1) : path;
+  if (
+    section === 'modellingAndValidation' &&
+    (child === 'validation' || child === 'complianceDeclarations')
+  ) {
+    return child;
+  }
+  return typeof section === 'string' ? section : undefined;
+};
+
 export const normalizeLifeCycleModelSdkValidationDetails = (issues: any[], orderedJson: any) => {
   const metadataIssues = issues.filter((issue) => {
     const path = toPathArray(issue?.path);
@@ -169,6 +181,12 @@ export const normalizeLifeCycleModelSdkValidationDetails = (issues: any[], order
     datasetKey: 'lifeCycleModelDataSet',
     fieldLabelsByKey: LIFECYCLEMODEL_FIELD_LABELS_BY_KEY,
     requiredLangTextFields: LIFECYCLEMODEL_REQUIRED_LANG_TEXT_FIELDS,
+    specialTabNames: [
+      {
+        match: /^modellingAndValidation(?:\.|$)/,
+        tabName: ({ rootPath }) => getLifeCycleModelSdkIssueTabName(rootPath),
+      },
+    ],
     specialFormNames: [
       {
         formName: [

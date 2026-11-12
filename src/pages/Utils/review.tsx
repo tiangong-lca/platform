@@ -812,18 +812,26 @@ const normalizeSdkIssuePathSegments = (path: PropertyKey[] | string | undefined)
     .filter(Boolean);
 };
 
-const isValidationOrComplianceSdkIssue = (issue: SdkValidationIssue): boolean => {
-  return normalizeSdkIssuePathSegments(issue?.path as PropertyKey[] | string | undefined).some(
-    (segment) => {
-      return segment === 'validation' || segment === 'compliance';
-    },
+const isValidationOrComplianceSdkIssue = (
+  issue: SdkValidationIssue,
+  datasetKey: 'processDataSet' | 'lifeCycleModelDataSet',
+): boolean => {
+  const [root, section, field] = normalizeSdkIssuePathSegments(issue?.path);
+  // Only these two subtrees of the current dataset belong to reviewer metadata,
+  // including errors on their containers before the SDK descends into an item.
+  return (
+    root === datasetKey.toLowerCase() &&
+    section === 'modellingandvalidation' &&
+    (field === 'validation' || field === 'compliancedeclarations')
   );
 };
 
 const filterValidationOrComplianceSdkIssues = (
   issues: SdkValidationIssue[],
 ): SdkValidationIssue[] => {
-  return issues.filter((issue) => !isValidationOrComplianceSdkIssue(issue));
+  return issues.filter(
+    (issue) => !isValidationOrComplianceSdkIssue(issue, 'lifeCycleModelDataSet'),
+  );
 };
 
 const filterProcessValidationIssues = (
@@ -831,7 +839,7 @@ const filterProcessValidationIssues = (
   orderedJson: unknown,
 ): SdkValidationIssue[] => {
   return issues.filter((issue) => {
-    if (!isValidationOrComplianceSdkIssue(issue)) return true;
+    if (!isValidationOrComplianceSdkIssue(issue, 'processDataSet')) return true;
 
     const reportIndex = issue.path.indexOf('common:referenceToCompleteReviewReport');
     if (reportIndex < 0) return false;
