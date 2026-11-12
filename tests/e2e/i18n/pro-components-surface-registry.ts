@@ -192,6 +192,7 @@ export const PRO_COMPONENT_SURFACE_FAMILIES = [
       'src/pages/Admin.tsx',
       'src/pages/Contacts/index.tsx',
       'src/pages/DataProcessing/index.tsx',
+      'src/pages/DataTransfer/index.tsx',
       'src/pages/Flowproperties/index.tsx',
       'src/pages/Flows/index.tsx',
       'src/pages/LifeCycleModels/index.tsx',
@@ -245,7 +246,7 @@ export const PRO_COMPONENT_SURFACE_FAMILIES = [
 export const EXPECTED_PRO_COMPONENT_RUNTIME_COUNTS = {
   DragSortTable: 1,
   LoginForm: 3,
-  PageContainer: 17,
+  PageContainer: 18,
   ProForm: 28,
   ProLayout: 3,
   ProTable: 69,
