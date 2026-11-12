@@ -1869,7 +1869,12 @@ const ProcessView: FC<Props> = ({
       </>
     ),
     calculationResults: showCalculationResults ? (
-      <FinalSourceResults key={`${id}@${version}`} id={id} version={version} />
+      <FinalSourceResults
+        key={`${id}@${version}`}
+        id={id}
+        version={version}
+        name={initData.processInformation?.dataSetInformation?.name?.baseName}
+      />
     ) : null,
     validation: (
       <ReviewItemView

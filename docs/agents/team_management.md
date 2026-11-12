@@ -19,9 +19,9 @@ checkPaths:
   - src/pages/Teams/**
   - src/pages/Review/**
   - src/pages/ManageSystem/**
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: bffdcaaa8a2f89294d78f45ff06c3b215b8234b5
-lastReviewedNote: 'Platform #1408: reviewed shared review-comment cleanup, SDK0.5.0 approval validation and field feedback before reference checks. Draft/rejection and Root/Reference semantics remain; gate policy is unchanged and execution evidence belongs to the Issue/PR.'
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
+lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
 ---
 
 # Team Management Reference

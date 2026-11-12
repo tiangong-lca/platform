@@ -1,5 +1,5 @@
+import { exportFinalResultJson } from '@/services/lcaReleases/exportFinalResult';
 import {
-  finalResultDownload,
   finalResultLink,
   queryFinalResult,
   sourceFinalResults,
@@ -78,10 +78,12 @@ export function FinalResultDetails({
   result,
   publicationId,
   onRestart,
+  source,
 }: {
   result: FinalIdentity;
   publicationId: string;
   onRestart: () => void;
+  source?: FinalIdentity & { name?: unknown };
 }) {
   const { formatMessage: t } = useIntl();
   const [overview, setOverview] = useState<FinalResult>();
@@ -99,9 +101,7 @@ export function FinalResultDetails({
   const [retry, setRetry] = useState(0);
   const pins = useRef<FinalPins>({ publicationId });
   const downloading = useRef<AbortController | undefined>(undefined);
-  const [downloadStatus, setDownloadStatus] = useState<
-    'idle' | 'loading' | 'unavailable' | 'error'
-  >('idle');
+  const [downloadStatus, setDownloadStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   useEffect(() => () => downloading.current?.abort(), []);
   useEffect(() => {
     const controller = new AbortController();
@@ -151,26 +151,18 @@ export function FinalResultDetails({
   const ready = status === 'ready' ? response?.data : undefined;
   const basis = overview?.data.result.quantitativeReference;
   const canRead = overview && 'lciaAvailable' in overview.data ? overview.data : undefined;
-  const download = async (format: 'tidas' | 'ilcd') => {
+  const [exportProgress, setExportProgress] = useState('');
+  const download = async (selectedOverview: FinalResult) => {
     downloading.current?.abort();
     const controller = new AbortController();
     downloading.current = controller;
     setDownloadStatus('loading');
+    setExportProgress('');
     try {
-      const outcome = await finalResultDownload(publicationId, format, controller.signal);
-      if (controller.signal.aborted) return;
-      if (outcome.status !== 'ready') {
-        setDownloadStatus(outcome.status === 'unavailable' ? 'unavailable' : 'error');
-        return;
-      }
-      const link = document.createElement('a');
-      link.href = outcome.download.url;
-      link.download = outcome.download.file.name;
-      link.rel = 'noopener noreferrer';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setDownloadStatus('idle');
+      await exportFinalResultJson(selectedOverview, controller.signal, source, (loaded, total) =>
+        setExportProgress(`${loaded} / ${total}`),
+      );
+      if (!controller.signal.aborted) setDownloadStatus('idle');
     } catch {
       if (!controller.signal.aborted) setDownloadStatus('error');
     }
@@ -186,16 +178,17 @@ export function FinalResultDetails({
     id: 'pages.publishedResults.openResult',
     defaultMessage: 'Open result link',
   });
-  const tidasLabel = t({
-    id: 'pages.publishedResults.downloadTidas',
-    defaultMessage: 'Download TIDAS 7z',
-  });
-  const ilcdLabel = t({
-    id: 'pages.publishedResults.downloadIlcd',
-    defaultMessage: 'Download ILCD 7z',
+  const exportLabel = t({
+    id: 'component.dataTransfer.exportResult',
+    defaultMessage: 'Export current calculation result as JSON',
   });
   return (
     <Space orientation='vertical' style={{ width: '100%' }}>
+      {downloadStatus === 'loading' && (
+        <span role='status'>
+          {t({ id: 'component.dataTransfer.exporting' })} {exportProgress}
+        </span>
+      )}
       <Tabs
         tabBarExtraContent={
           <Space size={4} wrap>
@@ -207,25 +200,16 @@ export function FinalResultDetails({
                 onClick={onRestart}
               />
             </Tooltip>
-            {ready && (
+            {ready && overview && (
               <>
-                <Tooltip title={tidasLabel}>
+                <Tooltip title={exportLabel}>
                   <Button
                     type='text'
                     icon={<DownloadOutlined />}
-                    aria-label={tidasLabel}
+                    aria-label={exportLabel}
                     loading={downloadStatus === 'loading'}
                     disabled={downloadStatus === 'loading'}
-                    onClick={() => void download('tidas')}
-                  />
-                </Tooltip>
-                <Tooltip title={ilcdLabel}>
-                  <Button
-                    type='text'
-                    icon={<DownloadOutlined />}
-                    aria-label={ilcdLabel}
-                    disabled={downloadStatus === 'loading'}
-                    onClick={() => void download('ilcd')}
+                    onClick={() => void download(overview)}
                   />
                 </Tooltip>
                 <Tooltip title={linkLabel}>
@@ -498,22 +482,12 @@ export function FinalResultDetails({
           </div>
         </>
       )}
-      {downloadStatus === 'unavailable' && (
-        <Alert
-          type='info'
-          title={t({
-            id: 'pages.publishedResults.packageUnavailable',
-            defaultMessage:
-              'A complete 7z archive is not available for this publication and your access permissions.',
-          })}
-        />
-      )}
       {downloadStatus === 'error' && (
         <Alert
           type='error'
           title={t({
-            id: 'pages.publishedResults.downloadError',
-            defaultMessage: 'The download link could not be refreshed. Please retry.',
+            id: 'component.dataTransfer.exportError',
+            defaultMessage: 'The complete result could not be exported. Please retry.',
           })}
         />
       )}
@@ -525,10 +499,12 @@ export default function FinalSourceResults({
   id,
   version,
   legacy,
+  name,
 }: {
   id: string;
   version: string;
   legacy?: (publicationId: string) => ReactNode;
+  name?: unknown;
 }) {
   const { formatMessage: t } = useIntl();
   const [page, setPage] = useState<SourceFinalResults>();
@@ -624,6 +600,7 @@ export default function FinalSourceResults({
         <FinalResultDetails
           key={`${page.publication.publicationId}/${chosen.uuid}@${chosen.version}`}
           result={chosen}
+          source={{ uuid: id, version, name }}
           publicationId={page.publication.publicationId}
           onRestart={restart}
         />

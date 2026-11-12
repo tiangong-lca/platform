@@ -1299,19 +1299,17 @@ describe('app runtime config', () => {
     });
 
     const actions = runtimeLayout.actionsRender?.();
-    expect(actions).toHaveLength(10);
+    expect(actions).toHaveLength(8);
     expect(actions[0].type).toBe('lcia-cache-monitor');
     expect(actions[1].type).toBe('classification-cache-monitor');
     expect(actions[2].type).toBe('location-cache-monitor');
-    expect(actions[3].type).toBe('import-tidas-package');
-    expect(actions[4].type).toBe('export-tidas-package');
-    expect(actions[5].type).toBe('lca-task-center');
-    expect(actions[6].type).toBe('notification-center');
-    expect(actions[7].type).toBe('dark-mode');
-    expect(actions[8].type).toBe('select-lang');
-    expect(actions[9].type).toBe('question-link');
+    expect(actions[3].type).toBe('lca-task-center');
+    expect(actions[4].type).toBe('notification-center');
+    expect(actions[5].type).toBe('dark-mode');
+    expect(actions[6].type).toBe('select-lang');
+    expect(actions[7].type).toBe('question-link');
 
-    actions[7].props.handleClick();
+    actions[5].props.handleClick();
     expect(setInitialState).toHaveBeenCalledTimes(1);
     const updater = setInitialState.mock.calls[0][0];
     const nextState = updater({
@@ -1430,7 +1428,7 @@ describe('app runtime config', () => {
     });
 
     const actions = runtimeLayout.actionsRender?.();
-    expect(actions).toHaveLength(11);
+    expect(actions).toHaveLength(9);
     expect(actions[5].props.title).toBe('Data Dashboard');
 
     fireEvent.click(render(actions[5]).getByTestId('header-action-icon'));
@@ -1455,7 +1453,7 @@ describe('app runtime config', () => {
       (action: any) => action.props?.title === 'Data Processing',
     );
 
-    expect(actions).toHaveLength(11);
+    expect(actions).toHaveLength(9);
     expect(dataProcessingAction).toBeTruthy();
     fireEvent.click(render(dataProcessingAction).getByTestId('header-action-icon'));
     expect(mockHistory.push).toHaveBeenCalledWith('/data-processing');

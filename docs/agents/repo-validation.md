@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-11
-lastReviewedCommit: a5d14e20a5bdb6fc037df2f16c3b15794a8d1979
-lastReviewedNote: 'Platform #1489 reviewed unified public Process results, compact controls and cursor pagination proof; existing delivery and full-coverage gates remain unchanged.'
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: 23d4f2bed0dac39001bc2bee87a7038d555888d5
+lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
