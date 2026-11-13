@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
-lastReviewedNote: 'Platform #1493: reviewed authenticated data-transfer route, localized copy ownership, 65 current route assertions and matching evidence schema; browser execution and release qualification remain separate.'
+lastReviewedAt: 2026-11-13
+lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
+lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

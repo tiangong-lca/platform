@@ -841,10 +841,7 @@ describe('ModelResult', () => {
       ),
     );
     expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledWith(
-      [
-        { id: 'secondary', version: '04.00.000' },
-        { id: 'provider', version: '03.00.000' },
-      ],
+      [{ id: 'secondary', version: '04.00.000' }],
       'en',
       { classification: [], keyword: '' },
     );

@@ -379,9 +379,7 @@ const ModelResult: FC<Props> = ({
               request={async (params) => {
                 const subProducts = (params.submodels ?? []).filter(
                   (entry) =>
-                    entry.type === 'secondary' ||
-                    entry.type === 'allocated' ||
-                    (!entry.type && entry.id !== params.modelId),
+                    entry.type === 'secondary' || (!entry.type && entry.id !== params.modelId),
                 );
                 return guardLocaleMaterializedTableRequest(
                   params.contentLanguage,
