@@ -1,9 +1,11 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated } from '../general/tidasRepeatedFields';
 import { FormContact } from '@/services/contacts/data';
 import { createContact as createTidasContact } from '@tiangong-lca/tidas-sdk/core';
 import {
-  classificationToJsonList,
-  classificationToStringList,
   convertToUTCISOString,
   formatDateTime,
   getLangJson,
@@ -33,16 +35,10 @@ export function genContactJsonOrdered(id: string, data: any) {
           'common:name': getLangJson(data?.contactInformation?.dataSetInformation?.['common:name']),
           classificationInformation: {
             ...data?.contactInformation?.dataSetInformation?.classificationInformation,
-            'common:classification': mapTidasRepeated(
+            'common:classification': classificationSystemsToJson(
               data?.contactInformation?.dataSetInformation?.classificationInformation?.[
                 'common:classification'
               ],
-              (item) => ({
-                ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : classificationToJsonList(item?.['common:class']),
-              }),
             ),
           },
           contactAddress: getLangJson(data?.contactInformation?.dataSetInformation?.contactAddress),
@@ -190,9 +186,7 @@ export function genContactFromData(data: any): FormContact | undefined {
               ],
               (item) => ({
                 ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : (classificationToStringList(item?.['common:class']) as any),
+                'common:class': classificationClassesToForm(item, 'Contact'),
               }),
             ),
           },

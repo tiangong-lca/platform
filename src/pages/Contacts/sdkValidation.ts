@@ -1,3 +1,4 @@
+import { classificationFormNameMatcher } from '@/pages/Utils/validation/classification';
 import { normalizeSimpleDatasetSdkValidationDetails } from '@/pages/Utils/validation/sdkDetails';
 
 const CONTACT_REQUIRED_LANG_TEXT_FIELDS = new Set<string>([
@@ -32,18 +33,10 @@ export const normalizeContactSdkValidationDetails = (issues: any[], orderedJson:
     fieldLabelsByKey: CONTACT_FIELD_LABELS_BY_KEY,
     requiredLangTextFields: CONTACT_REQUIRED_LANG_TEXT_FIELDS,
     specialFormNames: [
-      {
-        formName: [
-          'contactInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^contactInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'contactDataSet',
+        dataType: 'Contact',
+      }),
     ],
   });
 };

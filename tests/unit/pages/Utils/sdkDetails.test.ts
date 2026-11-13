@@ -1083,7 +1083,7 @@ describe('simple dataset sdk validation detail mapping', () => {
     ]);
   });
 
-  it('maps source classification paths to the shared showValue field', () => {
+  it('maps missing source classifications to the persistent collection anchor', () => {
     const details = normalizeSourceSdkValidationDetails(
       [
         {
@@ -1116,14 +1116,12 @@ describe('simple dataset sdk validation detail mapping', () => {
     expect(details).toEqual([
       expect.objectContaining({
         fieldPath:
-          'sourceInformation.dataSetInformation.classificationInformation.common:classification.common:class.showValue',
+          'sourceInformation.dataSetInformation.classificationInformation.common:classification',
         formName: [
           'sourceInformation',
           'dataSetInformation',
           'classificationInformation',
           'common:classification',
-          'common:class',
-          'showValue',
         ],
         tabName: 'sourceInformation',
       }),

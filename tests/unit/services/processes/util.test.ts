@@ -1862,6 +1862,6 @@ describe('ILCD repeated-field preservation', () => {
     expect(
       genProcessJsonOrdered('test', form).processDataSet.processInformation.dataSetInformation
         .classificationInformation['common:classification'],
-    ).toEqual(systems);
+    ).toEqual([systems[0], { ...systems[1], 'common:class': [systems[1]['common:class']] }]);
   });
 });

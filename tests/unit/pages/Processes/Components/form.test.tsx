@@ -4,7 +4,11 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 
 jest.mock('@/components/TidasRepeatedField', () => ({
   __esModule: true,
-  default: ({ name, children }: any) => children(name),
+  default: ({ name, children, keepFirst }: any) => (
+    <div data-repeated-path={name.join('.')} data-keep-first={String(!!keepFirst)}>
+      {children(name)}
+    </div>
+  ),
 }));
 
 const toText = (node: any): string => {
@@ -520,6 +524,19 @@ describe('ProcessForm component', () => {
     mockGetUnitData.mockResolvedValue([]);
     mockGetFlowStateCodeByIdsAndVersions.mockReset();
     mockGetFlowStateCodeByIdsAndVersions.mockResolvedValue({ error: null, data: [] });
+  });
+
+  it('pins the optional completeness block without adding required rules', async () => {
+    const { container } = render(
+      <ProcessForm {...defaultProps} activeTabKey='modellingAndValidation' showRules={false} />,
+    );
+    await waitFor(() =>
+      expect(
+        container.querySelector(
+          '[data-repeated-path="modellingAndValidation.completeness.completenessElementaryFlows"]',
+        ),
+      ).toHaveAttribute('data-keep-first', 'true'),
+    );
   });
 
   it('marks rows with issues when rules are enabled', async () => {

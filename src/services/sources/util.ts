@@ -1,9 +1,11 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated } from '../general/tidasRepeatedFields';
 import { FormSource } from '@/services/sources/data';
 import { createSource as createTidasSource } from '@tiangong-lca/tidas-sdk/core';
 import {
-  classificationToJsonList,
-  classificationToStringList,
   convertToUTCISOString,
   formatDateTime,
   getLangJson,
@@ -34,16 +36,10 @@ export function genSourceJsonOrdered(id: string, data: any) {
           ),
           classificationInformation: {
             ...data?.sourceInformation?.dataSetInformation?.classificationInformation,
-            'common:classification': mapTidasRepeated(
+            'common:classification': classificationSystemsToJson(
               data?.sourceInformation?.dataSetInformation?.classificationInformation?.[
                 'common:classification'
               ],
-              (item) => ({
-                ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : classificationToJsonList(item?.['common:class']),
-              }),
             ),
           },
           sourceCitation: data?.sourceInformation?.dataSetInformation?.sourceCitation ?? {},
@@ -188,9 +184,7 @@ export function genSourceFromData(data: any): FormSource {
               ],
               (item) => ({
                 ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : (classificationToStringList(item?.['common:class']) as any),
+                'common:class': classificationClassesToForm(item, 'Source'),
               }),
             ),
           },

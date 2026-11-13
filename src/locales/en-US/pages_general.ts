@@ -1,4 +1,5 @@
 export default {
+  'pages.classification.requiredValue': 'Please fill in this required classification field.',
   'pages.classification.systemName': 'Classification system',
   'pages.classification.systemUri': 'Classification system URI',
   'pages.classification.level': 'Level',

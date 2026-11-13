@@ -30,6 +30,7 @@ type Props = {
   asInput?: boolean;
   onData: () => void;
   rules?: Rule[];
+  showRequiredLabel?: boolean;
 };
 
 type RefDataResponse = {
@@ -46,6 +47,7 @@ const FlowsSelectForm: FC<Props> = ({
   asInput,
   onData,
   rules = [],
+  showRequiredLabel = false,
 }) => {
   const intl = useIntl();
   const [id, setId] = useState<string | undefined>(undefined);
@@ -160,10 +162,10 @@ const FlowsSelectForm: FC<Props> = ({
       size='small'
       style={errRef ? { border: `1px solid ${token.colorError}` } : {}}
       title={
-        isRequired ? (
+        isRequired || showRequiredLabel ? (
           <RequiredSelectFormTitle
             label={label}
-            ruleErrorState={ruleErrorState}
+            ruleErrorState={isRequired && ruleErrorState}
             requiredRules={requiredRules}
             errRef={errRef}
           />

@@ -1,3 +1,4 @@
+import { classificationFormNameMatcher } from '@/pages/Utils/validation/classification';
 import type { ValidationIssueSdkDetail } from '@/pages/Utils/review';
 import {
   type DatasetSdkValidationIssueLike,
@@ -161,18 +162,10 @@ export const normalizeFlowSdkValidationDetails = (issues: any[], orderedJson: an
       },
     ],
     specialFormNames: [
-      {
-        formName: [
-          'flowInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^flowInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'flowDataSet',
+        dataType: 'Flow',
+      }),
     ],
   }).map((detail) => toFlowPropertyFieldDetail(detail, orderedJson));
 };

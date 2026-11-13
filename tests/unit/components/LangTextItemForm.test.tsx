@@ -9,12 +9,15 @@ import userEvent from '@testing-library/user-event';
 import { Form } from 'antd';
 
 const listRulesByPath: Record<string, any[]> = {};
+const fieldRulesByPath: Record<string, any[]> = {};
+let mockLocale = 'en-US';
 
 jest.mock('umi', () => ({
   FormattedMessage: ({ id, defaultMessage }: { id: string; defaultMessage?: string }) => (
     <span>{defaultMessage ?? id}</span>
   ),
   useIntl: () => ({
+    locale: mockLocale,
     formatMessage: (
       { id, defaultMessage }: { id: string; defaultMessage?: string },
       values?: Record<string, string | number>,
@@ -60,6 +63,9 @@ jest.mock('antd', () => {
         return;
       }
 
+      // Ant Design useWatch also reads the value at subscription time, including
+      // initial values registered by a child Form.List during the same commit.
+      forceUpdate();
       return form.subscribe(() => {
         forceUpdate();
       });
@@ -77,6 +83,7 @@ jest.mock('antd', () => {
     const { form, prefix } = React.useContext(FormContext);
     useFormSubscription(form);
     const path = [...prefix, ...normalizePath(name)];
+    fieldRulesByPath[path.join('.')] = rules;
 
     if (path.length === 0) {
       return <div style={style}>{children}</div>;
@@ -87,6 +94,7 @@ jest.mock('antd', () => {
     const handleChange = (next: any) => {
       const resolvedValue = next && next.target !== undefined ? next.target.value : next;
       form.setFieldValue(path, resolvedValue);
+      children?.props?.onChange?.(resolvedValue);
       rules.forEach((rule: any) => {
         if (typeof rule?.validator === 'function') {
           Promise.resolve(rule.validator(null, resolvedValue)).catch(() => {});
@@ -263,6 +271,8 @@ type RenderOptions = {
   listName?: string[];
   setRuleErrorState?: jest.Mock;
   initialValues?: Record<string, unknown>;
+  defaultLanguages?: readonly string[];
+  autoExpandRequired?: boolean;
 };
 
 type Path = (string | number)[];
@@ -343,9 +353,15 @@ const renderLangTextItemForm = (options: RenderOptions = {}) => {
     listName,
     setRuleErrorState,
     initialValues = {},
+    autoExpandRequired,
   } = options;
 
   const formRef = createFormRef(initialValues);
+  // Existing tests explicitly exercise manual-entry mode; the locale-default
+  // scenarios below pass an undefined override to use the product default.
+  const defaultLanguages = Object.prototype.hasOwnProperty.call(options, 'defaultLanguages')
+    ? options.defaultLanguages
+    : [];
 
   const Wrapper = () => (
     <Form {...({ formRef } as any)}>
@@ -357,6 +373,8 @@ const renderLangTextItemForm = (options: RenderOptions = {}) => {
         listName={listName}
         setRuleErrorState={setRuleErrorState}
         formRef={formRef}
+        defaultLanguages={defaultLanguages}
+        autoExpandRequired={autoExpandRequired}
       />
     </Form>
   );
@@ -405,7 +423,105 @@ describe('LangTextItemForm', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mockLocale = 'en-US';
     Object.keys(listRulesByPath).forEach((key) => delete listRulesByPath[key]);
+    Object.keys(fieldRulesByPath).forEach((key) => delete fieldRulesByPath[key]);
+  });
+
+  it.each<[string, string[]]>([
+    ['en-US', ['en']],
+    ['zh-CN', ['zh', 'en']],
+    ['de-DE', ['de', 'en']],
+    ['fr-FR', ['fr', 'en']],
+    ['unsupported-locale', ['en']],
+  ])('opens the current UI language before English for %s', async (locale, expected) => {
+    mockLocale = locale;
+    const { formRef } = renderLangTextItemForm({
+      defaultLanguages: undefined,
+      autoExpandRequired: true,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getAllByRole('combobox').map((select) => (select as HTMLSelectElement).value),
+      ).toEqual(expected);
+    });
+    expect(formRef.current.getFieldValue(['translations'])).toEqual(
+      expected.map((language) => ({ '@xml:lang': language })),
+    );
+    expect(
+      screen.getAllByRole('textbox').every((input) => !(input as HTMLTextAreaElement).value),
+    ).toBe(true);
+  });
+
+  it('keeps stored text and SDK error indexes while displaying Chinese first', async () => {
+    mockLocale = 'zh-CN';
+    const stored = [
+      { '@xml:lang': 'en', '#text': 'English text' },
+      { '@xml:lang': 'fr', '#text': 'Texte français' },
+      { '@xml:lang': 'en', '#text': 'Another English paragraph' },
+    ];
+    const { formRef } = renderLangTextItemForm({
+      defaultLanguages: undefined,
+      autoExpandRequired: true,
+      initialValues: { translations: stored },
+      fieldErrorMessages: { 1: ['French field error'] },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getAllByRole('combobox').map((select) => (select as HTMLSelectElement).value),
+      ).toEqual(['zh', 'en', 'en', 'fr']);
+    });
+    expect(formRef.current.getFieldValue(['translations'])).toEqual([
+      ...stored,
+      { '@xml:lang': 'zh' },
+    ]);
+    expect(
+      screen.getByDisplayValue('Texte français').closest('[data-validate-status]'),
+    ).toHaveAttribute('data-validate-status', 'error');
+  });
+
+  it('allows a blank optional default language while still requiring English text', async () => {
+    mockLocale = 'zh-CN';
+    renderLangTextItemForm({ defaultLanguages: undefined, rules: [{ required: true }] });
+    await waitFor(() => expect(screen.getAllByRole('textbox')).toHaveLength(2));
+
+    await expect(
+      fieldRulesByPath['translations.0.#text'][0].validator(null, ''),
+    ).resolves.toBeUndefined();
+    await expect(fieldRulesByPath['translations.1.#text'][0].validator(null, '')).rejects.toThrow(
+      'Please input this field',
+    );
+    await expect(
+      fieldRulesByPath['translations.1.#text'][0].validator(null, 'English text'),
+    ).resolves.toBeUndefined();
+  });
+
+  it('reuses an empty row without overwriting an entry whose language is missing', async () => {
+    mockLocale = 'zh-CN';
+    const { formRef } = renderLangTextItemForm({
+      defaultLanguages: undefined,
+      autoExpandRequired: true,
+      initialValues: { translations: [{}, { '#text': 'Keep unassigned text' }] },
+    });
+    await waitFor(() => expect(screen.getAllByRole('combobox')).toHaveLength(3));
+    expect(formRef.current.getFieldValue(['translations'])).toEqual([
+      { '@xml:lang': 'zh' },
+      { '#text': 'Keep unassigned text' },
+      { '@xml:lang': 'en' },
+    ]);
+  });
+
+  it('respects an explicit language change instead of continually recreating the default row', async () => {
+    const { formRef } = renderLangTextItemForm({
+      defaultLanguages: undefined,
+      autoExpandRequired: true,
+    });
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveValue('en'));
+    await userEvent.setup().selectOptions(screen.getByRole('combobox'), 'fr');
+    await waitFor(() => expect(screen.getAllByRole('combobox')).toHaveLength(1));
+    expect(formRef.current.getFieldValue(['translations'])).toEqual([{ '@xml:lang': 'fr' }]);
   });
 
   it('prevents removing the final required entry', async () => {
@@ -619,18 +735,23 @@ describe('LangTextItemForm', () => {
     expect(message.error).not.toHaveBeenCalled();
   });
 
-  it('falls back to the surrounding form context and empty language selections when formRef is omitted', async () => {
+  it('uses the surrounding form context and locale defaults when formRef is omitted', async () => {
     const wrapperFormRef = createFormRef({});
 
     render(
       <Form {...({ formRef: wrapperFormRef } as any)}>
-        <LangTextItemForm name={['translations']} label='Translation' rules={[]} />
+        <LangTextItemForm
+          name={['translations']}
+          label='Translation'
+          autoExpandRequired
+          rules={[]}
+        />
       </Form>,
     );
 
     await userEvent.click(screen.getByRole('button', { name: /add translation item/i }));
 
-    expect(wrapperFormRef.store).toEqual({ translations: [{}] });
+    expect(wrapperFormRef.store).toEqual({ translations: [{ '@xml:lang': 'en' }, {}] });
   });
 
   it('reads initial values when using listName for nested lists', async () => {
@@ -712,6 +833,7 @@ describe('LangTextItemForm', () => {
                   key={field.key}
                   name={[field.name, 'common:otherReviewDetails']}
                   listName={['review']}
+                  defaultLanguages={[]}
                   formRef={formRef}
                   label='Review details'
                 />
@@ -806,5 +928,21 @@ describe('LangTextItemForm', () => {
 
     await expect(listRule.validator(null, undefined)).rejects.toThrow('Please input this field');
     expect(message.error).not.toHaveBeenCalled();
+  });
+
+  it('preserves malformed stored values instead of replacing them with defaults', () => {
+    const { formRef } = renderLangTextItemForm({
+      defaultLanguages: undefined,
+      autoExpandRequired: true,
+      initialValues: { translations: 'unparsed legacy value' },
+    });
+    expect(formRef.current.getFieldValue(['translations'])).toBe('unparsed legacy value');
+  });
+
+  it('rejects an empty required list without a parent rule-error callback', async () => {
+    renderLangTextItemForm({ rules: [{ required: true }] });
+    await expect(listRulesByPath.translations[0].validator(null, [])).rejects.toThrow(
+      'Please input this field',
+    );
   });
 });

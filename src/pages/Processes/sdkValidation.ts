@@ -1,3 +1,4 @@
+import { getClassificationIssueFormName } from '@/pages/Utils/validation/classification';
 import type { ValidationIssueMessageValues, ValidationIssueSdkDetail } from '@/pages/Utils/review';
 import { toIndexedLangTextLeafFormName } from '@/pages/Utils/validation/sdkDetails';
 
@@ -577,28 +578,11 @@ const getProcessSdkIssueRootFormName = (
   const rootPathString = getRootPathString(path);
   const actualValue = getValueAtPath(orderedJson, path);
 
-  if (
-    rootPathString.startsWith(
-      'processInformation.dataSetInformation.classificationInformation.common:classification',
-    )
-  ) {
-    const systems = getValueAtPath(orderedJson, [
-      'processDataSet',
-      'processInformation',
-      'dataSetInformation',
-      'classificationInformation',
-      'common:classification',
-    ]);
-    if (Array.isArray(systems) || systems?.['@name']) return rootPath;
-    return [
-      'processInformation',
-      'dataSetInformation',
-      'classificationInformation',
-      'common:classification',
-      'common:class',
-      'showValue',
-    ];
-  }
+  const classificationFormName = getClassificationIssueFormName(rootPath, orderedJson, {
+    datasetKey: 'processDataSet',
+    dataType: 'Process',
+  });
+  if (classificationFormName) return classificationFormName;
 
   if (
     rootPathString === 'processInformation.geography.locationOfOperationSupplyOrProduction' ||

@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
-lastReviewedNote: 'Platform #1500: reviewed focused product-result validation, isolated browser proof and final checked-push ownership; no bootstrap or release contract change.'
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1488: reviewed persistent required markers, required-only language defaults, classification identity/serialization and fixed first blocks on latest dev; existing validation timing, bootstrap, backend and release boundaries remain.'
 ---
 
 # Development Bootstrap
