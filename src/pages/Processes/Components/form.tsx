@@ -894,6 +894,9 @@ export const ProcessForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setBaseNameError}
+              autoExpandRequired={schema['processDataSet']['processInformation'][
+                'dataSetInformation'
+              ]['name']['baseName']['rules'].some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(
@@ -934,6 +937,9 @@ export const ProcessForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setTreatmentStandardsRoutesError}
+              autoExpandRequired={schema['processDataSet']['processInformation'][
+                'dataSetInformation'
+              ]['name']['treatmentStandardsRoutes']['rules'].some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(
@@ -969,6 +975,9 @@ export const ProcessForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setMixAndLocationTypesError}
+              autoExpandRequired={schema['processDataSet']['processInformation'][
+                'dataSetInformation'
+              ]['name']['mixAndLocationTypes']['rules'].some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(
@@ -1086,6 +1095,9 @@ export const ProcessForm: FC<Props> = ({
               />
             }
             setRuleErrorState={setGeneralCommentError}
+            autoExpandRequired={schema['processDataSet']['processInformation'][
+              'dataSetInformation'
+            ]['common:generalComment']['rules'].some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(
@@ -1318,6 +1330,9 @@ export const ProcessForm: FC<Props> = ({
                 defaultMessage='Technology description including background system'
               />
             }
+            autoExpandRequired={schema['processDataSet']['processInformation']['technology'][
+              'technologyDescriptionAndIncludedProcesses'
+            ]['rules'].some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(
@@ -1529,6 +1544,7 @@ export const ProcessForm: FC<Props> = ({
                 defaultMessage='Dataset type'
               />
             }
+            required
             name={['modellingAndValidation', 'LCIMethodAndAllocation', 'typeOfDataSet']}
             rules={
               showRules
@@ -1689,6 +1705,9 @@ export const ProcessForm: FC<Props> = ({
                 defaultMessage='Data cut-off and completeness principles'
               />
             }
+            autoExpandRequired={schema['processDataSet']['modellingAndValidation'][
+              'dataSourcesTreatmentAndRepresentativeness'
+            ]['dataCutOffAndCompletenessPrinciples']['rules'].some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(
@@ -1844,6 +1863,7 @@ export const ProcessForm: FC<Props> = ({
                         'referenceToDataSource',
                       ]}
                       name={[field.name]}
+                      showRequiredLabel
                       label={
                         <FormattedMessage
                           id='pages.process.view.modellingAndValidation.referenceToDataSource'
@@ -2063,6 +2083,7 @@ export const ProcessForm: FC<Props> = ({
           >
             <TidasRepeatedField
               name={['modellingAndValidation', 'completeness', 'completenessElementaryFlows']}
+              keepFirst
               onChange={onData}
             >
               {(itemPath) => (
@@ -2135,6 +2156,7 @@ export const ProcessForm: FC<Props> = ({
             'common:commissionerAndGoal',
             'common:referenceToCommissioner',
           ]}
+          showRequiredLabel
           label={
             <FormattedMessage
               id='pages.process.view.administrativeInformation.referenceToCommissioner'
@@ -2200,6 +2222,9 @@ export const ProcessForm: FC<Props> = ({
               />
             }
             setRuleErrorState={setIntendedApplicationsError}
+            autoExpandRequired={schema['processDataSet']['administrativeInformation'][
+              'common:commissionerAndGoal'
+            ]['common:intendedApplications']['rules'].some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(
@@ -2312,6 +2337,7 @@ export const ProcessForm: FC<Props> = ({
               'dataEntryBy',
               'common:referenceToPersonOrEntityEnteringTheData',
             ]}
+            showRequiredLabel
             rules={
               showRules
                 ? getRules(
@@ -2483,6 +2509,7 @@ export const ProcessForm: FC<Props> = ({
               'publicationAndOwnership',
               'common:referenceToOwnershipOfDataSet',
             ]}
+            showRequiredLabel
             label={
               <FormattedMessage
                 id='pages.process.view.administrativeInformation.referenceToOwnershipOfDataSet'
@@ -2510,6 +2537,7 @@ export const ProcessForm: FC<Props> = ({
                 defaultMessage='Copyright?'
               />
             }
+            required
             name={['administrativeInformation', 'publicationAndOwnership', 'common:copyright']}
             rules={
               showRules
@@ -2547,6 +2575,7 @@ export const ProcessForm: FC<Props> = ({
                 defaultMessage='License type'
               />
             }
+            required
             name={['administrativeInformation', 'publicationAndOwnership', 'common:licenseType']}
             rules={
               showRules

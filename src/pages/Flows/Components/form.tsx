@@ -1,3 +1,4 @@
+import { clearClassificationSelection } from '@/services/classifications/serialization';
 /* istanbul ignore file -- flow form behavior is covered by tests; remaining misses are presentation-only branches */
 import DatasetCreateVersionFormItem from '@/components/DatasetCreateVersionFormItem';
 import LangTextItemForm from '@/components/LangTextItem/form';
@@ -471,6 +472,9 @@ export const FlowForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setBaseNameError}
+              autoExpandRequired={schema['flowDataSet']['flowInformation']['dataSetInformation'][
+                'name'
+              ]['baseName']['rules'].some((rule) => rule.required)}
               rules={[
                 ...(showRules
                   ? getRules(
@@ -515,6 +519,9 @@ export const FlowForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setTreatmentStandardsRoutesError}
+              autoExpandRequired={schema['flowDataSet']['flowInformation']['dataSetInformation'][
+                'name'
+              ]['treatmentStandardsRoutes']['rules'].some((rule) => rule.required)}
               rules={[
                 ...(showRules
                   ? getRules(
@@ -559,6 +566,9 @@ export const FlowForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setMixAndLocationTypesError}
+              autoExpandRequired={schema['flowDataSet']['flowInformation']['dataSetInformation'][
+                'name'
+              ]['mixAndLocationTypes']['rules'].some((rule) => rule.required)}
               rules={[
                 ...(showRules
                   ? getRules(
@@ -676,29 +686,33 @@ export const FlowForm: FC<Props> = ({
               options={myFlowTypeOptions}
               onChange={(value) => {
                 if (thisFlowType === 'Elementary flow' || value === 'Elementary flow') {
-                  const nameElementaryFlow = [
+                  const basePath = [
                     'flowInformation',
                     'dataSetInformation',
                     'classificationInformation',
-                    'common:elementaryFlowCategorization',
-                    'common:category',
                   ];
-                  const nameFlow = [
-                    'flowInformation',
-                    'dataSetInformation',
-                    'classificationInformation',
-                    'common:classification',
-                    'common:class',
-                  ];
-                  formRef.current?.setFieldValue([...nameElementaryFlow], null);
-                  formRef.current?.setFieldValue([...nameFlow], null);
+                  for (const [systemKey, classKey] of [
+                    ['common:elementaryFlowCategorization', 'common:category'],
+                    ['common:classification', 'common:class'],
+                  ]) {
+                    const systemPath = [...basePath, systemKey];
+                    formRef.current?.setFieldValue(
+                      systemPath,
+                      clearClassificationSelection(
+                        formRef.current?.getFieldValue(systemPath),
+                        classKey,
+                      ),
+                    );
+                  }
                 }
                 setThisFlowType(value);
+                onData();
               }}
             />
           </Form.Item>
           <LevelTextItemForm
             hidden={thisFlowType !== 'Elementary flow'}
+            showRules={showRules}
             dataType={'Flow'}
             lang={lang}
             flowType={thisFlowType}

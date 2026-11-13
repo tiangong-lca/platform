@@ -22,8 +22,8 @@ checkPaths:
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1488: reviewed classification-only dataset serialization and editor markers; matrix compilation/solving, allocation, LCIA, multiplier write-back, cancellation and result persistence orchestration remain unchanged.'
 ---
 
 # Lifecycle Model Calculation Reference

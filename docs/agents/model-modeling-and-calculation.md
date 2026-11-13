@@ -18,8 +18,8 @@ checkPaths:
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1488: reviewed classification encode/decode and required-language display; product demand, allocation, functional units, instance multipliers, result identity and model/result save semantics remain unchanged.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md

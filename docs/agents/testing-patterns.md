@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1488: reviewed native Ant Design collection tests, real schema predicates and classification round trips; parser adapter, external-boundary mocks and serial Umi proof remain in use.'
 ---
 
 # Testing Patterns Reference

@@ -57,8 +57,8 @@ checkPaths:
   - .github/workflows/build.yml
   - package.json
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1488: reviewed schema-driven required-only language defaults and four-locale classification validation copy; registry/capability, content-save, reference-resource, evidence and release boundaries remain unchanged.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

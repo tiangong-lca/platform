@@ -1,4 +1,5 @@
 import type { Classification } from '../general/data';
+import { getClassificationSource } from './system';
 import type { IlcdCanonicalDataType, ReferenceResourceId } from '../referenceResources/manifest';
 import {
   getReferenceDataTypeName,
@@ -120,29 +121,6 @@ async function getClassificationNodesByType(
   return normalizeFlowCategorizationNodes(group?.category);
 }
 
-function getSpecialClassificationSource(
-  categoryType: string,
-): { resourceId: ReferenceResourceId; dataType: IlcdCanonicalDataType } | null {
-  if (categoryType === 'Flow') {
-    return {
-      resourceId: 'cpc',
-      dataType: 'Flow',
-    };
-  }
-
-  if (categoryType === 'Process' || categoryType === 'LifeCycleModel') {
-    return {
-      resourceId: 'isic',
-      dataType: 'Process',
-    };
-  }
-
-  return null;
-}
-
-const normalizeCanonicalDataType = (categoryType: string): IlcdCanonicalDataType =>
-  categoryType as IlcdCanonicalDataType;
-
 async function getLocalizedClassificationNodes(
   resourceId: ReferenceResourceId,
   categoryType: IlcdCanonicalDataType,
@@ -172,11 +150,10 @@ export async function getILCDClassification(
   getValues: string[],
 ): Promise<{ data: Classification[]; success: boolean }> {
   try {
-    const specialSource = getSpecialClassificationSource(categoryType);
-    const canonicalDataType = specialSource?.dataType ?? normalizeCanonicalDataType(categoryType);
+    const source = getClassificationSource(categoryType);
     const { baseNodes, localizedNodes } = await getLocalizedClassificationNodes(
-      specialSource?.resourceId ?? 'ilcd-classification',
-      canonicalDataType,
+      source.resourceId,
+      source.dataType,
       lang,
     );
     const localizedData: Classification[] =

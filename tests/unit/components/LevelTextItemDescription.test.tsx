@@ -1,3 +1,4 @@
+import { getClassificationSource } from '@/services/classifications/system';
 /**
  * Tests for LevelTextItemDescription component
  * Path: src/components/LevelTextItem/description.tsx
@@ -362,4 +363,23 @@ it.each([
       'false',
     );
   });
+});
+
+it('localizes default-named built-in systems after saving', async () => {
+  mockGetILCDClassification.mockResolvedValue({ success: true, data: [{ value: 'Agriculture' }] });
+  mockGenClassStr.mockReturnValue('农业');
+  render(
+    <LevelTextItemDescription
+      data={null}
+      lang='zh'
+      categoryType='Process'
+      systems={{
+        '@name': 'ISIC Rev. 5',
+        '@classes': getClassificationSource('Process').uri,
+        'common:class': { '@level': '0', '@classId': 'A', '#text': 'Agriculture' },
+      }}
+    />,
+  );
+  await waitFor(() => expect(screen.getByText('农业')).toBeInTheDocument());
+  expect(mockGetILCDClassification).toHaveBeenCalledWith('Process', 'zh', ['Agriculture']);
 });

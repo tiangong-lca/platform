@@ -1,9 +1,11 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated } from '../general/tidasRepeatedFields';
 import { FormFlowProperty } from '@/services/flowproperties/data';
 import { createFlowProperty as createTidasFlowProperty } from '@tiangong-lca/tidas-sdk/core';
 import {
-  classificationToJsonList,
-  classificationToStringList,
   convertToUTCISOString,
   formatDateTime,
   getLangJson,
@@ -36,16 +38,10 @@ export function genFlowpropertyJsonOrdered(id: string, data: any) {
           ),
           classificationInformation: {
             ...data?.flowPropertiesInformation?.dataSetInformation?.classificationInformation,
-            'common:classification': mapTidasRepeated(
+            'common:classification': classificationSystemsToJson(
               data?.flowPropertiesInformation?.dataSetInformation?.classificationInformation?.[
                 'common:classification'
               ],
-              (item) => ({
-                ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : classificationToJsonList(item?.['common:class']),
-              }),
             ),
           },
           'common:generalComment': getLangJson(
@@ -235,9 +231,7 @@ export function genFlowpropertyFromData(data: any): FormFlowProperty {
               ],
               (item) => ({
                 ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : (classificationToStringList(item?.['common:class']) as any),
+                'common:class': classificationClassesToForm(item, 'FlowProperty'),
               }),
             ),
           },

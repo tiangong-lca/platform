@@ -1,3 +1,7 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated, hasTidasReference } from '../general/tidasRepeatedFields';
 import { normalizeAllocation } from './allocation';
 import { FormProcess } from '@/services/processes/data';
@@ -12,8 +16,6 @@ import {
 } from '../general/tidasScalarStorage';
 import {
   capitalize,
-  classificationToJsonList,
-  classificationToStringList,
   convertCopyrightToBoolean,
   convertToUTCISOString,
   formatDateTime,
@@ -184,16 +186,10 @@ export function genProcessJsonOrdered(id: string, data: any) {
           ),
           classificationInformation: {
             ...data?.processInformation?.dataSetInformation?.classificationInformation,
-            'common:classification': mapTidasRepeated(
+            'common:classification': classificationSystemsToJson(
               data?.processInformation?.dataSetInformation?.classificationInformation?.[
                 'common:classification'
               ],
-              (item) => ({
-                ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : classificationToJsonList(item?.['common:class']),
-              }),
             ),
           },
           'common:generalComment': getLangJson(
@@ -915,9 +911,7 @@ export function genProcessFromData(data: any): FormProcess {
               ],
               (item) => ({
                 ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : (classificationToStringList(item?.['common:class']) as any),
+                'common:class': classificationClassesToForm(item, 'Process'),
               }),
             ),
           },

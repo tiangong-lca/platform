@@ -1,10 +1,12 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated } from '../general/tidasRepeatedFields';
 import { createLifeCycleModel as createTidasLifeCycleModel } from '@tiangong-lca/tidas-sdk/core';
 import { v4 } from 'uuid';
 import { getContentGraphTextWidthDivisor } from '../general/contentLanguageRegistry';
 import {
-  classificationToJsonList,
-  classificationToStringList,
   convertCopyrightToBoolean,
   convertToUTCISOString,
   formatDateTime,
@@ -335,16 +337,10 @@ export function genLifeCycleModelJsonOrdered(id: string, data: any) {
           },
           classificationInformation: {
             ...data?.lifeCycleModelInformation?.dataSetInformation?.classificationInformation,
-            'common:classification': mapTidasRepeated(
+            'common:classification': classificationSystemsToJson(
               data?.lifeCycleModelInformation?.dataSetInformation?.classificationInformation?.[
                 'common:classification'
               ],
-              (item) => ({
-                ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : classificationToJsonList(item?.['common:class']),
-              }),
             ),
           },
           referenceToResultingProcess: {
@@ -729,9 +725,7 @@ export function genLifeCycleModelInfoFromData(data: any): FormLifeCycleModel {
               ],
               (item) => ({
                 ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : (classificationToStringList(item?.['common:class']) as any),
+                'common:class': classificationClassesToForm(item, 'LifeCycleModel'),
               }),
             ),
           },

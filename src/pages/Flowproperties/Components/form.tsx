@@ -153,6 +153,9 @@ export const FlowpropertyForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setNameErrorState}
+              autoExpandRequired={schema['flowPropertyDataSet']['flowPropertiesInformation'][
+                'dataSetInformation'
+              ]['common:name']['rules'].some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(

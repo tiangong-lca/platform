@@ -6,8 +6,9 @@ import {
 import { useAntdAppApi } from '@/contexts/AntdAppContext';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Row, Select } from 'antd';
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useRef } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
+import { addDefaultLanguageEntries, getDefaultLanguagesForLocale } from './defaults';
 
 const { TextArea } = Input;
 const authoringLanguageOptions = getAuthoringLanguageOptions();
@@ -20,15 +21,24 @@ type Props = {
   setRuleErrorState?: (showError: boolean) => void;
   formRef?: any;
   listName?: string[];
+  defaultLanguages?: readonly string[];
+  /** Intrinsic field requiredness for display defaults; never enables validation. */
+  autoExpandRequired?: boolean;
 };
 
-type RequiredListEntryGuardProps = {
+type ListEntryGuardProps = {
   add: () => void;
   enabled: boolean;
   itemCount: number;
+  onReset: () => void;
 };
 
-const RequiredListEntryGuard: FC<RequiredListEntryGuardProps> = ({ add, enabled, itemCount }) => {
+const ListEntryGuard: FC<ListEntryGuardProps> = ({ add, enabled, itemCount, onReset }) => {
+  const onResetRef = useRef(onReset);
+  onResetRef.current = onReset;
+  // Ant Design remounts list descendants on reset; restore defaults for the new
+  // editing session while respecting deliberate removals during normal typing.
+  useEffect(() => onResetRef.current(), []);
   useEffect(() => {
     if (enabled && itemCount === 0) {
       add();
@@ -46,6 +56,8 @@ const LangTextItemForm: FC<Props> = ({
   setRuleErrorState,
   formRef,
   listName,
+  defaultLanguages,
+  autoExpandRequired,
 }) => {
   const { message } = useAntdAppApi();
   const intl = useIntl();
@@ -56,12 +68,46 @@ const LangTextItemForm: FC<Props> = ({
 
   const formValuePath = listName ? [...listName, ...(Array.isArray(name) ? name : [name])] : name;
   const watchedFormValues = Form.useWatch(formValuePath, form);
+  const effectiveDefaultLanguages =
+    (autoExpandRequired ?? isRequired)
+      ? (defaultLanguages ?? getDefaultLanguagesForLocale(intl.locale))
+      : [];
+  const defaultLanguageKey = effectiveDefaultLanguages.join('|');
+  const formValuePathKey = JSON.stringify(formValuePath);
+  const removedDefaultLanguages = useRef(new Set<string>());
+
+  // Seed only missing languages. Stored indexes stay stable for SDK field errors;
+  // current-language-first ordering is applied to the rendered rows below.
+  const applyDefaultLanguages = useCallback(() => {
+    if (!defaultLanguageKey || !form) return;
+    const path = JSON.parse(formValuePathKey);
+    const stored = form.getFieldValue(path);
+    if (stored !== null && stored !== undefined && !Array.isArray(stored)) return;
+    const current: Record<string, unknown>[] = stored ?? [];
+    const next = addDefaultLanguageEntries(
+      current,
+      defaultLanguageKey
+        .split('|')
+        .filter((language) => !removedDefaultLanguages.current.has(language)),
+    );
+    if (next !== current) {
+      form.setFieldValue(path, next);
+    }
+  }, [defaultLanguageKey, formValuePathKey, form]);
+
+  useEffect(applyDefaultLanguages, [applyDefaultLanguages, watchedFormValues]);
+
+  const resetDefaultLanguages = useCallback(() => {
+    removedDefaultLanguages.current.clear();
+    applyDefaultLanguages();
+  }, [applyDefaultLanguages]);
 
   const normalizeTextValue = (value: unknown) => {
     return typeof value === 'string' ? value.trim() : '';
   };
 
-  const formValues = watchedFormValues ?? form?.getFieldValue(formValuePath) ?? [];
+  const rawFormValues = watchedFormValues ?? form?.getFieldValue(formValuePath);
+  const formValues = Array.isArray(rawFormValues) ? rawFormValues : [];
 
   const selectedLangValues = formValues
     .filter((item: any) => item && item['@xml:lang'])
@@ -71,7 +117,13 @@ const LangTextItemForm: FC<Props> = ({
     <Form.Item>
       <Form.List
         name={name}
-        initialValue={isRequired ? [{}] : undefined}
+        initialValue={
+          effectiveDefaultLanguages.length
+            ? effectiveDefaultLanguages.map((language) => ({ '@xml:lang': language }))
+            : isRequired
+              ? [{}]
+              : undefined
+        }
         rules={
           isRequired
             ? [
@@ -132,21 +184,32 @@ const LangTextItemForm: FC<Props> = ({
         }
       >
         {(subFields, subOpt) => {
+          const languageOrder = (index: number) => {
+            const order = effectiveDefaultLanguages.indexOf(formValues?.[index]?.['@xml:lang']);
+            return order < 0 ? effectiveDefaultLanguages.length : order;
+          };
+          const orderedFields = [...subFields].sort(
+            (left, right) =>
+              languageOrder(left.name) - languageOrder(right.name) || left.name - right.name,
+          );
           return (
             <div style={{ display: 'flex', flexDirection: 'column', rowGap: 16 }}>
-              <RequiredListEntryGuard
+              <ListEntryGuard
                 add={subOpt.add}
-                enabled={isRequired}
+                enabled={isRequired && !effectiveDefaultLanguages.length}
                 itemCount={subFields.length}
+                onReset={resetDefaultLanguages}
               />
-              {subFields.map((subField) => {
+              {orderedFields.map((subField) => {
                 const currentLang = formValues?.[subField.name]?.['@xml:lang'];
                 const fieldErrors = fieldErrorMessages?.[subField.name] ?? [];
+                const isOptionalLanguage =
+                  !!currentLang && !REQUIRED_CONTENT_LANGUAGES.includes(currentLang);
                 const textRules = isRequired
                   ? [
                       {
                         validator: async (_: unknown, value: unknown) => {
-                          if (normalizeTextValue(value).length > 0) {
+                          if (normalizeTextValue(value).length > 0 || isOptionalLanguage) {
                             return Promise.resolve();
                           }
 
@@ -231,6 +294,14 @@ const LangTextItemForm: FC<Props> = ({
                           }
                           showSearch={{ optionFilterProp: 'label' }}
                           options={optionsWithDisabled}
+                          onChange={(language) => {
+                            if (
+                              currentLang !== language &&
+                              effectiveDefaultLanguages.includes(currentLang)
+                            ) {
+                              removedDefaultLanguages.current.add(currentLang);
+                            }
+                          }}
                           // The four registry options stay mounted for deterministic
                           // Form.List validation, keyboard navigation, and browser proof.
                           virtual={false}
@@ -262,6 +333,9 @@ const LangTextItemForm: FC<Props> = ({
                         onClick={() => {
                           if (isRequired && subFields.length === 1) {
                             return;
+                          }
+                          if (currentLang && effectiveDefaultLanguages.includes(currentLang)) {
+                            removedDefaultLanguages.current.add(currentLang);
                           }
                           subOpt.remove(subField.name);
                         }}

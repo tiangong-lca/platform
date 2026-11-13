@@ -208,6 +208,9 @@ export const LifeCycleModelForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setBaseNameError}
+              autoExpandRequired={schema['lifeCycleModelDataSet']['lifeCycleModelInformation'][
+                'dataSetInformation'
+              ]['name']['baseName']['rules'].some((rule) => rule.required)}
               rules={[
                 ...(showRules
                   ? getRules(
@@ -257,6 +260,9 @@ export const LifeCycleModelForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setTreatmentStandardsRoutesError}
+              autoExpandRequired={schema['lifeCycleModelDataSet']['lifeCycleModelInformation'][
+                'dataSetInformation'
+              ]['name']['treatmentStandardsRoutes']['rules'].some((rule) => rule.required)}
               rules={[
                 ...(showRules
                   ? getRules(
@@ -306,6 +312,9 @@ export const LifeCycleModelForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setMixAndLocationTypesError}
+              autoExpandRequired={schema['lifeCycleModelDataSet']['lifeCycleModelInformation'][
+                'dataSetInformation'
+              ]['name']['mixAndLocationTypes']['rules'].some((rule) => rule.required)}
               rules={[
                 ...(showRules
                   ? getRules(
@@ -420,6 +429,9 @@ export const LifeCycleModelForm: FC<Props> = ({
                 defaultMessage='General comment'
               />
             }
+            autoExpandRequired={processSchema['processDataSet']['processInformation'][
+              'dataSetInformation'
+            ]['common:generalComment']['rules'].some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(
@@ -572,6 +584,9 @@ export const LifeCycleModelForm: FC<Props> = ({
                 />
               }
               setRuleErrorState={setIntendedApplicationsError}
+              autoExpandRequired={processSchema['processDataSet']['administrativeInformation'][
+                'common:commissionerAndGoal'
+              ]['common:intendedApplications']['rules'].some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(

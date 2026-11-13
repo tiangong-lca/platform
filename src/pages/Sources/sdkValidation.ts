@@ -1,3 +1,4 @@
+import { classificationFormNameMatcher } from '@/pages/Utils/validation/classification';
 import { normalizeSimpleDatasetSdkValidationDetails } from '@/pages/Utils/validation/sdkDetails';
 
 const SOURCE_REQUIRED_LANG_TEXT_FIELDS = new Set<string>([
@@ -24,18 +25,10 @@ export const normalizeSourceSdkValidationDetails = (issues: any[], orderedJson: 
     fieldLabelsByKey: SOURCE_FIELD_LABELS_BY_KEY,
     requiredLangTextFields: SOURCE_REQUIRED_LANG_TEXT_FIELDS,
     specialFormNames: [
-      {
-        formName: [
-          'sourceInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^sourceInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'sourceDataSet',
+        dataType: 'Source',
+      }),
     ],
   });
 };

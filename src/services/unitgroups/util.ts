@@ -1,9 +1,11 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated } from '../general/tidasRepeatedFields';
 import { FormUnitGroup } from '@/services/unitgroups/data';
 import { createUnitGroup as createTidasUnitGroup } from '@tiangong-lca/tidas-sdk/core';
 import {
-  classificationToJsonList,
-  classificationToStringList,
   convertToUTCISOString,
   formatDateTime,
   getLangJson,
@@ -50,16 +52,10 @@ export function genUnitGroupJsonOrdered(id: string, data: any) {
           ),
           classificationInformation: {
             ...data?.unitGroupInformation?.dataSetInformation?.classificationInformation,
-            'common:classification': mapTidasRepeated(
+            'common:classification': classificationSystemsToJson(
               data?.unitGroupInformation?.dataSetInformation?.classificationInformation?.[
                 'common:classification'
               ],
-              (item) => ({
-                ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : classificationToJsonList(item?.['common:class']),
-              }),
             ),
           },
           'common:generalComment': getLangJson(
@@ -219,9 +215,7 @@ export function genUnitGroupFromData(data: any): FormUnitGroup {
               ],
               (item) => ({
                 ...item,
-                'common:class': item?.['@name']
-                  ? item?.['common:class']
-                  : (classificationToStringList(item?.['common:class']) as any),
+                'common:class': classificationClassesToForm(item, 'UnitGroup'),
               }),
             ),
           },

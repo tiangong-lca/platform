@@ -968,14 +968,12 @@ describe('process sdk validation mapping', () => {
     expect(details).toEqual([
       expect.objectContaining({
         fieldPath:
-          'processInformation.dataSetInformation.classificationInformation.common:classification.common:class.showValue',
+          'processInformation.dataSetInformation.classificationInformation.common:classification',
         formName: [
           'processInformation',
           'dataSetInformation',
           'classificationInformation',
           'common:classification',
-          'common:class',
-          'showValue',
         ],
       }),
       expect.objectContaining({
@@ -1942,18 +1940,19 @@ describe('process sdk validation mapping', () => {
   });
 });
 
-it.each([[{ '@name': 'Custom' }], { '@name': 'Custom' }])(
-  'preserves the exact named classification validation path',
-  (systems) => {
-    const path = [
-      'processDataSet',
+it.each([true, false])(
+  'maps custom classification fields to their actual collection shape (%p)',
+  (repeated) => {
+    const customClass = { '@level': '4', '@classId': 'external', '#text': 'External' };
+    const system = { '@name': 'Custom', 'common:class': repeated ? [customClass] : customClass };
+    const formName = [
       'processInformation',
       'dataSetInformation',
       'classificationInformation',
       'common:classification',
-      0,
+      ...(repeated ? [0] : []),
       'common:class',
-      0,
+      ...(repeated ? [0] : []),
       '#text',
     ];
     const details = normalizeProcessSdkValidationDetails(
@@ -1961,19 +1960,21 @@ it.each([[{ '@name': 'Custom' }], { '@name': 'Custom' }])(
         {
           code: 'invalid_type',
           expected: 'string',
-          message: 'Missing class label',
-          path,
+          message: 'Invalid class label',
+          path: ['processDataSet', ...formName],
           severity: 'error',
         },
       ],
       {
         processDataSet: {
           processInformation: {
-            dataSetInformation: { classificationInformation: { 'common:classification': systems } },
+            dataSetInformation: {
+              classificationInformation: { 'common:classification': repeated ? [system] : system },
+            },
           },
         },
       },
     );
-    expect(details[0].formName).toEqual(path.slice(1));
+    expect(details[0].formName).toEqual(formName);
   },
 );

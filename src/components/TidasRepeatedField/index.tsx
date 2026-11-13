@@ -6,19 +6,40 @@ type Props = {
   name: (string | number)[];
   onChange: () => void;
   arrayOnly?: boolean;
+  /** Keep the first editable block even when this field is optional. */
+  keepFirst?: boolean;
   children: (path: (string | number)[]) => ReactNode;
 };
 
 /** Use absolute field paths so existing nested editors retain their Form contract. */
-export default function TidasRepeatedField({ name, onChange, children, arrayOnly = false }: Props) {
+export default function TidasRepeatedField({
+  name,
+  onChange,
+  children,
+  arrayOnly = false,
+  keepFirst = false,
+}: Props) {
   const form = Form.useFormInstance();
   const watched = Form.useWatch(name, { form, preserve: true });
   const value = watched ?? form.getFieldValue(name);
   useEffect(() => {
     const current = form.getFieldValue(name);
-    if (arrayOnly && !Array.isArray(current))
-      form.setFieldValue(name, current === undefined ? [] : [current]);
-  }, [arrayOnly, form, name, value]);
+    if (arrayOnly || Array.isArray(current)) {
+      const items = Array.isArray(current)
+        ? current
+        : current === null || current === undefined
+          ? []
+          : [current];
+      if (!Array.isArray(current) || (keepFirst && items.length === 0)) {
+        form.setFieldValue(name, keepFirst && items.length === 0 ? [{}] : items);
+        onChange();
+      }
+    } else if (keepFirst && (current === undefined || current === null)) {
+      // Materialize the visible first block so Add appends rather than replaces it.
+      form.setFieldValue(name, {});
+      onChange();
+    }
+  }, [arrayOnly, form, keepFirst, name, onChange, value]);
   const repeated = Array.isArray(value);
   const items = repeated ? value : [value];
   const update = (change: (current: any[]) => any[]) => {
@@ -32,7 +53,7 @@ export default function TidasRepeatedField({ name, onChange, children, arrayOnly
       {items.map((_, index) => (
         <div key={`${repeated ? 'list' : 'single'}-${index}`}>
           {children(repeated ? [...name, index] : name)}
-          {repeated && (
+          {repeated && (!keepFirst || index > 0) && (
             <Button
               onClick={() =>
                 update((current) => current.filter((__, position) => position !== index))
