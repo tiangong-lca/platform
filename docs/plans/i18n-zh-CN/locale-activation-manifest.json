@@ -3,7 +3,7 @@
   "locale": "zh-CN",
   "source": {
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "sourceManifestDigest": "517c10ea81be2a8d4310557da289a51073e042a1de66a2da57bc55eea94f7459"
+    "sourceManifestDigest": "dc19177dfd4dfa917879789b1ed5c7b49980f68f1c5e492d1d5c439cf615686f"
   },
   "registry": {
     "canonicalLocale": "zh-CN",
@@ -67,16 +67,16 @@
         }
       ]
     },
-    "contentLanguageRegistryDigest": "c5e1ef5afbad36dfce86d327801390e0347707c1ad8126c45064e913fbf406a4",
+    "contentLanguageRegistryDigest": "d1b28fa140d74269a76d18786f41d0f2e5bbfb1e02a28555a45f1ecd359e4ebd",
     "capabilityMatrixDigest": "d8903f58f8b5582bb4a491a8724b9ba5b8adf93f5f48dcfc7c908bb4eaa5dcd7",
     "referenceResourceManifestDigest": "31fa7e3569f6434b60d2422953102180d19f010a5bbb2e16fa5037724bdd1fdb",
     "referenceResourceResolverDigest": "15ed3893a7f03969b1a83cc2c81921a994be891d16943da8a6784a84e09f08e1",
     "hardcodingAllowlistDigest": "2452b6d6812264a16b6685e23d902a6de3bd100a0f2aa38fce7e59360174fde2"
   },
   "evidence": {
-    "contextDigest": "2a5746718f8b8a1d34584ceb656965a437a168fe1e4786e03d09e6664e742a61",
-    "qualityDigest": "47edf0200238695d9d36fa1487380e134709ee7bfff04128c9504c64693792fd",
-    "correctionLedgerDigest": "0116c494387613a132f6cea85d8841edca9d5aba28d66ae61a40743370b040ba",
+    "contextDigest": "3f5bdc7379007f1d4222fd186a83b4c53f88d9628a90387ac399bb9fdddd16ea",
+    "qualityDigest": "9b92fb4fb6d5a11cda2714fd2d8595080964571caedec1672c4c692863be5243",
+    "correctionLedgerDigest": "9d5c420c303c75ea8ea3e62f4a362346e1c06c49eba2412a81a23f5623f855f1",
     "routeViewCoverageDigest": "cc76420ee3c5f54a229cc213be69728d57b29bb84bffe68d3e5f42c8db649d94",
     "fallbackContractDigest": "94c88648a2bc4fa2b3e3dd2b1db476db5a182e8a5dd9dce2140f6faf2cceabe5",
     "localeFallbackRowCount": 10
@@ -121,5 +121,5 @@
       "ownerIssue": "#867"
     }
   ],
-  "activationDigest": "86fe9735e032fc65bf8689d0162b87d51b3a327c2f6c855277307d79866221e8"
+  "activationDigest": "1822a4eccc1c7ba71d78478a489ba020f7b791ba494b09f3906106e0ae5f43ed"
 }
