@@ -1,6 +1,6 @@
 export default {
   'pages.lifecyclemodel.review.saveFirst': 'Speichern Sie Ihre Änderungen, bevor Sie sie zur Prüfung einreichen.',
-  'pages.lifeCycleModel.modelResults.subProduct': 'Nebenprodukt',
+  'pages.lifeCycleModel.modelResults.subProduct': 'Weitere Produkte',
   'pages.lifeCycleModel.modelResults.mainProduct': 'Hauptprodukt',
 
   'pages.lifeCycleModel.drawer.title.create': 'Lebenszyklusmodell erstellen',

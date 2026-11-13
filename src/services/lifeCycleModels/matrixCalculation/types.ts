@@ -225,8 +225,8 @@ export interface MatrixResultExchange {
 }
 
 /**
- * zh-CN: 一个子模型的聚合结果（主过程或副产品的独立归因情景）。
- * en-US: One submodel aggregation (an independent attribution scenario for the main or a by-product).
+ * zh-CN: 一个子模型的聚合结果（主产品或其他产品的独立归因情景）。
+ * en-US: One submodel aggregation (an independent attribution scenario for the primary or another product/service).
  */
 export interface MatrixResultGroup {
   type: 'primary' | 'secondary';

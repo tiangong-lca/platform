@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "b2ff6884bbcfaac2123d61a2421c3fbcc8359146033a266d00be69a5761fee38",
+    "auditedInputDigest": "92d6f07acc07cd3d312de39f8ff4b1ebf6d120dfcd55f15f9770e1499ceb70c5",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -133375,7 +133375,7 @@
       },
       "translations": {
         "en-US": {
-          "value": "Sub Product",
+          "value": "Other Products",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -133386,7 +133386,7 @@
           }
         },
         "zh-CN": {
-          "value": "子产品",
+          "value": "其他产品",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -133397,7 +133397,7 @@
           }
         },
         "de-DE": {
-          "value": "Nebenprodukt",
+          "value": "Weitere Produkte",
           "argumentSignature": [],
           "placeholders": [],
           "source": {
@@ -133408,7 +133408,7 @@
           }
         },
         "fr-FR": {
-          "value": "Sous-produit",
+          "value": "Autres produits",
           "argumentSignature": [],
           "placeholders": [],
           "source": {

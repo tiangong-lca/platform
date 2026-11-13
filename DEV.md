@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: 23d4f2bed0dac39001bc2bee87a7038d555888d5
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedAt: 2026-11-13
+lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
+lastReviewedNote: 'Platform #1500: reviewed focused product-result validation, isolated browser proof and final checked-push ownership; no bootstrap or release contract change.'
 ---
 
 # Development Bootstrap

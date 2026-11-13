@@ -1740,9 +1740,11 @@ describe('assembleResult port-balance issue reporting', () => {
     const result = assembleResult(compilation, [1, 0, 0]);
     expect(result.instanceMultipliers.nR).toBeCloseTo(1, 9);
     expect(result.instanceMultipliers.nS).toBeUndefined();
-    expect(result.groups.find((group: any) => group.type === 'secondary')?.exchanges).toEqual(
-      expect.arrayContaining([expect.objectContaining({ flowId: 'flow-D', amount: 1 })]),
-    );
+    expect(
+      result.groups.find(
+        (group: any) => group.type === 'secondary' && group.pivotFlowId === 'flow-D',
+      )?.exchanges,
+    ).toEqual(expect.arrayContaining([expect.objectContaining({ flowId: 'flow-D', amount: 1 })]));
   });
 
   it('reports connected pivots that are not fully consumed and inconsistent dead-end pipes', () => {
@@ -1988,7 +1990,9 @@ describe('assembleResult grouping edge paths', () => {
     expect(refOutput.amount).toBeCloseTo(2, 9);
     expect(refOutput.quantitativeReference).toBe(true);
 
-    const secondary = result.groups.find((group: any) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group: any) => group.type === 'secondary' && group.pivotFlowId === 'flow-D',
+    )!;
     // 独立副情景包含实际供给它的参考过程，原料需求按自身参考量求解。
     expect(secondary.refProcesses).toEqual(
       expect.arrayContaining([
