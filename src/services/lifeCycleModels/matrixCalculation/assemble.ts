@@ -119,7 +119,7 @@ export const assembleResult = (
     }
   }
 
-  // 子模型分组：主过程（参考视图上游闭包）+ 副产品（死端视图上游闭包）
+  // Result groups: primary target plus every other product/service supply closure.
   const supplierViewByConsumerInput = new Map<string, string>();
   for (const edge of edges) {
     const key = `${edge.connection.downstreamIndex}\u0000${edge.connection.inputFlowId}`;
@@ -309,11 +309,8 @@ export const assembleResult = (
   groups.push(buildGroup(refView, 'primary', compilation.demand[refView.columnIndex])!);
   for (const view of views) {
     if (view.isReference) continue;
-    // 副产品情景根：枢轴输出未连接的视图（死端或未连接的已分配产品）
-    const isBoundaryProduct =
-      view.isDeadEnd ||
-      !instanceByIndex.get(view.instanceIndex)!.connectedOutputFlowIds.has(view.pivotFlowId);
-    if (!isBoundaryProduct) continue;
+    // A downstream connection does not remove this product's independent result.
+    // These scenario solves never change the primary solution or graph quantities.
     groups.push(buildGroup(view, 'secondary', view.pivotAmount)!);
   }
 

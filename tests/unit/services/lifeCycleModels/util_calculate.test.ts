@@ -293,6 +293,51 @@ beforeEach(() => {
 });
 
 describe('genLifeCycleModelProcesses (matrix calculation)', () => {
+  it('reuses an intermediate result identity and version after its product gains a downstream connection', async () => {
+    const databaseProcesses = createSupabaseProcesses();
+    const oldSubmodels = [
+      {
+        id: 'existing-intermediate',
+        version: '02.00.007',
+        type: 'secondary',
+        finalId: {
+          nodeId: 'nodeB',
+          processId: 'procB',
+          allocatedExchangeFlowId: 'flow-B-to-A',
+          allocatedExchangeDirection: 'OUTPUT',
+        },
+      },
+      { id: 'existing-primary', version: '03.00.002', type: 'primary' },
+    ];
+    for (const connected of [false, true]) {
+      const data = createLifeCycleModelData();
+      if (!connected) {
+        data.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes.processInstance[1].connections.outputExchange =
+          [{ '@flowUUID': 'flow-B-to-A', downstreamProcess: [] }];
+      }
+      mockOr.mockResolvedValue({ data: clone(databaseProcesses) });
+      mockLCIAResultCalculation.mockResolvedValue([]);
+      const { lifeCycleModelProcesses } = await genLifeCycleModelProcesses(
+        'model-123',
+        createIndexedModelNodes(),
+        data,
+        oldSubmodels,
+      );
+      const product = lifeCycleModelProcesses.find(
+        (p) => p.modelInfo.id === 'existing-intermediate',
+      )!;
+      expect(product).toMatchObject({ option: 'update', modelInfo: oldSubmodels[0] });
+      expect(
+        product.data.processDataSet.exchanges.exchange.find((e: any) => e.quantitativeReference)
+          .meanAmount,
+      ).toBe(3);
+      expect(lifeCycleModelProcesses.find((p) => p.modelInfo.type === 'primary')).toMatchObject({
+        option: 'update',
+        modelInfo: oldSubmodels[1],
+      });
+    }
+  });
+
   it('throws the calculation INVALID_REFERENCE error when the reference process is missing', async () => {
     await expect(genLifeCycleModelProcesses('model-1', null, {}, [])).rejects.toMatchObject({
       code: 'INVALID_REFERENCE',
@@ -396,10 +441,14 @@ describe('genLifeCycleModelProcesses (matrix calculation)', () => {
       );
 
     expect(lciaIncomplete).toBe(false);
-    expect(lifeCycleModelProcesses).toHaveLength(4);
+    expect(lifeCycleModelProcesses).toHaveLength(6);
 
     const primary = lifeCycleModelProcesses.find((item) => item?.modelInfo?.type === 'primary');
-    const secondary = lifeCycleModelProcesses.find((item) => item?.modelInfo?.type === 'secondary');
+    const secondary = lifeCycleModelProcesses.find(
+      (item) =>
+        item?.modelInfo?.type === 'secondary' &&
+        item.modelInfo.finalId.allocatedExchangeFlowId === 'flow-C-final',
+    );
 
     expect(primary).toBeDefined();
     expect(primary?.option).toBe('create');
@@ -430,10 +479,10 @@ describe('genLifeCycleModelProcesses (matrix calculation)', () => {
       'fr',
     ]);
     expect(secondaryBaseName).toEqual([
-      { '@xml:lang': 'en', '#text': '[Subproduct: C Product] Reference Process' },
-      { '@xml:lang': 'zh', '#text': '[子产品: C产品] 参考过程' },
-      { '@xml:lang': 'de', '#text': '[Nebenprodukt: C-Produkt] Referenzprozess' },
-      { '@xml:lang': 'fr', '#text': '[Sous-produit : Produit C] Processus de référence' },
+      { '@xml:lang': 'en', '#text': '[Product: C Product] Reference Process' },
+      { '@xml:lang': 'zh', '#text': '[产品: C产品] 参考过程' },
+      { '@xml:lang': 'de', '#text': '[Produkt: C-Produkt] Referenzprozess' },
+      { '@xml:lang': 'fr', '#text': '[Produit : Produit C] Processus de référence' },
     ]);
 
     // 副情景以 C 的参考量 1 为需求，原料负荷为 7 × 0.4 / 4。
@@ -453,7 +502,7 @@ describe('genLifeCycleModelProcesses (matrix calculation)', () => {
       exchanges.forEach((entry: any) => expect(entry.allocations).toBeUndefined());
     }
 
-    expect(mockLCIAResultCalculation).toHaveBeenCalledTimes(2);
+    expect(mockLCIAResultCalculation).toHaveBeenCalledTimes(4);
 
     // 标准实例引用单位产品清单：A 倍率 2，B 的第一产品需求 4，C 主情景活动为 0。
     const processInstance =
@@ -505,7 +554,11 @@ describe('genLifeCycleModelProcesses (matrix calculation)', () => {
       [],
     );
 
-    const secondary = lifeCycleModelProcesses.find((item) => item?.modelInfo?.type === 'secondary');
+    const secondary = lifeCycleModelProcesses.find(
+      (item) =>
+        item?.modelInfo?.type === 'secondary' &&
+        item.modelInfo.finalId.allocatedExchangeFlowId === 'flow-C-final',
+    );
 
     expect(secondary?.option).toBe('create');
     expect(secondary?.modelInfo?.id).toBe('generated-secondary-id');
@@ -1046,8 +1099,8 @@ describe('genLifeCycleModelProcesses sparse payload branches', () => {
         instance['@multiplicationFactor'],
       ]),
     );
-    // nodeEmpty 无活动：无 @multiplicationFactor（removeEmptyObjects 移除空对象）
-    expect(multiplierByIndex.get('nodeEmpty')).toBeUndefined();
+    // Standalone reference results do not create primary-model demand.
+    expect(multiplierByIndex.get('nodeEmpty')).toBe('0');
     // 循环解：x_A − x_B = 2、x_B = 0.5·x_A → x_A = 4、x_B = 2；倍率 = x/参考量 1
     expect(Number(multiplierByIndex.get('nodeA'))).toBeCloseTo(4, 9);
     expect(Number(multiplierByIndex.get('nodeB'))).toBeCloseTo(2, 9);

@@ -1574,7 +1574,47 @@
         "pnpm test:ci --runInBand --watchman=false tests/unit/pages/Review/index.test.tsx tests/unit/pages/Review/Components/AssignmentReview.test.tsx"
       ],
       "correctionDigest": "65952a350ecb22c75419f1fc8506db2b66e00fc377b3292889aa94be52256dc7"
+    },
+    {
+      "locale": "zh-CN",
+      "messageId": "pages.lifeCycleModel.modelResults.subProduct",
+      "before": "子产品",
+      "after": "其他产品",
+      "evidence": [
+        "https://github.com/tiangong-lca/platform/issues/1500 retains the primary product while extending independent aggregate results to intermediate products.",
+        "The model result section contains intermediate products and coproducts; calling every entry a by-product is inaccurate."
+      ],
+      "affectedClosure": [
+        "Lifecycle Model primary and other-product result sections",
+        "zh-CN active locale catalog"
+      ],
+      "tests": [
+        "pnpm i18n:corrections:check",
+        "tests/unit/pages/LifeCycleModels/Components/modelResult/index.test.tsx",
+        "tests/unit/services/lifeCycleModels/matrixCalculation/intermediateProductResults.test.ts"
+      ],
+      "correctionDigest": "ef5e4a56a7df6082991d30eed99170c6ad4e3ea5e4fe23ae285439c0d7124c29"
+    },
+    {
+      "locale": "de-DE",
+      "messageId": "pages.lifeCycleModel.modelResults.subProduct",
+      "before": "Nebenprodukt",
+      "after": "Weitere Produkte",
+      "evidence": [
+        "https://github.com/tiangong-lca/platform/issues/1500 retains the primary product while extending independent aggregate results to intermediate products.",
+        "The model result section contains intermediate products and coproducts; calling every entry a by-product is inaccurate."
+      ],
+      "affectedClosure": [
+        "Lifecycle Model primary and other-product result sections",
+        "de-DE active locale catalog"
+      ],
+      "tests": [
+        "pnpm i18n:corrections:check",
+        "tests/unit/pages/LifeCycleModels/Components/modelResult/index.test.tsx",
+        "tests/unit/services/lifeCycleModels/matrixCalculation/intermediateProductResults.test.ts"
+      ],
+      "correctionDigest": "9151516a794d32b8ac4af39e6d186d1df2649343465f06ef85fd40d4b43515ae"
     }
   ],
-  "correctionLedgerDigest": "0116c494387613a132f6cea85d8841edca9d5aba28d66ae61a40743370b040ba"
+  "correctionLedgerDigest": "9d5c420c303c75ea8ea3e62f4a362346e1c06c49eba2412a81a23f5623f855f1"
 }

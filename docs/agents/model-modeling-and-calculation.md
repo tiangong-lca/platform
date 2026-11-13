@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-08
-lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-13
+lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
+lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md
@@ -193,9 +193,15 @@ h = C g
 
 例如，某基本流排放为 20 kg，某影响类别的表征因子为每 kg 排放 3 单位影响，则该交换贡献 60 单位影响。评价结果同时记录方法版本、单位和因子覆盖情况，供结果解释使用。
 
-## 8. 主结果与产品结果
+## 8. 主产品结果与其他产品结果
 
-主结果对应 Model 选定的功能单位。其他产品的结果以该产品在来源清单中的参考数量为目标，每份结果使用自己的需求向量求解。
+主产品结果对应 Model 选定的参考产品或处理服务及其目标量；它决定主模型的活动量、连接数量和标准实例倍率。
+
+其他产品结果覆盖模型内各过程的有效定量参考、已连接且具有明确归属的产品，以及已声明的分配产品，包括中间产品、边界产品和独立节点。是否连接下游不决定结果资格。普通排放等输出不自动成为产品目标；缺少必要分配时保留可定位的计算错误，不推定份额。
+
+其他产品结果以该产品在来源清单中的参考数量为目标，每份结果使用自己的需求向量求解供应依赖（包括反馈循环）。这些独立计算不改写主模型活动量、倍率或连接数量。参考数量随结果明确保存；本次扩展不把已有结果静默归一到 1 单位。未展开的外部交换保留为模型边界，结果不隐含完整生命周期覆盖。
+
+界面保留主产品和其他产品两个区域。分配后的单位过程属于计算依赖，不列入这两个汇总结果列表；已有 `primary`、`secondary`、`allocated` 存储角色继续使用，`secondary` 表示其他产品结果而非工艺副产品。产品从边界变成中间位置不会仅因此改变其结果身份或删除其结果。
 
 多份结果可以引用同一上游过程。每份结果中的上游贡献，由该结果自身的产品需求决定。比较或汇总结果时，使用与研究目标一致的功能单位和系统边界。
 
@@ -227,7 +233,7 @@ Model 的数据有三种相互关联的表达：
 
 计算诊断显示涉及的过程与产品，并提供节点定位和对应的处理说明。计算失败时保持已保存的模型与结果；成功计算并保存后，结果才反映新的过程版本、需求和分配依据。
 
-保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主/副结果角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
+保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主产品/其他产品角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
 
 ## 10. 计算流程
 

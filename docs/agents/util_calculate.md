@@ -21,9 +21,9 @@ checkPaths:
   - src/services/lciaMethods/**
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
-lastReviewedAt: 2026-11-07
-lastReviewedCommit: 4b77687e5658d20f04290b0197ed0289e9981d43
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-13
+lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
+lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
 ---
 
 # Lifecycle Model Calculation Reference
@@ -90,7 +90,7 @@ Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `Cal
 ## Calculation Semantics
 
 - The system is demand-driven: the ★ reference target is the final demand `y` of the reference view; every other view is driven by connected consumers. Cycles enter the equations fully; nothing breaks edges.
-- A **view** (matrix variable) exists for: the reference process's quantitative-reference exchange, every connected output exchange of every instance, every output exchange that carries an allocation declaration (connected or not, so allocated coproducts keep independent results), and the reference exchange of dead-end instances (connected inputs, no connected outputs, not the reference).
+- A **view** (matrix variable) exists for every instance's quantitative-reference exchange (including standalone products and input-reference treatment), every connected output, and every declared allocation-target product. Connected non-reference products still require valid allocation; ordinary unconnected emissions are not product targets.
 - Each view's pivot is normalized to +1 per unit activity. Every other exchange is attributed with its allocation fraction divided by the pivot amount. Attribution shapes:
   - **single**: undeclared exchanges belong to the reference product or treatment service. Ordinary emissions and waste exchanges retain their full quantities. A connected non-reference product requires an explicit allocation interpretation.
   - **legacy uniform share**: declared product outputs carry shares summing to 100%; each product inventory attributes applicable exchanges by that product's share. An undeclared non-reference product has zero share once the declared vector closes. An output quantitative reference without its own share remains ambiguous and produces `INVALID_ALLOCATION`; input-reference treatment retains its service interpretation.
@@ -99,7 +99,7 @@ Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `Cal
 - LU residuals and product-demand balances verify the numerical result. Singular systems produce `MODEL_NOT_SOLVABLE`; invalid numerical results produce `NUMERIC_RESULT_INVALID`.
 - Solved activities retain small positive values. Within-tolerance negative numerical noise is clamped to zero; inventory aggregation omits only exact-zero exchanges.
 - `productSystem.ts` projects each allocated view as a unit-reference Process provider. Its instance multiplier is the product activity. Unallocated single-reference inventories retain the source Process and multiplier `activity / reference amount`. Zero-demand instances retain multiplier zero.
-- Each result scenario solves its own final-demand vector, including all connected upstream suppliers and cycles. The primary scenario uses the Model target; a secondary boundary-product or terminal-process scenario uses its source reference quantity. The net reference exchange records that scenario's functional unit.
+- Each result scenario solves its own final-demand vector, including all connected upstream suppliers and cycles. The primary scenario uses the Model target; every other product/service view receives a secondary scenario at its source reference quantity, including intermediate products. These scenario solves never overwrite the primary solution, edge amounts or standard-instance multipliers. Connected status does not determine result membership or identity. The net reference exchange records that scenario's functional unit.
 - `productSystemPersistence.ts` materializes evaluated provider exchanges with `dataDerivationTypeStatus = Calculated`, removes executable allocation/formula fields, preserves source inventory metadata, and clears inherited review claims. Provider identity combines source instance, exact source Process version and product exchange. Existing provider IDs are reused for matching identities.
 - `json_tg.xflow` keeps source nodes and links; standard `processInstance` references the projected providers and supplies the scalar for each complete referenced inventory. Allocated provider records are saved in the same bundle and tracked separately from primary/secondary result records. Result selectors and `referenceToResultingProcess` include only result records.
 - Updating an existing bundle retains each declared result/provider ID and its own version; only new results use the Model version. Queries and mutations use exact `id + version`, and a missing or foreign old member rejects the save rather than creating a replacement. Standard resulting references and UI membership carry those same result versions.
