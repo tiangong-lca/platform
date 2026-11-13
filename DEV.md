@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
+lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
 lastReviewedNote: 'Platform #1500: reviewed focused product-result validation, isolated browser proof and final checked-push ownership; no bootstrap or release contract change.'
 ---
 
