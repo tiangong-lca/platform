@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
+lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
 lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
 related:
   - .docpact/config.yaml
