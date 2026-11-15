@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedAt: 2026-11-15
+lastReviewedCommit: f756fb409996a1ffd52c9598dc54891c9232e417
+lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
 ---
 
 # Testing Execution State

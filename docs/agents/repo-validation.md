@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedAt: 2026-11-15
+lastReviewedCommit: f756fb409996a1ffd52c9598dc54891c9232e417
+lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -103,6 +103,7 @@ The final committed candidate still uses `pnpm push:checked origin feature/issue
 
 | Change type | Minimum local proof | Stronger proof when risk is higher | Notes |
 | --- | --- | --- | --- |
+| production Study protocol Babel configuration | focused `tests/unit/config/protocolBabel.test.ts` and `studyReportResolution.test.ts`; final checked-push gate | source-bound baseline/candidate/repeat production builds for both brands, raw module and artifact inventories, and Chromium/Firefox/WebKit checks of emitted SPA and protocol behavior | Exercise the installed Umi rules and preset, exact six-path matching, development no-op and compiler-shape drift. Require unchanged targets and unrelated plugin/code/map outputs, then exact candidate repeatability. Explain baseline artifact differences rather than normalizing them away. Preserve protocol input blobs and run the standalone renderer package/browser checks separately. No Babel cache or publisher change is implied. |
 | hosted indexing or response boundary (`public/robots.txt`, `public/404.html`, `public/edgeone.json`, shell `metas`) | `pnpm lint`; `pnpm build`; then assert `dist/robots.txt` is a real text file, `dist/404.html` exists and is noindex, the built shell carries the noindex meta, and `dist/edgeone.json` still declares the OAuth rewrite and its response headers | bounded live `curl -I` against the deployed host for content type, `X-Robots-Tag`, and an unknown path returning 404 rather than the shell | The application host stays non-indexable by design; crawling must remain allowed so the directive can be read. Public content lives on the docs and data hosts. |
 | brand profiles, localized brand presentation, static brand assets or desktop adapter | `pnpm test:branding:assets`; focused brand/profile/settings and affected consumer Jest suites; `pnpm lint`; `pnpm tsc:electron`; both `pnpm build:tiangong` and `pnpm build:atlas` serially; `pnpm i18n:audit` | browser proof for login/recovery, language and light/dark switches, favicon/manifest/static shells; platform packaging before any desktop publication | Prove default TianGong identity is preserved, ATLAS uses the approved interaction palette and supplied icons, slogans remain equal until approved, unknown brands fail, explicit overrides win, factual/operator/protocol names remain intact, and local packaging cannot publish. A local UI preview is not desktop platform qualification or release evidence. |
 | routes, pages, app runtime, shared UI | `pnpm lint`; focused `pnpm test:ci <jest-args>`; `pnpm build` | `pnpm prepush:gate` | shared UX changes often affect multiple entrypoints; Process LCIA query/evidence state changes include `tests/unit/pages/Processes/Components/processLciaResultsPanel.test.tsx`; table-runtime upgrades must preserve the exact product-owned first RPC, including a service-owned default order, without inventing a column default |
