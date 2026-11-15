@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: cecea139e4df83ea9af067f2428bd42d94d5946c
-lastReviewedNote: 'Platform #1500: reviewed focused product-result validation, isolated browser proof and final checked-push ownership; no bootstrap or release contract change.'
+lastReviewedAt: 2026-11-15
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
 ---
 
 # Development Bootstrap

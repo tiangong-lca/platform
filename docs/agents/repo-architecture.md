@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedAt: 2026-11-15
+lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -46,6 +46,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | --- | --- |
 | `config/routes.ts` | route tree and route-family entrypoints |
 | `config/config.ts` | Umi runtime config |
+| `config/protocolBabel.ts` | production-only Babel override for the six generated Study protocol modules |
 | `config/defaultSettings.ts`, `config/branding.ts`, `config/proxy.ts`, `config/oneapi.json` | app-shell defaults, branding, dev proxy, and support config |
 | `config/supabaseEnv.ts` | frontend env selection; standard Dev replaces Umi-preloaded values that exactly match main-file defaults with `.env.development*`, distinct explicit build values retain priority, and qualification selects a fixed non-production profile |
 | `src/app.tsx` | runtime layout, auth redirect, cache monitors, and Umi-global antd 6 ConfigProvider/App theme synchronization |
@@ -74,6 +75,12 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `icons/**` | packaged app icons and release assets |
 | other `docker/**` paths | self-hosted sync helpers and exact-revision, delete-aware mirrors; Edge function mirror provenance lives in `docker/volumes/functions/.source-revision.json` |
 | `electron/**` | desktop packaging surface |
+
+## Production protocol compilation
+
+The production `chainWebpack` hook applies `config/protocolBabel.ts` to Umi's source Babel loader. It excludes the broad `transform-function-name` transform only for the exact checkout-local `vendor/study-contract/v2/index.mjs` through `v6/index.mjs` and `src/standalone/studyReport/methodProtocol.mjs` paths. The pinned preset retains its narrower `transform-edge-function-name` replacement. The existing preset identity, browser targets, other options and unrelated modules keep their existing behavior; development compilation and cache settings are unchanged. Both brands use this same production configuration.
+
+The override validates the expected loader and Umi preset structure. An upgrade that changes this contract must be reviewed with the installed-package tests and the scoped proof described in [repo validation](repo-validation.md), rather than silently expanding the exclusion. Protocol sources, declarations, licenses and manifests remain immutable inputs. The separately packaged report renderer uses its own raw-TypeScript build and is not evidence of the SPA's Babel output.
 
 ## Brand presentation boundary
 
