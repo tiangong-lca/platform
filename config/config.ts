@@ -3,10 +3,12 @@ import { brandProfile } from './brandProfile';
 import defaultSettings from './defaultSettings';
 // https://umijs.org/config/
 import { defineConfig } from '@umijs/max';
+import { resolve } from 'node:path';
 import {
   DEFAULT_BROWSER_APP_LOCALE,
   LOCALE_REGISTRY,
 } from '../src/services/general/localeRegistry';
+import { configureStudyProtocolBabel } from './protocolBabel';
 import proxy from './proxy';
 import routes from './routes';
 import { applySupabaseFrontendEnv } from './supabaseEnv';
@@ -33,8 +35,9 @@ export default defineConfig({
   hash: true,
   // Portable ESM keeps .js specifiers; the SPA resolves its TypeScript sources.
   // Prefer real .js files so retained renderer packages keep their exact modules.
-  chainWebpack(memo) {
+  chainWebpack(memo, { env }) {
     memo.resolve.set('extensionAlias', { '.js': ['.js', '.ts'] });
+    if (env === 'production') configureStudyProtocolBabel(memo, resolve(__dirname, '..'));
   },
 
   /**
