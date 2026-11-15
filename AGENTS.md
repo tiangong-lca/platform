@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-15
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedCommit: f756fb409996a1ffd52c9598dc54891c9232e417
 lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
 related:
   - .docpact/config.yaml
