@@ -27,8 +27,8 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-16
-lastReviewedCommit: 9f493aea39c2ac7acfaad2c2445548de18489c21
+lastReviewedAt: 2026-11-17
+lastReviewedCommit: 3bc101bbe6760bcb5841ff81f204bc2daa70ce95
 lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 related:
   - ../AGENTS.md
