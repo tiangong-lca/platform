@@ -19,9 +19,9 @@ checkPaths:
   - scripts/e2e/resource-command.cjs
   - scripts/e2e/release-e2e.cjs
   - scripts/qualification/supabase-browser-resources.cjs
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 40b0e1213ce82019b2b6c5bbabe3903baddff5e1
-lastReviewedNote: 'Platform #1413: reviewed fresh source/daemon/resource boundaries before each cleanup effect and separately journaled inode-bound lock unlink/rmdir with partial readback, typed errno and budget fencing; prior proofs remain historical and new hosted qualification is required.'
+lastReviewedAt: 2026-11-16
+lastReviewedCommit: 9f493aea39c2ac7acfaad2c2445548de18489c21
+lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 related:
   - ../../AGENTS.md
   - repo-validation.md
@@ -100,7 +100,7 @@ The cache patch compares directive names without case, retains the first occurre
 
 The URI patch retains package version `0.2.2`, so a version-based audit can still report GHSA-vcc3-ghjq-m6fr and GHSA-qr28-fpjm-wq7f. Preserve that unfiltered result and bind remediation to the exact installed patch and actual caller proof; do not falsify the version, suppress alerts or infer a vulnerability-free graph. Retiring this patch requires a supported upstream dependency/module transition, both upstream fixes, and the CJS/query/history, ESM/native-browser and current-source qualification described in the validation guide.
 
-The exact `@umijs/plugins@4.7.24>axios` override selects the maintained `0.34.0` line with its approved `proxy-from-env@1.1.0` transitive dependency. This is a reviewed exception to the parent's exact `0.27.2` pin, not a global Axios override or Axios 1 migration. Umi's real generated request facade and its public types must resolve the selected package. Preserve the separate compiled Axios copy in Umi utilities as explicitly owned audit debt; changing the normal graph does not repair that vendor copy.
+The exact `@umijs/plugins@4.7.33>axios` override selects the maintained `0.34.0` line with its approved `proxy-from-env@1.1.0` transitive dependency. This is a reviewed exception to the parent's exact `0.27.2` pin, not a global Axios override or Axios 1 migration. Umi's real generated request facade and its public types must resolve the selected package. Preserve the separate compiled Axios copy in Umi utilities as explicitly owned audit debt; changing the normal graph does not repair that vendor copy.
 
 `patches/axios@0.34.0.patch` restores the published `beforeRedirect` response argument and the existing runtime request-details argument. The unpatched dispatcher passed only options and broke callbacks that destructured response headers. Forward all three arguments to the configured hook while leaving the proxy callback and its order unchanged; do not import unrelated Axios 1 transport policy. Retire the patch only when a supported upstream version preserves those callbacks and passes the actual redirect/proxy/error regressions.
 

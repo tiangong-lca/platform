@@ -121,13 +121,13 @@ describe('pnpm package-manager contract', () => {
     expect(packageJson.devDependencies).toMatchObject({
       '@types/react': '19.3.0',
       '@types/react-dom': '19.3.0',
-      '@umijs/max': '4.7.24',
+      '@umijs/max': '4.7.33',
       '@umijs/max-plugin-openapi': '2.0.3',
       '@umijs/request-record': '1.1.4',
     });
     expect(packageJson.devDependencies).not.toHaveProperty('umi-presets-pro');
-    expect(config).toContain(
-      "plugins: ['@umijs/max-plugin-openapi', '@umijs/request-record', './config/brandAssets']",
+    expect(config).toMatch(
+      /plugins:\s*\[\s*'@umijs\/max-plugin-openapi',\s*'@umijs\/request-record',\s*'\.\/config\/brandAssets',\s*'\.\/config\/plugins\/babelTargets',?\s*\]/u,
     );
     expect(config).not.toContain('root-entry-name');
     expect(config).not.toContain('umi-presets-pro');

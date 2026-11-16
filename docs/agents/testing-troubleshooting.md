@@ -43,9 +43,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-15
-lastReviewedCommit: f756fb409996a1ffd52c9598dc54891c9232e417
-lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
+lastReviewedAt: 2026-11-16
+lastReviewedCommit: 9f493aea39c2ac7acfaad2c2445548de18489c21
+lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 ---
 
 # Testing Troubleshooting

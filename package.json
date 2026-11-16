@@ -143,11 +143,6 @@
       "prettier --write"
     ]
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 10"
-  ],
   "dependencies": {
     "@ant-design/charts": "^2.6.7",
     "@ant-design/icons": "6.3.4",
@@ -188,7 +183,7 @@
     "@types/react-dom": "19.3.0",
     "@types/three": "^0.185.4",
     "@types/topojson-client": "^3.1.5",
-    "@umijs/max": "4.7.24",
+    "@umijs/max": "4.7.33",
     "@umijs/max-plugin-openapi": "2.0.3",
     "@umijs/request-record": "1.1.4",
     "cross-env": "^10.1.0",
