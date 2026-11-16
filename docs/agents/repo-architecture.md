@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-15
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
-lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
+lastReviewedAt: 2026-11-17
+lastReviewedCommit: 3bc101bbe6760bcb5841ff81f204bc2daa70ce95
+lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -38,7 +38,7 @@ related:
 
 ## Repo Shape
 
-This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProComponents 3 generation, with service-first data access, an Electron `44.1.0` packaging surface, cache-backed static resources, and strict validation gates.
+This repo is a Umi `4.7.33` React 19 SPA on one native Ant Design `6.6.6` / ProComponents 3 generation, with service-first data access, an Electron `44.1.0` packaging surface, cache-backed static resources, and strict validation gates.
 
 ## Stable Path Map
 
@@ -46,7 +46,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | --- | --- |
 | `config/routes.ts` | route tree and route-family entrypoints |
 | `config/config.ts` | Umi runtime config |
-| `config/protocolBabel.ts` | production-only Babel override for the six generated Study protocol modules |
+| `config/browserSupport.ts`, `config/plugins/babelTargets.ts` | frozen browser policy, shared Electron-compatible targets and nested Babel target forwarding |
 | `config/defaultSettings.ts`, `config/branding.ts`, `config/proxy.ts`, `config/oneapi.json` | app-shell defaults, branding, dev proxy, and support config |
 | `config/supabaseEnv.ts` | frontend env selection; standard Dev replaces Umi-preloaded values that exactly match main-file defaults with `.env.development*`, distinct explicit build values retain priority, and qualification selects a fixed non-production profile |
 | `src/app.tsx` | runtime layout, auth redirect, cache monitors, and Umi-global antd 6 ConfigProvider/App theme synchronization |
@@ -76,11 +76,11 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | other `docker/**` paths | self-hosted sync helpers and exact-revision, delete-aware mirrors; Edge function mirror provenance lives in `docker/volumes/functions/.source-revision.json` |
 | `electron/**` | desktop packaging surface |
 
-## Production protocol compilation
+## Browser support and compilation
 
-The production `chainWebpack` hook applies `config/protocolBabel.ts` to Umi's source Babel loader. It excludes the broad `transform-function-name` transform only for the exact checkout-local `vendor/study-contract/v2/index.mjs` through `v6/index.mjs` and `src/standalone/studyReport/methodProtocol.mjs` paths. The pinned preset retains its narrower `transform-edge-function-name` replacement. The existing preset identity, browser targets, other options and unrelated modules keep their existing behavior; development compilation and cache settings are unchanged. Both brands use this same production configuration.
+The [browser support contract](browser-support-contract.md) owns the rolling policy and qualification boundary; `config/browserSupport.ts` freezes its concrete browser/ESR/Apple inventory and derives conservative shared targets, including the existing Electron renderer's Chromium. Both brands use that same map. `config/plugins/babelTargets.ts` forwards Umi's effective targets into the existing nested preset-env through the supported `modifyBabelPresetOpts` hook in development and production; incompatible overrides fail explicitly. The separate MFSU dependency prebundle uses the supported `mfsu.chainWebpack` callback to forward the same targets into its existing Umi preset tuples. The six generated Study protocol modules use the ordinary compiler path without a filename-specific function-name exclusion.
 
-The override validates the expected loader and Umi preset structure. An upgrade that changes this contract must be reviewed with the installed-package tests and the scoped proof described in [repo validation](repo-validation.md), rather than silently expanding the exclusion. Protocol sources, declarations, licenses and manifests remain immutable inputs. The separately packaged report renderer uses its own raw-TypeScript build and is not evidence of the SPA's Babel output.
+Umi's polyfill and CSS consumers receive the same reviewed engine intent. Explicit JS/CSS esbuild target lists include iOS and retain the prior conservative ES2015 minifier baseline. Browser-data package pins and installed-toolchain tests prevent stale CSS data from silently dropping an engine. Cache settings and publishing are unchanged. Protocol inputs remain immutable; actual minimum-browser proof and the separately packaged report renderer are distinct from configuration/source tests.
 
 ## Brand presentation boundary
 
@@ -133,7 +133,7 @@ Rules:
 - a new locale may land reviewed leaf modules before activation, but it must not gain a top-level `src/locales/<locale>.ts` entry until manifest parity and the locale-specific review gate are complete
 - language behavior is split across typed owners: `localeRegistry.ts` owns UI locale/adapters, `contentLanguageRegistry.ts` owns TIDAS/ILCD reading and authoring plus service-query resolution, `referenceResources/manifest.ts` owns classification/location availability and provenance, and `localeCapabilities.ts` is the derived joined view. The current canonical UI keys are `zh-CN`, `en-US`, `de-DE`, and `fr-FR`; business consumers and parameterized capability tests discover them from the registries. A fixed locale array may appear only in an explicitly labeled fail-closed product-contract test whose purpose is to force deliberate review when that snapshot changes
 - neutral browser entry resolves the current document's manual choice, then `localStorage.tiangong_manual_locale`, an existing valid legacy `umi_locale`, ordered `navigator.languages` and `navigator.language`, then English. Region aliases normalize through the locale registry. Only menu selection creates a new persisted preference; automatic detection never writes either key. Legacy values have unknown provenance and remain a separate compatibility input without becoming manual preferences. Storage denial keeps a manual choice in memory for the current document; reopening without usable storage follows browser preferences again
-- `src/services/general/browserLocaleBridge.ts` is the sole adapter to Umi's private generated `setIntl` and locale-provider event. Umi `4.7.24`'s public `setLocale` reads the storage getter even with persistence disabled; the bridge retains the native provider, flag menu and same-document refresh while avoiding that failure. Its installed-template contract and semantic browser scenarios must pass on any Umi upgrade. `src/services/general/browserStorage.ts` protects the host/Login theme preference accesses so denied storage cannot prevent language entry or switching
+- `src/services/general/browserLocaleBridge.ts` is the sole adapter to Umi's private generated `setIntl` and locale-provider event. Umi `4.7.33`'s public `setLocale` reads the storage getter even with persistence disabled; the bridge retains the native provider, flag menu and same-document refresh while avoiding that failure. Its installed-template contract and semantic browser scenarios must pass on any Umi upgrade. `src/services/general/browserStorage.ts` protects the host/Login theme preference accesses so denied storage cannot prevent language entry or switching
 - app locale, content language, service-query language, and reference-resource language are separate boundaries. Content reading priorities, backend-query fallbacks, and reference-resource delivery states are declared independently; a native reference overlay exists only after its exact structure/evidence gate passes. Documentation, legal, and public-doc surfaces keep their separately disclosed fallbacks
 - Process and Flow AI校验 keeps the existing `AISuggestion` diff/field-acceptance UI, while `src/services/general/aiSuggestion.ts` owns the asynchronous transport. It submits the current TIDAS JSON to authenticated Edge `ai_suggest`, polls the returned requester-scoped job with a bounded progressive interval, accepts only `ai.tidas_suggestion.result.v1` `complete`/`partial` results, and fails closed on malformed, failed, cancelled, blocked, aborted, or timed-out jobs. Next never reads `worker_jobs` directly and does not receive queue payloads, leases, diagnostics, or model credentials.
 - anonymous SPA entry is limited to login/recovery plus `/oauth/consent`. The consent page is not anonymous product access: it accepts exactly one bounded RFC3986-unreserved opaque `authorization_id` without normalization, rejects delimiter/control/duplicate/oversized and dot-only path-segment input, verifies the current session through `getClaims()`, and preserves only a same-origin relative consent path across login before retrieving or deciding authorization. Root/Welcome, every other configured application route, case variants, and unmatched paths require the ordinary session guard. Authenticated unmatched paths may render the localized 404. Role gates defer missing-session decisions to that global redirect, then enforce their role only after a user exists. Localization route/view coverage records this access context but never broadens it
