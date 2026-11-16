@@ -66,7 +66,7 @@ async function withServer(handler, callback) {
 }
 
 test('binds the exact installed Umi parent, generated facade and native CJS/ESM exports', async () => {
-  assert.equal(plugins.manifest.version, '4.7.24');
+  assert.equal(plugins.manifest.version, '4.7.33');
   assert.equal(axiosPackage.manifest.version, expectedVersion);
   assert.equal(axios.VERSION, expectedVersion);
   const generated = fs.readFileSync(generatedPath, 'utf8');

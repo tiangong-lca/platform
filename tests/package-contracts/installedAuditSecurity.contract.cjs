@@ -24,7 +24,7 @@ const expectedCohorts = {
   tar: ['7.5.22'],
   browserslist: ['4.29.5'],
   colord: ['2.10.0'],
-  'baseline-browser-mapping': ['2.11.33'],
+  'baseline-browser-mapping': ['2.11.37'],
   'http-cache-semantics': ['4.3.0'],
   'source-map-js': ['1.2.2'],
   compression: ['1.8.2'],
@@ -49,8 +49,8 @@ test('all resolved audit cohorts retain their reviewed compatible release lines'
 
 test('the exact dormant Dva edge stays removed without enabling an alternate Umi configuration', async () => {
   const workspace = fs.readFileSync(path.join(repositoryRoot, 'pnpm-workspace.yaml'), 'utf8');
-  assert.match(workspace, /'@umijs\/plugins@4\.7\.24>dva-immer': '-'/u);
-  assert.equal(onePackage('@umijs/plugins').manifest.version, '4.7.24');
+  assert.match(workspace, /'@umijs\/plugins@4\.7\.33>dva-immer': '-'/u);
+  assert.equal(onePackage('@umijs/plugins').manifest.version, '4.7.33');
   for (const name of ['dva-immer', 'dva', 'immer', 'isomorphic-fetch']) {
     assert.equal(
       packageCopies(name).length,

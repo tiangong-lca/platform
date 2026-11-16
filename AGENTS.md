@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-15
-lastReviewedCommit: f756fb409996a1ffd52c9598dc54891c9232e417
-lastReviewedNote: 'Platform #1508: reviewed the production-only exact six-module Babel override, installed-preset regression proof and scoped two-brand qualification requirements; existing runtime, cache, publishing, release and quality-gate boundaries remain unchanged.'
+lastReviewedAt: 2026-11-16
+lastReviewedCommit: 9f493aea39c2ac7acfaad2c2445548de18489c21
+lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -137,6 +137,7 @@ Do not start from additional governed source docs, proposal docs, or README-leve
 - on macOS, the shared Jest runner passes `--no-concurrent-recompilation --no-maglev --no-sparkplug` to mitigate the documented Node 24.19/V8 GC crash path; the Sparkplug flag is a temporary workaround, not a repaired runtime. The unit stage retains its 25% worker pool and `512MB` idle-memory recycle boundary; the validation guide and troubleshooting runbook own worker proof and retirement
 - locale identity and runtime adapters live in `src/services/general/localeRegistry.ts`; shared topology, canonical-message ownership, and dynamic-message audit rules live in `docs/plans/i18n-de-DE/manifest.json` plus the owning audit commands documented in `docs/agents/repo-validation.md`
 - the reusable autonomous Goal for adding or backfilling one product language lives in `docs/agents/i18n-language-delivery-goal.md`; it preserves Umi's native flag icons, separates UI/content/reference-resource capabilities, audits every active registry locale, requires official-first classification/location localization, and keeps country/region variants outside the single-language product contract
+- browser support and shared web/Electron compilation follow `docs/agents/browser-support-contract.md`; `config/browserSupport.ts` freezes official version inventories and conservative compiler floors, and `config/plugins/babelTargets.ts` forwards Umi targets into nested Babel without filename exceptions. Actual browser qualification remains separate from configuration and engine emulation.
 - semantic localization E2E uses `playwright.config.ts` and `tests/e2e/i18n/**`; direct focused work uses `pnpm e2e:dev`, while exact committed qualification uses the repository-owned `e2e:env:install` / `e2e:env:doctor` / `e2e:release` controller against an archived clean commit and an isolated production bundle without mounting the parent workspace; the GitHub qualification is credential-free/read-only, hermetic, manually dispatched on a chosen ref or run by the bounded ordinary dependency PR job documented in `docs/agents/dependency-maintenance.md`, and is not part of release proof
 - scope-closure qualification uses the executable adapter at `scripts/qualification/scope-closure-next-qualification.mjs`; it exports the exact clean commit to an isolated worktree, permits loopback targets only, and emits the Worker-owned provider result schema without sensitive browser data
 - documentation screenshots use the source-bound declarative profile at `config/docs-capture/profile.v1.json`; it records only this exact source version's runtime/readiness, login/identity, auth-mutation, denial-probe, and stable-locator facts. The generic executor, credentials, dynamic origin, process lifecycle, and evidence decisions belong to workspace tooling.

@@ -45,7 +45,7 @@ function fixtures() {
 
 test('real Utoo and node-ws share the exact native-patched adapter with unchanged peers', () => {
   assert.equal(adapter.manifest.version, '1.19.17');
-  assert.equal(utoo.manifest.version, '1.5.26');
+  assert.equal(utoo.manifest.version, '1.6.3');
   assert.equal(hono.manifest.version, '4.13.14');
   assert.equal(nodeWs.manifest.peerDependencies['@hono/node-server'], '^1.19.11');
   assert.equal(
