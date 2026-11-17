@@ -45,7 +45,7 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-17
-lastReviewedCommit: c01c82495e29e4b2ce2ed04dd2963f2d08cbd880
+lastReviewedCommit: 04cce33e903fda1dfcefc35b77db8ac9cc0d571d
 lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 ---
 
