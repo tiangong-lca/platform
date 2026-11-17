@@ -246,6 +246,7 @@ export type LifeCycleModelDetailData = {
   stateCode: number;
   ruleVerification: boolean;
   teamId?: string;
+  bundleRevision?: string;
 };
 
 export type LifeCycleModelDetailResponse =
@@ -354,12 +355,19 @@ export type LifeCycleModelCalculationMetadata = {
   calculationNotice?: 'LCIA_INCOMPLETE';
 };
 
+export type ModelBundleOperation = {
+  modelId: string;
+  version: string;
+  operationId: string;
+};
+
 export type LifeCycleModelMutationResult =
   | ({
       ok: true;
       modelId: string;
       version: string;
       lifecycleModel?: LifeCycleModelMutationRecord;
+      bundleRevision?: string;
       warnings?: string[];
     } & LifeCycleModelLangNormalizationMetadata &
       LifeCycleModelCalculationMetadata)
@@ -368,5 +376,6 @@ export type LifeCycleModelMutationResult =
       code: string;
       message: string;
       details?: unknown;
+      pendingBundleOperation?: ModelBundleOperation;
     } & LifeCycleModelLangNormalizationMetadata &
       LifeCycleModelCalculationMetadata);

@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-17
-lastReviewedCommit: 3bc101bbe6760bcb5841ff81f204bc2daa70ce95
+lastReviewedCommit: 1a47c5f6a9bda073cb683a48edd181d753e4a0df
 lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
 ---
 

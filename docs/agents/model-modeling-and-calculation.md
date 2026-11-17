@@ -17,8 +17,8 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
+lastReviewedAt: 2026-11-17
+lastReviewedCommit: 7f30060b07330b7ba44331e2ce822e1bb1eb21e3
 lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
 related:
   - ./util_calculate.md

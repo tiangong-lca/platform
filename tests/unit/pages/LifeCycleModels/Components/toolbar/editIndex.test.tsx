@@ -382,11 +382,13 @@ jest.mock('@/pages/Processes/Components/view', () => ({
 const mockCreateLifeCycleModel = jest.fn().mockResolvedValue({});
 const mockGetLifeCycleModelDetail = jest.fn().mockResolvedValue({ data: {} });
 const mockUpdateLifeCycleModel = jest.fn().mockResolvedValue({});
+const mockRecoverLifecycleModelSave = jest.fn();
 
 jest.mock('@/services/lifeCycleModels/api', () => ({
   __esModule: true,
   createLifeCycleModel: (...args: any[]) => mockCreateLifeCycleModel(...args),
   getLifeCycleModelDetail: (...args: any[]) => mockGetLifeCycleModelDetail(...args),
+  recoverLifecycleModelSave: (...args: any[]) => mockRecoverLifecycleModelSave(...args),
   updateLifeCycleModel: (...args: any[]) => mockUpdateLifeCycleModel(...args),
 }));
 
@@ -573,6 +575,7 @@ beforeEach(() => {
       },
     },
   });
+  mockRecoverLifecycleModelSave.mockReset();
   mockCreateLifeCycleModel.mockReset().mockResolvedValue({
     ok: true,
     modelId: 'created-model',
@@ -819,10 +822,138 @@ describe('ToolbarEdit', () => {
       expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith(
         props.id ?? baseProps.id,
         props.version ?? baseProps.version,
+        (props.action ?? baseProps.action) === 'edit' &&
+          props.actionType !== 'createVersion' &&
+          props.actionType !== 'copy',
       ),
     );
     await waitFor(() => expect(screen.queryByTestId('spin')).not.toBeInTheDocument());
   };
+
+  it('does not recover one Model save from a different editor session', async () => {
+    const operation = { modelId: 'model-1', version: '1.0', operationId: 'first-operation' };
+    mockUpdateLifeCycleModel.mockResolvedValueOnce({
+      ok: false,
+      code: 'SAVE_STATUS_UNKNOWN',
+      message: 'Unknown save',
+      pendingBundleOperation: operation,
+    });
+    const { rerender } = render(<ToolbarEdit {...baseProps} drawerVisible />);
+    await waitFor(() => expect(screen.queryByTestId('spin')).not.toBeInTheDocument());
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+    const { message } = jest.requireMock('antd');
+    await waitFor(() =>
+      expect(message.warning).toHaveBeenCalledWith(
+        'pages.lifecyclemodel.calculation.status.saveStatusUnknown',
+      ),
+    );
+
+    rerender(<ToolbarEdit {...baseProps} />);
+    rerender(<ToolbarEdit {...baseProps} id='model-2' version='2.0' drawerVisible />);
+    await waitFor(() =>
+      expect(mockGetLifeCycleModelDetail).toHaveBeenLastCalledWith('model-2', '2.0', true),
+    );
+    await waitFor(() => expect(screen.queryByTestId('spin')).not.toBeInTheDocument());
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+
+    expect(mockRecoverLifecycleModelSave).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(mockUpdateLifeCycleModel).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'model-2', version: '2.0' }),
+        expect.any(Object),
+      ),
+    );
+  });
+
+  it('ignores a recovery reply that arrives after reopening the editor on another Model', async () => {
+    const operation = { modelId: 'model-1', version: '1.0', operationId: 'first-operation' };
+    mockUpdateLifeCycleModel.mockResolvedValueOnce({
+      ok: false,
+      code: 'SAVE_STATUS_UNKNOWN',
+      message: 'Unknown save',
+      pendingBundleOperation: operation,
+    });
+    let finishRecovery: (result: unknown) => void;
+    mockRecoverLifecycleModelSave.mockReturnValueOnce(
+      new Promise((resolve) => {
+        finishRecovery = resolve;
+      }),
+    );
+    const { rerender } = render(<ToolbarEdit {...baseProps} drawerVisible />);
+    await waitFor(() => expect(screen.queryByTestId('spin')).not.toBeInTheDocument());
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+    const { message } = jest.requireMock('antd');
+    await waitFor(() => expect(message.warning).toHaveBeenCalled());
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+    await waitFor(() => expect(mockRecoverLifecycleModelSave).toHaveBeenCalledWith(operation));
+
+    rerender(<ToolbarEdit {...baseProps} />);
+    rerender(<ToolbarEdit {...baseProps} id='model-2' version='2.0' drawerVisible />);
+    await waitFor(() => expect(screen.queryByTestId('spin')).not.toBeInTheDocument());
+    await act(async () => {
+      finishRecovery({
+        ok: true,
+        modelId: 'model-1',
+        version: '1.0',
+        bundleRevision: 'first-model-revision',
+      });
+    });
+    expect(message.success).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+    await waitFor(() =>
+      expect(mockUpdateLifeCycleModel).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: 'model-2', version: '2.0' }),
+        expect.objectContaining({ guardedSave: { revision: null } }),
+      ),
+    );
+  });
+
+  it('stops recovering once an original save is confirmed and the current group has changed', async () => {
+    const operation = { modelId: 'model-1', version: '1.0', operationId: 'first-operation' };
+    mockUpdateLifeCycleModel
+      .mockResolvedValueOnce({
+        ok: false,
+        code: 'SAVE_STATUS_UNKNOWN',
+        message: 'Unknown save',
+        pendingBundleOperation: operation,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        code: 'MODEL_BUNDLE_CONFLICT',
+        message: 'Reload the Model before saving',
+      });
+    mockGetLifeCycleModelDetail.mockResolvedValueOnce({
+      success: true,
+      data: { bundleRevision: 'original-baseline' },
+    });
+    mockRecoverLifecycleModelSave.mockResolvedValueOnce({
+      ok: false,
+      code: 'MODEL_BUNDLE_READBACK_CHANGED',
+      message: 'The save committed. Reload the Model.',
+    });
+    await renderVisibleToolbarEdit();
+    const save = screen.getByRole('button', { name: 'save-icon' });
+    const { message } = jest.requireMock('antd');
+    await userEvent.click(save);
+    await waitFor(() =>
+      expect(message.warning).toHaveBeenCalledWith(
+        'pages.lifecyclemodel.calculation.status.saveStatusUnknown',
+      ),
+    );
+    await userEvent.click(save);
+    await waitFor(() =>
+      expect(message.warning).toHaveBeenCalledWith('The save committed. Reload the Model.'),
+    );
+    expect(mockRecoverLifecycleModelSave).toHaveBeenCalledWith(operation);
+    await userEvent.click(save);
+    await waitFor(() =>
+      expect(mockUpdateLifeCycleModel).toHaveBeenLastCalledWith(
+        expect.objectContaining({ id: operation.modelId }),
+        expect.objectContaining({ guardedSave: { revision: null } }),
+      ),
+    );
+    expect(mockRecoverLifecycleModelSave).toHaveBeenCalledTimes(1);
+  });
 
   it('highlights graph nodes that have sdk process-instance validation issues', async () => {
     await renderVisibleToolbarEdit();
@@ -2720,7 +2851,9 @@ describe('ToolbarEdit', () => {
       />,
     );
 
-    await waitFor(() => expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0'));
+    await waitFor(() =>
+      expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0', false),
+    );
     await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalled());
     expect(screen.getByText('toolbar-edit-info:edit:9.9.9')).toBeInTheDocument();
     expect(screen.getByText('life-cycle-model-edit:child-model:1.0')).toBeInTheDocument();
@@ -2744,7 +2877,9 @@ describe('ToolbarEdit', () => {
 
     render(<ToolbarEdit {...baseProps} drawerVisible={true} />);
 
-    await waitFor(() => expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0'));
+    await waitFor(() =>
+      expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0', true),
+    );
     await waitFor(() =>
       expect(mockInitData).toHaveBeenCalledWith({
         nodes: [],
