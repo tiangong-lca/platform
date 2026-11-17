@@ -698,6 +698,21 @@ describe('toolbar/utils/editGraph', () => {
     );
   });
 
+  it('preserves existing instance identities across reordering and allocates a fresh index for a new node', () => {
+    const survivors = [
+      { id: 'second', data: { index: '2' } },
+      { id: 'first', data: { index: '1' } },
+    ];
+    const storedNodes = [survivors[1], { id: 'removed', data: { index: '0' } }, survivors[0]];
+    const newNode = { id: 'new', data: { index: '2' } };
+    const payload = buildSavePayload({}, [...survivors, newNode], [], storedNodes);
+    expect(payload.model.nodes.map((node) => [node.id, node.data.index])).toEqual([
+      ['second', '2'],
+      ['first', '1'],
+      ['new', '3'],
+    ]);
+  });
+
   it('builds persisted save payloads, hydrates editor graph data, and creates empty defaults', () => {
     const savePayload = buildSavePayload(
       { foo: 'bar' } as any,

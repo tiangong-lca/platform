@@ -1153,7 +1153,12 @@ const ToolbarEdit: FC<Props> = ({
             )
         : (edges as LifeCycleModelGraphEdge[]);
 
-      const newData = buildSavePayload(infoData, currentNodes, currentEdges);
+      const newData = buildSavePayload(
+        infoData,
+        currentNodes,
+        currentEdges,
+        editorGraphHydrationBaselineRef.current?.hydratedGraph.nodes,
+      );
       const persistenceGraph = editorGraphHydrationBaselineRef.current
         ? reconcileHydratedEditorGraphForPersistence(
             newData.model ?? { nodes: [], edges: [] },
@@ -1169,6 +1174,17 @@ const ToolbarEdit: FC<Props> = ({
         JSON.stringify(persistenceGraph) !== JSON.stringify(baseline.storedGraph) &&
         withoutEditorLayout({ ...newData, model: persistenceGraph }) ===
           withoutEditorLayout({ ...savedFormRef.current, model: baseline.storedGraph });
+      const captureSavedGraph = (savedModel?: LifeCycleModelJsonTg | null) => {
+        const hydratedGraph = newData.model ?? { nodes: [], edges: [] };
+        const fallback = persistenceGraph ?? hydratedGraph;
+        editorGraphHydrationBaselineRef.current = {
+          storedGraph: {
+            nodes: savedModel?.xflow?.nodes ?? fallback.nodes,
+            edges: savedModel?.xflow?.edges ?? fallback.edges,
+          },
+          hydratedGraph,
+        };
+      };
       const fallbackValidationVersion =
         (newData?.administrativeInformation?.publicationAndOwnership?.['common:dataSetVersion'] as
           string | undefined) ??
@@ -1417,12 +1433,7 @@ const ToolbarEdit: FC<Props> = ({
           setThisId(savedModelId);
           setThisVersion(savedVersion);
           setJsonTg(savedLifeCycleModel?.json_tg ?? {});
-          if (persistenceGraph && editorGraphHydrationBaselineRef.current) {
-            editorGraphHydrationBaselineRef.current = {
-              storedGraph: persistenceGraph,
-              hydratedGraph: newData.model ?? { nodes: [], edges: [] },
-            };
-          }
+          captureSavedGraph(savedLifeCycleModel?.json_tg);
 
           const savedEdges = (savedLifeCycleModel?.json_tg?.xflow?.edges ??
             []) as LifeCycleModelGraphEdge[];
@@ -1507,12 +1518,7 @@ const ToolbarEdit: FC<Props> = ({
           setThisVersion(savedVersion);
           setInfoData(nextPayload);
           setJsonTg(savedLifeCycleModel?.json_tg ?? {});
-          if (persistenceGraph && editorGraphHydrationBaselineRef.current) {
-            editorGraphHydrationBaselineRef.current = {
-              storedGraph: persistenceGraph,
-              hydratedGraph: newData.model ?? { nodes: [], edges: [] },
-            };
-          }
+          captureSavedGraph(savedLifeCycleModel?.json_tg);
 
           const savedEdges = (savedLifeCycleModel?.json_tg?.xflow?.edges ??
             []) as LifeCycleModelGraphEdge[];
