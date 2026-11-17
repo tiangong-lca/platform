@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-17
-lastReviewedCommit: 1a47c5f6a9bda073cb683a48edd181d753e4a0df
-lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
+lastReviewedAt: 2026-11-18
+lastReviewedCommit: 48af6fbc97bef1166dcb5fa59ad4961c1d856d6c
+lastReviewedNote: 'Platform #1522: reviewed the controlled Mac-only coverage worker profile and exact in-place canonical argv expansion. Linux/Windows and unmatched Mac profiles retain two; all native mitigations, idle recycling, full tests/coverage, caches and publishers remain unchanged. Current-source validation and normal Dev/Main/root delivery remain required.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

@@ -1,6 +1,6 @@
 {
   "name": "tiangong-lca-next",
-  "version": "0.0.165",
+  "version": "0.0.166",
   "packageManager": "pnpm@11.24.0",
   "private": true,
   "description": "An out-of-box LCA Data solution",
@@ -111,7 +111,7 @@
     "test:workflows": "node --import tsx tests/data-workflows/test-workflows.ts",
     "test:prepush-receipt": "cross-env NODE_OPTIONS=--max-old-space-size=8192 node scripts/test-runner.cjs --stage prepush-receipt --runInBand --runTestsByPath tests/unit/scripts/prepushGateReceipt.test.ts --testTimeout=20000 --no-coverage --no-watchman",
     "test:release-workflow": "jest tests/unit/scripts/releaseWorkflow.test.ts --runInBand --no-watchman --testTimeout=30000",
-    "test:coverage:collect": "cross-env NODE_OPTIONS=--max-old-space-size=8192 node scripts/test-runner.cjs --stage coverage --maxWorkers=2 --workerIdleMemoryLimit=512MB --testTimeout=20000 --coverage --no-watchman --testPathIgnorePatterns=\"<rootDir>/tests/unit/scripts/prepushGateReceipt[.]test[.]ts$\"",
+    "test:coverage:collect": "cross-env NODE_OPTIONS=--max-old-space-size=8192 node scripts/test-runner.cjs --stage coverage --default-coverage-workers --workerIdleMemoryLimit=512MB --testTimeout=20000 --coverage --no-watchman --testPathIgnorePatterns=\"<rootDir>/tests/unit/scripts/prepushGateReceipt[.]test[.]ts$\"",
     "test:coverage": "pnpm test:prepush-receipt && pnpm test:coverage:collect",
     "test:coverage:assert-full": "node scripts/test-coverage-report.js --assert-full",
     "test:coverage:report": "pnpm test:coverage && node scripts/test-coverage-report.js",
