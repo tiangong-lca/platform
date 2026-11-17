@@ -23,7 +23,7 @@ checkPaths:
   - tests/unit/config/protocolBabel.test.ts
   - docs/agents/browser-support-contract.md
 lastReviewedAt: 2026-11-18
-lastReviewedCommit: 066ecdd3d154938fbb8819eb7ad631cc8b86a952
+lastReviewedCommit: 48af6fbc97bef1166dcb5fa59ad4961c1d856d6c
 lastReviewedNote: 'Platform #1522: reviewed the controlled Mac-only coverage worker profile and exact in-place canonical argv expansion. Linux/Windows and unmatched Mac profiles retain two; all native mitigations, idle recycling, full tests/coverage, caches and publishers remain unchanged. Current-source validation and normal Dev/Main/root delivery remain required.'
 related:
   - ../../AGENTS.md
