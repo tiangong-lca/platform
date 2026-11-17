@@ -312,6 +312,7 @@ export const buildLifeCycleModelSubmodelRecord = (
               modelDataSet?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
                 ?.uncertaintyAdjustments,
             useAdviceForDataSet:
+              modelDataSet?.modellingAndValidation?.dataSourcesTreatmentEtc?.useAdviceForDataSet ??
               modelDataSet?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
                 ?.useAdviceForDataSet,
           },

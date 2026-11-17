@@ -11,6 +11,7 @@ import { formatDateTime, getImportedId, getLangText } from '@/services/general/u
 import {
   createLifeCycleModel,
   getLifeCycleModelDetail,
+  recoverLifecycleModelSave,
   updateLifeCycleModel,
 } from '@/services/lifeCycleModels/api';
 import type {
@@ -26,6 +27,7 @@ import type {
   LifeCycleModelSelectedPortPayload,
   LifeCycleModelTargetAmount,
   LifeCycleModelValidationSnapshot,
+  ModelBundleOperation,
 } from '@/services/lifeCycleModels/data';
 import {
   genLifeCycleModelData,
@@ -101,6 +103,7 @@ import {
   hydrateEditorNodes,
   normalizePastedReferenceCells,
   reconcileHydratedEditorGraphForPersistence,
+  withoutEditorLayout,
   resolveDeleteSelection,
 } from './utils/editGraph';
 import {
@@ -273,6 +276,9 @@ const ToolbarEdit: FC<Props> = ({
 
   const editInfoRef = useRef<ToolbarEditInfoHandle>(null);
   const editorGraphHydrationBaselineRef = useRef<EditorGraphHydrationBaseline | null>(null);
+  const bundleRevisionRef = useRef<string | null>(null);
+  const pendingBundleOperationRef = useRef<ModelBundleOperation | null>(null);
+  const savedFormRef = useRef<LifeCycleModelEditorFormState | null>(null);
   const resizeToolRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     setThisAction(action);
@@ -1108,6 +1114,22 @@ const ToolbarEdit: FC<Props> = ({
     const silent = options?.silent ?? false;
     if (setLoadingData) setSpinning(true);
     try {
+      if (pendingBundleOperationRef.current) {
+        const recovered = await recoverLifecycleModelSave(pendingBundleOperationRef.current);
+        if (recovered.ok) {
+          pendingBundleOperationRef.current = null;
+          bundleRevisionRef.current = recovered.bundleRevision ?? null;
+          setThisAction('edit');
+          setThisId(recovered.modelId);
+          setThisVersion(recovered.version);
+          message.success(
+            intl.formatMessage({ id: 'pages.lifecyclemodel.calculation.status.saveSucceeded' }),
+          );
+        } else {
+          message.warning(recovered.message);
+        }
+        return;
+      }
       await editInfoRef.current?.updateReferenceDescription(infoData);
       await updateReference(false);
 
@@ -1138,6 +1160,15 @@ const ToolbarEdit: FC<Props> = ({
             editorGraphHydrationBaselineRef.current,
           )
         : undefined;
+      const baseline = editorGraphHydrationBaselineRef.current;
+      const layoutOnly =
+        options?.langIntent !== 'validation' &&
+        persistenceGraph &&
+        baseline &&
+        savedFormRef.current &&
+        JSON.stringify(persistenceGraph) !== JSON.stringify(baseline.storedGraph) &&
+        withoutEditorLayout({ ...newData, model: persistenceGraph }) ===
+          withoutEditorLayout({ ...savedFormRef.current, model: baseline.storedGraph });
       const fallbackValidationVersion =
         (newData?.administrativeInformation?.publicationAndOwnership?.['common:dataSetVersion'] as
           string | undefined) ??
@@ -1213,6 +1244,7 @@ const ToolbarEdit: FC<Props> = ({
         }
 
         if (result.code === 'SAVE_STATUS_UNKNOWN') {
+          pendingBundleOperationRef.current = result.pendingBundleOperation ?? null;
           message.warning(
             intl.formatMessage({ id: 'pages.lifecyclemodel.calculation.status.saveStatusUnknown' }),
           );
@@ -1335,6 +1367,7 @@ const ToolbarEdit: FC<Props> = ({
       // 覆盖整个保存操作（源加载 → 求解 → LCIA → 提交）的取消标识
       const saveOperation = new CalculationOperation();
       const mutationOptions = {
+        guardedSave: { revision: bundleRevisionRef.current, ...(layoutOnly ? { layoutOnly } : {}) },
         ...(options?.langIntent ? { intent: options.langIntent } : {}),
         ...(persistenceGraph ? { persistenceGraph } : {}),
         hasModelChanged: () => {
@@ -1360,11 +1393,13 @@ const ToolbarEdit: FC<Props> = ({
           saveOperationRef.current = null;
         }
         if (result.ok) {
+          bundleRevisionRef.current = result.bundleRevision ?? null;
           const savedLifeCycleModel = result.lifecycleModel;
           const savedModelId = savedLifeCycleModel?.id ?? result.modelId;
           const savedVersion = savedLifeCycleModel?.version ?? result.version;
           const nextPayload = buildValidationSnapshotPayload(result, savedModelId, savedVersion);
           setInfoData(nextPayload);
+          savedFormRef.current = nextPayload;
           if (!silent) {
             message.success(
               intl.formatMessage({
@@ -1447,10 +1482,12 @@ const ToolbarEdit: FC<Props> = ({
           saveOperationRef.current = null;
         }
         if (result.ok) {
+          bundleRevisionRef.current = result.bundleRevision ?? null;
           const savedLifeCycleModel = result.lifecycleModel;
           const savedModelId = savedLifeCycleModel?.id ?? result.modelId;
           const savedVersion = savedLifeCycleModel?.version ?? result.version;
           const nextPayload = buildValidationSnapshotPayload(result, savedModelId, savedVersion);
+          savedFormRef.current = nextPayload;
           if (!silent) {
             message.success(
               intl.formatMessage({
@@ -1851,6 +1888,8 @@ const ToolbarEdit: FC<Props> = ({
       setMultiProviderConflictNodeIds([]);
       setJsonTg({});
       editorGraphHydrationBaselineRef.current = null;
+      bundleRevisionRef.current = null;
+      savedFormRef.current = null;
       modelData({ nodes: [], edges: [] });
       resetGraphCommandState();
       return;
@@ -1890,7 +1929,12 @@ const ToolbarEdit: FC<Props> = ({
     if (id !== '') {
       setIsSave(false);
       setSpinning(true);
-      void getLifeCycleModelDetail(id, version)
+      bundleRevisionRef.current = null;
+      void getLifeCycleModelDetail(
+        id,
+        version,
+        action === 'edit' && actionType !== 'createVersion' && actionType !== 'copy',
+      )
         .then(async (result: LifeCycleModelDetailResponse) => {
           if (!result.success) {
             message.error(
@@ -1905,13 +1949,16 @@ const ToolbarEdit: FC<Props> = ({
             result.data?.json?.lifeCycleModelDataSet ?? {},
           );
           const storedJsonTg = result.data?.json_tg ?? {};
+          bundleRevisionRef.current = result.data.bundleRevision ?? null;
           setJsonTg(storedJsonTg);
 
           if (actionType === 'createVersion' && newVersion) {
             fromData.administrativeInformation.publicationAndOwnership['common:dataSetVersion'] =
               newVersion;
           }
-          setInfoData({ ...fromData, id: thisId, version: thisVersion });
+          const editorForm = { ...fromData, id: thisId, version: thisVersion };
+          savedFormRef.current = editorForm;
+          setInfoData(editorForm);
           const processDetails = await getEditorProcessData(storedJsonTg);
           const editorJsonTg = normalizeLifeCycleModelGraphForDisplay({
             jsonTg: storedJsonTg,

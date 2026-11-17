@@ -556,6 +556,22 @@ export const buildSavePayload = (
   };
 };
 
+export const withoutEditorLayout = (payload: LifeCycleModelEditorFormState) => {
+  const nodes = payload.model?.nodes.map((value) => {
+    const node = { ...value };
+    for (const field of ['x', 'y', 'width', 'height', 'angle', 'position', 'size']) {
+      delete node[field];
+    }
+    return node;
+  });
+  const edges = payload.model?.edges.map((value) => {
+    const edge = { ...value };
+    delete edge.vertices;
+    return edge;
+  });
+  return JSON.stringify({ ...payload, model: { nodes, edges } });
+};
+
 const ABSENT_GRAPH_VALUE = Symbol('absent-graph-value');
 type GraphValue = unknown | typeof ABSENT_GRAPH_VALUE;
 

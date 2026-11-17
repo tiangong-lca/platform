@@ -158,6 +158,87 @@ const sampleVersion = '01.00.000';
 const sampleUserId = 'user-0001';
 const sampleAccessToken = 'access-token-0001';
 
+test('guarded layout save preserves the Model body and members without calculating', async () => {
+  const protocol = 'model-bundle.v1';
+  const before = 'a'.repeat(64);
+  const after = 'b'.repeat(64);
+  const target = { modelId: sampleModelId, version: sampleVersion };
+  const metadata = {
+    submodels: [{ id: sampleProcessId, version: sampleVersion, type: 'primary' }],
+  };
+  const graph = { nodes: [{ id: 'node', x: 20 }], edges: [] };
+  const model = {
+    id: sampleModelId,
+    version: sampleVersion,
+    json_ordered: { lifeCycleModelDataSet: { metadata: 'authored' } },
+    json_tg: metadata,
+    rule_verification: true,
+  };
+  let revision = before;
+  mockFunctionsInvoke.mockImplementation(async (_name, { body }) => {
+    if (body.action === 'inspect') {
+      return {
+        data: { ok: true, ...target, protocol, status: 'observed', snapshot: { model, revision } },
+      };
+    }
+    expect(body).toMatchObject({
+      action: 'save',
+      expectedRevision: before,
+      plan: {
+        parent: {
+          jsonOrdered: model.json_ordered,
+          jsonTg: { ...metadata, xflow: graph },
+          ruleVerification: true,
+        },
+        processMutations: [],
+      },
+    });
+    revision = after;
+    return {
+      data: {
+        ok: true,
+        ...target,
+        operationId: body.operationId,
+        protocol,
+        status: 'committed',
+        revision,
+      },
+    };
+  });
+  await expect(
+    lifeCycleModelsApi.updateLifeCycleModel(
+      { id: sampleModelId, version: sampleVersion },
+      { guardedSave: { revision: before, layoutOnly: true }, persistenceGraph: graph },
+    ),
+  ).resolves.toMatchObject({ ok: true, bundleRevision: after });
+  expect(mockGenLifeCycleModelProcesses).not.toHaveBeenCalled();
+  expect(mockFrom).not.toHaveBeenCalled();
+  expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body.action)).toEqual([
+    'inspect',
+    'save',
+    'inspect',
+  ]);
+});
+
+test('the original save remains recoverable without authoring another mutation', async () => {
+  const operation = {
+    modelId: sampleModelId,
+    version: sampleVersion,
+    operationId: 'original-save',
+  };
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: { ok: true, ...operation, protocol: 'model-bundle.v1', status: 'unknown' },
+  });
+  await expect(lifeCycleModelsApi.recoverLifecycleModelSave(operation)).resolves.toMatchObject({
+    ok: false,
+    code: 'SAVE_STATUS_UNKNOWN',
+    pendingBundleOperation: operation,
+  });
+  expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body)).toEqual([
+    { ...operation, protocol: 'model-bundle.v1', action: 'recover' },
+  ]);
+});
+
 const createQueryBuilder = <T>(resolvedValue: T) => {
   const builder = baseCreateQueryBuilder(resolvedValue);
   mockRpc.mockImplementation((functionName: string, args: any = {}) => {

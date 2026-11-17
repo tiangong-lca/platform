@@ -819,6 +819,9 @@ describe('ToolbarEdit', () => {
       expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith(
         props.id ?? baseProps.id,
         props.version ?? baseProps.version,
+        (props.action ?? baseProps.action) === 'edit' &&
+          props.actionType !== 'createVersion' &&
+          props.actionType !== 'copy',
       ),
     );
     await waitFor(() => expect(screen.queryByTestId('spin')).not.toBeInTheDocument());
@@ -2720,7 +2723,9 @@ describe('ToolbarEdit', () => {
       />,
     );
 
-    await waitFor(() => expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0'));
+    await waitFor(() =>
+      expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0', false),
+    );
     await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalled());
     expect(screen.getByText('toolbar-edit-info:edit:9.9.9')).toBeInTheDocument();
     expect(screen.getByText('life-cycle-model-edit:child-model:1.0')).toBeInTheDocument();
@@ -2744,7 +2749,9 @@ describe('ToolbarEdit', () => {
 
     render(<ToolbarEdit {...baseProps} drawerVisible={true} />);
 
-    await waitFor(() => expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0'));
+    await waitFor(() =>
+      expect(mockGetLifeCycleModelDetail).toHaveBeenCalledWith('model-1', '1.0', true),
+    );
     await waitFor(() =>
       expect(mockInitData).toHaveBeenCalledWith({
         nodes: [],

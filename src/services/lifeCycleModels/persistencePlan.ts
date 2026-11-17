@@ -535,11 +535,16 @@ function overrideWithOldProcess(newData: any, oldData: any) {
   }
 
   if (oldData?.processDataSet?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness) {
+    const useAdviceForDataSet =
+      newData.processDataSet.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+        ?.useAdviceForDataSet;
     if (!newData.processDataSet.modellingAndValidation) {
       newData.processDataSet.modellingAndValidation = {} as any;
     }
-    newData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness =
-      oldData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness;
+    newData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness = {
+      ...oldData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness,
+      ...(useAdviceForDataSet === undefined ? {} : { useAdviceForDataSet }),
+    };
   }
 
   if (oldData?.processDataSet?.modellingAndValidation?.completeness) {
