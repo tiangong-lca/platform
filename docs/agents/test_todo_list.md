@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-17
-lastReviewedCommit: 1a47c5f6a9bda073cb683a48edd181d753e4a0df
-lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
+lastReviewedAt: 2026-11-18
+lastReviewedCommit: 066ecdd3d154938fbb8819eb7ad631cc8b86a952
+lastReviewedNote: 'Platform #1522: reviewed the controlled Mac-only coverage worker profile and exact in-place canonical argv expansion. Linux/Windows and unmatched Mac profiles retain two; all native mitigations, idle recycling, full tests/coverage, caches and publishers remain unchanged. Current-source validation and normal Dev/Main/root delivery remain required.'
 ---
 
 # Testing Execution State
@@ -117,7 +117,7 @@ This is a checked-in reference, not a per-PR execution ledger. A delivery's post
 - the main promotion PR and canonical version-changing `main` push reuse that dev proof only when both exact two-parent merges, main/dev bases, candidate tree/version, successful job, run attempt, and artifact payload all match; direct/squash/rebase merges, changed trees, expired or missing proof, or API failure fail closed and require a new dev candidate, while explicit manual tag and recovery dispatch events may run a fresh full Release Gate
 - an explicitly marked direct main hotfix must match its tracked Issue, current main base, and exact PR head, keep `package.json.version` unchanged, and pass one fresh static/full clean-runner gate; focused fixtures reject stale markers, non-ancestral bases, and version drift
 - release qualification delegates the complete Jest inventory to one `prepush:gate` lane on the exact dev Release PR; tag creation waits for proof verification, normal later stages never repeat candidate acceptance, and no release stage runs or requires browser E2E
-- Issue #819 keeps the exact complete coverage inventory on two workers but requires a `512MB` idle-memory recycle boundary and full managed-gate proof; lower boundaries that force collection around the normal instrumented worker footprint are not an accepted optimization
+- Issue #819 established the complete coverage inventory and `512MB` idle-memory recycle boundary; Issue #1522 retains those protections and selects only the qualified host profile documented in [repo validation](repo-validation.md), with full managed-gate proof; lower boundaries that force collection around the normal instrumented worker footprint are not an accepted optimization
 - a failed managed transport may be retried without repeating the full gate only through the ignored, exact-intent, one-hour receipt and argument-free `pnpm push:retry`; any controlled-input drift requires a fresh managed push and gate
 - checked-push eligibility now accepts the normal exact-branch `HEAD` spelling and fails every other invalid ref shape before gates; raw deletion-only pushes skip gates, so branch cleanup cannot spend the full-suite budget
 - Issue #606 plus the merged clean-runner assertions now has 87-test focused proof across the release service, Calculation Bundle panel, public release panel, Data Processing integration, Process integration, and locale inventory; the final branch-wide proof remains owned by the push hook
