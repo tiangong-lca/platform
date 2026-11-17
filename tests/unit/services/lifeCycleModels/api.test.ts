@@ -158,6 +158,254 @@ const sampleVersion = '01.00.000';
 const sampleUserId = 'user-0001';
 const sampleAccessToken = 'access-token-0001';
 
+test('guarded layout save preserves the Model body and members without calculating', async () => {
+  const protocol = 'model-bundle.v1';
+  const before = 'a'.repeat(64);
+  const after = 'b'.repeat(64);
+  const target = { modelId: sampleModelId, version: sampleVersion };
+  const metadata = {
+    submodels: [{ id: sampleProcessId, version: sampleVersion, type: 'primary' }],
+  };
+  const graph = { nodes: [{ id: 'node', x: 20 }], edges: [] };
+  const model = {
+    id: sampleModelId,
+    version: sampleVersion,
+    json_ordered: { lifeCycleModelDataSet: { metadata: 'authored' } },
+    json_tg: metadata,
+    rule_verification: true,
+  };
+  let revision = before;
+  mockFunctionsInvoke.mockImplementation(async (_name, { body }) => {
+    if (body.action === 'inspect') {
+      return {
+        data: { ok: true, ...target, protocol, status: 'observed', snapshot: { model, revision } },
+      };
+    }
+    expect(body).toMatchObject({
+      action: 'save',
+      expectedRevision: before,
+      plan: {
+        parent: {
+          jsonOrdered: model.json_ordered,
+          jsonTg: { ...metadata, xflow: graph },
+          ruleVerification: true,
+        },
+        processMutations: [],
+      },
+    });
+    revision = after;
+    return {
+      data: {
+        ok: true,
+        ...target,
+        operationId: body.operationId,
+        protocol,
+        status: 'committed',
+        revision,
+      },
+    };
+  });
+  await expect(
+    lifeCycleModelsApi.updateLifeCycleModel(
+      { id: sampleModelId, version: sampleVersion },
+      { guardedSave: { revision: before, layoutOnly: true }, persistenceGraph: graph },
+    ),
+  ).resolves.toMatchObject({ ok: true, bundleRevision: after });
+  expect(mockGenLifeCycleModelProcesses).not.toHaveBeenCalled();
+  expect(mockFrom).not.toHaveBeenCalled();
+  expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body.action)).toEqual([
+    'inspect',
+    'save',
+    'inspect',
+  ]);
+});
+
+test('the original save remains recoverable without authoring another mutation', async () => {
+  const operation = {
+    modelId: sampleModelId,
+    version: sampleVersion,
+    operationId: 'original-save',
+  };
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: { ok: true, ...operation, protocol: 'model-bundle.v1', status: 'unknown' },
+  });
+  await expect(lifeCycleModelsApi.recoverLifecycleModelSave(operation)).resolves.toMatchObject({
+    ok: false,
+    code: 'SAVE_STATUS_UNKNOWN',
+    pendingBundleOperation: operation,
+  });
+  expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body)).toEqual([
+    { ...operation, protocol: 'model-bundle.v1', action: 'recover' },
+  ]);
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: { ok: false, code: 'FORBIDDEN', message: 'The receipt is unavailable' },
+  });
+  await expect(lifeCycleModelsApi.recoverLifecycleModelSave(operation)).resolves.toMatchObject({
+    ok: false,
+    code: 'SAVE_STATUS_UNKNOWN',
+    pendingBundleOperation: operation,
+  });
+});
+
+test('guarded editor loads the exact baseline and refuses an unavailable protocol', async () => {
+  const id = sampleModelId;
+  const version = sampleVersion;
+  const target = { modelId: id, version };
+  const revision = 'a'.repeat(64);
+  const model = {
+    id,
+    version,
+    json_ordered: {},
+    json_tg: {},
+    rule_verification: true,
+    state_code: 0,
+  };
+  mockFunctionsInvoke
+    .mockResolvedValueOnce({
+      data: {
+        ok: true,
+        ...target,
+        protocol: 'model-bundle.v1',
+        status: 'observed',
+        snapshot: { model, revision },
+      },
+    })
+    .mockResolvedValueOnce({ data: { ok: true, ...target } });
+  await expect(
+    lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
+  ).resolves.toMatchObject({
+    success: true,
+    data: { id, version, bundleRevision: revision },
+  });
+  await expect(lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true)).resolves.toEqual({
+    success: false,
+    data: {},
+  });
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: { ok: true, ...target, protocol: 'model-bundle.v1', status: 'observed' },
+  });
+  await expect(lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true)).resolves.toEqual({
+    success: false,
+    data: {},
+  });
+  expect(mockFrom).not.toHaveBeenCalled();
+});
+
+test('guarded layout refuses stale, cancelled, changed, and unversioned input before writing', async () => {
+  const data = { id: sampleModelId, version: sampleVersion };
+  const target = { modelId: data.id, version: data.version };
+  const revision = 'a'.repeat(64);
+  const observed = {
+    data: {
+      ok: true,
+      ...target,
+      protocol: 'model-bundle.v1',
+      status: 'observed',
+      snapshot: {
+        revision,
+        model: { ...data, json_ordered: {}, json_tg: {}, rule_verification: true, state_code: 0 },
+      },
+    },
+  };
+  const operation = new (jest.requireActual(
+    '@/services/lifeCycleModels/matrixCalculation/types',
+  ).CalculationOperation)();
+  operation.cancel();
+  const options = {
+    guardedSave: { revision, layoutOnly: true },
+    persistenceGraph: { nodes: [], edges: [] },
+  };
+  mockFunctionsInvoke.mockResolvedValue(observed);
+  for (const [input, extra, code] of [
+    [data, { guardedSave: { revision: null } }, 'MODEL_BUNDLE_CONFLICT'],
+    [data, { guardedSave: { revision: 'old', layoutOnly: true } }, 'MODEL_BUNDLE_CONFLICT'],
+    [data, { operation }, 'CALCULATION_CANCELLED'],
+    [data, { hasModelChanged: () => true }, 'RESULT_DISCARDED'],
+    [{ id: data.id }, {}, 'MODEL_BUNDLE_CONFLICT'],
+  ] as const) {
+    await expect(
+      lifeCycleModelsApi.updateLifeCycleModel(input, { ...options, ...extra }),
+    ).resolves.toMatchObject({ ok: false, code });
+  }
+  expect(mockFunctionsInvoke.mock.calls.every((call) => call[1].body.action === 'inspect')).toBe(
+    true,
+  );
+});
+
+test('guarded layout reports read authorization failure without dispatching a write', async () => {
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: { ok: false, code: 'FORBIDDEN', message: 'Cannot read this Model' },
+  });
+  await expect(
+    lifeCycleModelsApi.updateLifeCycleModel(
+      { id: sampleModelId, version: sampleVersion },
+      {
+        guardedSave: { revision: 'a'.repeat(64), layoutOnly: true },
+        persistenceGraph: { nodes: [], edges: [] },
+      },
+    ),
+  ).resolves.toMatchObject({ ok: false, code: 'FORBIDDEN' });
+  expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body.action)).toEqual(['inspect']);
+});
+
+test('guarded layout returns a definitive rejection and recovers an uncertain acknowledgment', async () => {
+  const data = { id: sampleModelId, version: sampleVersion };
+  const target = { modelId: data.id, version: data.version };
+  const base = { ok: true, ...target, protocol: 'model-bundle.v1' };
+  const revision = 'a'.repeat(64);
+  const options = {
+    guardedSave: { revision, layoutOnly: true },
+    persistenceGraph: { nodes: [], edges: [] },
+  };
+  const observed = {
+    data: {
+      ...base,
+      status: 'observed',
+      snapshot: {
+        revision,
+        model: {
+          ...data,
+          json_ordered: {},
+          json_tg: {},
+          rule_verification: true,
+          state_code: 0,
+        },
+      },
+    },
+  };
+  mockFunctionsInvoke.mockResolvedValueOnce(observed).mockResolvedValueOnce({
+    data: { ok: false, code: 'MODEL_MEMBERSHIP_BUSY', message: 'Concurrent writer' },
+  });
+  await expect(lifeCycleModelsApi.updateLifeCycleModel(data, options)).resolves.toMatchObject({
+    ok: false,
+    code: 'MODEL_MEMBERSHIP_BUSY',
+  });
+  let operationId: string;
+  mockFunctionsInvoke
+    .mockResolvedValueOnce(observed)
+    .mockImplementationOnce(async (_name, { body }) => {
+      operationId = body.operationId;
+      throw new Error('acknowledgment lost');
+    })
+    .mockImplementationOnce(async (_name, { body }) => {
+      expect(body).toMatchObject({ action: 'recover', operationId });
+      return { data: { ...base, status: 'committed', operationId, revision: 'b'.repeat(64) } };
+    })
+    .mockResolvedValueOnce(observed);
+  await expect(lifeCycleModelsApi.updateLifeCycleModel(data, options)).resolves.toMatchObject({
+    ok: false,
+    code: 'MODEL_BUNDLE_READBACK_CHANGED',
+  });
+  expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body.action)).toEqual([
+    'inspect',
+    'save',
+    'inspect',
+    'save',
+    'recover',
+    'inspect',
+  ]);
+});
+
 const createQueryBuilder = <T>(resolvedValue: T) => {
   const builder = baseCreateQueryBuilder(resolvedValue);
   mockRpc.mockImplementation((functionName: string, args: any = {}) => {
@@ -1035,6 +1283,51 @@ describe('deleteLifeCycleModel', () => {
 });
 
 describe('createLifeCycleModel', () => {
+  it('dispatches calculated Model creation and edit as guarded saves with their own revisions', async () => {
+    const raw = buildLifecycleModelJsonOrdered();
+    const data = { id: sampleModelId, version: sampleVersion, model: { nodes: [], edges: [] } };
+    const prior = 'a'.repeat(64);
+    const committed = 'b'.repeat(64);
+    mockGenLifeCycleModelJsonOrdered.mockReturnValue(raw);
+    mockGenLifeCycleModelProcesses.mockResolvedValue({
+      lifeCycleModelProcesses: [],
+      up2DownEdges: [],
+    });
+    mockFrom.mockReturnValue(
+      baseCreateQueryBuilder({
+        data: [{ id: sampleModelId, json: raw, submodels: [] }],
+        error: null,
+      }),
+    );
+    const snapshot = {
+      model: { ...data, json_ordered: raw, json_tg: {}, rule_verification: true },
+      revision: committed,
+    };
+    mockFunctionsInvoke.mockImplementation(async (_name, { body }) => ({
+      data: {
+        ok: true,
+        modelId: sampleModelId,
+        version: sampleVersion,
+        protocol: 'model-bundle.v1',
+        ...(body.action === 'inspect'
+          ? { status: 'observed', snapshot }
+          : { status: 'committed', revision: committed, operationId: body.operationId }),
+      },
+    }));
+    await expect(
+      lifeCycleModelsApi.createLifeCycleModel(data, { guardedSave: { revision: null } }),
+    ).resolves.toMatchObject({ ok: true, bundleRevision: committed });
+    await expect(
+      lifeCycleModelsApi.updateLifeCycleModel(data, { guardedSave: { revision: prior } }),
+    ).resolves.toMatchObject({ ok: true, bundleRevision: committed });
+    expect(mockFunctionsInvoke.mock.calls.map((call) => call[1].body)).toEqual([
+      expect.objectContaining({ action: 'save', expectedRevision: null }),
+      expect.objectContaining({ action: 'inspect' }),
+      expect.objectContaining({ action: 'save', expectedRevision: prior }),
+      expect.objectContaining({ action: 'inspect' }),
+    ]);
+  });
+
   it('returns a targeted error before persistence when a connection Flow version is missing', async () => {
     const details = {
       edgeId: 'edge-1',
@@ -1418,7 +1711,7 @@ describe('createLifeCycleModel', () => {
         id: sampleModelId,
         model: { nodes: [], edges: [] },
       },
-      undefined,
+      { guardedSave: { revision: null } },
       { sourceVersion: '01.00.000' },
     );
 

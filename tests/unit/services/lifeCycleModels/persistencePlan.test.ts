@@ -1872,9 +1872,21 @@ describe('allocated provider persistence', () => {
 
 test('result identity/version survive Model version changes and retain authored metadata', async () => {
   const processDataSet = buildProcessDataSet();
+  const useAdviceForDataSet = [{ '@xml:lang': 'en', '#text': 'New system use advice' }];
+  Object.assign(processDataSet, {
+    modellingAndValidation: {
+      dataSourcesTreatmentAndRepresentativeness: { useAdviceForDataSet },
+    },
+  });
   const oldJson = {
     processDataSet: {
       ...buildProcessDataSet(),
+      modellingAndValidation: {
+        dataSourcesTreatmentAndRepresentativeness: {
+          useAdviceForDataSet: [{ '@xml:lang': 'en', '#text': 'Old system use advice' }],
+          dataCollectionPeriod: [{ '@xml:lang': 'en', '#text': 'Retained collection period' }],
+        },
+      },
       processInformation: {
         ...buildProcessDataSet().processInformation,
         time: { 'common:referenceYear': '2020' },
@@ -1920,6 +1932,13 @@ test('result identity/version survive Model version changes and retain authored 
             processInformation: expect.objectContaining({
               time: oldJson.processDataSet.processInformation.time,
               geography: oldJson.processDataSet.processInformation.geography,
+            }),
+            modellingAndValidation: expect.objectContaining({
+              dataSourcesTreatmentAndRepresentativeness: {
+                ...oldJson.processDataSet.modellingAndValidation
+                  .dataSourcesTreatmentAndRepresentativeness,
+                useAdviceForDataSet,
+              },
             }),
             administrativeInformation: expect.objectContaining({
               publicationAndOwnership: expect.objectContaining({

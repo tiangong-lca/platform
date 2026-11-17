@@ -9,6 +9,7 @@ import type {
   LifeCycleModelSelectedPortPayload,
   LifeCycleModelThemeToken,
 } from '@/services/lifeCycleModels/data';
+import { toReferenceProcessNumber } from '@/services/lifeCycleModels/referenceProcess';
 import { genLifeCycleModelNodeName, genPortLabel } from '@/services/lifeCycleModels/util';
 import type {
   ProcessDetailByVersionItem,
@@ -526,6 +527,7 @@ export const buildSavePayload = (
   infoData: LifeCycleModelEditorFormState,
   currentNodes: LifeCycleModelGraphNode[],
   currentEdges: LifeCycleModelGraphEdge[],
+  storedNodes = currentNodes,
 ) => {
   const edges = currentEdges.map((edge) => {
     const { selected, ...persistedEdge } = edge;
@@ -538,12 +540,29 @@ export const buildSavePayload = (
     return persistedEdge;
   });
 
-  const nodes = currentNodes.map((node, index) => {
+  const indexByNode = new Map<string, string>();
+  const reserved = new Set<string>();
+  for (const node of storedNodes) {
+    const storedIndex = toReferenceProcessNumber(node.data?.index);
+    const index = String(storedIndex);
+    if (node.id && Number.isSafeInteger(storedIndex) && !reserved.has(index)) {
+      indexByNode.set(node.id, index);
+      reserved.add(index);
+    }
+  }
+  let nextIndex = 0;
+  const nodes = currentNodes.map((node) => {
     const { selected, ...persistedNode } = node;
     void selected;
+    let index = node.id ? indexByNode.get(node.id) : undefined;
+    if (index === undefined) {
+      while (reserved.has(String(nextIndex))) nextIndex += 1;
+      index = String(nextIndex);
+      reserved.add(index);
+    }
     return {
       ...persistedNode,
-      data: { ...persistedNode.data, index: index.toString() },
+      data: { ...persistedNode.data, index },
     };
   });
 
@@ -554,6 +573,22 @@ export const buildSavePayload = (
       edges,
     },
   };
+};
+
+export const withoutEditorLayout = (payload: LifeCycleModelEditorFormState) => {
+  const nodes = payload.model?.nodes.map((value) => {
+    const node = { ...value };
+    for (const field of ['x', 'y', 'width', 'height', 'angle', 'position', 'size']) {
+      delete node[field];
+    }
+    return node;
+  });
+  const edges = payload.model?.edges.map((value) => {
+    const edge = { ...value };
+    delete edge.vertices;
+    return edge;
+  });
+  return JSON.stringify({ ...payload, model: { nodes, edges } });
 };
 
 const ABSENT_GRAPH_VALUE = Symbol('absent-graph-value');

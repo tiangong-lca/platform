@@ -11,6 +11,7 @@ import { formatDateTime, getImportedId, getLangText } from '@/services/general/u
 import {
   createLifeCycleModel,
   getLifeCycleModelDetail,
+  recoverLifecycleModelSave,
   updateLifeCycleModel,
 } from '@/services/lifeCycleModels/api';
 import type {
@@ -26,6 +27,7 @@ import type {
   LifeCycleModelSelectedPortPayload,
   LifeCycleModelTargetAmount,
   LifeCycleModelValidationSnapshot,
+  ModelBundleOperation,
 } from '@/services/lifeCycleModels/data';
 import {
   genLifeCycleModelData,
@@ -101,6 +103,7 @@ import {
   hydrateEditorNodes,
   normalizePastedReferenceCells,
   reconcileHydratedEditorGraphForPersistence,
+  withoutEditorLayout,
   resolveDeleteSelection,
 } from './utils/editGraph';
 import {
@@ -272,11 +275,12 @@ const ToolbarEdit: FC<Props> = ({
   const importedId = getImportedId(importData?.[0]);
 
   const editInfoRef = useRef<ToolbarEditInfoHandle>(null);
+  const editorSessionRef = useRef(0);
   const editorGraphHydrationBaselineRef = useRef<EditorGraphHydrationBaseline | null>(null);
+  const bundleRevisionRef = useRef<string | null>(null);
+  const pendingBundleOperationRef = useRef<ModelBundleOperation | null>(null);
+  const savedFormRef = useRef<LifeCycleModelEditorFormState | null>(null);
   const resizeToolRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    setThisAction(action);
-  }, [action]);
 
   const nodes: GraphNode[] = useGraphStore((state) => state.nodes);
   const edges: GraphEdge[] = useGraphStore((state) => state.edges);
@@ -1106,10 +1110,35 @@ const ToolbarEdit: FC<Props> = ({
     options?: { silent?: boolean; langIntent?: 'save' | 'validation' },
   ) => {
     const silent = options?.silent ?? false;
+    const session = editorSessionRef.current;
+    const isCurrentSession = () => editorSessionRef.current === session;
     if (setLoadingData) setSpinning(true);
     try {
+      if (pendingBundleOperationRef.current) {
+        const recovered = await recoverLifecycleModelSave(pendingBundleOperationRef.current);
+        if (!isCurrentSession()) return;
+        if (recovered.ok) {
+          pendingBundleOperationRef.current = null;
+          bundleRevisionRef.current = recovered.bundleRevision ?? null;
+          setThisAction('edit');
+          setThisId(recovered.modelId);
+          setThisVersion(recovered.version);
+          message.success(
+            intl.formatMessage({ id: 'pages.lifecyclemodel.calculation.status.saveSucceeded' }),
+          );
+        } else {
+          if (recovered.code === 'MODEL_BUNDLE_READBACK_CHANGED') {
+            pendingBundleOperationRef.current = null;
+            bundleRevisionRef.current = null;
+          }
+          message.warning(recovered.message);
+        }
+        return;
+      }
       await editInfoRef.current?.updateReferenceDescription(infoData);
+      if (!isCurrentSession()) return;
       await updateReference(false);
+      if (!isCurrentSession()) return;
 
       // 直接从图中获取最新的节点和边数据
       const currentNodes: LifeCycleModelGraphNode[] = graph
@@ -1131,13 +1160,38 @@ const ToolbarEdit: FC<Props> = ({
             )
         : (edges as LifeCycleModelGraphEdge[]);
 
-      const newData = buildSavePayload(infoData, currentNodes, currentEdges);
+      const newData = buildSavePayload(
+        infoData,
+        currentNodes,
+        currentEdges,
+        editorGraphHydrationBaselineRef.current?.hydratedGraph.nodes,
+      );
       const persistenceGraph = editorGraphHydrationBaselineRef.current
         ? reconcileHydratedEditorGraphForPersistence(
             newData.model ?? { nodes: [], edges: [] },
             editorGraphHydrationBaselineRef.current,
           )
         : undefined;
+      const baseline = editorGraphHydrationBaselineRef.current;
+      const layoutOnly =
+        options?.langIntent !== 'validation' &&
+        persistenceGraph &&
+        baseline &&
+        savedFormRef.current &&
+        JSON.stringify(persistenceGraph) !== JSON.stringify(baseline.storedGraph) &&
+        withoutEditorLayout({ ...newData, model: persistenceGraph }) ===
+          withoutEditorLayout({ ...savedFormRef.current, model: baseline.storedGraph });
+      const captureSavedGraph = (savedModel?: LifeCycleModelJsonTg | null) => {
+        const hydratedGraph = newData.model ?? { nodes: [], edges: [] };
+        const fallback = persistenceGraph ?? hydratedGraph;
+        editorGraphHydrationBaselineRef.current = {
+          storedGraph: {
+            nodes: savedModel?.xflow?.nodes ?? fallback.nodes,
+            edges: savedModel?.xflow?.edges ?? fallback.edges,
+          },
+          hydratedGraph,
+        };
+      };
       const fallbackValidationVersion =
         (newData?.administrativeInformation?.publicationAndOwnership?.['common:dataSetVersion'] as
           string | undefined) ??
@@ -1213,6 +1267,7 @@ const ToolbarEdit: FC<Props> = ({
         }
 
         if (result.code === 'SAVE_STATUS_UNKNOWN') {
+          pendingBundleOperationRef.current = result.pendingBundleOperation ?? null;
           message.warning(
             intl.formatMessage({ id: 'pages.lifecyclemodel.calculation.status.saveStatusUnknown' }),
           );
@@ -1272,15 +1327,6 @@ const ToolbarEdit: FC<Props> = ({
 
         message.error(result.message ?? 'Error');
       };
-      const runMutation = async (
-        mutation: () => Promise<LifeCycleModelMutationResult>,
-      ): Promise<LifeCycleModelMutationResult> => {
-        try {
-          return await mutation();
-        } catch (error) {
-          return toSaveMutationError(error);
-        }
-      };
       /**
        * zh-CN: 模型内存摘要：捕获于保存开始，计算完成后由 hasModelChanged
        * 复核，防止旧结果覆盖新编辑态。摘要不进入持久化数据。
@@ -1334,10 +1380,28 @@ const ToolbarEdit: FC<Props> = ({
       const modelSignatureAtSaveStart = buildModelSignature(currentNodes, currentEdges);
       // 覆盖整个保存操作（源加载 → 求解 → LCIA → 提交）的取消标识
       const saveOperation = new CalculationOperation();
+      const runMutation = async (
+        mutation: () => Promise<LifeCycleModelMutationResult>,
+      ): Promise<LifeCycleModelMutationResult> => {
+        setCalculationPhase('calculating');
+        saveOperationRef.current = saveOperation;
+        try {
+          return await mutation();
+        } catch (error) {
+          return toSaveMutationError(error);
+        } finally {
+          if (isCurrentSession()) {
+            setCalculationPhase('idle');
+            saveOperationRef.current = null;
+          }
+        }
+      };
       const mutationOptions = {
+        guardedSave: { revision: bundleRevisionRef.current, ...(layoutOnly ? { layoutOnly } : {}) },
         ...(options?.langIntent ? { intent: options.langIntent } : {}),
         ...(persistenceGraph ? { persistenceGraph } : {}),
         hasModelChanged: () => {
+          if (!isCurrentSession()) return true;
           const { liveNodes, liveEdges } = readLiveGraphCells();
           return buildModelSignature(liveNodes, liveEdges) !== modelSignatureAtSaveStart;
         },
@@ -1346,25 +1410,18 @@ const ToolbarEdit: FC<Props> = ({
 
       if (thisAction === 'edit') {
         const lifecycleModelPayload = { ...newData, id: thisId, version: thisVersion };
-        setCalculationPhase('calculating');
-        let result: LifeCycleModelMutationResult;
-        try {
-          saveOperationRef.current = saveOperation;
-          result = await runMutation(() =>
-            mutationOptions
-              ? updateLifeCycleModel(lifecycleModelPayload, mutationOptions)
-              : updateLifeCycleModel(lifecycleModelPayload),
-          );
-        } finally {
-          setCalculationPhase('idle');
-          saveOperationRef.current = null;
-        }
+        const result = await runMutation(() =>
+          updateLifeCycleModel(lifecycleModelPayload, mutationOptions),
+        );
+        if (!isCurrentSession()) return;
         if (result.ok) {
+          bundleRevisionRef.current = result.bundleRevision ?? null;
           const savedLifeCycleModel = result.lifecycleModel;
           const savedModelId = savedLifeCycleModel?.id ?? result.modelId;
           const savedVersion = savedLifeCycleModel?.version ?? result.version;
           const nextPayload = buildValidationSnapshotPayload(result, savedModelId, savedVersion);
           setInfoData(nextPayload);
+          savedFormRef.current = nextPayload;
           if (!silent) {
             message.success(
               intl.formatMessage({
@@ -1382,12 +1439,7 @@ const ToolbarEdit: FC<Props> = ({
           setThisId(savedModelId);
           setThisVersion(savedVersion);
           setJsonTg(savedLifeCycleModel?.json_tg ?? {});
-          if (persistenceGraph && editorGraphHydrationBaselineRef.current) {
-            editorGraphHydrationBaselineRef.current = {
-              storedGraph: persistenceGraph,
-              hydratedGraph: newData.model ?? { nodes: [], edges: [] },
-            };
-          }
+          captureSavedGraph(savedLifeCycleModel?.json_tg);
 
           const savedEdges = (savedLifeCycleModel?.json_tg?.xflow?.edges ??
             []) as LifeCycleModelGraphEdge[];
@@ -1428,29 +1480,24 @@ const ToolbarEdit: FC<Props> = ({
         const lifecycleModelPayload = { ...newData, id: newId };
         const createVersionOptions =
           actionType === 'createVersion' ? { sourceVersion: thisVersion } : undefined;
-        setCalculationPhase('calculating');
-        let result: LifeCycleModelMutationResult;
-        try {
-          saveOperationRef.current = saveOperation;
-          result = await runMutation(() => {
-            if (createVersionOptions) {
-              return createLifeCycleModel(
-                lifecycleModelPayload,
-                mutationOptions,
-                createVersionOptions,
-              );
-            }
-            return createLifeCycleModel(lifecycleModelPayload, mutationOptions);
-          });
-        } finally {
-          setCalculationPhase('idle');
-          saveOperationRef.current = null;
-        }
+        const result = await runMutation(() => {
+          if (createVersionOptions) {
+            return createLifeCycleModel(
+              lifecycleModelPayload,
+              mutationOptions,
+              createVersionOptions,
+            );
+          }
+          return createLifeCycleModel(lifecycleModelPayload, mutationOptions);
+        });
+        if (!isCurrentSession()) return;
         if (result.ok) {
+          bundleRevisionRef.current = result.bundleRevision ?? null;
           const savedLifeCycleModel = result.lifecycleModel;
           const savedModelId = savedLifeCycleModel?.id ?? result.modelId;
           const savedVersion = savedLifeCycleModel?.version ?? result.version;
           const nextPayload = buildValidationSnapshotPayload(result, savedModelId, savedVersion);
+          savedFormRef.current = nextPayload;
           if (!silent) {
             message.success(
               intl.formatMessage({
@@ -1470,12 +1517,7 @@ const ToolbarEdit: FC<Props> = ({
           setThisVersion(savedVersion);
           setInfoData(nextPayload);
           setJsonTg(savedLifeCycleModel?.json_tg ?? {});
-          if (persistenceGraph && editorGraphHydrationBaselineRef.current) {
-            editorGraphHydrationBaselineRef.current = {
-              storedGraph: persistenceGraph,
-              hydratedGraph: newData.model ?? { nodes: [], edges: [] },
-            };
-          }
+          captureSavedGraph(savedLifeCycleModel?.json_tg);
 
           const savedEdges = (savedLifeCycleModel?.json_tg?.xflow?.edges ??
             []) as LifeCycleModelGraphEdge[];
@@ -1527,7 +1569,7 @@ const ToolbarEdit: FC<Props> = ({
         version: thisVersion,
       });
     } finally {
-      if (setLoadingData) setSpinning(false);
+      if (setLoadingData && isCurrentSession()) setSpinning(false);
     }
   };
 
@@ -1841,6 +1883,22 @@ const ToolbarEdit: FC<Props> = ({
   };
 
   useEffect(() => {
+    const session = editorSessionRef.current;
+    const isCurrentSession = () => editorSessionRef.current === session;
+    const endSession = () => {
+      editorSessionRef.current += 1;
+      pendingBundleOperationRef.current = null;
+      saveOperationRef.current?.cancel();
+      saveOperationRef.current = null;
+    };
+    setSpinning(false);
+    setCalculationPhase('idle');
+    setThisId(id);
+    setThisVersion(version);
+    setThisAction(action);
+    editorGraphHydrationBaselineRef.current = null;
+    bundleRevisionRef.current = null;
+    savedFormRef.current = null;
     if (!drawerVisible) {
       onClose();
       setInfoData({});
@@ -1850,14 +1908,12 @@ const ToolbarEdit: FC<Props> = ({
       setSdkProblemProcessInstanceIds([]);
       setMultiProviderConflictNodeIds([]);
       setJsonTg({});
-      editorGraphHydrationBaselineRef.current = null;
       modelData({ nodes: [], edges: [] });
       resetGraphCommandState();
-      return;
+      return endSession;
     }
 
     if (importData && importData.length > 0) {
-      editorGraphHydrationBaselineRef.current = null;
       const formData = genLifeCycleModelInfoFromData(importData[0].lifeCycleModelDataSet);
       setInfoData(formData);
       const model = genLifeCycleModelData(importData[0]?.json_tg ?? {}, lang);
@@ -1884,14 +1940,19 @@ const ToolbarEdit: FC<Props> = ({
 
       setNodeCount(initNodes.length);
       resetGraphCommandState();
-      return;
+      return endSession;
     }
 
     if (id !== '') {
       setIsSave(false);
       setSpinning(true);
-      void getLifeCycleModelDetail(id, version)
+      void getLifeCycleModelDetail(
+        id,
+        version,
+        action === 'edit' && actionType !== 'createVersion' && actionType !== 'copy',
+      )
         .then(async (result: LifeCycleModelDetailResponse) => {
+          if (!isCurrentSession()) return;
           if (!result.success) {
             message.error(
               intl.formatMessage({
@@ -1905,14 +1966,18 @@ const ToolbarEdit: FC<Props> = ({
             result.data?.json?.lifeCycleModelDataSet ?? {},
           );
           const storedJsonTg = result.data?.json_tg ?? {};
+          bundleRevisionRef.current = result.data.bundleRevision ?? null;
           setJsonTg(storedJsonTg);
 
           if (actionType === 'createVersion' && newVersion) {
             fromData.administrativeInformation.publicationAndOwnership['common:dataSetVersion'] =
               newVersion;
           }
-          setInfoData({ ...fromData, id: thisId, version: thisVersion });
+          const editorForm = { ...fromData, id, version };
+          savedFormRef.current = editorForm;
+          setInfoData(editorForm);
           const processDetails = await getEditorProcessData(storedJsonTg);
+          if (!isCurrentSession()) return;
           const editorJsonTg = normalizeLifeCycleModelGraphForDisplay({
             jsonTg: storedJsonTg,
             lifeCycleModelDataSet: result.data?.json?.lifeCycleModelDataSet,
@@ -1946,6 +2011,7 @@ const ToolbarEdit: FC<Props> = ({
             nodes: initNodes,
             edges: initEdges,
           });
+          if (!isCurrentSession()) return;
           // 旧模型中的多供应冲突：不删除任何边，仅标记冲突节点
           setMultiProviderConflictNodeIds(
             collectMultiProviderConflictNodeIds(initNodes, initEdges),
@@ -1955,10 +2021,9 @@ const ToolbarEdit: FC<Props> = ({
           resetGraphCommandState();
         })
         .finally(() => {
-          setSpinning(false);
+          if (isCurrentSession()) setSpinning(false);
         });
     } else {
-      editorGraphHydrationBaselineRef.current = null;
       const currentDateTime = formatDateTime(new Date());
       setInfoData(
         buildEmptyCreateInfoData({
@@ -1968,8 +2033,8 @@ const ToolbarEdit: FC<Props> = ({
             id: 'pages.lifeCycleModel.administrativeInformation.permanentDataSetURI.default',
             defaultMessage: 'Automatically generated',
           }),
-          id: thisId,
-          version: thisVersion,
+          id,
+          version,
         }),
       );
       modelData({
@@ -1979,7 +2044,8 @@ const ToolbarEdit: FC<Props> = ({
       setNodeCount(0);
       resetGraphCommandState();
     }
-  }, [drawerVisible]);
+    return endSession;
+  }, [drawerVisible, id, version, action, actionType, newVersion]);
 
   useEffect(() => {
     nodes.forEach((node) => {
