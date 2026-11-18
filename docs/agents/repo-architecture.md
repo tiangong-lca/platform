@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-18
-lastReviewedCommit: a218f9ac27f525a67d00b9a756896a4e7d85d1b1
-lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
+lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
+lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -255,7 +255,7 @@ Review Management consumes the central v4 review projection with keyword search 
 
 Batch selection is one Root/Reference selection model. A top-level Reference can be selected directly. Selecting an expandable Process or Lifecycle Model Root loads and auto-selects its current-tab References, deduplicates a Reference shared by multiple Roots, preserves independently selected References, and disables submission while child loading is incomplete or failed. Selecting another Root type does not issue a child query. Removing a Root removes only the References that are no longer selected manually or through another Root. Simple Root and Reference reviews expose only approve/reject actions; Review Member approval has no opinion field and rejection requires a reason. Reviewer outcomes are advice, so the UI must not infer the Admin result from their votes.
 
-Each readable Root or Reference row offers a view icon backed by the existing read-only Contact, Source, Unit Group, Flow Property, Flow, Process, or Lifecycle Model drawer. Rejection reasons remain in owner notifications and do not change dataset detail pages. Existing Contact `Sync to Open Data` behavior remains a separate entrypoint.
+Each readable Root or Reference row offers a view icon backed by the existing read-only Contact, Source, Unit Group, Flow Property, Flow, Process, or Lifecycle Model drawer. Owner notifications display the final rejection reason. The unpublished Process detail reads returned validation and compliance feedback through the shared `returned` opinion scope. Existing Contact `Sync to Open Data` behavior remains a separate entrypoint.
 
 ### Published numerical results on original Process details
 

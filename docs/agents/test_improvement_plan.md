@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-18
-lastReviewedCommit: a218f9ac27f525a67d00b9a756896a4e7d85d1b1
-lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
+lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
+lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
 ---
 
 # Testing Strategy
