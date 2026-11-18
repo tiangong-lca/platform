@@ -1981,6 +1981,10 @@ test.each(['declared', 'omitted', 'cleared'])(
       'common:licenseType': 'Other',
       'common:accessRestrictions': text('Private data', '私有资料'),
     };
+    const authoredRights = {
+      'common:copyright': 'false',
+      'common:licenseType': 'Free of charge for all users and uses',
+    };
     const previous = {
       processDataSet: {
         ...buildProcessDataSet(),
@@ -2003,16 +2007,23 @@ test.each(['declared', 'omitted', 'cleared'])(
         },
       },
     };
-    const model = buildLifecycleModelJsonOrdered();
-    model.lifeCycleModelDataSet.modellingAndValidation = {
-      ...(adviceState === 'omitted'
-        ? {}
-        : {
-            dataSourcesTreatmentEtc: {
-              useAdviceForDataSet: adviceState === 'cleared' ? [] : newAdvice,
-            },
-          }),
-    } as typeof model.lifeCycleModelDataSet.modellingAndValidation;
+    const model = {
+      lifeCycleModelDataSet: {
+        ...buildLifecycleModelJsonOrdered().lifeCycleModelDataSet,
+        administrativeInformation:
+          adviceState === 'omitted'
+            ? undefined
+            : { publicationAndOwnership: adviceState === 'cleared' ? authoredRights : {} },
+        modellingAndValidation:
+          adviceState === 'omitted'
+            ? {}
+            : {
+                dataSourcesTreatmentEtc: {
+                  useAdviceForDataSet: adviceState === 'cleared' ? [] : newAdvice,
+                },
+              },
+      },
+    };
     const products = [
       { id: 'primary-result', type: 'primary', amount: '10' },
       { id: 'secondary-result', type: 'secondary', amount: '4000' },
@@ -2026,11 +2037,21 @@ test.each(['declared', 'omitted', 'cleared'])(
       edges: [],
       up2DownEdges: [],
       oldSubmodels: products.map(({ id, type }) => ({ id, type, version: sampleVersion })),
-      oldProcesses: products.map(({ id }) => ({
+      oldProcesses: products.map(({ id, type }) => ({
         id,
         version: sampleVersion,
         json: { processDataSet: buildProcessDataSet() },
-        json_ordered: previous,
+        json_ordered: {
+          processDataSet: {
+            ...previous.processDataSet,
+            modellingAndValidation: {
+              ...previous.processDataSet.modellingAndValidation,
+              complianceDeclarations: {
+                compliance: type === 'secondary' ? [compliance] : compliance,
+              },
+            },
+          },
+        },
       })),
       lifeCycleModelProcesses: products.map(({ id, type, amount }) => ({
         option: 'update',
@@ -2038,6 +2059,11 @@ test.each(['declared', 'omitted', 'cleared'])(
         data: {
           processDataSet: {
             ...buildProcessDataSet(),
+            modellingAndValidation: undefined,
+            administrativeInformation:
+              adviceState === 'cleared'
+                ? { dataEntryBy: {}, publicationAndOwnership: authoredRights }
+                : undefined,
             exchanges: {
               exchange: [
                 {
@@ -2067,10 +2093,13 @@ test.each(['declared', 'omitted', 'cleared'])(
       const saved = asUpsertMutation(mutation).jsonOrdered.processDataSet;
       expect(saved.exchanges.exchange).toMatchObject([{ meanAmount: product.amount }]);
       expect(saved.processInformation.dataSetInformation['common:generalComment']).toEqual(comment);
-      expect(saved.modellingAndValidation.complianceDeclarations.compliance).toMatchObject({
+      const expectedDeclaration = {
         'common:referenceToComplianceSystem': source,
         'common:approvalOfOverallCompliance': 'Not defined',
-      });
+      };
+      expect(saved.modellingAndValidation.complianceDeclarations.compliance).toMatchObject(
+        product.type === 'secondary' ? [expectedDeclaration] : expectedDeclaration,
+      );
       expect(saved.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness).toMatchObject({
         annualSupplyOrProductionVolume: volume,
         referenceToDataSource: source,
@@ -2090,13 +2119,44 @@ test.each(['declared', 'omitted', 'cleared'])(
           'common:referenceToPersonOrEntityEnteringTheData'
         ],
       ).toEqual(author);
-      expect(saved.administrativeInformation.publicationAndOwnership).toMatchObject(rights);
+      const savedRights = saved.administrativeInformation.publicationAndOwnership;
+      expect(savedRights).toMatchObject(adviceState === 'cleared' ? authoredRights : rights);
+      expect(savedRights['common:accessRestrictions']).toEqual(
+        adviceState === 'cleared' ? undefined : rights['common:accessRestrictions'],
+      );
     }
     expect(compliance['common:approvalOfOverallCompliance']).toBe('Fully compliant');
   },
 );
 
 describe('result version on sparse generated metadata', () => {
+  it('leaves a new result version to the bundle when the Model has no assigned version', async () => {
+    const plan = await buildSaveLifeCycleModelPersistencePlan({
+      mode: 'create',
+      modelId: sampleModelId,
+      lifeCycleModelJsonOrdered: { lifeCycleModelDataSet: {} },
+      nodes: [],
+      edges: [],
+      up2DownEdges: [],
+      lifeCycleModelProcesses: [
+        {
+          option: 'create',
+          modelInfo: { id: 'unversioned-result', type: 'primary' },
+          data: { processDataSet: buildProcessDataSet() },
+        },
+      ],
+    });
+    if (!plan.ok) throw new Error(plan.message);
+    const mutation = asUpsertMutation(plan.plan.processMutations[0]);
+    expect(mutation).toMatchObject({ id: 'unversioned-result', op: 'create' });
+    expect(mutation.version).toBeUndefined();
+    expect(
+      mutation.jsonOrdered.processDataSet.administrativeInformation.publicationAndOwnership[
+        'common:dataSetVersion'
+      ],
+    ).toBeUndefined();
+  });
+
   it.each([undefined, {}])(
     'writes the result version even when publication metadata is sparse: %s',
     async (admin) => {

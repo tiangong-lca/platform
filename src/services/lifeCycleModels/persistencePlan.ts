@@ -498,36 +498,35 @@ function carryStoredResultDeclarations(result: any, previous: any, model: any) {
       'common:documentationCompliance': 'Not defined',
       'common:qualityCompliance': 'Not defined',
     });
-    result.modellingAndValidation ??= {};
-    result.modellingAndValidation.complianceDeclarations = {
-      compliance: Array.isArray(previousCompliance)
-        ? previousCompliance.map(resetCompliance)
-        : resetCompliance(previousCompliance),
+    result.modellingAndValidation = {
+      ...result.modellingAndValidation,
+      complianceDeclarations: {
+        compliance: Array.isArray(previousCompliance)
+          ? previousCompliance.map(resetCompliance)
+          : resetCompliance(previousCompliance),
+      },
     };
   }
 
+  const admin = { ...result.administrativeInformation };
   const previousAdmin = previous?.administrativeInformation;
   const previousGoal = previousAdmin?.['common:commissionerAndGoal'];
-  const generatedGoal = result.administrativeInformation?.['common:commissionerAndGoal'] ?? {};
-  const goal = { ...generatedGoal };
+  const goal = { ...admin['common:commissionerAndGoal'] };
   for (const key of ['common:referenceToCommissioner', 'common:intendedApplications']) {
     if (goal[key] === undefined && previousGoal?.[key] !== undefined) {
       goal[key] = previousGoal[key];
     }
   }
   if (Object.keys(goal).length > 0) {
-    result.administrativeInformation ??= {};
-    result.administrativeInformation['common:commissionerAndGoal'] = goal;
+    admin['common:commissionerAndGoal'] = goal;
   }
 
   const author = 'common:referenceToPersonOrEntityEnteringTheData';
   if (
-    result.administrativeInformation?.dataEntryBy?.[author] === undefined &&
+    admin.dataEntryBy?.[author] === undefined &&
     previousAdmin?.dataEntryBy?.[author] !== undefined
   ) {
-    result.administrativeInformation ??= {};
-    result.administrativeInformation.dataEntryBy ??= {};
-    result.administrativeInformation.dataEntryBy[author] = previousAdmin.dataEntryBy[author];
+    admin.dataEntryBy = { ...admin.dataEntryBy, [author]: previousAdmin.dataEntryBy[author] };
   }
 
   const rightsFields = [
@@ -540,14 +539,15 @@ function carryStoredResultDeclarations(result: any, previous: any, model: any) {
   const previousRights = previousAdmin?.publicationAndOwnership;
   const authoredRights = Object.keys(modelRights ?? {});
   if (previousRights && !rightsFields.some((field) => authoredRights.includes(field))) {
-    result.administrativeInformation ??= {};
-    result.administrativeInformation.publicationAndOwnership ??= {};
+    const ownership = { ...admin.publicationAndOwnership };
     for (const key of rightsFields) {
       if (previousRights[key] !== undefined) {
-        result.administrativeInformation.publicationAndOwnership[key] = previousRights[key];
+        ownership[key] = previousRights[key];
       }
     }
+    admin.publicationAndOwnership = ownership;
   }
+  result.administrativeInformation = admin;
 }
 
 export function applyLifecycleModelValidationToProcessJsonOrdered(
