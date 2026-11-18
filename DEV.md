@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
+lastReviewedCommit: a218f9ac27f525a67d00b9a756896a4e7d85d1b1
 lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
 ---
 
