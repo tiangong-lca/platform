@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-17
-lastReviewedCommit: 7f30060b07330b7ba44331e2ce822e1bb1eb21e3
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedAt: 2026-11-18
+lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
+lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md
