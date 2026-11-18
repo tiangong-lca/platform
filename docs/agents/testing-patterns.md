@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8ff49089ab7c8542aea16e6b3d524e4e6d93e8b1
+lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
 lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
 ---
 
