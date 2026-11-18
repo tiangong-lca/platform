@@ -902,7 +902,7 @@ export async function updateLifeCycleModel(
   const oldProcessesResult =
     oldKeys.length > 0
       ? await publicEntity('processes')
-          .select('id,version,json,model_id,model_version')
+          .select('id,version,json,json_ordered,model_id,model_version')
           .or(oldKeys.map((item) => `and(id.eq.${item.id},version.eq.${item.version})`).join(','))
       : { data: [], error: null };
   if (oldProcessesResult.error) {

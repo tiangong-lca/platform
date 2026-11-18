@@ -33,6 +33,7 @@ type ExistingProcessRow = {
   id: string;
   version: string;
   json: any;
+  json_ordered?: any;
 };
 
 type CurrentProcessOrderedRow = {
@@ -391,12 +392,18 @@ async function buildProcessMutation(args: {
   }
 
   const operation = args.process.option === 'update' ? 'update' : 'create';
-  if (
-    operation === 'update' &&
-    args.oldProcess?.json &&
-    args.process.modelInfo.type !== 'allocated'
-  ) {
-    overrideWithOldProcess({ processDataSet }, args.oldProcess.json);
+  const oldResult = args.oldProcess?.json_ordered ?? args.oldProcess?.json;
+  const model = args.lifeCycleModelJsonOrdered?.lifeCycleModelDataSet;
+  const isResult = args.process.modelInfo.type !== 'allocated';
+  const modelAdvice = model?.modellingAndValidation?.dataSourcesTreatmentEtc?.useAdviceForDataSet;
+  if (isResult && modelAdvice !== undefined) {
+    processDataSet.modellingAndValidation ??= {};
+    processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness ??= {};
+    processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet =
+      modelAdvice;
+  }
+  if (operation === 'update' && oldResult && isResult) {
+    overrideWithOldProcess({ processDataSet }, oldResult);
   } else if (operation === 'update' && !args.oldProcess) {
     return {
       ok: false,
@@ -412,7 +419,16 @@ async function buildProcessMutation(args: {
     processDataSet.administrativeInformation.publicationAndOwnership['common:dataSetVersion'] =
       resultVersion;
   }
-  const rawProcessJsonOrdered = genProcessJsonOrdered(args.process.modelInfo.id, processDataSet);
+  const rawProcessJsonOrdered = genProcessJsonOrdered(args.process.modelInfo.id, processDataSet, {
+    preserveAnnualSupplyVolume: true,
+  });
+  if (operation === 'update' && oldResult && isResult) {
+    carryStoredResultDeclarations(
+      rawProcessJsonOrdered.processDataSet,
+      oldResult.processDataSet,
+      model,
+    );
+  }
   const normalizedResult = await normalizeLangPayloadForSave(rawProcessJsonOrdered, {
     intent: args.langIntent,
   });
@@ -451,6 +467,87 @@ async function buildProcessMutation(args: {
       ruleVerification: processMutationRuleVerification,
     },
   };
+}
+
+function carryStoredResultDeclarations(result: any, previous: any, model: any) {
+  const previousComment =
+    previous?.processInformation?.dataSetInformation?.['common:generalComment'];
+  const resultInfo = result.processInformation?.dataSetInformation;
+  if (
+    resultInfo &&
+    resultInfo['common:generalComment'] === undefined &&
+    previousComment !== undefined
+  ) {
+    resultInfo['common:generalComment'] = previousComment;
+  }
+
+  const previousModelling = previous?.modellingAndValidation;
+  const generatedCompliance = result.modellingAndValidation?.complianceDeclarations?.compliance;
+  const previousCompliance = previousModelling?.complianceDeclarations?.compliance;
+  if (
+    generatedCompliance === undefined &&
+    previousCompliance &&
+    typeof previousCompliance === 'object'
+  ) {
+    const resetCompliance = (declaration: any) => ({
+      ...declaration,
+      'common:approvalOfOverallCompliance': 'Not defined',
+      'common:nomenclatureCompliance': 'Not defined',
+      'common:methodologicalCompliance': 'Not defined',
+      'common:reviewCompliance': 'Not defined',
+      'common:documentationCompliance': 'Not defined',
+      'common:qualityCompliance': 'Not defined',
+    });
+    result.modellingAndValidation ??= {};
+    result.modellingAndValidation.complianceDeclarations = {
+      compliance: Array.isArray(previousCompliance)
+        ? previousCompliance.map(resetCompliance)
+        : resetCompliance(previousCompliance),
+    };
+  }
+
+  const previousAdmin = previous?.administrativeInformation;
+  const previousGoal = previousAdmin?.['common:commissionerAndGoal'];
+  const generatedGoal = result.administrativeInformation?.['common:commissionerAndGoal'] ?? {};
+  const goal = { ...generatedGoal };
+  for (const key of ['common:referenceToCommissioner', 'common:intendedApplications']) {
+    if (goal[key] === undefined && previousGoal?.[key] !== undefined) {
+      goal[key] = previousGoal[key];
+    }
+  }
+  if (Object.keys(goal).length > 0) {
+    result.administrativeInformation ??= {};
+    result.administrativeInformation['common:commissionerAndGoal'] = goal;
+  }
+
+  const author = 'common:referenceToPersonOrEntityEnteringTheData';
+  if (
+    result.administrativeInformation?.dataEntryBy?.[author] === undefined &&
+    previousAdmin?.dataEntryBy?.[author] !== undefined
+  ) {
+    result.administrativeInformation ??= {};
+    result.administrativeInformation.dataEntryBy ??= {};
+    result.administrativeInformation.dataEntryBy[author] = previousAdmin.dataEntryBy[author];
+  }
+
+  const rightsFields = [
+    'common:referenceToOwnershipOfDataSet',
+    'common:copyright',
+    'common:licenseType',
+    'common:accessRestrictions',
+  ];
+  const modelRights = model?.administrativeInformation?.publicationAndOwnership;
+  const previousRights = previousAdmin?.publicationAndOwnership;
+  const authoredRights = Object.keys(modelRights ?? {});
+  if (previousRights && !rightsFields.some((field) => authoredRights.includes(field))) {
+    result.administrativeInformation ??= {};
+    result.administrativeInformation.publicationAndOwnership ??= {};
+    for (const key of rightsFields) {
+      if (previousRights[key] !== undefined) {
+        result.administrativeInformation.publicationAndOwnership[key] = previousRights[key];
+      }
+    }
+  }
 }
 
 export function applyLifecycleModelValidationToProcessJsonOrdered(
