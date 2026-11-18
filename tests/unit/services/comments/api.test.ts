@@ -580,11 +580,11 @@ describe('Comments API service (src/services/comments/api.ts)', () => {
       expect(result).toEqual([]);
     });
 
-    it('aggregates admin-rejected comments per review id and filters rejected rows only', async () => {
+    it('requests the shared returned-feedback scope for each review', async () => {
       mockRpc
         .mockResolvedValueOnce({
           data: [
-            { state_code: -1, json: { reason: 'Rejected A' } },
+            { state_code: -1, reviewer_id: null, json: { reason: 'Rejected A' } },
             { state_code: 1, json: { reason: 'Approved' } },
           ],
           error: null,
@@ -598,11 +598,11 @@ describe('Comments API service (src/services/comments/api.ts)', () => {
 
       expect(mockRpc).toHaveBeenNthCalledWith(1, 'qry_review_get_comment_items', {
         p_review_id: 'review-1',
-        p_scope: 'all',
+        p_scope: 'returned',
       });
       expect(mockRpc).toHaveBeenNthCalledWith(2, 'qry_review_get_comment_items', {
         p_review_id: 'review-2',
-        p_scope: 'all',
+        p_scope: 'returned',
       });
       expect(result).toEqual({
         data: [{ json: { reason: 'Rejected A' } }, { json: { reason: 'Rejected B' } }],
