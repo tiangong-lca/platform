@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
-lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
+lastReviewedCommit: 8ff49089ab7c8542aea16e6b3d524e4e6d93e8b1
+lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
 ---
 
 # Supabase Environment And Database Workflow

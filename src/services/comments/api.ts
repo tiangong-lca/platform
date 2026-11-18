@@ -148,6 +148,22 @@ export async function submitReviewCommentApi<
   });
 }
 
+async function readCommentItems(reviewId: string, scope: 'all' | 'mine' | 'returned') {
+  const { data, error } = await supabase.rpc('qry_review_get_comment_items', {
+    p_review_id: reviewId,
+    p_scope: scope,
+  });
+  const rows = (Array.isArray(data) ? data : []) as ReviewCommentRpcRow[];
+
+  return {
+    data: rows.map((row) => ({
+      ...row,
+      json: row?.json ?? {},
+    })),
+    error,
+  };
+}
+
 export async function getCommentApi(
   reviewId: string,
   actionType: 'assigned' | 'review' | 'reviewer-rejected' | 'admin-rejected',
@@ -162,19 +178,7 @@ export async function getCommentApi(
     }
 
     const scope = actionType === 'assigned' || actionType === 'admin-rejected' ? 'all' : 'mine';
-    const { data, error } = await supabase.rpc('qry_review_get_comment_items', {
-      p_review_id: reviewId,
-      p_scope: scope,
-    });
-    const rows = (Array.isArray(data) ? data : []) as ReviewCommentRpcRow[];
-
-    return {
-      data: rows.map((row) => ({
-        ...row,
-        json: row?.json ?? {},
-      })),
-      error,
-    };
+    return readCommentItems(reviewId, scope);
   }
   return { data: [], error: true };
 }
@@ -258,7 +262,7 @@ export async function getReviewerIdsByReviewId(reviewId: string) {
 
 export async function getRejectedCommentsByReviewIds(reviewIds: string[]) {
   const results = await Promise.all(
-    reviewIds.map((reviewId) => getCommentApi(reviewId, 'admin-rejected')),
+    reviewIds.map((reviewId) => readCommentItems(reviewId, 'returned')),
   );
   const firstError = results.find((result) => result.error)?.error ?? null;
   const data = results.flatMap((result) =>
