@@ -584,7 +584,7 @@ describe('Comments API service (src/services/comments/api.ts)', () => {
       mockRpc
         .mockResolvedValueOnce({
           data: [
-            { state_code: -1, json: { reason: 'Rejected A' } },
+            { state_code: -1, reviewer_id: null, json: { reason: 'Rejected A' } },
             { state_code: 1, json: { reason: 'Approved' } },
           ],
           error: null,

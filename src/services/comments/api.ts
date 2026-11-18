@@ -12,9 +12,11 @@ import {
 type ReviewCommentCommandFunctionName =
   'app_review_save_comment_draft' | 'app_review_submit_comment';
 
-type ReviewCommentRpcRow = {
+type CommentReadScope = 'all' | 'mine' | 'returned';
+
+type ReviewCommentRpcRow<Scope extends CommentReadScope> = {
   review_id: string;
-  reviewer_id: string;
+  reviewer_id: Scope extends 'returned' ? null : string;
   state_code: number;
   json: any;
   created_at?: string;
@@ -148,12 +150,12 @@ export async function submitReviewCommentApi<
   });
 }
 
-async function readCommentItems(reviewId: string, scope: 'all' | 'mine' | 'returned') {
+async function readCommentItems<Scope extends CommentReadScope>(reviewId: string, scope: Scope) {
   const { data, error } = await supabase.rpc('qry_review_get_comment_items', {
     p_review_id: reviewId,
     p_scope: scope,
   });
-  const rows = (Array.isArray(data) ? data : []) as ReviewCommentRpcRow[];
+  const rows = (Array.isArray(data) ? data : []) as ReviewCommentRpcRow<Scope>[];
 
   return {
     data: rows.map((row) => ({
