@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
-lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: c07b3d40d477af067a11515e5aea925471737b96
+lastReviewedNote: 'Platform #1540. Reviewed completion of asynchronous Study writes in the existing UI tests and the normal checked-push qualification.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
