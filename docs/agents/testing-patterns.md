@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
-lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: bd6c74471760a9ee723c58fb75bcac4625031a26
+lastReviewedNote: 'Platform #1540. The Study suite awaits React completion after save, evidence creation and recovery before checking the resulting UI. Existing assertions, timeouts and product behavior are preserved.'
 ---
 
 # Testing Patterns Reference

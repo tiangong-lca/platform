@@ -17,9 +17,9 @@ checkPaths:
   - config/routes.ts
   - tests/unit/pages/Study/**
   - tests/unit/services/study/**
-lastReviewedAt: 2026-11-10
-lastReviewedCommit: 3fe123129525a5e08d3808841dbe592918cf3802
-lastReviewedNote: 'Platform #1483 reviewed the calculation project label, report summary permission wording and compatibility with existing Study, Run and report identities.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: bd6c74471760a9ee723c58fb75bcac4625031a26
+lastReviewedNote: 'Platform #1540. The Study suite awaits React completion after save, evidence creation and recovery before checking the resulting UI. Existing assertions, timeouts and product behavior are preserved.'
 related:
   - repo-architecture.md
   - repo-validation.md
