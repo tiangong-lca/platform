@@ -20,8 +20,8 @@ checkPaths:
   - scripts/e2e/release-e2e.cjs
   - scripts/qualification/supabase-browser-resources.cjs
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
-lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
+lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 related:
   - ../../AGENTS.md
   - repo-validation.md

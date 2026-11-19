@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 862be78b61d78da5bc8e6dc205ec077e647aded9
-lastReviewedNote: 'Platform #1543 reviewed the published Playwright archive and image index, installed headless browser identities, Jest runner and worker pins, and the existing CI and release gates.'
+lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 ---
 
 # Testing Strategy

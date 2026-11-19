@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 0fd2cf562f678b7c06815c3e1b07bd5aa76a2623
-lastReviewedNote: 'Platform #1542 reviewed the five compiler and lint tool updates, installed fixture behavior, strict version assertions and the existing release and coverage gates.'
+lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 ---
 
 # Testing Patterns Reference
