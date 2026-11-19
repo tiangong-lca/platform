@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: bd6c74471760a9ee723c58fb75bcac4625031a26
-lastReviewedNote: 'Platform #1540. The Study suite awaits React completion after save, evidence creation and recovery before checking the resulting UI. Existing assertions, timeouts and product behavior are preserved.'
+lastReviewedCommit: aedd1fb065f57eae9d6fe13ff29783ba31c7d51a
+lastReviewedNote: 'Platform #1540. Reviewed asynchronous completion in the three Study fixture clicks and the installed Escape fixture’s attempted-render signal. Existing package ordering, cleanup, deadlines and UI assertions are preserved.'
 ---
 
 # Pre-Push Gate Policy
