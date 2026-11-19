@@ -16,8 +16,10 @@ ENV CI=true \
 WORKDIR /app
 
 COPY --from=pinned-node /usr/local/bin/node /usr/local/bin/node
+COPY --from=pinned-node /usr/local/lib/node_modules/corepack /usr/local/lib/node_modules/corepack
 
-RUN corepack enable \
+RUN ln -sfn ../lib/node_modules/corepack/dist/corepack.js /usr/local/bin/corepack \
+    && corepack enable \
     && test "$(node --version)" = "v24.19.0" \
     && corepack install --global pnpm@11.24.0
 
