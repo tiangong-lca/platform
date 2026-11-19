@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
-lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: aedd1fb065f57eae9d6fe13ff29783ba31c7d51a
+lastReviewedNote: 'Platform #1540. Reviewed asynchronous completion in the three Study fixture clicks and the installed Escape fixture’s attempted-render signal. Existing package ordering, cleanup, deadlines and UI assertions are preserved.'
 ---
 
 # Testing Patterns Reference
