@@ -19,9 +19,9 @@ checkPaths:
   - scripts/e2e/resource-command.cjs
   - scripts/e2e/release-e2e.cjs
   - scripts/qualification/supabase-browser-resources.cjs
-lastReviewedAt: 2026-11-16
-lastReviewedCommit: 9f493aea39c2ac7acfaad2c2445548de18489c21
-lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 related:
   - ../../AGENTS.md
   - repo-validation.md
@@ -42,7 +42,7 @@ Keep Node type proposals on the Node 24 LTS line: the npm entry ignores only `@t
 
 Marked Dev Release PRs and Main candidates from `dev`, `codex/promote-*` or `codex/hotfix-*` defer to their existing exact Release Candidate or Main Candidate validation owner. The dependency job is skipped for those phases, not reported as proof. Existing candidate checks still reject invalid marker, lineage, version or head evidence; no protected gate is bypassed. Ordinary dependency proposals and human maintenance PRs outside those protected phases run the new job, including unmarked Main security proposals. This avoids a second aggregate execution on deterministic release/promotion/hotfix candidates.
 
-The selected Action baseline is pnpm/setup3.1.1, setup-node7.1.0 and upload-artifact7.0.2, each pinned to its verified executable commit. The ordinary dependency workflow also has a bounded `action-compatibility` job with the same phase-selection predicate. It runs setup-node before verifying its exact Node24.19.0 runtime, then pnpm/setup before verifying Node24.19.0/pnpm11.24.0. Both source-bound receipts reject a changed product manifest/lock/install policy and record the installed Node binary identity. This probe does not install the product or run a second aggregate gate. It uploads only its two JSON receipts as a seven-day ZIP and requires a service artifact ID/digest. Hosted qualification must independently download that actual artifact, check ZIP integrity, exact receipt contents and source/tool/graph identities; an upload acknowledgement alone is not roundtrip proof. Existing release/browser artifact paths, archive behavior and admission guards stay intact.
+The selected Action baseline is pnpm/setup3.1.2, setup-node7.1.0 and upload-artifact7.0.2, each pinned to its verified executable commit. The ordinary dependency workflow also has a bounded `action-compatibility` job with the same phase-selection predicate. It runs setup-node before verifying its exact Node24.19.0 runtime, then pnpm/setup before verifying Node24.19.0/pnpm11.24.0. Both source-bound receipts reject a changed product manifest/lock/install policy and record the installed Node binary identity. This probe does not install the product or run a second aggregate gate. It uploads only its two JSON receipts as a seven-day ZIP and requires a service artifact ID/digest. Hosted qualification must independently download that actual artifact, check ZIP integrity, exact receipt contents and source/tool/graph identities; an upload acknowledgement alone is not roundtrip proof. Existing release/browser artifact paths, archive behavior and admission guards stay intact.
 
 This workflow has read-only repository access, no production/deployment credentials and no publication command. It does not call `release:static-preflight`, manufacture a Release PR marker. The separate credential-free `semantic-qualification` job runs the complete canonical browser qualification with the same protected-phase exclusion, except the separately opted-in exact Main hotfix described below. The existing `ci.yml` remains Manual Web Deploy and has no PR trigger. The new check does not replace any required release or main-candidate check. Unrelated feature paths gain no automatic dependency workflow.
 

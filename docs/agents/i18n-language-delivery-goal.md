@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

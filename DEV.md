@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: c07b3d40d477af067a11515e5aea925471737b96
-lastReviewedNote: 'Platform #1540. Reviewed completion of asynchronous Study writes in the existing UI tests and the normal checked-push qualification.'
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 ---
 
 # Development Bootstrap
@@ -221,7 +221,7 @@ The TIDAS consumer is exact-pinned to released `@tiangong-lca/tidas-sdk` `0.6.0`
 
 Both application and release-E2E Node container sources retain exact Node `24.19.0` tags plus immutable multi-architecture digests. The E2E environment contract and candidate manifest additionally bind the pinned Node image reference; never replace either digest with a movable tag-only source.
 
-Every owned GitHub Actions pnpm bootstrap uses the repository-reviewed, peeled executable `pnpm/setup` v3.1.1 commit SHA, while its inputs pin pnpm `11.24.0` and Node `24.19.0`. Preserve the readable version comment, but never replace the commit SHA with an annotated-tag object or moving major tag.
+Every owned GitHub Actions pnpm bootstrap uses the repository-reviewed, peeled executable `pnpm/setup` v3.1.2 commit SHA, while its inputs pin pnpm `11.24.0` and Node `24.19.0`. Preserve the readable version comment, but never replace the commit SHA with an annotated-tag object or moving major tag.
 
 `pnpm lint` runs Oxlint, Prettier verification, and the native TypeScript 7 web typecheck. Oxlint owns unused and deprecated API correctness; the repo-local `tiangong/no-invalid-this` plugin preserves the legacy strict-context rule that Oxlint does not yet provide natively. Prettier owns formatting only and does not organize imports.
 
