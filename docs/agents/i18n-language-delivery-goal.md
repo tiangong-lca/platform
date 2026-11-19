@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 9033517cd65a6e65fa4951959edd1fd24743bdcf
-lastReviewedNote: 'Platform #1500: reviewed primary and independent intermediate product results, stable result identities, aggregate-only presentation and focused regression proof; retained backend, release and test-gate boundaries.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
+lastReviewedNote: 'Platform #1539. Reviewed the semantic i18n workflow bootstrap and retained its locale coverage and evidence checks.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

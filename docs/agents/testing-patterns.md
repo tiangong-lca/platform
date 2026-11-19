@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
-lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
+lastReviewedNote: 'Platform #1539. Reviewed the exact workflow pin assertions and the existing full suite and coverage rules.'
 ---
 
 # Testing Patterns Reference

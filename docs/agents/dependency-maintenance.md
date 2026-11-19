@@ -19,9 +19,9 @@ checkPaths:
   - scripts/e2e/resource-command.cjs
   - scripts/e2e/release-e2e.cjs
   - scripts/qualification/supabase-browser-resources.cjs
-lastReviewedAt: 2026-11-16
-lastReviewedCommit: 9f493aea39c2ac7acfaad2c2445548de18489c21
-lastReviewedNote: 'Platform #1513: reviewed the explicit browser snapshot, shared Electron floor, Umi 4.7.33 and browser-data upgrades, app/MFSU nested-target forwarding and exception retirement. Source controls pass; actual browser qualification remains tracked separately. Existing security patches, full gates, cache policy and publishers remain unchanged.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
+lastReviewedNote: 'Platform #1539. Reviewed pnpm/setup 3.1.2 across thirteen bootstrap sites, the exact-SHA tests, and the existing Node, pnpm and qualification inputs.'
 related:
   - ../../AGENTS.md
   - repo-validation.md
