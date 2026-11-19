@@ -197,7 +197,7 @@
     "npm-check-updates": "^23.1.0",
     "oxlint": "^1.93.0",
     "oxlint-tsgolint": "^7.0.2006",
-    "prettier": "^3.9.10",
+    "prettier": "^3.10.0",
     "supabase": "^2.116.0",
     "tsx": "^4.23.15",
     "typescript": "7.0.2"

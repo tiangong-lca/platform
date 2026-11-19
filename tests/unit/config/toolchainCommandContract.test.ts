@@ -68,9 +68,9 @@ describe('single-track TypeScript 7 and Oxlint command contract', () => {
 
   it('installs only TypeScript 7 and removes the legacy lint and organize-import tools', () => {
     expect(packageJson.devDependencies.typescript).toBe('7.0.2');
-    expect(packageJson.devDependencies.oxlint).toBe('^1.80.0');
-    expect(packageJson.devDependencies['oxlint-tsgolint']).toBe('^7.0.2001');
-    expect(packageJson.devDependencies['@types/node']).toBe('^24.13.3');
+    expect(packageJson.devDependencies.oxlint).toBe('^1.93.0');
+    expect(packageJson.devDependencies['oxlint-tsgolint']).toBe('^7.0.2006');
+    expect(packageJson.devDependencies['@types/node']).toBe('^24.19.2');
     for (const removed of [
       '@typescript/native',
       '@typescript/typescript6',
