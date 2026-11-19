@@ -22,9 +22,9 @@ checkPaths:
   - pnpm-workspace.yaml
   - tests/unit/config/protocolBabel.test.ts
   - docs/agents/browser-support-contract.md
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
-lastReviewedNote: 'Platform #1522: reviewed the controlled Mac-only coverage worker profile and exact in-place canonical argv expansion. Linux/Windows and unmatched Mac profiles retain two; all native mitigations, idle recycling, full tests/coverage, caches and publishers remain unchanged. Current-source validation and normal Dev/Main/root delivery remain required.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 862be78b61d78da5bc8e6dc205ec077e647aded9
+lastReviewedNote: 'Platform #1543 reviewed the published Playwright archive and image index, installed headless browser identities, Jest runner and worker pins, and the existing CI and release gates.'
 related:
   - ../../AGENTS.md
   - repo-architecture.md

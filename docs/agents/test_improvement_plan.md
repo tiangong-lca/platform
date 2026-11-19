@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
-lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
+lastReviewedCommit: 862be78b61d78da5bc8e6dc205ec077e647aded9
+lastReviewedNote: 'Platform #1543 reviewed the published Playwright archive and image index, installed headless browser identities, Jest runner and worker pins, and the existing CI and release gates.'
 ---
 
 # Testing Strategy
