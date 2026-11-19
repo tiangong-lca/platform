@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
-lastReviewedNote: 'Platform #1539. Reviewed the exact workflow pin assertions and the existing full suite and coverage rules.'
+lastReviewedCommit: aedd1fb065f57eae9d6fe13ff29783ba31c7d51a
+lastReviewedNote: 'Platform #1540. Reviewed asynchronous completion in the three Study fixture clicks and the installed Escape fixture’s attempted-render signal. Existing package ordering, cleanup, deadlines and UI assertions are preserved.'
 ---
 
 # Testing Patterns Reference

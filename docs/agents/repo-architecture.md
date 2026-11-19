@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
-lastReviewedNote: 'Platform #1539. Reviewed the thirteen workflow bootstrap sites against the existing source, renderer, release and deployment boundaries.'
+lastReviewedCommit: bd6c74471760a9ee723c58fb75bcac4625031a26
+lastReviewedNote: 'Platform #1540. The Study suite awaits React completion after save, evidence creation and recovery before checking the resulting UI. Existing assertions, timeouts and product behavior are preserved.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
-lastReviewedNote: 'Platform #1539. Reviewed the normal checked-push and CI sequence for the exact workflow dependency update.'
+lastReviewedCommit: aedd1fb065f57eae9d6fe13ff29783ba31c7d51a
+lastReviewedNote: 'Platform #1540. Reviewed asynchronous completion in the three Study fixture clicks and the installed Escape fixture’s attempted-render signal. Existing package ordering, cleanup, deadlines and UI assertions are preserved.'
 ---
 
 # Pre-Push Gate Policy

@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
-lastReviewedNote: 'Platform #1539. Reviewed pnpm/setup 3.1.2 across thirteen bootstrap sites, the exact-SHA tests, and the existing Node, pnpm and qualification inputs.'
+lastReviewedCommit: c07b3d40d477af067a11515e5aea925471737b96
+lastReviewedNote: 'Platform #1540. Reviewed completion of asynchronous Study writes in the existing UI tests and the normal checked-push qualification.'
 ---
 
 # Development Bootstrap

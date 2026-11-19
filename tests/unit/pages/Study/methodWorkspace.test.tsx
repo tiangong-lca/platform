@@ -245,7 +245,7 @@ it('reopens the stored draft, preserves its presentation, and freezes only the s
   );
   change('pages.study.reportTitle', 'Revised title');
   expect(screen.getByRole('button', { name: 'pages.study.freezeMethodReport' })).toBeDisabled();
-  click('pages.study.saveMethodReport');
+  await act(async () => click('pages.study.saveMethodReport'));
   await waitFor(() =>
     expect(mockMethod).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -336,7 +336,7 @@ it('authors multiple citations and commission-rule declarations without changing
   fireEvent.click(remove[0]);
   change('pages.study.evidenceTitle', 'Evidence');
   change('pages.study.statement', 'A recorded declaration');
-  click('pages.study.recordEvidence');
+  await act(async () => click('pages.study.recordEvidence'));
   await screen.findByRole('button', { name: 'pages.study.selectEvidence' });
   click('pages.study.selectEvidence');
   await choose('pages.study.studyPhase', 'pages.study.finalStudy');
@@ -594,7 +594,7 @@ it.each([true, false])(
     change('pages.study.reportId', reportId);
     await screen.findByRole('textbox', { name: 'pages.study.reportTitle' });
     const reads = mockMethod.mock.calls.filter(([q]) => q.operation === 'report.read').length;
-    click('pages.study.retry');
+    await act(async () => click('pages.study.retry'));
     await waitFor(() => expect(mockRecover).toHaveBeenCalledWith(`report6:${reportId}`));
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'pages.study.retry' })).not.toHaveClass(
