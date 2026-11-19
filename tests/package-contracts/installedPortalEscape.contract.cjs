@@ -50,8 +50,8 @@ const delay = () => new Promise(resolve => { setTimeout(resolve, 8); });
 function Marker({ name }) { React.useLayoutEffect(() => { commits.add(name); return () => commits.delete(name); }, [name]); return h('span', { 'data-contract-marker': name }); }
 const cb = name => ({ top }) => calls.push([name, top]);
 function P({ name, open = true, children, onEsc, ...props }) { return h(Portal, { open, getContainer: false, onEsc: onEsc || cb(name), ...props }, h(React.Fragment, null, h(Marker, { name }), children)); }
-async function mount(node) { const host = document.createElement('div'); document.body.append(host); const rt = createRoot(host, { onCaughtError() {} }); const entry = { rt, host }; roots.push(entry); await update(entry, node); return entry; }
 async function update(entry, node) { await act(async () => { flushSync(() => entry.rt.render(node)); await delay(); }); }
+async function mount(node) { const host = document.createElement('div'); document.body.append(host); const rt = createRoot(host, { onCaughtError() {} }); const entry = { rt, host }; roots.push(entry); await update(entry, node); return entry; }
 async function transition(entry, node, pending) {
   await act(async () => { React.startTransition(() => entry.rt.render(node)); await delay(); });
   await pending.renderAttempt.promise;

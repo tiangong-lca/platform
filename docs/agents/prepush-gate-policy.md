@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
-lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
+lastReviewedCommit: 0fd2cf562f678b7c06815c3e1b07bd5aa76a2623
+lastReviewedNote: 'Platform #1542 reviewed the five compiler and lint tool updates, installed fixture behavior, strict version assertions and the existing release and coverage gates.'
 ---
 
 # Pre-Push Gate Policy

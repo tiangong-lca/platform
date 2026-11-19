@@ -159,17 +159,6 @@ function formatWorkflowResult(result) {
   return summaryParts.join(' | ');
 }
 
-function ensureFailureReason(result) {
-  if (result.passed || result.failureReason) {
-    return result;
-  }
-
-  return {
-    ...result,
-    failureReason: buildFailureReason(result),
-  };
-}
-
 function captureOutputTail(currentOutput, chunk) {
   const nextOutput = currentOutput + chunk.toString();
 
@@ -210,6 +199,17 @@ function buildFailureReason(result) {
   }
 
   return reasons.length > 0 ? reasons.join('; ') : 'child workflow did not report a reason';
+}
+
+function ensureFailureReason(result) {
+  if (result.passed || result.failureReason) {
+    return result;
+  }
+
+  return {
+    ...result,
+    failureReason: buildFailureReason(result),
+  };
 }
 
 function runWorkflow(workflow, argv) {
