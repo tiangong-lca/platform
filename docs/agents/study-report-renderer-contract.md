@@ -19,8 +19,8 @@ checkPaths:
   - .github/workflows/study-report.yml
   - tests/unit/config/studyReportWorkflow.test.ts
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
-lastReviewedNote: 'Platform #1539. Verified the renderer gate selects the reviewed pnpm executable before frozen package setup and Chromium proof.'
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 related:
   - repo-architecture.md
   - repo-validation.md

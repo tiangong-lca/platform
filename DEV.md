@@ -47,8 +47,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: c07b3d40d477af067a11515e5aea925471737b96
-lastReviewedNote: 'Platform #1540. Reviewed completion of asynchronous Study writes in the existing UI tests and the normal checked-push qualification.'
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 ---
 
 # Development Bootstrap

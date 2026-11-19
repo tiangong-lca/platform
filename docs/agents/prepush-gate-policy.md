@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: aedd1fb065f57eae9d6fe13ff29783ba31c7d51a
-lastReviewedNote: 'Platform #1540. Reviewed asynchronous completion in the three Study fixture clicks and the installed Escape fixture’s attempted-render signal. Existing package ordering, cleanup, deadlines and UI assertions are preserved.'
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 ---
 
 # Pre-Push Gate Policy

@@ -57,8 +57,8 @@ checkPaths:
   - .github/workflows/build.yml
   - package.json
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 27ae3e414e3b2526f0f0176b875a5f662ad45ee6
-lastReviewedNote: 'Platform #1539. Reviewed the semantic i18n workflow bootstrap and retained its locale coverage and evidence checks.'
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

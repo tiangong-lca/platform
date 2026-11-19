@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: bd6c74471760a9ee723c58fb75bcac4625031a26
-lastReviewedNote: 'Platform #1540. The Study suite awaits React completion after save, evidence creation and recovery before checking the resulting UI. Existing assertions, timeouts and product behavior are preserved.'
+lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
+lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
