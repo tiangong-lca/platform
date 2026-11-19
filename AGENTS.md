@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 0fd2cf562f678b7c06815c3e1b07bd5aa76a2623
-lastReviewedNote: 'Platform #1542 reviewed the five compiler and lint tool updates, installed fixture behavior, strict version assertions and the existing release and coverage gates.'
+lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md
@@ -133,7 +133,7 @@ Do not start from additional governed source docs, proposal docs, or README-leve
 - the UI runtime is one exact React `19.3.1`, React DOM `19.3.1`, Ant Design `6.6.6`, icons `6.3.4`, and ProComponents `3.1.14-6` generation. Umi's global ConfigProvider and App own theme plus feedback context for every route; there is no Ant Design 5 patch, split ProComponents package, legacy component-member API, or static feedback fallback. ProComponents v3 remains exact-pinned while upstream publishes it as a prerelease, and the existing `skipLibCheck: true` is the bounded declaration-quality exception rather than an application-typecheck bypass
 - `scripts/typescript-native-parser.mjs` plus its `scripts/typescript-native-parser.d.mts` declaration are the sole allowed `typescript/unstable/*` import boundary; repository source-analysis consumers import that adapter, and a TypeScript upgrade must preserve its focused AST/traversal/diagnostic contract tests
 - Oxlint owns JavaScript/TypeScript correctness, including unused and deprecated API diagnostics. The repo-local `tiangong/no-invalid-this` Oxlint plugin preserves the one legacy rule that Oxlint does not yet implement natively. Prettier remains the formatter but no longer organizes imports; do not reintroduce ESLint, a standalone deprecated-API scanner, or a Compiler-API formatting plugin
-- Jest `30.5.0` uses the repository slow-first sequencer to start the three known process-heavy contract suites early without changing discovery or the test inventory. The pre-push receipt suite builds one reusable seed but copies an isolated repository and bare remote for every test case
+- Jest `30.5.2` uses the repository slow-first sequencer to start the three known process-heavy contract suites early without changing discovery or the test inventory. The pre-push receipt suite builds one reusable seed but copies an isolated repository and bare remote for every test case
 - on macOS, the shared Jest runner passes `--no-concurrent-recompilation --no-maglev --no-sparkplug` to mitigate the documented Node 24.19/V8 GC crash path; the Sparkplug flag is a temporary workaround, not a repaired runtime. The unit stage retains its 25% worker pool and `512MB` idle-memory recycle boundary; the validation guide and troubleshooting runbook own worker proof and retirement
 - locale identity and runtime adapters live in `src/services/general/localeRegistry.ts`; shared topology, canonical-message ownership, and dynamic-message audit rules live in `docs/plans/i18n-de-DE/manifest.json` plus the owning audit commands documented in `docs/agents/repo-validation.md`
 - the reusable autonomous Goal for adding or backfilling one product language lives in `docs/agents/i18n-language-delivery-goal.md`; it preserves Umi's native flag icons, separates UI/content/reference-resource capabilities, audits every active registry locale, requires official-first classification/location localization, and keeps country/region variants outside the single-language product contract

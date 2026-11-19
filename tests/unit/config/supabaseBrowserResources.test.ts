@@ -403,13 +403,13 @@ it('preserves preexisting dependency images with valid identical inputs', () => 
 
 it('binds tagged public inputs to actual repository digests without confusing mirrors or registry ports', () => {
   const f = fixture();
-  const reference = `mcr.microsoft.com/playwright:v1.62.1-noble@sha256:${id('6')}`;
+  const reference = `mcr.microsoft.com/playwright:v1.65.0-noble@sha256:${id('6')}`;
   const actual = `mcr.microsoft.com/playwright@sha256:${id('6')}`;
   f.source.baseImages[0] = reference;
   const image = {
     Id: `sha256:${id('8')}`,
     Config: { Labels: {} },
-    RepoTags: ['mcr.microsoft.com/playwright:v1.62.1-noble'],
+    RepoTags: ['mcr.microsoft.com/playwright:v1.65.0-noble'],
     RepoDigests: [actual],
   };
   f.images.set(image.Id, image);

@@ -285,7 +285,7 @@ describe('agent-aware Jest runner', () => {
         diagnostic: '',
       });
       const receipt = JSON.parse(result.stdout);
-      expect(receipt.jestWorker).toBe('30.5.0');
+      expect(receipt.jestWorker).toBe('30.5.1');
       expect(receipt.children).toHaveLength(2);
       expect(new Set(receipt.children.map((child: { pid: number }) => child.pid)).size).toBe(2);
       for (const child of receipt.children) {

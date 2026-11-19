@@ -21,8 +21,8 @@ async function main() {
   const core = packageFromParent(jest, '@jest/core');
   const runner = packageFromParent(core, 'jest-runner');
   const installed = packageFromParent(runner, 'jest-worker');
-  assert.equal(runner.manifest.version, '30.5.0');
-  assert.equal(installed.manifest.version, '30.5.0');
+  assert.equal(runner.manifest.version, '30.5.2');
+  assert.equal(installed.manifest.version, '30.5.1');
   const { Worker } = installed.require(path.join(installed.directory, 'build/index.js'));
   const pool = new Worker(__filename, {
     numWorkers: 2,

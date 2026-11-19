@@ -20,8 +20,8 @@ checkPaths:
   - scripts/e2e/release-e2e.cjs
   - scripts/qualification/supabase-browser-resources.cjs
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
-lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
+lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 related:
   - ../../AGENTS.md
   - repo-validation.md
@@ -160,7 +160,7 @@ Declared installed-source paths use literal directory-entry spelling relative to
 
 The supervisor bounds preparation, helpers, build, all controls, publication and cleanup together to 900 seconds, with 120 seconds reserved for cleanup, 4 GiB owned-process RSS and 12 GiB admitted source/cache/output disk. Controls retain their 120/20/45/45-second test/action/navigation/expect ceilings and run serially. Fresh process identity, capacity and disk samples govern admission; unknown/stale evidence, cancellation or limits stop further starts and project remaining controls as incomplete/not-run. Cleanup attempts remain independent, signal only freshly verified owned identities and remove only the nonce/inode-bound disposable runtime after actual process/port closure. Borrowed source/browser caches and evidence remain retained. Sampled peaks do not prove the absence of between-sample transients; no native pass is valid without both behavior and resource closure.
 
-Native resource receipt schema 4 binds policy `playwright-1.62.1-default-headless`, the exact resolver/package/browser manifest and expected versus actual executable/cache/process identities for every browser. A worker-only adapter uses the pinned package-exported registry to pre-admit Chromium headless shell; public launches keep `headless: true` without channel, executable or argument overrides. Official npm archive/SRI verification binds the three adapter inputs. Source, descriptor, cache, actual spawn or ownership drift fails before controls. Both `PWDEBUG` aliases, direct `PWDEBUG`, `SELENIUM_REMOTE_URL` and `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE` are rejected before import; values are not retained or silently cleared.
+Native resource receipt schema 4 binds policy `playwright-1.65.0-default-headless`, the exact resolver/package/browser manifest and expected versus actual executable/cache/process identities for every browser. A worker-only adapter uses the pinned package-exported registry to pre-admit Chromium headless shell; public launches keep `headless: true` without channel, executable or argument overrides. Official npm archive/SRI verification binds the three adapter inputs. Source, descriptor, cache, actual spawn or ownership drift fails before controls. Both `PWDEBUG` aliases, direct `PWDEBUG`, `SELENIUM_REMOTE_URL` and `PLAYWRIGHT_HOST_PLATFORM_OVERRIDE` are rejected before import; values are not retained or silently cleared.
 
 The nonce/device/inode-bound disposable runtime admits regular files and directories only. Observed symlinks, sockets, unknown types, owner/ancestor replacement and cap failures stop accounting before referent traversal. Path depth remains 64; whole-tree identity tracking stays within the existing 500,000-entry bound plus root ancestors. All bytes remain charged under the same three roots and limits. The child-only `MAC_CHROMIUM_TMPDIR` and TMP/XDG bindings keep temporary work inside the private runtime without changing the host environment. POSIX target models are independent of the test host; this does not add Windows native-runner support.
 
