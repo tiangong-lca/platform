@@ -229,7 +229,10 @@ export type LifeCycleModelSubModel = {
   [key: string]: unknown;
 };
 
+export const SINGLE_PRIMARY_RESULT_POLICY = 'single-primary-v1' as const;
+
 export type LifeCycleModelJsonTg = {
+  resultPolicy?: typeof SINGLE_PRIMARY_RESULT_POLICY;
   xflow?: {
     nodes?: LifeCycleModelGraphNode[];
     edges?: LifeCycleModelGraphEdge[];

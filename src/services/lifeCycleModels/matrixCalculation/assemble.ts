@@ -46,6 +46,7 @@ const computeGroupActivities = (
 export const assembleResult = (
   compilation: Compilation,
   solution: number[],
+  primaryOnly = false,
 ): MatrixCalculationResult => {
   const { views, viewById, instanceByIndex, edges } = compilation;
   const activityOf = (view: CompiledView): number => solution[view.columnIndex];
@@ -307,7 +308,7 @@ export const assembleResult = (
   const groups: MatrixResultGroup[] = [];
   const refView = viewById.get(compilation.refViewId)!;
   groups.push(buildGroup(refView, 'primary', compilation.demand[refView.columnIndex])!);
-  for (const view of views) {
+  for (const view of primaryOnly ? [] : views) {
     if (view.isReference) continue;
     // A downstream connection does not remove this product's independent result.
     // These scenario solves never change the primary solution or graph quantities.

@@ -186,6 +186,7 @@ export interface MatrixInstancePayload {
  * en-US: Calculation input (cross-thread payload).
  */
 export interface MatrixCalculationPayload {
+  primaryOnly?: boolean;
   refInstanceIndex: string;
   targetAmount: number;
   instances: MatrixInstancePayload[];
