@@ -2627,6 +2627,7 @@ describe('ToolbarEdit', () => {
         code: 'UNDER_REVIEW',
         message: 'Data is under review, save failed',
       })
+      .mockResolvedValueOnce({ ok: false, code: 'PRIMARY_PRODUCT_CHANGED' })
       .mockResolvedValueOnce({ ok: false, code: 'FUNCTION_ERROR', message: 'generic failure' });
 
     await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
@@ -2637,6 +2638,13 @@ describe('ToolbarEdit', () => {
     await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
     await waitFor(() =>
       expect(antMessage.error).toHaveBeenCalledWith('Data is under review, save failed'),
+    );
+
+    await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));
+    await waitFor(() =>
+      expect(antMessage.error).toHaveBeenCalledWith(
+        'pages.lifecyclemodel.error.primaryProductChanged',
+      ),
     );
 
     await userEvent.click(screen.getByRole('button', { name: 'save-icon' }));

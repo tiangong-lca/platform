@@ -1607,7 +1607,10 @@ describe('createLifeCycleModel', () => {
       id: sampleModelId,
     });
 
-    expect(mockGenLifeCycleModelProcesses).toHaveBeenCalledWith(sampleModelId, [], rawJson, []);
+    expect(mockGenLifeCycleModelProcesses).toHaveBeenCalledWith(sampleModelId, [], rawJson, [], {
+      primaryOnly: true,
+      operation: undefined,
+    });
     expect(mockGenReferenceToResultingProcess).toHaveBeenCalledWith([], sampleVersion, rawJson);
     expect(mockValidateDatasetRuleVerification.mock.calls[0]?.[0]).toBe('lifeCycleModel data set');
     expect(mockValidateDatasetRuleVerification.mock.calls[0]?.[2]).toBe('');
@@ -1668,6 +1671,7 @@ describe('createLifeCycleModel', () => {
       runtimeGraph.nodes,
       rawJson,
       [],
+      { primaryOnly: true, operation: undefined },
     );
     expect(mockFunctionsInvoke.mock.calls[0][1].body.parent.jsonTg.xflow).toEqual({
       nodes: persistenceGraph.nodes,
@@ -1818,6 +1822,21 @@ describe('updateLifeCycleModel', () => {
       expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
     },
   );
+
+  it('carries the stored single-result policy into calculation and the saved Model on update', async () => {
+    mockFrom.mockReturnValueOnce(
+      createQueryBuilder({
+        data: [{ resultPolicy: 'single-primary-v1', submodels: [] }],
+        error: null,
+      }),
+    );
+    mockFunctionsInvoke.mockResolvedValueOnce(createMockEdgeFunctionResponse(buildSaveResult()));
+    await lifeCycleModelsApi.updateLifeCycleModel({ id: sampleModelId, version: sampleVersion });
+    expect(mockGenLifeCycleModelProcesses.mock.calls[0][4]).toMatchObject({ primaryOnly: true });
+    expect(mockFunctionsInvoke.mock.calls[0][1].body.parent.jsonTg.resultPolicy).toBe(
+      'single-primary-v1',
+    );
+  });
 
   it('rejects conflicting result roles without calculating or writing', async () => {
     const storedJson: any = buildLifecycleModelJsonOrdered();

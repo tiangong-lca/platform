@@ -692,7 +692,7 @@ describe('ModelResult', () => {
     expect(result).toEqual({ data: [], success: true });
   });
 
-  it('requests an empty submodel table when only the main model is present', async () => {
+  it('omits the empty submodel table when only the main model is present', async () => {
     renderWithProviders(
       <ModelResult
         submodels={[{ id: 'model-1', version: '0.9.0' }]}
@@ -707,17 +707,16 @@ describe('ModelResult', () => {
 
     expect(await screen.findByRole('dialog', { name: /model results/i })).toBeInTheDocument();
 
-    await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledTimes(2));
+    await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalledTimes(1));
     expect(mockGetProcessesByIdAndVersion).toHaveBeenNthCalledWith(
       1,
       [{ id: 'model-1', version: '0.9.0' }],
       'en',
       { classification: [], keyword: '' },
     );
-    expect(mockGetProcessesByIdAndVersion).toHaveBeenNthCalledWith(2, [], 'en', {
-      classification: [],
-      keyword: '',
-    });
+    expect(
+      screen.queryByRole('region', { name: 'pages.lifeCycleModel.modelResults.subProduct' }),
+    ).not.toBeInTheDocument();
 
     await waitFor(() => expect(screen.getAllByTestId('process-view')).toHaveLength(1));
     expect(screen.queryByTestId('process-edit')).not.toBeInTheDocument();

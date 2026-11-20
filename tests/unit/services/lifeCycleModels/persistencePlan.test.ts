@@ -131,6 +131,117 @@ beforeEach(() => {
 });
 
 describe('simple exported helpers', () => {
+  it('requires a new revision to change the quantified product in a single-result Model', async () => {
+    const result = await buildSaveLifeCycleModelPersistencePlan({
+      mode: 'update',
+      modelId: sampleModelId,
+      version: sampleVersion,
+      resultPolicy: 'single-primary-v1',
+      lifeCycleModelJsonOrdered: buildLifecycleModelJsonOrdered(),
+      nodes: [],
+      edges: [],
+      up2DownEdges: [],
+      oldSubmodels: [
+        { id: sampleModelId, type: 'primary', finalId: { allocatedExchangeFlowId: 'old' } },
+      ],
+      lifeCycleModelProcesses: [
+        {
+          modelInfo: {
+            id: sampleModelId,
+            type: 'primary',
+            finalId: { allocatedExchangeFlowId: 'new' },
+          },
+          data: { processDataSet: buildProcessDataSet() },
+        },
+      ],
+    });
+    expect(result).toMatchObject({ ok: false, code: 'PRIMARY_PRODUCT_CHANGED' });
+  });
+
+  it('classifies a new result when the Model supplied no methodology metadata', async () => {
+    const result = await buildSaveLifeCycleModelPersistencePlan({
+      mode: 'create',
+      modelId: sampleModelId,
+      resultPolicy: 'single-primary-v1',
+      lifeCycleModelJsonOrdered: buildLifecycleModelJsonOrdered(),
+      nodes: [],
+      edges: [],
+      up2DownEdges: [],
+      lifeCycleModelProcesses: [
+        {
+          modelInfo: { id: sampleModelId, type: 'primary' },
+          calculatedDataSetType: 'LCI result',
+          data: { processDataSet: { processInformation: {} } },
+        },
+      ],
+    });
+    expect(result).toMatchObject({
+      ok: true,
+      plan: {
+        processMutations: [
+          {
+            jsonOrdered: {
+              processDataSet: {
+                modellingAndValidation: {
+                  LCIMethodAndAllocation: { typeOfDataSet: 'LCI result' },
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+  });
+
+  it('persists the new primary boundary type on recalculation', async () => {
+    const result = await buildSaveLifeCycleModelPersistencePlan({
+      mode: 'update',
+      modelId: sampleModelId,
+      version: sampleVersion,
+      resultPolicy: 'single-primary-v1',
+      lifeCycleModelJsonOrdered: buildLifecycleModelJsonOrdered(),
+      nodes: [],
+      edges: [],
+      up2DownEdges: [],
+      lifeCycleModelProcesses: [
+        {
+          option: 'update',
+          modelInfo: { id: sampleModelId, type: 'primary' },
+          calculatedDataSetType: 'Partly terminated system',
+          data: { processDataSet: buildProcessDataSet() },
+        },
+      ],
+      oldProcesses: [
+        {
+          id: sampleModelId,
+          version: sampleVersion,
+          json: {
+            processDataSet: {
+              modellingAndValidation: { LCIMethodAndAllocation: { typeOfDataSet: 'LCI result' } },
+            },
+          },
+        },
+      ],
+    });
+    expect(result).toMatchObject({
+      ok: true,
+      plan: {
+        parent: { jsonTg: { resultPolicy: 'single-primary-v1' } },
+        processMutations: [
+          {
+            jsonOrdered: {
+              processDataSet: {
+                modellingAndValidation: {
+                  LCIMethodAndAllocation: { typeOfDataSet: 'Partly terminated system' },
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+  });
+
   it('builds the delete bundle payload', () => {
     expect(buildDeleteLifeCycleModelBundlePayload(sampleModelId, sampleVersion)).toEqual({
       modelId: sampleModelId,

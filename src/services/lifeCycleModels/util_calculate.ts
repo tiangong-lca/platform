@@ -21,6 +21,7 @@ import { buildMatrixEdgeId } from './matrixCalculation/validation';
 import { getSharedMatrixCalculationClient } from './matrixCalculation/workerClient';
 import { toReferenceProcessKey } from './referenceProcess';
 import { buildLifeCycleModelSubmodelRecord } from './submodelRecord';
+import { classifyResultBoundary } from './resultBoundary';
 import { materializeProductSystem } from './productSystemPersistence';
 
 /**
@@ -75,7 +76,7 @@ export async function genLifeCycleModelProcesses(
   modelNodes: any[] | null | undefined,
   lifeCycleModelJsonOrdered: any,
   oldSubmodels: any[],
-  options?: { operation?: CalculationOperation },
+  options?: { operation?: CalculationOperation; primaryOnly?: boolean },
 ) {
   const operation = options?.operation;
   const assertNotCancelled = (): void => {
@@ -242,6 +243,7 @@ export async function genLifeCycleModelProcesses(
   }
 
   const payload: MatrixCalculationPayload = {
+    ...(options?.primaryOnly && { primaryOnly: true }),
     refInstanceIndex: String(refProcessNodeId),
     targetAmount: Number.isFinite(targetAmount) ? (targetAmount as number) : NaN,
     instances: matrixInstances,
@@ -436,6 +438,11 @@ export async function genLifeCycleModelProcesses(
       });
       const previous = oldSubmodels?.find((item: any) => item.id === newId);
       if (previous?.version) record.modelInfo.version = previous.version;
+      if (options?.primaryOnly && isPrimary) {
+        const calculatedDataSetType = await classifyResultBoundary(group.exchanges);
+        assertNotCancelled();
+        return { ...record, calculatedDataSetType };
+      }
       return record;
     }),
   );

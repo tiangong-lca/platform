@@ -1274,6 +1274,13 @@ const ToolbarEdit: FC<Props> = ({
           return;
         }
 
+        if (result.code === 'PRIMARY_PRODUCT_CHANGED') {
+          message.error(
+            intl.formatMessage({ id: 'pages.lifecyclemodel.error.primaryProductChanged' }),
+          );
+          return;
+        }
+
         if (result.code === 'SAVE_REJECTED') {
           message.error(
             intl.formatMessage({ id: 'pages.lifecyclemodel.calculation.status.saveRejected' }),

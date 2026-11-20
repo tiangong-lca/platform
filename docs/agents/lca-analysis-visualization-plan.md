@@ -20,8 +20,8 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: be1055c098968b00db74991d013d4ec31c8fd53d
 lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
 ---
 
