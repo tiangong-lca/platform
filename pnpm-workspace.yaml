@@ -7,7 +7,7 @@ publicHoistPattern:
   - '@babel/*'
   - umi
 
-# Umi 4.7.24's published dependency metadata still points at its fallback antd 4
+# Umi 4.7.33's published dependency metadata still points at its fallback antd 4
 # and ProComponents 2 packages even though its runtime plugins support antd 6.
 # Pin the reviewed native stack so pnpm installs one application UI generation.
 overrides:
@@ -17,9 +17,14 @@ overrides:
   '@umijs/preset-umi>react-dom': 19.3.1
   '@umijs/server>react': 19.3.1
   '@umijs/server>react-dom': 19.3.1
-  '@umijs/plugins@4.7.24>dva-immer': '-'
+  '@umijs/plugins@4.7.33>dva-immer': '-'
   # Reviewed maintained 0.x request consumer; retain the exact Umi parent boundary.
-  '@umijs/plugins@4.7.24>axios': 0.34.0
+  '@umijs/plugins@4.7.33>axios': 0.34.0
+  # Freeze current browser data so CSS resolves the reviewed modern engine floors.
+  'browserslist@4.29.5>caniuse-lite': 1.0.30001826
+  'autoprefixer@10.5.2>caniuse-lite': 1.0.30001826
+  'browserslist@4.29.5>baseline-browser-mapping': 2.11.37
+  'browserslist@4.29.5>electron-to-chromium': 1.5.486
 
 # pnpm 11 requires every dependency lifecycle script to be decided explicitly.
 allowBuilds:

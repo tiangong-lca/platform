@@ -33,8 +33,9 @@ export const buildProductSystem = (compilation: Compilation, solution: number[])
   const instanceByView = new Map<string, ProductSystemInstance>();
   for (const source of compilation.instances) {
     const views = compilation.views.filter((view) => view.instanceIndex === source.instanceIndex);
-    const retainedView =
-      views.find((view) => view.pivotExchangeId === source.refExchangeId) ?? views[0];
+    // Compilation now retains every validated source reference, including
+    // intermediate products; its identity never falls back to a coproduct.
+    const retainedView = views.find((view) => view.pivotExchangeId === source.refExchangeId);
     for (const view of views) {
       const materialize = source.allocationShape !== 'single';
       const exchanges = materialize

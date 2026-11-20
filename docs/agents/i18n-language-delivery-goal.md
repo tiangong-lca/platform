@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
-lastReviewedNote: 'Platform #1493: reviewed authenticated data-transfer route, localized copy ownership, 65 current route assertions and matching evidence schema; browser execution and release qualification remain separate.'
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md
@@ -619,7 +619,7 @@ locale inventory 和 route-view inventory 必须交叉校验：前者证明标�
 
 ### 5.11 Playwright 语义 E2E 与生产数据边界
 
-当前浏览器执行合同使用 `@playwright/test` `1.62.1`，canonical 入口为 `pnpm test:e2e:i18n`，配置位于 `playwright.config.ts`，测试与 ledger/reporter helper 位于 `tests/e2e/i18n/**`。候选前端必须由 `pnpm start:main` 在 loopback URL 启动并连接 production backend；`E2E_BASE_URL` 指向真实生产前端时必须 fail closed。
+当前浏览器执行合同使用 `@playwright/test` `1.65.0`，canonical 入口为 `pnpm test:e2e:i18n`，配置位于 `playwright.config.ts`，测试与 ledger/reporter helper 位于 `tests/e2e/i18n/**`。候选前端必须由 `pnpm start:main` 在 loopback URL 启动并连接 production backend；`E2E_BASE_URL` 指向真实生产前端时必须 fail closed。
 
 独立 workflow `.github/workflows/i18n-semantic-e2e.yml` 是可选的手动 hermetic qualification 边界：
 
@@ -1075,7 +1075,7 @@ pnpm push:retry
 - [ ] 有效会话下直接打开或切换语言后，所有受保护静态视图的 path/query/view state 保持不变；Welcome overview 与 carbon-footprint guide 的正常、加载、失败/fallback 和关键交互均显示目标语言；匿名访问这些入口只到 canonical login。
 - [ ] 明暗主题、窄屏、长文本和 RTL 条件矩阵通过。
 - [ ] 既有 locale 行为无回归，自动修订项达到预期。
-- [ ] `pnpm test:e2e:i18n` 使用 `@playwright/test` `1.62.1`、`playwright.config.ts` 和 `tests/e2e/i18n/**`，local `pnpm start:main` candidate 指向 production backend 且 Playwright base URL 只允许 loopback。
+- [ ] `pnpm test:e2e:i18n` 使用 `@playwright/test` `1.65.0`、`playwright.config.ts` 和 `tests/e2e/i18n/**`，local `pnpm start:main` candidate 指向 production backend 且 Playwright base URL 只允许 loopback。
 - [ ] 58 个稳定 route/view assertion ID 及其 target-declared required scenarios 全部闭合；Chromium 完成全矩阵，登录/selector、team authoring 和 process lifecycle 关键场景在 Chromium/Firefox/WebKit 通过。
 - [ ] locale/content-language 循环从 registries 派生；新增语言无需改业务硬编码，并会自动使旧 semantic evidence 失效。
 - [ ] 除 `dependency-maintenance.md` 所述受限依赖 PR job 外，日常 PR/普通 `dev` push 不自动触发浏览器矩阵；按风险在仍开放的业务 PR 上通过 `workflow_dispatch` 手动运行无凭据、无生产写的 hermetic qualification，覆盖 Chromium 全矩阵及 Firefox/WebKit 关键场景；exact dev Release PR 只运行非浏览器 static/full gate，main-target PR 与正常 post-merge main 仅验证 release proof；完整 authenticated closure 只在明确授权的本地 operator session 中以 authenticated mode、两个 production-write guards 和 verified-evidence opt-in 执行。

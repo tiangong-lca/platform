@@ -1,6 +1,6 @@
 export default {
   'pages.lifecyclemodel.review.saveFirst': 'Save your changes before submitting for review.',
-  'pages.lifeCycleModel.modelResults.subProduct': 'Sub Product',
+  'pages.lifeCycleModel.modelResults.subProduct': 'Other Products',
   'pages.lifeCycleModel.modelResults.mainProduct': 'Main Product',
 
   'pages.lifeCycleModel.drawer.title.create': 'Create Model',
@@ -291,6 +291,7 @@ export default {
   'pages.lifecyclemodel.validator.licenseType.required': 'Please input license type',
   'pages.lifecyclemodel.validator.nodes.required': 'Please add node',
   'pages.lifecyclemodel.validator.nodes.quantitativeReference.required': 'Please select a node as reference',
+  'pages.lifecyclemodel.error.primaryProductChanged': 'Create a new Model version to change the primary product.',
   'pages.lifecyclemodel.error.missingReferenceProcess': 'The model is missing reference process information. Complete or rebind the reference process, then try again.',
   'pages.lifecyclemodel.review.submitSuccess': 'Review submitted successfully',
   'pages.lifecyclemodel.review.submitError': 'Submit review failed',

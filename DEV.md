@@ -46,8 +46,8 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Reviewed the serial focused-test and checked-push workflow for the filter refinement; bootstrap commands remain unchanged.'
 ---
 
@@ -124,7 +124,7 @@ pnpm install --frozen-lockfile
 
 `pnpm install --frozen-lockfile` installs the exact dependency graph from the committed `pnpm-lock.yaml`. The project keeps pnpm's isolated linker and exposes only the narrow `@babel/*` and `umi` compatibility patterns recorded in `pnpm-workspace.yaml`; do not broaden them or enable `shamefully-hoist`. Narrow overrides collapse Umi's published React 18 / antd 4 / ProComponents 2 fallback metadata to the repository's one reviewed React 19 / antd 6 / ProComponents 3 generation. Run a non-frozen `pnpm install` only when intentionally changing dependencies, and commit the resulting lockfile update.
 
-The direct development browser harness uses `@playwright/test` `1.62.1`. Install its browser engines only when using `pnpm e2e:dev` or `pnpm test:e2e:i18n` directly on the host:
+The direct development browser harness uses `@playwright/test` `1.65.0`. Install its browser engines only when using `pnpm e2e:dev` or `pnpm test:e2e:i18n` directly on the host:
 
 ```bash
 pnpm exec playwright install chromium firefox webkit
@@ -221,15 +221,15 @@ The TIDAS consumer is exact-pinned to released `@tiangong-lca/tidas-sdk` `0.6.0`
 
 Both application and release-E2E Node container sources retain exact Node `24.19.0` tags plus immutable multi-architecture digests. The E2E environment contract and candidate manifest additionally bind the pinned Node image reference; never replace either digest with a movable tag-only source.
 
-Every owned GitHub Actions pnpm bootstrap uses the repository-reviewed, peeled executable `pnpm/setup` v3.1.1 commit SHA, while its inputs pin pnpm `11.24.0` and Node `24.19.0`. Preserve the readable version comment, but never replace the commit SHA with an annotated-tag object or moving major tag.
+Every owned GitHub Actions pnpm bootstrap uses the repository-reviewed, peeled executable `pnpm/setup` v3.1.2 commit SHA, while its inputs pin pnpm `11.24.0` and Node `24.19.0`. Preserve the readable version comment, but never replace the commit SHA with an annotated-tag object or moving major tag.
 
 `pnpm lint` runs Oxlint, Prettier verification, and the native TypeScript 7 web typecheck. Oxlint owns unused and deprecated API correctness; the repo-local `tiangong/no-invalid-this` plugin preserves the legacy strict-context rule that Oxlint does not yet provide natively. Prettier owns formatting only and does not organize imports.
 
 The qualified production bundle remains Umi's current Webpack path followed by the repo-owned TypeScript checks. Do not enable the optional Umi/Mako `forkTSChecker` path until its dependencies are proved compatible with TypeScript 7; the TypeScript 7 package's CommonJS root intentionally does not expose the legacy JavaScript Compiler API that this optional path currently expects.
 
-The UI dependency track is exact-pinned to React/React DOM `19.3.1`, antd `6.6.6`, icons `6.3.4`, and ProComponents `3.1.14-6`. Umi `4.7.24` supplies the single global ConfigProvider and App; `src/app.tsx` owns initial/dynamic theme synchronization, while `src/contexts/AntdAppContext.tsx` registers its feedback API for non-component callers. Do not restore antd 5 render patches, split ProComponents packages, static `message`/`Modal`/`notification` calls, or legacy component-member APIs. `skipLibCheck: true` remains only because the exact ProComponents prerelease still publishes invalid external declaration references; web source remains strict and must pass `pnpm tsc`.
+The UI dependency track is exact-pinned to React/React DOM `19.3.1`, antd `6.6.6`, icons `6.3.4`, and ProComponents `3.1.14-6`. Umi `4.7.33` supplies the single global ConfigProvider and App; `src/app.tsx` owns initial/dynamic theme synchronization, while `src/contexts/AntdAppContext.tsx` registers its feedback API for non-component callers. Do not restore antd 5 render patches, split ProComponents packages, static `message`/`Modal`/`notification` calls, or legacy component-member APIs. `skipLibCheck: true` remains only because the exact ProComponents prerelease still publishes invalid external declaration references; web source remains strict and must pass `pnpm tsc`.
 
-The reviewed test and packaging majors are Jest / `jest-environment-jsdom` / `@jest/test-sequencer` `30.5.0`, `@testing-library/jest-dom` `7.0.1`, Electron `44.1.0`, and `npm-check-updates` `23.1.0`. Jest 30 proof must preserve the explicit test inventory and slow-first sequencer, Electron publication remains on the four supported 64-bit targets, and the package manifest's canonical GitHub repository metadata must remain available to electron-builder from both normal checkouts and Git worktrees.
+The reviewed test and packaging majors are Jest / `jest-environment-jsdom` / `@jest/test-sequencer` `30.5.2`, `@testing-library/jest-dom` `7.0.1`, Electron `44.1.0`, and `npm-check-updates` `23.1.0`. Jest 30 proof must preserve the explicit test inventory and slow-first sequencer, Electron publication remains on the four supported 64-bit targets, and the package manifest's canonical GitHub repository metadata must remain available to electron-builder from both normal checkouts and Git worktrees.
 
 `pnpm test` still discovers and executes the complete Jest inventory. The repository sequencer starts the three known process-heavy suites first, while preserving Jest's normal ordering within the remaining group. The pre-push receipt contract builds one reusable seed and gives every test its own copied repository and bare remote; never share mutable Git state between cases.
 

@@ -7,6 +7,8 @@ import {
   DEFAULT_BROWSER_APP_LOCALE,
   LOCALE_REGISTRY,
 } from '../src/services/general/localeRegistry';
+import { browserTargets, esbuildTargets } from './browserSupport';
+import { configureMfsuBabelTargets } from './plugins/babelTargets';
 import proxy from './proxy';
 import routes from './routes';
 import { applySupabaseFrontendEnv } from './supabaseEnv';
@@ -37,14 +39,10 @@ export default defineConfig({
     memo.resolve.set('extensionAlias', { '.js': ['.js', '.ts'] });
   },
 
-  /**
-   * @name 兼容性设置
-   * @description 设置 ie11 不一定完美兼容，需要检查自己使用的所有依赖
-   * @doc https://umijs.org/docs/api/config#targets
-   */
-  // targets: {
-  //   ie: 11,
-  // },
+  targets: browserTargets,
+  jsMinifierOptions: { target: esbuildTargets },
+  cssMinifierOptions: { target: esbuildTargets },
+
   /**
    * @name 路由的配置，不在路由中引入的文件不会编译
    * @description 只支持 path，component，routes，redirect，wrappers，title 的配置
@@ -143,7 +141,12 @@ export default defineConfig({
   //   ? [{ src: './scripts/loading.js', async: true }]
   //   : [{ src: '/scripts/loading.js', async: true }],
   // Register the two Pro utilities directly and avoid legacy aggregate dependencies.
-  plugins: ['@umijs/max-plugin-openapi', '@umijs/request-record', './config/brandAssets'],
+  plugins: [
+    '@umijs/max-plugin-openapi',
+    '@umijs/request-record',
+    './config/brandAssets',
+    './config/plugins/babelTargets',
+  ],
   /**
    * @name openAPI 插件的配置
    * @description 基于 openapi 的规范生成serve 和mock，能减少很多样板代码
@@ -165,6 +168,7 @@ export default defineConfig({
   // ],
   mfsu: {
     strategy: 'normal',
+    chainWebpack: configureMfsuBabelTargets,
   },
   favicons: [favicon],
   links: [{ rel: 'manifest', href: '/manifest.json' }],

@@ -27,8 +27,8 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: d31a71161ea3de5be6e8a3ce4b16c93d9f64f955
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Reviewed current-dataset SDK path anchoring; service and review-command boundaries remain unchanged.'
 related:
   - ../AGENTS.md
@@ -38,7 +38,7 @@ related:
 
 ## Repo Shape
 
-This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProComponents 3 generation, with service-first data access, an Electron `44.1.0` packaging surface, cache-backed static resources, and strict validation gates.
+This repo is a Umi `4.7.33` React 19 SPA on one native Ant Design `6.6.6` / ProComponents 3 generation, with service-first data access, an Electron `44.1.0` packaging surface, cache-backed static resources, and strict validation gates.
 
 ## Stable Path Map
 
@@ -46,6 +46,7 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | --- | --- |
 | `config/routes.ts` | route tree and route-family entrypoints |
 | `config/config.ts` | Umi runtime config |
+| `config/browserSupport.ts`, `config/plugins/babelTargets.ts` | frozen browser policy, shared Electron-compatible targets and nested Babel target forwarding |
 | `config/defaultSettings.ts`, `config/branding.ts`, `config/proxy.ts`, `config/oneapi.json` | app-shell defaults, branding, dev proxy, and support config |
 | `config/supabaseEnv.ts` | frontend env selection; standard Dev replaces Umi-preloaded values that exactly match main-file defaults with `.env.development*`, distinct explicit build values retain priority, and qualification selects a fixed non-production profile |
 | `src/app.tsx` | runtime layout, auth redirect, cache monitors, and Umi-global antd 6 ConfigProvider/App theme synchronization |
@@ -74,6 +75,12 @@ This repo is a Umi `4.7.24` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `icons/**` | packaged app icons and release assets |
 | other `docker/**` paths | self-hosted sync helpers and exact-revision, delete-aware mirrors; Edge function mirror provenance lives in `docker/volumes/functions/.source-revision.json` |
 | `electron/**` | desktop packaging surface |
+
+## Browser support and compilation
+
+The [browser support contract](browser-support-contract.md) owns the rolling policy and qualification boundary; `config/browserSupport.ts` freezes its concrete browser/ESR/Apple inventory and derives conservative shared targets, including the existing Electron renderer's Chromium. Both brands use that same map. `config/plugins/babelTargets.ts` forwards Umi's effective targets into the existing nested preset-env through the supported `modifyBabelPresetOpts` hook in development and production; incompatible overrides fail explicitly. The separate MFSU dependency prebundle uses the supported `mfsu.chainWebpack` callback to forward the same targets into its existing Umi preset tuples. The six generated Study protocol modules use the ordinary compiler path without a filename-specific function-name exclusion.
+
+Umi's polyfill and CSS consumers receive the same reviewed engine intent. Explicit JS/CSS esbuild target lists include iOS and retain the prior conservative ES2015 minifier baseline. Browser-data package pins and installed-toolchain tests prevent stale CSS data from silently dropping an engine. Cache settings and publishing are unchanged. Protocol inputs remain immutable; actual minimum-browser proof and the separately packaged report renderer are distinct from configuration/source tests.
 
 ## Brand presentation boundary
 
@@ -126,7 +133,7 @@ Rules:
 - a new locale may land reviewed leaf modules before activation, but it must not gain a top-level `src/locales/<locale>.ts` entry until manifest parity and the locale-specific review gate are complete
 - language behavior is split across typed owners: `localeRegistry.ts` owns UI locale/adapters, `contentLanguageRegistry.ts` owns TIDAS/ILCD reading and authoring plus service-query resolution, `referenceResources/manifest.ts` owns classification/location availability and provenance, and `localeCapabilities.ts` is the derived joined view. The current canonical UI keys are `zh-CN`, `en-US`, `de-DE`, and `fr-FR`; business consumers and parameterized capability tests discover them from the registries. A fixed locale array may appear only in an explicitly labeled fail-closed product-contract test whose purpose is to force deliberate review when that snapshot changes
 - neutral browser entry resolves the current document's manual choice, then `localStorage.tiangong_manual_locale`, an existing valid legacy `umi_locale`, ordered `navigator.languages` and `navigator.language`, then English. Region aliases normalize through the locale registry. Only menu selection creates a new persisted preference; automatic detection never writes either key. Legacy values have unknown provenance and remain a separate compatibility input without becoming manual preferences. Storage denial keeps a manual choice in memory for the current document; reopening without usable storage follows browser preferences again
-- `src/services/general/browserLocaleBridge.ts` is the sole adapter to Umi's private generated `setIntl` and locale-provider event. Umi `4.7.24`'s public `setLocale` reads the storage getter even with persistence disabled; the bridge retains the native provider, flag menu and same-document refresh while avoiding that failure. Its installed-template contract and semantic browser scenarios must pass on any Umi upgrade. `src/services/general/browserStorage.ts` protects the host/Login theme preference accesses so denied storage cannot prevent language entry or switching
+- `src/services/general/browserLocaleBridge.ts` is the sole adapter to Umi's private generated `setIntl` and locale-provider event. Umi `4.7.33`'s public `setLocale` reads the storage getter even with persistence disabled; the bridge retains the native provider, flag menu and same-document refresh while avoiding that failure. Its installed-template contract and semantic browser scenarios must pass on any Umi upgrade. `src/services/general/browserStorage.ts` protects the host/Login theme preference accesses so denied storage cannot prevent language entry or switching
 - app locale, content language, service-query language, and reference-resource language are separate boundaries. Content reading priorities, backend-query fallbacks, and reference-resource delivery states are declared independently; a native reference overlay exists only after its exact structure/evidence gate passes. Documentation, legal, and public-doc surfaces keep their separately disclosed fallbacks
 - Process and Flow AI校验 keeps the existing `AISuggestion` diff/field-acceptance UI, while `src/services/general/aiSuggestion.ts` owns the asynchronous transport. It submits the current TIDAS JSON to authenticated Edge `ai_suggest`, polls the returned requester-scoped job with a bounded progressive interval, accepts only `ai.tidas_suggestion.result.v1` `complete`/`partial` results, and fails closed on malformed, failed, cancelled, blocked, aborted, or timed-out jobs. Next never reads `worker_jobs` directly and does not receive queue payloads, leases, diagnostics, or model credentials.
 - anonymous SPA entry is limited to login/recovery plus `/oauth/consent`. The consent page is not anonymous product access: it accepts exactly one bounded RFC3986-unreserved opaque `authorization_id` without normalization, rejects delimiter/control/duplicate/oversized and dot-only path-segment input, verifies the current session through `getClaims()`, and preserves only a same-origin relative consent path across login before retrieving or deciding authorization. Root/Welcome, every other configured application route, case variants, and unmatched paths require the ordinary session guard. Authenticated unmatched paths may render the localized 404. Role gates defer missing-session decisions to that global redirect, then enforce their role only after a user exists. Localization route/view coverage records this access context but never broadens it
@@ -136,7 +143,7 @@ Rules:
 - Process keyword searches use the indexed `search_processes` RPC and pass explicit escaped query terms without app-side field filtering. The `public_plus_owner_draft` calculation picker enables the database-owned actor-draft mode for its personal branch, requiring owner `state_code=0` rows regardless of team/review workflow metadata, then merges that result with public state-100 rows. Database migrations own the `search_text` lexical source and its PGroonga index
 - Process list rows carry nullable `model_version` alongside `model_id`. LifecycleModel actions resolve the exact owner version as `model_version ?? process.version`; null remains the legacy same-version fallback, while an explicit version must never be replaced with the latest LifecycleModel revision. LifecycleModel result submodels are queried with each submodel reference's own Process version rather than the parent Model version
 - LifecycleModel view and edit surfaces hydrate lightweight `json_tg.xflow` nodes from each referenced Process's exact ID and version through the shared compatibility normalizer. The editor calculates and validates against that hydrated graph, but save planning reconciles untouched compatibility and editor-only fields back to the stored graph representation; explicit graph edits remain persistent
-- LifecycleModel product-demand calculation expands allocated source inventories into unit-product Process providers. The original editor graph remains in `json_tg.xflow`; standard instances reference the product providers with whole-inventory scalars. Primary/secondary results remain separate aggregated Processes, and provider records participate in the existing atomic bundle lifecycle.
+- LifecycleModel product-demand calculation expands allocated source inventories into unit-product Process providers. The original editor graph remains in `json_tg.xflow`; standard instances reference the product providers with whole-inventory scalars. New Model revisions expose one primary aggregated Process. Existing unmarked revisions keep their original product results on update. The same atomic bundle persists allocated providers used by standard instances.
 
 - computed message IDs must belong to an exact enumerated family that either proves a closed-world producer or implements a localized runtime fallback before an unknown value is formatted; opaque backend diagnostics are not locale keys
 - static bundles are read through consuming services, not directly by pages
@@ -248,7 +255,7 @@ Review Management consumes the central v4 review projection with keyword search 
 
 Batch selection is one Root/Reference selection model. A top-level Reference can be selected directly. Selecting an expandable Process or Lifecycle Model Root loads and auto-selects its current-tab References, deduplicates a Reference shared by multiple Roots, preserves independently selected References, and disables submission while child loading is incomplete or failed. Selecting another Root type does not issue a child query. Removing a Root removes only the References that are no longer selected manually or through another Root. Simple Root and Reference reviews expose only approve/reject actions; Review Member approval has no opinion field and rejection requires a reason. Reviewer outcomes are advice, so the UI must not infer the Admin result from their votes.
 
-Each readable Root or Reference row offers a view icon backed by the existing read-only Contact, Source, Unit Group, Flow Property, Flow, Process, or Lifecycle Model drawer. Rejection reasons remain in owner notifications and do not change dataset detail pages. Existing Contact `Sync to Open Data` behavior remains a separate entrypoint.
+Each readable Root or Reference row offers a view icon backed by the existing read-only Contact, Source, Unit Group, Flow Property, Flow, Process, or Lifecycle Model drawer. Owner notifications display the final rejection reason. The unpublished Process detail reads returned validation and compliance feedback through the shared `returned` opinion scope. Existing Contact `Sync to Open Data` behavior remains a separate entrypoint.
 
 ### Published numerical results on original Process details
 

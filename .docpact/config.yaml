@@ -1,7 +1,7 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-11-12"
-lastReviewedCommit: "d31a71161ea3de5be6e8a3ce4b16c93d9f64f955"
+lastReviewedAt: "2026-11-20"
+lastReviewedCommit: "5e03a441b03a043e077a051842d43b29f066d102"
 lastReviewedNote: 'Reviewed the current-dataset modellingAndValidation filter scope and regressions; ownership rules remain unchanged.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
@@ -104,6 +104,7 @@ coverage:
     - .docpact/**
     - docs/agents/repo-validation.md
     - docs/agents/repo-architecture.md
+    - docs/agents/browser-support-contract.md
     - docs/agents/i18n-language-delivery-goal.md
     - docs/agents/supabase-branching.md
     - docs/agents/test_todo_list.md
@@ -669,6 +670,36 @@ rules:
       - path: docs/agents/i18n-language-delivery-goal.md
         mode: review_or_update
     reason: Shared locale, content-language, reference-resource, cache, runtime, and semantic E2E changes must keep the reusable Goal aligned with shipped behavior, all-active-locale capabilities, credential-free GitHub jobs, and the local-only production-data safety contract.
+  - id: next-browser-support-contract
+    scope: repo
+    repo: next
+    triggers:
+      - path: config/browserSupport.ts
+        kind: browser-policy
+      - path: config/plugins/babelTargets.ts
+        kind: compiler-policy
+      - path: config/config.ts
+        kind: compiler-policy
+      - path: package.json
+        kind: compiler-dependency
+      - path: pnpm-lock.yaml
+        kind: compiler-dependency
+      - path: pnpm-workspace.yaml
+        kind: compiler-dependency
+      - path: tests/unit/config/protocolBabel.test.ts
+        kind: compiler-proof
+      - path: docs/agents/browser-support-contract.md
+        kind: domain-doc
+    requiredDocs:
+      - path: .docpact/config.yaml
+        mode: review_or_update
+      - path: docs/agents/browser-support-contract.md
+        mode: review_or_update
+      - path: docs/agents/repo-architecture.md
+        mode: review_or_update
+      - path: docs/agents/repo-validation.md
+        mode: review_or_update
+    reason: Browser and compiler changes must preserve explicit support, real target propagation, shared renderer compatibility and source-bound qualification.
   - id: next-frontend-runtime-contract
     scope: repo
     repo: next
@@ -677,6 +708,13 @@ rules:
         kind: route-tree
       - path: config/config.ts
         kind: app-config
+      # Retain the retired path to govern its deletion in the adoption diff.
+      - path: config/protocolBabel.ts
+        kind: retired-compiler-config
+      - path: config/browserSupport.ts
+        kind: browser-policy
+      - path: config/plugins/babelTargets.ts
+        kind: compiler-policy
       - path: config/defaultSettings.ts
         kind: app-config
       - path: config/oneapi.json

@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-08
-lastReviewedCommit: 12b3a1df058a6751bffc3fbbb32f88ec03d7f173
-lastReviewedNote: 'Platform #1458: reviewed canonical reference quantity hydration and calculation-error recovery; existing ownership, solver and delivery rules retained.'
+lastReviewedAt: 2026-11-18
+lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
+lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md
@@ -193,11 +193,11 @@ h = C g
 
 例如，某基本流排放为 20 kg，某影响类别的表征因子为每 kg 排放 3 单位影响，则该交换贡献 60 单位影响。评价结果同时记录方法版本、单位和因子覆盖情况，供结果解释使用。
 
-## 8. 主结果与产品结果
+## 8. 主产品结果与其他产品结果
 
-主结果对应 Model 选定的功能单位。其他产品的结果以该产品在来源清单中的参考数量为目标，每份结果使用自己的需求向量求解。
+新建 Model 或从已有 Model 创建新版本时，平台按 `json_tg.resultPolicy = single-primary-v1` 保存。每个版本仅生成一份与所选功能单位对应的主结果。更换主产品或把参考交换从供应改为处置时，需创建新的 Model 版本。内部流已经抵消，仍有外部产品或废物交换的清单标记为部分终止系统。多产品分配和标准计算图所需的 `allocated` 单位过程继续保留在模型依赖中。
 
-多份结果可以引用同一上游过程。每份结果中的上游贡献，由该结果自身的产品需求决定。比较或汇总结果时，使用与研究目标一致的功能单位和系统边界。
+历史版本沿用原有主、次结果及其独立需求计算，编辑历史版本不会自动转换或删除已被下游引用的副产品。创建新版本才启用单结果策略。结果视图在存在其他产品结果时展示相应区域。
 
 结果 Process 记录该功能单位下汇总的投入与产出。分配后的单位过程记录一个产品活动的清单，结果 Process 记录一段供应链计算后的清单，两者分别承担供应建模和结果表达的职责。
 
@@ -227,7 +227,7 @@ Model 的数据有三种相互关联的表达：
 
 计算诊断显示涉及的过程与产品，并提供节点定位和对应的处理说明。计算失败时保持已保存的模型与结果；成功计算并保存后，结果才反映新的过程版本、需求和分配依据。
 
-保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主/副结果角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
+保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主产品/其他产品角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
 
 ## 10. 计算流程
 

@@ -3,7 +3,7 @@
   "locale": "en-US",
   "source": {
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "sourceManifestDigest": "f9f556c1803b9e78ba321dde2ed2332dad743fd14510283577581735917e4282"
+    "sourceManifestDigest": "930ed3e643f327b4b914c6686c291562cc00a96b6ecfbf422f54b16390242c8f"
   },
   "registry": {
     "canonicalLocale": "en-US",
@@ -67,16 +67,16 @@
         }
       ]
     },
-    "contentLanguageRegistryDigest": "c5e1ef5afbad36dfce86d327801390e0347707c1ad8126c45064e913fbf406a4",
+    "contentLanguageRegistryDigest": "d1b28fa140d74269a76d18786f41d0f2e5bbfb1e02a28555a45f1ecd359e4ebd",
     "capabilityMatrixDigest": "d8903f58f8b5582bb4a491a8724b9ba5b8adf93f5f48dcfc7c908bb4eaa5dcd7",
     "referenceResourceManifestDigest": "31fa7e3569f6434b60d2422953102180d19f010a5bbb2e16fa5037724bdd1fdb",
     "referenceResourceResolverDigest": "15ed3893a7f03969b1a83cc2c81921a994be891d16943da8a6784a84e09f08e1",
     "hardcodingAllowlistDigest": "2452b6d6812264a16b6685e23d902a6de3bd100a0f2aa38fce7e59360174fde2"
   },
   "evidence": {
-    "contextDigest": "1161976ceb18e1a8929c30c85e043744817adeef6dd67f339676d296edbc8527",
-    "qualityDigest": "2f47f6c41f7715cc74c49087fca2acfa4813da52380ce62164b482f4a378f6d4",
-    "correctionLedgerDigest": "0116c494387613a132f6cea85d8841edca9d5aba28d66ae61a40743370b040ba",
+    "contextDigest": "c273fe1f464d9be1242b0643818267cb8fbc278ea97008214830225c3d303d76",
+    "qualityDigest": "9a0fb8286951f8f4ad942d418d4c041be6e935ada60e89f5ab2698da6a0fb7c8",
+    "correctionLedgerDigest": "9d5c420c303c75ea8ea3e62f4a362346e1c06c49eba2412a81a23f5623f855f1",
     "routeViewCoverageDigest": "cc76420ee3c5f54a229cc213be69728d57b29bb84bffe68d3e5f42c8db649d94",
     "fallbackContractDigest": "94c88648a2bc4fa2b3e3dd2b1db476db5a182e8a5dd9dce2140f6faf2cceabe5",
     "localeFallbackRowCount": 10
@@ -121,5 +121,5 @@
       "ownerIssue": "#867"
     }
   ],
-  "activationDigest": "2f176818f604a0afa9abc1840df9a52a5c5534b3237844e80d700b60d62c8b8c"
+  "activationDigest": "837cba23be6d2f9eb569b0947a3b2d3b7098b94d93a3234506cb7ea807c4c821"
 }

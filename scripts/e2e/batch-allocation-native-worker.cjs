@@ -276,7 +276,7 @@ async function work() {
       timeout: Math.min(30000, runInput.workDeadline - now()),
     });
     if (name === 'chromium')
-      check(browser.version() === '151.0.7922.34', 'runtime_browser_version');
+      check(browser.version() === '158.0.8127.18', 'runtime_browser_version');
     for (const control of CONTROLS) {
       observerOwner = undefined;
       await checkpoint('begin', { browser: name, control });

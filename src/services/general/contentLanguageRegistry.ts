@@ -59,7 +59,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
       graphTextWidthDivisor: 7,
     },
     generatedContent: {
-      subproductPrefix: 'Subproduct: ',
+      subproductPrefix: 'Product: ',
     },
     serviceQuery: {
       status: 'native',
@@ -83,7 +83,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
       graphTextWidthDivisor: 12,
     },
     generatedContent: {
-      subproductPrefix: '子产品: ',
+      subproductPrefix: '产品: ',
     },
     serviceQuery: {
       status: 'native',
@@ -107,7 +107,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
       graphTextWidthDivisor: 7,
     },
     generatedContent: {
-      subproductPrefix: 'Nebenprodukt: ',
+      subproductPrefix: 'Produkt: ',
     },
     serviceQuery: {
       status: 'declared-fallback',
@@ -131,7 +131,7 @@ export const CONTENT_LANGUAGE_REGISTRY = [
       graphTextWidthDivisor: 7,
     },
     generatedContent: {
-      subproductPrefix: 'Sous-produit : ',
+      subproductPrefix: 'Produit : ',
     },
     serviceQuery: {
       status: 'declared-fallback',

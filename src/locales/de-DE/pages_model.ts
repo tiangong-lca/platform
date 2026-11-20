@@ -1,6 +1,6 @@
 export default {
   'pages.lifecyclemodel.review.saveFirst': 'Speichern Sie Ihre Änderungen, bevor Sie sie zur Prüfung einreichen.',
-  'pages.lifeCycleModel.modelResults.subProduct': 'Nebenprodukt',
+  'pages.lifeCycleModel.modelResults.subProduct': 'Weitere Produkte',
   'pages.lifeCycleModel.modelResults.mainProduct': 'Hauptprodukt',
 
   'pages.lifeCycleModel.drawer.title.create': 'Lebenszyklusmodell erstellen',
@@ -291,6 +291,7 @@ export default {
   'pages.lifecyclemodel.validator.licenseType.required': 'Geben Sie den Lizenztyp ein.',
   'pages.lifecyclemodel.validator.nodes.required': 'Fügen Sie einen Knoten hinzu.',
   'pages.lifecyclemodel.validator.nodes.quantitativeReference.required': 'Wählen Sie einen Knoten als Referenz aus.',
+  'pages.lifecyclemodel.error.primaryProductChanged': 'Erstellen Sie eine neue Modellversion, um das Hauptprodukt zu ändern.',
   'pages.lifecyclemodel.error.missingReferenceProcess': 'Im Lebenszyklusmodell fehlen Informationen zum Referenzprozess. Vervollständigen oder verknüpfen Sie den Referenzprozess erneut und versuchen Sie es dann noch einmal.',
   'pages.lifecyclemodel.review.submitSuccess': 'Das Lebenszyklusmodell wurde erfolgreich zur Prüfung eingereicht.',
   'pages.lifecyclemodel.review.submitError': 'Das Einreichen zur Prüfung ist fehlgeschlagen.',

@@ -1,6 +1,6 @@
 export default {
   'pages.lifecyclemodel.review.saveFirst': 'Enregistrez vos modifications avant de les soumettre à la révision.',
-  'pages.lifeCycleModel.modelResults.subProduct': 'Sous-produit',
+  'pages.lifeCycleModel.modelResults.subProduct': 'Autres produits',
   'pages.lifeCycleModel.modelResults.mainProduct': 'Produit principal',
 
   'pages.lifeCycleModel.drawer.title.create': 'Créer un modèle',
@@ -291,6 +291,7 @@ export default {
   'pages.lifecyclemodel.validator.licenseType.required': 'Veuillez saisir le type de licence',
   'pages.lifecyclemodel.validator.nodes.required': 'Veuillez ajouter un nœud',
   'pages.lifecyclemodel.validator.nodes.quantitativeReference.required': 'Veuillez sélectionner un nœud comme référence',
+  'pages.lifecyclemodel.error.primaryProductChanged': 'Créez une nouvelle version du modèle pour changer de produit principal.',
   'pages.lifecyclemodel.error.missingReferenceProcess': 'Il manque au modèle les informations sur le processus de référence. Complétez ou réassociez le processus de référence, puis réessayez.',
   'pages.lifecyclemodel.review.submitSuccess': 'Revue envoyée avec succès',
   'pages.lifecyclemodel.review.submitError': "Échec de l'envoi de la revue",

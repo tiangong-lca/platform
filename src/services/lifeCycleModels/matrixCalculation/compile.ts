@@ -1,27 +1,8 @@
 /**
- * Model compilation for the matrix calculation.
- *
- * zh-CN: 把画布模型编译为线性系统。职责：
- *  - 识别每个实例的分配形态（单一产出 / 旧式统一输出负荷份额 / 标准
- *    exchange-target allocation），并为每个活动视图解析归属系数；
- *  - 建立活动视图（矩阵变量）：参考视图、每条已连接输出的产品视图、以及
- *    死端实例的参考视图；
- *  - 按行分配规则组装 M = I - A 与需求向量 y：
- *      · 参考视图 → 锚定行（y = 目标量）；
- *      · 实例主视图 → 生产行（产出 = 需求驱动消费之和）；
- *      · 实例非主视图 → 联动行（同一物理过程的联产比例）；
- *      · 死端视图 → 直通行（按供应余量驱动）；
- *  - 未进入系统的平衡关系由求解后的残差检查覆盖。
- *
- * en-US: Compile the canvas model into a linear system. Responsibilities:
- *  - detect each instance's allocation shape (single output / legacy uniform
- *    output load share / standard exchange-target allocation) and resolve
- *    attribution fractions per active view;
- *  - build activity views (matrix variables): the reference view, one product
- *    view per connected output, and dead-end instance reference views;
- *  - assemble M = I - A and the demand vector y with the row assignment rules
- *    listed above; balances left out of the system are covered by post-solve
- *    residual checks.
+ * Compile product/service activities and their attributed supply requirements.
+ * Every process reference, connected output and declared allocation target has
+ * a view. Only the model's primary reference receives final demand here; other
+ * product results are solved independently during assembly.
  */
 
 import { ALLOCATION_PERCENT_TOLERANCE } from '@/services/processes/allocation';
@@ -562,19 +543,7 @@ export const compileModel = (payload: {
       });
       supplierViewIdByEdgeId.set(connection.edgeId, createdView.id);
     }
-    // Undeclared exchanges belong to the reference product, including when only
-    // another output is connected. Keep that boundary result so its load is not
-    // lost. Terminal reference views are added below.
-    if (
-      instance.allocationShape !== 'legacy' &&
-      instance.outgoing.length > 0 &&
-      instance.refExchangeId &&
-      instance.exchangeById.get(instance.refExchangeId)?.payload.direction === 'OUTPUT'
-    ) {
-      addView(instance, instance.refExchangeId, { isReference: false, isDeadEnd: false });
-    }
-    // 未连接但已声明为分配目标的输出是边界联产品：保留独立视图与副产品结果，
-    // 不要求人造下游节点（发现 3）。
+    // Declared coproducts remain independently calculable with or without a consumer.
     for (const exchangeId of instance.allocationTargetIds) {
       if (viewById.has(viewId(instance.instanceIndex, exchangeId))) continue;
       addView(instance, exchangeId, {
@@ -584,15 +553,19 @@ export const compileModel = (payload: {
     }
   }
 
-  // Terminal references provide independent result scenarios.
+  // Every source reference is a result target, including intermediate products,
+  // standalone processes and input-reference treatment services.
   for (const instance of instances) {
     if (instance.instanceIndex === payload.refInstanceIndex) continue;
     const hasIncoming = allConnections.some(
       (connection) => connection.downstreamIndex === instance.instanceIndex,
     );
     const hasOutgoing = instance.outgoing.length > 0;
-    if (hasIncoming && !hasOutgoing && instance.refExchangeId) {
-      addView(instance, instance.refExchangeId, { isReference: false, isDeadEnd: true });
+    if (instance.refExchangeId) {
+      addView(instance, instance.refExchangeId, {
+        isReference: false,
+        isDeadEnd: hasIncoming && !hasOutgoing,
+      });
     }
   }
 

@@ -50,7 +50,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up pinned pnpm and Node.js
-        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+        uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
           version: 11.24.0
           runtime: node@24.19.0
@@ -110,7 +110,7 @@ jobs:
         run: >-
           node scripts/qualification/action-compatibility-probe.cjs --stage setup-node --expected-head "$EXPECTED_HEAD" --output "$RUNNER_TEMP/platform-actions-compatibility/setup-node.json"
       - name: Exercise pinned pnpm and runtime without installing the product
-        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+        uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
           version: 11.24.0
           runtime: node@24.19.0
@@ -181,7 +181,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Set up pinned pnpm and Node.js
-        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+        uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
           version: 11.24.0
           runtime: node@24.19.0

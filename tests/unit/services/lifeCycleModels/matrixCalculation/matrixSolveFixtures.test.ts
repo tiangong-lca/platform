@@ -376,7 +376,9 @@ describe('matrix calculation golden fixtures', () => {
     expectCloseTo(byFlow.get('OUTPUT:flow-P')!.amount, 2, 9);
     expect(byFlow.get('OUTPUT:flow-P')!.quantitativeReference).toBe(true);
 
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-E',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -460,7 +462,9 @@ describe('matrix calculation golden fixtures', () => {
       primary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
     expectCloseTo(byFlow.get('INPUT:flow-L')!.amount, -6, 9);
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-E',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -472,7 +476,9 @@ describe('matrix calculation golden fixtures', () => {
       targetAmount: 2,
       instances: [standardInstance([['exP', 1]]), downstream],
     });
-    const sparseSecondary = sparseResult.groups.find((group) => group.type === 'secondary')!;
+    const sparseSecondary = sparseResult.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-E',
+    )!;
     expect(sparseSecondary.exchanges.find((entry) => entry.flowId === 'flow-L')).toBeUndefined();
 
     // 不闭合：60+30 ≠ 100 → INVALID_ALLOCATION
@@ -584,7 +590,9 @@ describe('matrix calculation golden fixtures', () => {
     expectCloseTo(byFlow.get('INPUT:flow-raw')!.amount, -5.6, 9);
     expect(byFlow.has('OUTPUT:flow-C-final')).toBe(false);
 
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-C-final',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -789,7 +797,9 @@ describe('matrix calculation golden fixtures', () => {
     expectCloseTo(byFlow.get('INPUT:flow-raw')!.amount, -9.9e-8, 15);
     // 已分配的未连接输出 u0 有独立情景，不再混入主结果
     expect(byFlow.has('OUTPUT:flow-U')).toBe(false);
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-U',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -930,7 +940,9 @@ describe('matrix calculation golden fixtures', () => {
     expect(primaryByFlow.has('OUTPUT:flow-L')).toBe(false);
     expect(primaryByFlow.has('OUTPUT:flow-Q')).toBe(false);
 
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-E',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -985,7 +997,9 @@ describe('matrix calculation golden fixtures', () => {
     // 主结果不携带另一产品的数量
     expect(primaryByFlow.has('OUTPUT:flow-Q')).toBe(false);
 
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-Q',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -1165,7 +1179,9 @@ describe('matrix calculation golden fixtures', () => {
     expect(byFlow.has('OUTPUT:flow-P')).toBe(false);
 
     // 边界 P 的独立副结果
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'flow-P',
+    )!;
     const secondaryByFlow = new Map(
       secondary.exchanges.map((entry) => [`${entry.direction}:${entry.flowId}`, entry]),
     );
@@ -1456,7 +1472,9 @@ describe('per-exchange product allocation requirements', () => {
     const before = JSON.stringify(instance);
     const result = okResult({ refInstanceIndex: 'p', targetAmount: 2, instances: [instance] });
     const primary = result.groups.find((group) => group.type === 'primary')!;
-    const secondary = result.groups.find((group) => group.type === 'secondary')!;
+    const secondary = result.groups.find(
+      (group) => group.type === 'secondary' && group.pivotFlowId === 'B',
+    )!;
     const amount = (group: typeof primary, flow: string) =>
       group.exchanges.find((entry) => entry.flowId === flow)?.amount;
     expect(amount(primary, 'electricity')).toBeCloseTo(-70);
