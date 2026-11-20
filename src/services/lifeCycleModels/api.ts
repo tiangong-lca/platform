@@ -39,6 +39,7 @@ import {
 } from '../general/util';
 import { addOpenDataCatalogScope, queryMappedOpenDataCatalog } from '../openDataCatalog/api';
 import { genProcessName } from '../processes/util';
+import { SINGLE_PRIMARY_RESULT_POLICY } from './data';
 import type {
   LifeCycleModelGraphData,
   LifeCycleModelDetailResponse,
@@ -243,6 +244,7 @@ async function runLifeCycleModelCalculation(input: {
   nodes: any[];
   lifeCycleModelJsonOrdered: any;
   oldSubmodels: any[];
+  resultPolicy?: LifeCycleModelJsonTg['resultPolicy'];
   operation?: CalculationOperation;
 }): Promise<LifeCycleModelCalculationOutcome> {
   try {
@@ -252,7 +254,9 @@ async function runLifeCycleModelCalculation(input: {
         input.nodes,
         input.lifeCycleModelJsonOrdered,
         input.oldSubmodels,
-        ...(input.operation ? [{ operation: input.operation }] : []),
+        ...(input.resultPolicy || input.operation
+          ? [{ ...(input.resultPolicy && { primaryOnly: true }), operation: input.operation }]
+          : []),
       );
     return { ok: true, lifeCycleModelProcesses, up2DownEdges, lciaIncomplete: !!lciaIncomplete };
   } catch (error) {
@@ -705,6 +709,7 @@ export async function createLifeCycleModel(
     nodes: data?.model?.nodes ?? [],
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
     oldSubmodels: [],
+    resultPolicy: SINGLE_PRIMARY_RESULT_POLICY,
     operation: options?.operation,
   });
   if (!calculation.ok) {
@@ -723,6 +728,7 @@ export async function createLifeCycleModel(
   const planResult = await buildSaveLifeCycleModelPersistencePlan({
     langIntent: options?.intent,
     mode: 'create',
+    resultPolicy: SINGLE_PRIMARY_RESULT_POLICY,
     modelId: data.id,
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
     nodes: persistenceGraph?.nodes ?? [],
@@ -806,7 +812,7 @@ export async function updateLifeCycleModel(
     rawLifeCycleModelJsonOrdered,
   );
   const currentModelResult = await publicEntity('lifecyclemodels')
-    .select('id,json,json_tg->submodels')
+    .select('id,json,json_tg->submodels,json_tg->>resultPolicy')
     .eq('id', data.id)
     .eq('version', data.version);
 
@@ -830,6 +836,10 @@ export async function updateLifeCycleModel(
     );
   }
 
+  const resultPolicy =
+    currentModelResult.data[0].resultPolicy === SINGLE_PRIMARY_RESULT_POLICY
+      ? SINGLE_PRIMARY_RESULT_POLICY
+      : undefined;
   const oldSubmodels = jsonToList(currentModelResult.data[0].submodels);
   const currentResultRefs = jsonToList(
     currentModelResult.data[0].json?.lifeCycleModelDataSet?.lifeCycleModelInformation
@@ -881,6 +891,7 @@ export async function updateLifeCycleModel(
     nodes: data?.model?.nodes ?? [],
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
     oldSubmodels,
+    resultPolicy,
     operation: options?.operation,
   });
   if (!calculation.ok) {
@@ -948,6 +959,7 @@ export async function updateLifeCycleModel(
   const planResult = await buildSaveLifeCycleModelPersistencePlan({
     langIntent: options?.intent,
     mode: 'update',
+    resultPolicy,
     modelId: data.id,
     version: data.version,
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,

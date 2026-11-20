@@ -293,6 +293,39 @@ beforeEach(() => {
 });
 
 describe('genLifeCycleModelProcesses (matrix calculation)', () => {
+  it('saves one open primary inventory while retaining allocated Process instances', async () => {
+    const rows = createSupabaseProcesses();
+    for (const row of rows) {
+      for (const exchange of row.exchange)
+        Object.assign(exchange.referenceToFlowDataSet, { '@version': '01.00.000' });
+    }
+    mockSelect.mockImplementation(() => ({
+      or: mockOr,
+      eq: () => ({
+        in: (_column: string, ids: string[]) =>
+          Promise.resolve({ data: ids.map((id) => ({ id, typeOfDataSet: 'Product flow' })) }),
+      }),
+    }));
+    mockOr.mockResolvedValue({ data: rows });
+    mockLCIAResultCalculation.mockResolvedValue([]);
+    const model = createLifeCycleModelData();
+    const { lifeCycleModelProcesses } = await genLifeCycleModelProcesses(
+      'model-123',
+      createIndexedModelNodes(),
+      model,
+      [],
+      { primaryOnly: true },
+    );
+    expect(lifeCycleModelProcesses.filter((p) => p.modelInfo.type !== 'allocated')).toEqual([
+      expect.objectContaining({
+        modelInfo: expect.objectContaining({ type: 'primary', id: 'model-123' }),
+        calculatedDataSetType: 'Partly terminated system',
+      }),
+    ]);
+    expect(lifeCycleModelProcesses.some((p) => p.modelInfo.type === 'allocated')).toBe(true);
+    expect(mockLCIAResultCalculation).toHaveBeenCalledTimes(1);
+  });
+
   it('reuses an intermediate result identity and version after its product gains a downstream connection', async () => {
     const databaseProcesses = createSupabaseProcesses();
     const oldSubmodels = [

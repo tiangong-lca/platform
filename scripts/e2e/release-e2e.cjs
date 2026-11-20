@@ -617,7 +617,7 @@ function loadEnvironmentContractFromWorkingTree(repositoryRoot = REPOSITORY_ROOT
   const contract = JSON.parse(raw);
   if (
     contract.schemaVersion !== 1 ||
-    contract.playwrightVersion !== '1.62.1' ||
+    contract.playwrightVersion !== '1.65.0' ||
     contract.nodeMajor !== 24 ||
     contract.nodeVersion !== '24.19.0' ||
     !/^node:24[.]19[.]0-bookworm-slim@sha256:[a-f0-9]{64}$/u.test(String(contract.nodeImage)) ||

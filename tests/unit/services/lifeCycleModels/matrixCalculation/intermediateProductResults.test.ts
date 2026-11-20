@@ -43,8 +43,13 @@ const instance = (
   connections,
   process: { id, version: '01.00.000', refExchangeInternalId: reference, exchanges },
 });
-const calculate = (instances: MatrixInstancePayload[], targetAmount = 10) => {
-  const payload: MatrixCalculationPayload = { refInstanceIndex: 'C', targetAmount, instances };
+const calculate = (instances: MatrixInstancePayload[], targetAmount = 10, primaryOnly = false) => {
+  const payload: MatrixCalculationPayload = {
+    refInstanceIndex: 'C',
+    targetAmount,
+    instances,
+    primaryOnly,
+  };
   const response = runMatrixCalculation({ type: 'calculate', runId: 'intermediate', payload });
   if (!response.ok) throw new Error(JSON.stringify(response.error));
   return response.result;
@@ -66,6 +71,12 @@ const chain = () => [
 ];
 
 describe('independent intermediate product results', () => {
+  it('retains the full allocated product system and primary inventory in single-result saves', () => {
+    const legacy = calculate(chain());
+    const current = calculate(chain(), 10, true);
+    expect(current).toEqual({ ...legacy, groups: [legacy.groups[0]] });
+  });
+
   it('generates every chain product without changing primary demand, multipliers or edge quantities', () => {
     const result = calculate(chain());
     expect(result.groups.map((g) => `${g.type}:${g.pivotFlowId}`).sort()).toEqual([

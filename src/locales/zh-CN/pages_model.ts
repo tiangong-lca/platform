@@ -287,6 +287,7 @@ export default {
   'pages.lifecyclemodel.validator.licenseType.required': '请输入许可类型',
   'pages.lifecyclemodel.validator.nodes.required': '请添加节点',
   'pages.lifecyclemodel.validator.nodes.quantitativeReference.required': '请选择一个节点作为参考',
+  'pages.lifecyclemodel.error.primaryProductChanged': '如需更换主产品，请创建新的模型版本。',
   'pages.lifecyclemodel.error.missingReferenceProcess': '模型缺少引用过程信息，请补全或重新绑定引用过程后重试。',
 
   'pages.lifecyclemodel.review.submitSuccess': '提交审核成功',

@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 1099e60b1590b3e471d5e0f9cc6733755f6b15f6
-lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 71469010010347aa68ab0cfaeafd60f3ff7392b6
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 ---
 
 # Testing Strategy
@@ -60,7 +60,7 @@ lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shar
 - current strategy is maintenance, not expansion for its own sake
 - full closure already exists; the job is to preserve it while the codebase changes
 - dependency installation is a governed proof input: the repository pins Node `24.19.0`, pnpm `11.24.0`, and TypeScript `7.0.2`, requires a frozen lock, keeps isolated linking with only the reviewed Umi/Babel public-hoist patterns, collapses Umi fallback metadata to one exact React 19 / antd 6 / ProComponents 3 generation through narrow overrides, decides every lifecycle build explicitly, and validates clean-install plus dependency-identity drift through focused contracts before the final gate
-- CI bootstrap provenance is part of the same proof: every owned `pnpm/setup` invocation uses the reviewed peeled executable v3.1.1 commit SHA rather than an annotated-tag object or movable major tag
+- CI bootstrap provenance is part of the same proof: every owned `pnpm/setup` invocation uses the reviewed peeled executable v3.1.2 commit SHA rather than an annotated-tag object or movable major tag
 - the released TIDAS SDK consumer is protected by a child Node contract outside Jest's module mapper; it resolves the real installed package at the exact version pinned by package.json and exercises all seven dataset factories plus the normalized `validateEnhanced` error envelope so mocked application suites cannot hide a package incompatibility
 - add integration-test expansion only when it reduces real product risk
 - validation-heavy surfaces such as process-editor SDK guidance, multilingual field checks, and review jump targets should prefer behavior-level tests over snapshot growth

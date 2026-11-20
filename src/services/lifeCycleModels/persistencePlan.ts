@@ -44,6 +44,7 @@ type CurrentProcessOrderedRow = {
 };
 
 type RawLifeCycleModelProcess = {
+  calculatedDataSetType?: 'Partly terminated system' | 'LCI result';
   option?: 'create' | 'update';
   modelInfo: {
     id: string;
@@ -69,6 +70,7 @@ type PlanBuildResult =
   | { ok: false; code: string; message: string; details?: unknown };
 
 type BuildSavePlanArgs = {
+  resultPolicy?: LifeCycleModelJsonTg['resultPolicy'];
   mode: 'create' | 'update';
   modelId: string;
   version?: string;
@@ -130,6 +132,21 @@ export async function buildSaveLifeCycleModelPersistencePlan(
         lifecycleModelVersion,
     },
   }));
+  if (args.resultPolicy && args.mode === 'update') {
+    const previous = args.oldSubmodels?.find((item) => item.type === 'primary')?.finalId as
+      RawLifeCycleModelProcess['modelInfo']['finalId'] | undefined;
+    const current = processes.find((item) => item.modelInfo.type === 'primary')?.modelInfo.finalId;
+    if (
+      previous?.allocatedExchangeFlowId !== current?.allocatedExchangeFlowId ||
+      previous?.allocatedExchangeDirection !== current?.allocatedExchangeDirection
+    ) {
+      return {
+        ok: false,
+        code: 'PRIMARY_PRODUCT_CHANGED',
+        message: 'Create a new Model version to change the primary product.',
+      };
+    }
+  }
   const parentJsonOrdered = genReferenceToResultingProcess(
     processes,
     lifecycleModelVersion ?? '',
@@ -158,6 +175,7 @@ export async function buildSaveLifeCycleModelPersistencePlan(
     parent: {
       jsonOrdered: parentJsonOrdered,
       jsonTg: {
+        ...(args.resultPolicy && { resultPolicy: args.resultPolicy }),
         xflow: {
           nodes: args.nodes,
           edges: decorateEdges(args.edges, args.up2DownEdges),
@@ -412,6 +430,13 @@ async function buildProcessMutation(args: {
     };
   }
 
+  if (args.process.calculatedDataSetType) {
+    processDataSet.modellingAndValidation ??= {};
+    processDataSet.modellingAndValidation.LCIMethodAndAllocation = {
+      ...processDataSet.modellingAndValidation.LCIMethodAndAllocation,
+      typeOfDataSet: args.process.calculatedDataSetType,
+    };
+  }
   const resultVersion = args.process.modelInfo.version;
   if (resultVersion) {
     processDataSet.administrativeInformation ??= {};

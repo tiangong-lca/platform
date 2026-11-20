@@ -88,17 +88,17 @@ function packageFixture() {
   ] as const)
     f.add(locations[key], 'file', { bytes: fs.readFileSync(path.join(actualCore, rel)) });
   for (const key of ['test', 'playwright'] as const)
-    f.add(locations[key], 'file', { bytes: Buffer.from('{"version":"1.62.1"}') });
+    f.add(locations[key], 'file', { bytes: Buffer.from('{"version":"1.65.0"}') });
   const entries: any = {},
     trees: any = {};
   for (const [name, dir, suffix] of [
     [
       'chromium',
-      'chromium_headless_shell-1234',
+      'chromium_headless_shell-1254',
       'chrome-headless-shell-mac-arm64/chrome-headless-shell',
     ],
-    ['firefox', 'firefox-1538', 'firefox/Nightly.app/Contents/MacOS/firefox'],
-    ['webkit', 'webkit-2336', 'pw_run.sh'],
+    ['firefox', 'firefox-1572', 'firefox/Nightly.app/Contents/MacOS/firefox'],
+    ['webkit', 'webkit-2388', 'pw_run.sh'],
   ]) {
     const executable = `${cache}/${dir}/${suffix}`,
       bytes = Buffer.from('inert executable bytes');
@@ -111,8 +111,8 @@ function packageFixture() {
       name: runtime.ENTRIES[name],
       browserName: name,
       directory: `${cache}/${dir}`,
-      revision: name === 'chromium' ? '1234' : 'other',
-      browserVersion: name === 'chromium' ? '151.0.7922.34' : undefined,
+      revision: name === 'chromium' ? '1254' : 'other',
+      browserVersion: name === 'chromium' ? '158.0.8127.18' : undefined,
       executablePath: () => executable,
     };
   }
@@ -233,21 +233,21 @@ describe('pinned default-headless resolver, without package execution', () => {
     expect(f.imports()).toBe(1);
     expect(binding.resolver.policy).toBe(runtime.POLICY);
     expect(binding.chromium.selector).toBe('chromium-headless-shell');
-    expect(binding.chromium.executable).toContain('/chromium_headless_shell-1234/');
+    expect(binding.chromium.executable).toContain('/chromium_headless_shell-1254/');
     expect(runtime.assertBrowserBindings(binding, f.cache)).toBe(binding);
     expect(f.opened).not.toContain(binding.chromium.executable);
   });
   it('admits the exact pinned Linux x64 shell mapping independently of the host running this inert test', () => {
     const f = packageFixture();
     const executable =
-      '/cache/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell';
+      '/cache/chromium_headless_shell-1254/chrome-headless-shell-linux64/chrome-headless-shell';
     const bytes = Buffer.from('inert Linux shell entry');
     f.add(executable, 'file', { bytes, mode: 0o755 });
     const files = {
       [executable]: { type: 'file', mode: 0o755, bytes: bytes.length, sha256: sha(bytes) },
     };
     f.trees[executable] = {
-      directory: '/cache/chromium_headless_shell-1234',
+      directory: '/cache/chromium_headless_shell-1254',
       files,
       sha256: sha(JSON.stringify(files)),
     };
@@ -271,7 +271,7 @@ describe('pinned default-headless resolver, without package execution', () => {
     (key) => {
       const f = packageFixture();
       f.nodes.get(f.locations[key]).bytes = Buffer.from(
-        key === 'core' ? '{"version":"1.62.1"}' : 'changed',
+        key === 'core' ? '{"version":"1.65.0"}' : 'changed',
       );
       expect(f.admit).toThrow('runtime_package_pin');
       expect(f.imports()).toBe(0);
@@ -322,7 +322,7 @@ describe('pinned default-headless resolver, without package execution', () => {
       if (fault === 'cache') f.core.registry.registryDirectory = '/foreign';
       if (fault === 'mapping')
         f.entries['chromium-headless-shell'].executablePath = () =>
-          '/cache/chromium-1234/full-chrome';
+          '/cache/chromium-1254/full-chrome';
       if (fault === 'platform') f.ports.platform = 'win32';
       expect(f.admit).toThrow();
     },

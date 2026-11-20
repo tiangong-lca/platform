@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const repositoryRoot = path.resolve(__dirname, '../../..');
-const pinnedPnpmSetup = 'uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1';
+const pinnedPnpmSetup = 'uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2';
 const expectedPnpmVersion = '11.24.0';
 
 function read(relativePath: string): string {
@@ -63,7 +63,7 @@ describe('pnpm package-manager contract', () => {
     )) {
       expect(workflow.source).toContain('node-version: 24.19.0');
     }
-    expect(packageJson.devDependencies['@jest/test-sequencer']).toBe('^30.5.0');
+    expect(packageJson.devDependencies['@jest/test-sequencer']).toBe('^30.5.2');
     expect(JSON.parse(read('.ncurc.json')).reject).toContain('@types/node');
     expect(fs.existsSync(path.join(repositoryRoot, 'pnpm-lock.yaml'))).toBe(true);
     expect(fs.existsSync(path.join(repositoryRoot, 'package-lock.json'))).toBe(false);
@@ -144,12 +144,12 @@ describe('pnpm package-manager contract', () => {
     const firstPartySources = trackedRuntimeSources();
 
     expect(devDependencies).toMatchObject({
-      '@jest/test-sequencer': '^30.5.0',
+      '@jest/test-sequencer': '^30.5.2',
       '@testing-library/jest-dom': '^7.0.1',
       '@types/jest': '^30.0.0',
       electron: '^44.1.0',
-      jest: '^30.5.0',
-      'jest-environment-jsdom': '^30.5.0',
+      jest: '^30.5.2',
+      'jest-environment-jsdom': '^30.5.2',
       'npm-check-updates': '^23.1.0',
     });
     expect(packageJson.scripts.ncu).toBe('ncu');

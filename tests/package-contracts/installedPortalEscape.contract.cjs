@@ -50,14 +50,23 @@ const delay = () => new Promise(resolve => { setTimeout(resolve, 8); });
 function Marker({ name }) { React.useLayoutEffect(() => { commits.add(name); return () => commits.delete(name); }, [name]); return h('span', { 'data-contract-marker': name }); }
 const cb = name => ({ top }) => calls.push([name, top]);
 function P({ name, open = true, children, onEsc, ...props }) { return h(Portal, { open, getContainer: false, onEsc: onEsc || cb(name), ...props }, h(React.Fragment, null, h(Marker, { name }), children)); }
-async function mount(node) { const host = document.createElement('div'); document.body.append(host); const rt = createRoot(host, { onCaughtError() {} }); const entry = { rt, host }; roots.push(entry); await update(entry, node); return entry; }
 async function update(entry, node) { await act(async () => { flushSync(() => entry.rt.render(node)); await delay(); }); }
-async function transition(entry, node) { await act(async () => { React.startTransition(() => entry.rt.render(node)); await delay(); }); }
+async function mount(node) { const host = document.createElement('div'); document.body.append(host); const rt = createRoot(host, { onCaughtError() {} }); const entry = { rt, host }; roots.push(entry); await update(entry, node); return entry; }
+async function transition(entry, node, pending) {
+  await act(async () => { React.startTransition(() => entry.rt.render(node)); await delay(); });
+  await pending.renderAttempt.promise;
+}
 async function esc(options = {}) { await act(async () => { window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, ...options })); await delay(); }); }
 function take(expected) { const byName = (a, b) => a[0].localeCompare(b[0]); assert.deepEqual(calls.splice(0).sort(byName), expected.slice().sort(byName)); }
 const keyed = (name, open = true, onEsc) => h(P, { name, key: name, open, onEsc });
-function Pending({ signal }) { signal.rendered++; throw signal.promise; }
-function signal() { return { rendered: 0, promise: new Promise(() => {}) }; }
+function Pending({ signal }) {
+  signal.rendered++;
+  signal.renderAttempt.resolve();
+  throw signal.promise;
+}
+function signal() {
+  return { rendered: 0, renderAttempt: Promise.withResolvers(), promise: new Promise(() => {}) };
+}
 class Boundary extends React.Component { constructor(props) { super(props); this.state = { failed: false }; } static getDerivedStateFromError() { return { failed: true }; } render() { return this.state.failed ? h('i') : this.props.children; } }
 const cases = {
   async 'closing-render-retained'() {
@@ -74,13 +83,13 @@ const cases = {
     const pending = signal();
     const tree = closing => h(React.Suspense, { fallback: h('b') }, h(P, { name: 'parent' },
       h(P, { name: 'popup', open: true, escapeActive: !closing }), closing && h(Pending, { signal: pending })));
-    const e = await mount(tree(false)); await transition(e, tree(true));
+    const e = await mount(tree(false)); await transition(e, tree(true), pending);
     assert.ok(pending.rendered);
     await esc(); take([['popup', true], ['parent', false]]);
   },
   async 'ordered-fanout'() { await mount(h(React.Fragment, null, keyed('A'), keyed('B'), keyed('C'))); await esc(); assert.deepEqual(calls.splice(0), [['C', true], ['B', false], ['A', false]]); },
   async 'strict-isolated-replay'() { assert.ok(React.Activity, 'Activity is required for state-preserving effect replay'); const count = { a: 0, b: 0 }; function Count({ name }) { React.useLayoutEffect(() => { count[name]++; }, []); return null; } const tree = mode => h(React.StrictMode, null, h(React.Activity, { mode }, h(P, { name: 'A' }, h(Count, { name: 'a' })))); const a = await mount(tree('visible')); await mount(h(P, { name: 'B' }, h(Count, { name: 'b' }))); const before = { ...count }; await update(a, tree('hidden')); await update(a, tree('visible')); assert.ok(count.a > before.a); assert.equal(count.b, before.b); await esc(); take([['B', true], ['A', false]]); },
-  async 'aborted-reparent'() { const nodes = {}, pending = signal(); function Capture({ name }) { const node = React.useContext(hook.EscapeContext); React.useLayoutEffect(() => { nodes[name] = node; }); return null; } const tree = (parent, aOpen, suspend = false) => h(React.Fragment, null, h(P, { name: 'A', key: 'A', open: aOpen }, h(Capture, { name: 'A' })), h(P, { name: 'B', key: 'B' }, h(Capture, { name: 'B' })), parent && h(React.Suspense, { fallback: h('b'), key: 'pending' }, h(React.Fragment, null, h(hook.EscapeContext.Provider, { value: nodes[parent] }, keyed('child')), suspend && h(Pending, { signal: pending })))); const e = await mount(tree(null, true)); await update(e, tree('A', true)); await update(e, tree('A', false)); await update(e, tree('A', true)); await transition(e, tree('B', true, true)); assert.ok(pending.rendered); await esc(); take([['child', true], ['A', false], ['B', false]]); },
+  async 'aborted-reparent'() { const nodes = {}, pending = signal(); function Capture({ name }) { const node = React.useContext(hook.EscapeContext); React.useLayoutEffect(() => { nodes[name] = node; }); return null; } const tree = (parent, aOpen, suspend = false) => h(React.Fragment, null, h(P, { name: 'A', key: 'A', open: aOpen }, h(Capture, { name: 'A' })), h(P, { name: 'B', key: 'B' }, h(Capture, { name: 'B' })), parent && h(React.Suspense, { fallback: h('b'), key: 'pending' }, h(React.Fragment, null, h(hook.EscapeContext.Provider, { value: nodes[parent] }, keyed('child')), suspend && h(Pending, { signal: pending })))); const e = await mount(tree(null, true)); await update(e, tree('A', true)); await update(e, tree('A', false)); await update(e, tree('A', true)); await transition(e, tree('B', true, true), pending); assert.ok(pending.rendered); await esc(); take([['child', true], ['A', false], ['B', false]]); },
   async siblings() { const tree = b => h(React.Fragment, null, keyed('A'), keyed('B', b)); const e = await mount(tree(false)); await esc(); take([['A', true]]); await update(e, tree(true)); await esc(); take([['B', true], ['A', false]]); await update(e, tree(false)); await esc(); take([['A', true]]); await update(e, tree(true)); await esc(); take([['B', true], ['A', false]]); },
   async 'reopen-over-new-sibling'() { const tree = (b, c) => h(React.Fragment, null, keyed('A'), keyed('B', b), c && keyed('C')); const e = await mount(tree(true, false)); await update(e, tree(false, true)); await esc(); take([['C', true], ['A', false]]); await update(e, tree(true, true)); await esc(); take([['B', true], ['C', false], ['A', false]]); },
   async nested() { await mount(h(P, { name: 'parent' }, h(P, { name: 'child' }))); await esc(); take([['child', true], ['parent', false]]); },
@@ -88,8 +97,8 @@ const cases = {
   async mixed() { const tree = (child, other) => h(React.Fragment, null, h(P, { name: 'parent', key: 'parent' }, child && keyed('child')), other && keyed('other')); const e = await mount(tree(false, false)); await update(e, tree(false, true)); await esc(); take([['other', true], ['parent', false]]); await update(e, tree(true, true)); await esc(); take([['child', true], ['parent', false], ['other', false]]); await update(e, tree(false, true)); await esc(); take([['other', true], ['parent', false]]); },
   async 'aborted-open'() { const s = signal(); await mount(h(React.Fragment, null, keyed('visible'), h(React.Suspense, { fallback: h('b') }, h(P, { name: 'pending' }, h(Pending, { signal: s }))))); assert.ok(s.rendered); assert.equal(commits.has('pending'), false); await esc(); take([['visible', true]]); },
   async 'aborted-error'() { function Bomb() { throw Error('Synthetic render abort'); } await mount(h(React.Fragment, null, keyed('visible'), h(Boundary, null, h(P, { name: 'failed' }, h(Bomb))))); assert.equal(commits.has('failed'), false); await esc(); take([['visible', true]]); },
-  async 'aborted-close'() { const s = signal(); const tree = pending => h(React.Suspense, { fallback: h('b') }, h(React.Fragment, null, keyed('A', !pending), pending && h(Pending, { signal: s }))); const e = await mount(tree(false)); await transition(e, tree(true)); assert.ok(s.rendered); await esc(); take([['A', true]]); },
-  async 'aborted-callback'() { const s = signal(), a = cb('committed'), b = cb('abandoned'); const tree = pending => h(React.Suspense, { fallback: h('b') }, h(React.Fragment, null, keyed('A', true, pending ? b : a), pending && h(Pending, { signal: s }))); const e = await mount(tree(false)); await transition(e, tree(true)); assert.ok(s.rendered); await esc(); take([['committed', true]]); },
+  async 'aborted-close'() { const s = signal(); const tree = pending => h(React.Suspense, { fallback: h('b') }, h(React.Fragment, null, keyed('A', !pending), pending && h(Pending, { signal: s }))); const e = await mount(tree(false)); await transition(e, tree(true), s); assert.ok(s.rendered); await esc(); take([['A', true]]); },
+  async 'aborted-callback'() { const s = signal(), a = cb('committed'), b = cb('abandoned'); const tree = pending => h(React.Suspense, { fallback: h('b') }, h(React.Fragment, null, keyed('A', true, pending ? b : a), pending && h(Pending, { signal: s }))); const e = await mount(tree(false)); await transition(e, tree(true), s); assert.ok(s.rendered); await esc(); take([['committed', true]]); },
   async callback() { const e = await mount(keyed('A', true, cb('old'))); await update(e, keyed('A', true, cb('new'))); await esc(); take([['new', true]]); },
   async 'callback-epoch-strict'() { const b = cb('B'); const tree = a => h(React.StrictMode, null, h(Portal, { key: 'A', open: true, getContainer: false, onEsc: a }, h('i')), h(Portal, { key: 'B', open: true, getContainer: false, onEsc: b }, h('i'))); const e = await mount(tree(cb('oldA'))); await update(e, tree(cb('newA'))); await esc(); take([['B', true], ['newA', false]]); },
   async omitted() { await mount(h(React.Fragment, null, keyed('A'), h(Portal, { open: true, getContainer: false }, h('i')))); await esc(); take([['A', false]]); },

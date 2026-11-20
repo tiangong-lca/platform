@@ -227,7 +227,7 @@ async function execute(options, binding) {
     });
     await race(new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); }));
     const origin = `http://127.0.0.1:${server.address().port}`;
-    const playwright = req('@playwright/test'); check(req('@playwright/test/package.json').version === '1.62.1', 'playwright_version_mismatch');
+    const playwright = req('@playwright/test'); check(req('@playwright/test/package.json').version === '1.65.0', 'playwright_version_mismatch');
     const expect = playwright.expect.configure({ timeout: 45000 });
     for (const name of ['chromium']) {
       const runBrowser = async () => {

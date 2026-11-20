@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8ff49089ab7c8542aea16e6b3d524e4e6d93e8b1
-lastReviewedNote: 'Platform #1534 aligns returned Process feedback with the shared database opinion scope.'
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: be1055c098968b00db74991d013d4ec31c8fd53d
+lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
 ---
 
 # Supabase Environment And Database Workflow
