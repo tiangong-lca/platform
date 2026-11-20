@@ -39,12 +39,15 @@ import {
 } from '../general/util';
 import { addOpenDataCatalogScope, queryMappedOpenDataCatalog } from '../openDataCatalog/api';
 import { genProcessName } from '../processes/util';
+import { SINGLE_PRIMARY_RESULT_POLICY } from './data';
 import type {
   LifeCycleModelGraphData,
+  LifeCycleModelDetailResponse,
   LifeCycleModelJsonTg,
   LifeCycleModelMutationResult,
   LifeCycleModelPersistencePlan,
   LifeCycleModelTable,
+  ModelBundleOperation,
   Up2DownEdge,
 } from './data';
 import {
@@ -80,6 +83,7 @@ type LifeCycleModelSearchOrderBy = {
 
 type LifeCycleModelMutationOptions = NormalizeLangPayloadForSaveOptions & {
   persistenceGraph?: LifeCycleModelGraphData;
+  guardedSave?: { revision: string | null; layoutOnly?: boolean };
   /**
    * zh-CN: 覆盖整个保存操作（源加载 → 求解 → LCIA → 提交）的取消标识；
    * 提交前复核，已提交后取消不承诺撤销。
@@ -240,6 +244,7 @@ async function runLifeCycleModelCalculation(input: {
   nodes: any[];
   lifeCycleModelJsonOrdered: any;
   oldSubmodels: any[];
+  resultPolicy?: LifeCycleModelJsonTg['resultPolicy'];
   operation?: CalculationOperation;
 }): Promise<LifeCycleModelCalculationOutcome> {
   try {
@@ -249,7 +254,9 @@ async function runLifeCycleModelCalculation(input: {
         input.nodes,
         input.lifeCycleModelJsonOrdered,
         input.oldSubmodels,
-        ...(input.operation ? [{ operation: input.operation }] : []),
+        ...(input.resultPolicy || input.operation
+          ? [{ ...(input.resultPolicy && { primaryOnly: true }), operation: input.operation }]
+          : []),
       );
     return { ok: true, lifeCycleModelProcesses, up2DownEdges, lciaIncomplete: !!lciaIncomplete };
   } catch (error) {
@@ -447,6 +454,188 @@ async function invokeLifecycleModelBundleFunction(
   }
 }
 
+const guardedBundleProtocol = 'model-bundle.v1';
+
+async function readGuardedModel(modelId: string, version: string) {
+  const response = await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', {
+    protocol: guardedBundleProtocol,
+    action: 'inspect',
+    modelId,
+    version,
+  });
+  if (!response.ok) return response;
+  const observed = response as typeof response & {
+    protocol?: string;
+    status?: string;
+    snapshot?: {
+      revision: string;
+      model: {
+        id: string;
+        version: string;
+        json_ordered: any;
+        json_tg: LifeCycleModelJsonTg;
+        rule_verification: boolean;
+        state_code: number;
+      };
+    } | null;
+  };
+  if (observed.protocol !== guardedBundleProtocol || observed.status !== 'observed') {
+    return buildMutationError('MODEL_BUNDLE_UNSUPPORTED', 'Guarded Model saving is unavailable');
+  }
+  return { ok: true as const, snapshot: observed.snapshot ?? null };
+}
+
+function getBundleSaveVersion(plan: LifeCycleModelPersistencePlan): string | undefined {
+  const json = plan.parent.jsonOrdered as {
+    lifeCycleModelDataSet?: {
+      administrativeInformation?: {
+        publicationAndOwnership?: { 'common:dataSetVersion'?: string };
+      };
+    };
+  };
+  return (
+    plan.version ??
+    json?.lifeCycleModelDataSet?.administrativeInformation?.publicationAndOwnership?.[
+      'common:dataSetVersion'
+    ]
+  );
+}
+
+async function verifyGuardedModelSave(
+  operation: ModelBundleOperation,
+  reply: LifeCycleModelMutationResult,
+): Promise<LifeCycleModelMutationResult> {
+  const receipt = reply.ok
+    ? (reply as typeof reply & {
+        status?: string;
+        protocol?: string;
+        operationId?: string;
+        revision?: string;
+      })
+    : undefined;
+  if (
+    receipt?.status !== 'committed' ||
+    receipt.protocol !== guardedBundleProtocol ||
+    receipt.operationId !== operation.operationId ||
+    receipt.modelId !== operation.modelId ||
+    receipt.version !== operation.version ||
+    !receipt.revision
+  ) {
+    return {
+      ok: false,
+      code: 'SAVE_STATUS_UNKNOWN',
+      message: 'The original save has not been confirmed',
+      pendingBundleOperation: operation,
+    };
+  }
+  const current = await readGuardedModel(operation.modelId, operation.version);
+  if (!current.ok || !('snapshot' in current) || current.snapshot?.revision !== receipt.revision) {
+    return buildMutationError(
+      'MODEL_BUNDLE_READBACK_CHANGED',
+      'The save committed, but the current Model and results could not be verified. Reload the Model.',
+      operation,
+    );
+  }
+  const row = current.snapshot.model;
+  return {
+    ok: true,
+    modelId: row.id,
+    version: row.version,
+    bundleRevision: receipt.revision,
+    lifecycleModel: {
+      id: row.id,
+      version: row.version,
+      json: row.json_ordered,
+      json_tg: row.json_tg,
+      ruleVerification: row.rule_verification,
+    },
+  };
+}
+
+export async function recoverLifecycleModelSave(
+  operation: ModelBundleOperation,
+): Promise<LifeCycleModelMutationResult> {
+  const reply = await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', {
+    ...operation,
+    protocol: guardedBundleProtocol,
+    action: 'recover',
+  });
+  return verifyGuardedModelSave(operation, reply);
+}
+
+async function saveGuardedModel(
+  plan: LifeCycleModelPersistencePlan,
+  revision: string | null,
+): Promise<LifeCycleModelMutationResult> {
+  const version = getBundleSaveVersion(plan);
+  if (!version || (plan.mode === 'update' && !revision)) {
+    return buildMutationError('MODEL_BUNDLE_CONFLICT', 'Reload the Model before saving');
+  }
+  const operationId = crypto.randomUUID();
+  const target = { protocol: guardedBundleProtocol, modelId: plan.modelId, version, operationId };
+  const reply = await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', {
+    ...target,
+    action: 'save',
+    expectedRevision: revision,
+    plan: { ...plan, version },
+  });
+  if (!reply.ok) {
+    if (
+      [
+        'AUTH_REQUIRED',
+        'FORBIDDEN',
+        'INVALID_PAYLOAD',
+        'MODEL_BUNDLE_CONFLICT',
+        'MODEL_MEMBERSHIP_INVALID',
+        'MODEL_MEMBERSHIP_BUSY',
+        'MODEL_OPERATION_CONFLICT',
+        'MODEL_NOT_FOUND',
+        'PROCESS_NOT_FOUND',
+        'VERSION_CONFLICT',
+      ].includes(reply.code)
+    )
+      return reply;
+    return recoverLifecycleModelSave(target);
+  }
+  return verifyGuardedModelSave(target, reply);
+}
+
+async function saveModelLayout(
+  modelId: string,
+  version: string,
+  revision: string,
+  graph: LifeCycleModelGraphData,
+  options: LifeCycleModelMutationOptions,
+) {
+  const current = await readGuardedModel(modelId, version);
+  if (!current.ok) return current;
+  if (!('snapshot' in current) || current.snapshot?.revision !== revision) {
+    return buildMutationError('MODEL_BUNDLE_CONFLICT', 'The Model or its result group changed');
+  }
+  if (options.operation?.isCancelled()) {
+    return buildMutationError('CALCULATION_CANCELLED', '');
+  }
+  if (options.hasModelChanged?.()) {
+    return buildMutationError('RESULT_DISCARDED', '');
+  }
+  const model = current.snapshot.model;
+  options.operation?.beginStage('persisting');
+  return saveGuardedModel(
+    {
+      mode: 'update',
+      modelId,
+      version,
+      parent: {
+        jsonOrdered: model.json_ordered,
+        jsonTg: { ...model.json_tg, xflow: graph },
+        ruleVerification: model.rule_verification,
+      },
+      processMutations: [],
+    },
+    revision,
+  );
+}
+
 async function applyReferenceAwareRuleVerification(
   plan: LifeCycleModelPersistencePlan,
   userTeamId: string,
@@ -520,6 +709,7 @@ export async function createLifeCycleModel(
     nodes: data?.model?.nodes ?? [],
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
     oldSubmodels: [],
+    resultPolicy: SINGLE_PRIMARY_RESULT_POLICY,
     operation: options?.operation,
   });
   if (!calculation.ok) {
@@ -538,6 +728,7 @@ export async function createLifeCycleModel(
   const planResult = await buildSaveLifeCycleModelPersistencePlan({
     langIntent: options?.intent,
     mode: 'create',
+    resultPolicy: SINGLE_PRIMARY_RESULT_POLICY,
     modelId: data.id,
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
     nodes: persistenceGraph?.nodes ?? [],
@@ -573,7 +764,10 @@ export async function createLifeCycleModel(
     }
     options.operation.beginStage('persisting');
   }
-  const result = await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', savePlan);
+  const result =
+    options?.guardedSave && !createVersionOptions
+      ? await saveGuardedModel(plan, null)
+      : await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', savePlan);
   return attachLangNormalizationMetadata(
     attachCalculationNotice(result, calculation.lciaIncomplete),
     langMetadata,
@@ -585,6 +779,22 @@ export async function updateLifeCycleModel(
   data: any,
   options?: LifeCycleModelMutationOptions,
 ): Promise<LifeCycleModelMutationResult> {
+  if (options?.guardedSave && !options.guardedSave.revision) {
+    return buildMutationError('MODEL_BUNDLE_CONFLICT', 'Reload the Model before saving');
+  }
+  if (
+    options?.guardedSave?.layoutOnly &&
+    options.guardedSave.revision &&
+    options.persistenceGraph
+  ) {
+    return saveModelLayout(
+      data.id,
+      data.version,
+      options.guardedSave.revision,
+      options.persistenceGraph,
+      options,
+    );
+  }
   const serializationResult = serializeLifeCycleModelForMutation(data.id, data);
   if (!serializationResult.success) {
     return serializationResult.mutationError;
@@ -602,7 +812,7 @@ export async function updateLifeCycleModel(
     rawLifeCycleModelJsonOrdered,
   );
   const currentModelResult = await publicEntity('lifecyclemodels')
-    .select('id,json,json_tg->submodels')
+    .select('id,json,json_tg->submodels,json_tg->>resultPolicy')
     .eq('id', data.id)
     .eq('version', data.version);
 
@@ -626,6 +836,10 @@ export async function updateLifeCycleModel(
     );
   }
 
+  const resultPolicy =
+    currentModelResult.data[0].resultPolicy === SINGLE_PRIMARY_RESULT_POLICY
+      ? SINGLE_PRIMARY_RESULT_POLICY
+      : undefined;
   const oldSubmodels = jsonToList(currentModelResult.data[0].submodels);
   const currentResultRefs = jsonToList(
     currentModelResult.data[0].json?.lifeCycleModelDataSet?.lifeCycleModelInformation
@@ -677,6 +891,7 @@ export async function updateLifeCycleModel(
     nodes: data?.model?.nodes ?? [],
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
     oldSubmodels,
+    resultPolicy,
     operation: options?.operation,
   });
   if (!calculation.ok) {
@@ -698,7 +913,7 @@ export async function updateLifeCycleModel(
   const oldProcessesResult =
     oldKeys.length > 0
       ? await publicEntity('processes')
-          .select('id,version,json,model_id,model_version')
+          .select('id,version,json,json_ordered,model_id,model_version')
           .or(oldKeys.map((item) => `and(id.eq.${item.id},version.eq.${item.version})`).join(','))
       : { data: [], error: null };
   if (oldProcessesResult.error) {
@@ -744,6 +959,7 @@ export async function updateLifeCycleModel(
   const planResult = await buildSaveLifeCycleModelPersistencePlan({
     langIntent: options?.intent,
     mode: 'update',
+    resultPolicy,
     modelId: data.id,
     version: data.version,
     lifeCycleModelJsonOrdered: normalizedLifeCycleModelJsonOrdered,
@@ -775,7 +991,9 @@ export async function updateLifeCycleModel(
     }
     options.operation.beginStage('persisting');
   }
-  const result = await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', plan);
+  const result = options?.guardedSave
+    ? await saveGuardedModel(plan, options.guardedSave.revision)
+    : await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', plan);
   return attachLangNormalizationMetadata(
     attachCalculationNotice(result, calculation.lciaIncomplete),
     langMetadata,
@@ -1282,23 +1500,27 @@ export async function getLifeCyclesByIdAndVersion(params: { id: string; version:
 export async function getLifeCycleModelDetail(
   id: string,
   version: string,
-): Promise<
-  | {
+  guarded = false,
+): Promise<LifeCycleModelDetailResponse> {
+  if (guarded) {
+    const observed = await readGuardedModel(id, version);
+    if (!observed.ok || !('snapshot' in observed) || !observed.snapshot) {
+      return { data: {}, success: false };
+    }
+    const { model, revision } = observed.snapshot;
+    return {
+      success: true,
       data: {
-        id: string;
-        version: string;
-        json: any;
-        json_tg: any;
-        stateCode: number;
-        ruleVerification: any;
-      };
-      success: true;
-    }
-  | {
-      data: object;
-      success: false;
-    }
-> {
+        id,
+        version,
+        json: model.json_ordered,
+        json_tg: model.json_tg,
+        stateCode: model.state_code,
+        ruleVerification: model.rule_verification,
+        bundleRevision: revision,
+      },
+    };
+  }
   const result = await publicEntity('lifecyclemodels')
     .select('json, json_tg,state_code,rule_verification,team_id')
     .eq('id', id)

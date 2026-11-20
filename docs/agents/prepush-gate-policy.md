@@ -46,8 +46,8 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Platform #1488: reviewed focused form regressions and generated locale artifacts; ordinary fork pushes retain Docpact and the full gate, with no release profile or proof bypass.'
 ---
 
@@ -165,7 +165,7 @@ The dispatch default `publication_scope=full` preserves full release recovery. E
 - run the lightweight docpact gate before the full local test gate so governed-doc review failures surface early
 - before a `dev -> main` promotion, require the dev Release PR non-browser proof; the main-target PR and post-merge workflow accept it only for structurally matching unchanged-tree merges and fail closed instead of rerunning the complete gate. Treat an explicitly marked, unchanged-version main hotfix as a separate exact-head full-gate path, never as a promotion-proof fallback
 - protect the actual local and release gates
-- keep one logical full-suite qualification for each canonical release candidate: the exact dev Release PR runs it and emits the proof; normal promotion/main paths never fall back to another aggregate run when proof identity cannot be established. The aggregate command runs the receipt suite once in an isolated no-coverage Jest process and every remaining suite once through a coverage-enabled coordinator with exactly two workers and a `512MB` per-worker idle-memory recycle boundary, so do not precede it with a second standalone `test:ci` or coverage run
+- keep one logical full-suite qualification for each canonical release candidate: the exact dev Release PR runs it and emits the proof; normal promotion/main paths never fall back to another aggregate run when proof identity cannot be established. The aggregate command runs the receipt suite once in an isolated no-coverage Jest process and every remaining suite once through a coverage-enabled coordinator with the qualified coverage-worker profile from [repo validation](repo-validation.md) and a `512MB` per-worker idle-memory recycle boundary, so do not precede it with a second standalone `test:ci` or coverage run
 - under Jest 30, the native threshold continues to enforce 100% statements, functions, and lines. `test:coverage:assert-full` excludes only Babel/Istanbul `if` alternate slots that have no source coordinates, fails closed for every other malformed map, and independently requires 100% of every source-mapped branch; raw synthetic-slot percentages are not a replacement baseline
 - keep agent/CI console output bounded to stage, failure item, and final summary lines while preserving full Jest logs and structured results under `.local/test-logs/**` for artifact upload
 - avoid spending GitHub Actions minutes on ordinary push-triggered test jobs

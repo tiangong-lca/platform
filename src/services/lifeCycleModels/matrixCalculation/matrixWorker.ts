@@ -31,7 +31,7 @@ export const runMatrixCalculation = (request: MatrixWorkerRequest): MatrixWorker
     assertCalculationPayloadValid(request.payload);
     const compilation = compileModel(request.payload);
     const { x } = solveCompiledSystem(compilation);
-    const result = assembleResult(compilation, x);
+    const result = assembleResult(compilation, x, request.payload.primaryOnly);
     return { type: 'result', runId: request.runId, ok: true, result };
   } catch (error) {
     if (error instanceof CalculationError) {

@@ -20,8 +20,8 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Platform #1488: reviewed classification-only model serialization and editor validation; contribution-path inputs, Worker ownership, result artifacts and frontend boundaries remain unchanged.'
 ---
 

@@ -33,6 +33,7 @@ type ExistingProcessRow = {
   id: string;
   version: string;
   json: any;
+  json_ordered?: any;
 };
 
 type CurrentProcessOrderedRow = {
@@ -43,6 +44,7 @@ type CurrentProcessOrderedRow = {
 };
 
 type RawLifeCycleModelProcess = {
+  calculatedDataSetType?: 'Partly terminated system' | 'LCI result';
   option?: 'create' | 'update';
   modelInfo: {
     id: string;
@@ -68,6 +70,7 @@ type PlanBuildResult =
   | { ok: false; code: string; message: string; details?: unknown };
 
 type BuildSavePlanArgs = {
+  resultPolicy?: LifeCycleModelJsonTg['resultPolicy'];
   mode: 'create' | 'update';
   modelId: string;
   version?: string;
@@ -129,6 +132,21 @@ export async function buildSaveLifeCycleModelPersistencePlan(
         lifecycleModelVersion,
     },
   }));
+  if (args.resultPolicy && args.mode === 'update') {
+    const previous = args.oldSubmodels?.find((item) => item.type === 'primary')?.finalId as
+      RawLifeCycleModelProcess['modelInfo']['finalId'] | undefined;
+    const current = processes.find((item) => item.modelInfo.type === 'primary')?.modelInfo.finalId;
+    if (
+      previous?.allocatedExchangeFlowId !== current?.allocatedExchangeFlowId ||
+      previous?.allocatedExchangeDirection !== current?.allocatedExchangeDirection
+    ) {
+      return {
+        ok: false,
+        code: 'PRIMARY_PRODUCT_CHANGED',
+        message: 'Create a new Model version to change the primary product.',
+      };
+    }
+  }
   const parentJsonOrdered = genReferenceToResultingProcess(
     processes,
     lifecycleModelVersion ?? '',
@@ -157,6 +175,7 @@ export async function buildSaveLifeCycleModelPersistencePlan(
     parent: {
       jsonOrdered: parentJsonOrdered,
       jsonTg: {
+        ...(args.resultPolicy && { resultPolicy: args.resultPolicy }),
         xflow: {
           nodes: args.nodes,
           edges: decorateEdges(args.edges, args.up2DownEdges),
@@ -391,12 +410,18 @@ async function buildProcessMutation(args: {
   }
 
   const operation = args.process.option === 'update' ? 'update' : 'create';
-  if (
-    operation === 'update' &&
-    args.oldProcess?.json &&
-    args.process.modelInfo.type !== 'allocated'
-  ) {
-    overrideWithOldProcess({ processDataSet }, args.oldProcess.json);
+  const oldResult = args.oldProcess?.json_ordered ?? args.oldProcess?.json;
+  const model = args.lifeCycleModelJsonOrdered?.lifeCycleModelDataSet;
+  const isResult = args.process.modelInfo.type !== 'allocated';
+  const modelAdvice = model?.modellingAndValidation?.dataSourcesTreatmentEtc?.useAdviceForDataSet;
+  if (isResult && modelAdvice !== undefined) {
+    processDataSet.modellingAndValidation ??= {};
+    processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness ??= {};
+    processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet =
+      modelAdvice;
+  }
+  if (operation === 'update' && oldResult && isResult) {
+    overrideWithOldProcess({ processDataSet }, oldResult);
   } else if (operation === 'update' && !args.oldProcess) {
     return {
       ok: false,
@@ -405,6 +430,13 @@ async function buildProcessMutation(args: {
     };
   }
 
+  if (args.process.calculatedDataSetType) {
+    processDataSet.modellingAndValidation ??= {};
+    processDataSet.modellingAndValidation.LCIMethodAndAllocation = {
+      ...processDataSet.modellingAndValidation.LCIMethodAndAllocation,
+      typeOfDataSet: args.process.calculatedDataSetType,
+    };
+  }
   const resultVersion = args.process.modelInfo.version;
   if (resultVersion) {
     processDataSet.administrativeInformation ??= {};
@@ -412,7 +444,16 @@ async function buildProcessMutation(args: {
     processDataSet.administrativeInformation.publicationAndOwnership['common:dataSetVersion'] =
       resultVersion;
   }
-  const rawProcessJsonOrdered = genProcessJsonOrdered(args.process.modelInfo.id, processDataSet);
+  const rawProcessJsonOrdered = genProcessJsonOrdered(args.process.modelInfo.id, processDataSet, {
+    preserveAnnualSupplyVolume: true,
+  });
+  if (operation === 'update' && oldResult && isResult) {
+    carryStoredResultDeclarations(
+      rawProcessJsonOrdered.processDataSet,
+      oldResult.processDataSet,
+      model,
+    );
+  }
   const normalizedResult = await normalizeLangPayloadForSave(rawProcessJsonOrdered, {
     intent: args.langIntent,
   });
@@ -451,6 +492,87 @@ async function buildProcessMutation(args: {
       ruleVerification: processMutationRuleVerification,
     },
   };
+}
+
+function carryStoredResultDeclarations(result: any, previous: any, model: any) {
+  const previousComment =
+    previous?.processInformation?.dataSetInformation?.['common:generalComment'];
+  const resultInfo = result.processInformation?.dataSetInformation;
+  if (
+    resultInfo &&
+    resultInfo['common:generalComment'] === undefined &&
+    previousComment !== undefined
+  ) {
+    resultInfo['common:generalComment'] = previousComment;
+  }
+
+  const previousModelling = previous?.modellingAndValidation;
+  const generatedCompliance = result.modellingAndValidation?.complianceDeclarations?.compliance;
+  const previousCompliance = previousModelling?.complianceDeclarations?.compliance;
+  if (
+    generatedCompliance === undefined &&
+    previousCompliance &&
+    typeof previousCompliance === 'object'
+  ) {
+    const resetCompliance = (declaration: any) => ({
+      ...declaration,
+      'common:approvalOfOverallCompliance': 'Not defined',
+      'common:nomenclatureCompliance': 'Not defined',
+      'common:methodologicalCompliance': 'Not defined',
+      'common:reviewCompliance': 'Not defined',
+      'common:documentationCompliance': 'Not defined',
+      'common:qualityCompliance': 'Not defined',
+    });
+    result.modellingAndValidation = {
+      ...result.modellingAndValidation,
+      complianceDeclarations: {
+        compliance: Array.isArray(previousCompliance)
+          ? previousCompliance.map(resetCompliance)
+          : resetCompliance(previousCompliance),
+      },
+    };
+  }
+
+  const admin = { ...result.administrativeInformation };
+  const previousAdmin = previous?.administrativeInformation;
+  const previousGoal = previousAdmin?.['common:commissionerAndGoal'];
+  const goal = { ...admin['common:commissionerAndGoal'] };
+  for (const key of ['common:referenceToCommissioner', 'common:intendedApplications']) {
+    if (goal[key] === undefined && previousGoal?.[key] !== undefined) {
+      goal[key] = previousGoal[key];
+    }
+  }
+  if (Object.keys(goal).length > 0) {
+    admin['common:commissionerAndGoal'] = goal;
+  }
+
+  const author = 'common:referenceToPersonOrEntityEnteringTheData';
+  if (
+    admin.dataEntryBy?.[author] === undefined &&
+    previousAdmin?.dataEntryBy?.[author] !== undefined
+  ) {
+    admin.dataEntryBy = { ...admin.dataEntryBy, [author]: previousAdmin.dataEntryBy[author] };
+  }
+
+  const rightsFields = [
+    'common:referenceToOwnershipOfDataSet',
+    'common:copyright',
+    'common:licenseType',
+    'common:accessRestrictions',
+  ];
+  const modelRights = model?.administrativeInformation?.publicationAndOwnership;
+  const previousRights = previousAdmin?.publicationAndOwnership;
+  const authoredRights = Object.keys(modelRights ?? {});
+  if (previousRights && !rightsFields.some((field) => authoredRights.includes(field))) {
+    const ownership = { ...admin.publicationAndOwnership };
+    for (const key of rightsFields) {
+      if (previousRights[key] !== undefined) {
+        ownership[key] = previousRights[key];
+      }
+    }
+    admin.publicationAndOwnership = ownership;
+  }
+  result.administrativeInformation = admin;
 }
 
 export function applyLifecycleModelValidationToProcessJsonOrdered(
@@ -535,11 +657,16 @@ function overrideWithOldProcess(newData: any, oldData: any) {
   }
 
   if (oldData?.processDataSet?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness) {
+    const useAdviceForDataSet =
+      newData.processDataSet.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+        ?.useAdviceForDataSet;
     if (!newData.processDataSet.modellingAndValidation) {
       newData.processDataSet.modellingAndValidation = {} as any;
     }
-    newData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness =
-      oldData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness;
+    newData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness = {
+      ...oldData.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness,
+      ...(useAdviceForDataSet === undefined ? {} : { useAdviceForDataSet }),
+    };
   }
 
   if (oldData?.processDataSet?.modellingAndValidation?.completeness) {

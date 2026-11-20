@@ -110,7 +110,7 @@ function sourceIdentity(root, head, budget = {}) {
   );
   check(environment.outputPath === '/e2e-output', 'OUTPUT_CONTRACT_DRIFT');
   check(
-    environment.nodeVersion === '24.19.0' && environment.playwrightVersion === '1.62.1',
+    environment.nodeVersion === '24.19.0' && environment.playwrightVersion === '1.65.0',
     'TOOLCHAIN_CONTRACT_DRIFT',
   );
   check(

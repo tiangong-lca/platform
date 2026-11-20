@@ -101,7 +101,7 @@ async function execute(options, binding) {
     server = http.createServer((request, response) => { if (request.method !== 'GET' || !['/', '/fixture.js'].includes(request.url)) { response.writeHead(404).end(); return; } response.writeHead(200, { 'Content-Type': request.url === '/' ? 'text/html; charset=utf-8' : 'text/javascript', 'Cache-Control': 'no-store' }); response.end(request.url === '/' ? html : bundle); });
     await race(new Promise((resolve, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', resolve); }));
     const origin = `http://127.0.0.1:${server.address().port}`;
-    const playwright = req('@playwright/test'); check(req('@playwright/test/package.json').version === '1.62.1', 'playwright_version_mismatch');
+    const playwright = req('@playwright/test'); check(req('@playwright/test/package.json').version === '1.65.0', 'playwright_version_mismatch');
     for (const name of ['chromium', 'firefox', 'webkit']) {
       const runBrowser = async () => {
       check(performance.now() < workDeadlineMono && !stopping, 'no_time_for_browser'); receipt.step = `${name}:launch`; sample();

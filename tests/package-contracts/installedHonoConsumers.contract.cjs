@@ -136,16 +136,18 @@ test(
 function listenOwned(server, port) {
   resources.servers.add(server);
   return new Promise((resolve, reject) => {
-    const onError = (error) => {
-      server.off('listening', onListening);
-      reject(error);
+    const handlers = {
+      onError(error) {
+        server.off('listening', handlers.onListening);
+        reject(error);
+      },
+      onListening() {
+        server.off('error', handlers.onError);
+        resolve();
+      },
     };
-    const onListening = () => {
-      server.off('error', onError);
-      resolve();
-    };
-    server.once('error', onError);
-    server.once('listening', onListening);
+    server.once('error', handlers.onError);
+    server.once('listening', handlers.onListening);
     server.listen(port, '127.0.0.1');
   });
 }

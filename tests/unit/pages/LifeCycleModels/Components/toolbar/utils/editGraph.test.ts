@@ -11,6 +11,7 @@ import {
   normalizePastedReferenceCells,
   reconcileHydratedEditorGraphForPersistence,
   resolveDeleteSelection,
+  withoutEditorLayout,
 } from '@/pages/LifeCycleModels/Components/toolbar/utils/editGraph';
 import { SUPPORTED_CONTENT_LANGUAGES } from '@/services/general/contentLanguageRegistry';
 
@@ -696,6 +697,35 @@ describe('toolbar/utils/editGraph', () => {
         }),
       }),
     );
+  });
+
+  it('preserves existing instance identities across reordering and allocates a fresh index for a new node', () => {
+    const survivors = [
+      { id: 'second', data: { index: '2' } },
+      { id: 'first', data: { index: '1' } },
+    ];
+    const storedNodes = [survivors[1], { id: 'removed', data: { index: '0' } }, survivors[0]];
+    const newNode = { id: 'new', data: { index: '2' } };
+    const payload = buildSavePayload({}, [...survivors, newNode], [], storedNodes);
+    expect(payload.model.nodes.map((node) => [node.id, node.data.index])).toEqual([
+      ['second', '2'],
+      ['first', '1'],
+      ['new', '3'],
+    ]);
+  });
+
+  it('ignores node geometry and edge routing while detecting edited connections', () => {
+    const model = {
+      nodes: [{ id: 'node', x: 1 }],
+      edges: [{ id: 'edge', source: { cell: 'node' }, vertices: [{ x: 1, y: 2 }] }],
+    };
+    const moved = {
+      nodes: [{ id: 'node', x: 9 }],
+      edges: [{ id: 'edge', source: { cell: 'node' }, vertices: [{ x: 5, y: 6 }] }],
+    };
+    expect(withoutEditorLayout({ model })).toBe(withoutEditorLayout({ model: moved }));
+    moved.edges[0].source.cell = 'other';
+    expect(withoutEditorLayout({ model })).not.toBe(withoutEditorLayout({ model: moved }));
   });
 
   it('builds persisted save payloads, hydrates editor graph data, and creates empty defaults', () => {

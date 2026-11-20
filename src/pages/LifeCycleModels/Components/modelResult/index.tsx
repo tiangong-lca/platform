@@ -86,6 +86,9 @@ const ModelResult: FC<Props> = ({
           ),
         ]
       : storedSubmodels;
+  const hasSecondary = submodels.some(
+    (entry) => entry.type === 'secondary' || (!entry.type && entry.id !== modelId),
+  );
   const intl = useIntl();
   const [mainClassification, setMainClassification] = useState<DatasetClassificationFilterValue[]>(
     [],
@@ -329,74 +332,76 @@ const ModelResult: FC<Props> = ({
           }}
           columns={orderDataListColumns(columns)}
         />
-        <ResponsiveDataListViewport columns={columns}>
-          {({ scroll }) => (
-            <ProTable<ProcessTable, ModelResultTableParams>
-              {...responsiveDataListTableProps}
-              scroll={scroll}
-              rowKey={(row) => `${row.id}:${row.version ?? modelVersion}`}
-              search={false}
-              params={{
-                ...contentLanguageParams,
-                modelId,
-                modelVersion,
-                submodels,
-                classification: subClassification,
-                keyword: appliedSubKeyword,
-              }}
-              pagination={{ ...dataListPagination, hideOnSinglePage: true }}
-              headerTitle={<FormattedMessage id='pages.lifeCycleModel.modelResults.subProduct' />}
-              toolbar={getDataListToolbar({
-                search: (
-                  <Input.Search
-                    style={{ width: '100%' }}
-                    value={subKeyword}
-                    allowClear
-                    enterButton
-                    placeholder={intl.formatMessage({ id: 'pages.search.keyWord' })}
-                    onChange={(event) => setSubKeyword(event.target.value)}
-                    onSearch={(value) => {
-                      subProductRequestEpochRef.current += 1;
-                      setAppliedSubKeyword(value);
-                      subProcuctTableRef.current?.setPageInfo?.({ current: 1 });
-                    }}
-                  />
-                ),
-                filter: (
-                  <DatasetClassificationFilter
-                    datasetKind='process'
-                    lang={lang}
-                    value={subClassification}
-                    onChange={(value) => {
-                      subProductRequestEpochRef.current += 1;
-                      setSubClassification(value);
-                      subProcuctTableRef.current?.setPageInfo?.({ current: 1 });
-                    }}
-                  />
-                ),
-              })}
-              actionRef={subProcuctTableRef}
-              request={async (params) => {
-                const subProducts = (params.submodels ?? []).filter(
-                  (entry) =>
-                    entry.type === 'secondary' || (!entry.type && entry.id !== params.modelId),
-                );
-                return guardLocaleMaterializedTableRequest(
-                  params.contentLanguage,
-                  () => currentContentLanguageRef.current,
-                  subProductRequestEpochRef,
-                  () =>
-                    getProcessesByIdAndVersion(
-                      subProducts.map((e) => ({ id: e.id, version: e.version })),
-                      params.contentLanguage,
-                      { classification: params.classification, keyword: params.keyword },
-                    ),
-                );
-              }}
-              columns={orderDataListColumns(columns)}
-            />
-          )}
-        </ResponsiveDataListViewport>
+        {hasSecondary && (
+          <ResponsiveDataListViewport columns={columns}>
+            {({ scroll }) => (
+              <ProTable<ProcessTable, ModelResultTableParams>
+                {...responsiveDataListTableProps}
+                scroll={scroll}
+                rowKey={(row) => `${row.id}:${row.version ?? modelVersion}`}
+                search={false}
+                params={{
+                  ...contentLanguageParams,
+                  modelId,
+                  modelVersion,
+                  submodels,
+                  classification: subClassification,
+                  keyword: appliedSubKeyword,
+                }}
+                pagination={{ ...dataListPagination, hideOnSinglePage: true }}
+                headerTitle={<FormattedMessage id='pages.lifeCycleModel.modelResults.subProduct' />}
+                toolbar={getDataListToolbar({
+                  search: (
+                    <Input.Search
+                      style={{ width: '100%' }}
+                      value={subKeyword}
+                      allowClear
+                      enterButton
+                      placeholder={intl.formatMessage({ id: 'pages.search.keyWord' })}
+                      onChange={(event) => setSubKeyword(event.target.value)}
+                      onSearch={(value) => {
+                        subProductRequestEpochRef.current += 1;
+                        setAppliedSubKeyword(value);
+                        subProcuctTableRef.current?.setPageInfo?.({ current: 1 });
+                      }}
+                    />
+                  ),
+                  filter: (
+                    <DatasetClassificationFilter
+                      datasetKind='process'
+                      lang={lang}
+                      value={subClassification}
+                      onChange={(value) => {
+                        subProductRequestEpochRef.current += 1;
+                        setSubClassification(value);
+                        subProcuctTableRef.current?.setPageInfo?.({ current: 1 });
+                      }}
+                    />
+                  ),
+                })}
+                actionRef={subProcuctTableRef}
+                request={async (params) => {
+                  const subProducts = (params.submodels ?? []).filter(
+                    (entry) =>
+                      entry.type === 'secondary' || (!entry.type && entry.id !== params.modelId),
+                  );
+                  return guardLocaleMaterializedTableRequest(
+                    params.contentLanguage,
+                    () => currentContentLanguageRef.current,
+                    subProductRequestEpochRef,
+                    () =>
+                      getProcessesByIdAndVersion(
+                        subProducts.map((e) => ({ id: e.id, version: e.version })),
+                        params.contentLanguage,
+                        { classification: params.classification, keyword: params.keyword },
+                      ),
+                  );
+                }}
+                columns={orderDataListColumns(columns)}
+              />
+            )}
+          </ResponsiveDataListViewport>
+        )}
       </Drawer>
     </>
   );

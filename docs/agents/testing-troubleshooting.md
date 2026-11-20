@@ -43,8 +43,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Platform #1488: reviewed focused form tests and native parser compatibility; no runtime workaround, warning suppression, retry policy or recovery command change is introduced.'
 ---
 
@@ -216,7 +216,7 @@ The macOS Jest launcher adds `--no-sparkplug` to its existing direct Node flags.
 
 [Node's upstream fix](https://github.com/nodejs/node/commit/fb0d0ca28993802d67360edc84d467fe3ccdc20b) backports V8's dispatch-register/linkage correction for the matching GC signature. The official24.22.2 tagged source contains it, and the changelog first lists it in24.22.0. Latest verified stable Node24 metadata at this review is24.22.2; neither it nor a new runtime/image baseline is adopted by this workaround. Retire the temporary Sparkplug flag only after the owning tracked runtime task qualifies an upstream-fixed supported Node24 baseline, its exact executable/image identities, installed worker/consumer compatibility and unchanged complete local/hosted qualification. Keep the existing optimizer flags unless their separate retirement is supported.
 
-Do not substitute serialization, smaller pools, lower coverage, retries or excluded suites for the mitigation or its proof. The existing runner suite exercises real parent-bound Jest-worker children and a missing-flag negative control with normal process closure. Preserve full source collection, all existing suites/assertions, the25% unit pool, two coverage workers,512MB recycle boundaries and every100% threshold. A recurrence after the mitigation requires new PID/runtime/argv/native-stack evidence and diagnosis; one focused pass or a later green aggregate cannot retrospectively qualify the earlier failed push. Linux/Windows flags and all exact Node/pnpm/image/dependency/product pins stay unchanged.
+Do not substitute serialization, smaller pools, lower coverage, retries or excluded suites for the mitigation or its proof. The existing runner suite exercises real parent-bound Jest-worker children and a missing-flag negative control with normal process closure. Preserve full source collection, all existing suites/assertions, the25% unit pool, the qualified coverage-worker profile in [repo validation](repo-validation.md),512MB recycle boundaries and every100% threshold. A recurrence after the mitigation requires new PID/runtime/argv/native-stack evidence and diagnosis; one focused pass or a later green aggregate cannot retrospectively qualify the earlier failed push. Linux/Windows flags and all exact Node/pnpm/image/dependency/product pins stay unchanged.
 
 For a hosted resource-boundary failure, inspect receipt v2 command phase/operation/resource ID and native status/signal/errorCode before another execution. A timed-out CLI may have changed daemon state; recover only from prior exact owned identity, never from absence or a generic image/label match. Historical v1 ERR_ASSERTION cannot establish the exact Docker cause. Canonical/browser success and resource closure remain separate required evidence.
 

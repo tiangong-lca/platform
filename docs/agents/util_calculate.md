@@ -21,8 +21,8 @@ checkPaths:
   - src/services/lciaMethods/**
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Platform #1488: reviewed classification-only dataset serialization and editor markers; matrix compilation/solving, allocation, LCIA, multiplier write-back, cancellation and result persistence orchestration remain unchanged.'
 ---
 
@@ -87,6 +87,10 @@ Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `Cal
 | 6 | `util_calculate.ts` | allocated provider records, independent result records, LCIA via existing evidence path, standard instance projection |
 | 7 | `api.ts` | persistence plan, bundle save (unchanged schema), save-status mapping: authoritative rejection → `SAVE_REJECTED`; transport failures or unparseable response bodies → `SAVE_STATUS_UNKNOWN` (never a definite rejection without evidence) |
 
+## Result policy
+
+New Model revisions use `single-primary-v1`. The matrix worker solves only the primary result scenario and retains the complete product-system graph for allocation and export. Untagged revisions continue to assemble their historical product results. The result dataset type follows the exact-version non-reference exchanges at the net boundary.
+
 ## Calculation Semantics
 
 - The system is demand-driven: the ★ reference target is the final demand `y` of the reference view; every other view is driven by connected consumers. Cycles enter the equations fully; nothing breaks edges.
@@ -99,7 +103,7 @@ Failures throw `CalculationError` (typed `code` plus locatable `issues`) or `Cal
 - LU residuals and product-demand balances verify the numerical result. Singular systems produce `MODEL_NOT_SOLVABLE`; invalid numerical results produce `NUMERIC_RESULT_INVALID`.
 - Solved activities retain small positive values. Within-tolerance negative numerical noise is clamped to zero; inventory aggregation omits only exact-zero exchanges.
 - `productSystem.ts` projects each allocated view as a unit-reference Process provider. Its instance multiplier is the product activity. Unallocated single-reference inventories retain the source Process and multiplier `activity / reference amount`. Zero-demand instances retain multiplier zero.
-- Each result scenario solves its own final-demand vector, including all connected upstream suppliers and cycles. The primary scenario uses the Model target; every other product/service view receives a secondary scenario at its source reference quantity, including intermediate products. These scenario solves never overwrite the primary solution, edge amounts or standard-instance multipliers. Connected status does not determine result membership or identity. The net reference exchange records that scenario's functional unit.
+- Each result scenario solves its own final-demand vector, including all connected upstream suppliers and cycles. The primary scenario uses the Model target; in unmarked legacy revisions every other product/service view receives a secondary scenario at its source reference quantity, including intermediate products. These scenario solves never overwrite the primary solution, edge amounts or standard-instance multipliers. Connected status does not determine result membership or identity. The net reference exchange records that scenario's functional unit.
 - `productSystemPersistence.ts` materializes evaluated provider exchanges with `dataDerivationTypeStatus = Calculated`, removes executable allocation/formula fields, preserves source inventory metadata, and clears inherited review claims. Provider identity combines source instance, exact source Process version and product exchange. Existing provider IDs are reused for matching identities.
 - `json_tg.xflow` keeps source nodes and links; standard `processInstance` references the projected providers and supplies the scalar for each complete referenced inventory. Allocated provider records are saved in the same bundle and tracked separately from primary/secondary result records. Result selectors and `referenceToResultingProcess` include only result records.
 - Updating an existing bundle retains each declared result/provider ID and its own version; only new results use the Model version. Queries and mutations use exact `id + version`, and a missing or foreign old member rejects the save rather than creating a replacement. Standard resulting references and UI membership carry those same result versions.

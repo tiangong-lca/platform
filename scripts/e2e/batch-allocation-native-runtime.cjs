@@ -6,18 +6,18 @@ const fs = require('node:fs'),
 const { createRequire } = require('node:module');
 const { check, BROWSERS } = require('./batch-allocation-native-policy.cjs');
 const { sha, fileHash, bindBrowserTree } = require('./batch-allocation-native-source.cjs');
-const POLICY = 'playwright-1.62.1-default-headless';
+const POLICY = 'playwright-1.65.0-default-headless';
 // Verified against the official npm archive and registry SHA512 SRI, in memory.
 const ARCHIVE = Object.freeze({
-  url: 'https://registry.npmjs.org/playwright-core/-/playwright-core-1.62.1.tgz',
+  url: 'https://registry.npmjs.org/playwright-core/-/playwright-core-1.65.0.tgz',
   integrity:
-    'sha512-wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw==',
-  sha256: '954be1e183d0ddb9748fe0d2d08b0b66a9210c74dd75c397aeb70303b9f08a00',
+    'sha512-vNSKgH6YqtN7cdT/L334zo0a+YwkrpicyrHJlWWPIm/Q+Nn2SWInil01oT0mbu96U4GgoRtCYQD9CzJQgju+lA==',
+  sha256: '315247c55a793ca760b2f05bdcee0e6a53fd65b1f22d1d3de8323c8c9395add3',
 });
 const PINS = Object.freeze({
-  'package.json': '07c47543631fef9508760365dee9fbe958c562093ec8d122543949ed231f233f',
-  'browsers.json': 'f306eed529599b1eaf2f8a85db9de2b23e1a3fe36c2b66434b7c9434fb627a99',
-  'lib/coreBundle.js': '9393fa79e1c67c74edc26b610d65a4f7ed73d345a762465cc88340a33a2454ac',
+  'package.json': 'f5c29da29c2f96b8f77a58d93250b3ea60dbe3d8325491fb7519956f7f1d2d28',
+  'browsers.json': '8058cd0e5bf0e9e20511a7052de42c1a89a8b9b36fa1b13da6d08b83d0c7f8b9',
+  'lib/coreBundle.js': '4ef8330594818d8f464de939e32bca62b758099e0d0e94a56095406da963f7f1',
 });
 const ENTRIES = Object.freeze({
   chromium: 'chromium-headless-shell',
@@ -112,7 +112,7 @@ function inspectRuntimePackages(root, ports = {}) {
     files[file] = sha(bytes[file]);
   }
   for (const file of [testFile, playwrightFile, coreFile])
-    check(JSON.parse(bytes[file]).version === '1.62.1', 'runtime_package_version');
+    check(JSON.parse(bytes[file]).version === '1.65.0', 'runtime_package_version');
   for (const [rel, hash] of Object.entries(PINS))
     check(files[hostPath.join(coreRoot, rel)] === hash, 'runtime_package_pin');
   check(
@@ -137,9 +137,9 @@ function assertShellDescriptor(manifest) {
   const descriptor = descriptors[0];
   check(
     exact(descriptor, ['name', 'revision', 'installByDefault', 'browserVersion', 'title']) &&
-      descriptor.revision === '1234' &&
+      descriptor.revision === '1254' &&
       descriptor.installByDefault === true &&
-      descriptor.browserVersion === '151.0.7922.34' &&
+      descriptor.browserVersion === '158.0.8127.18' &&
       descriptor.title === 'Chrome Headless Shell',
     'runtime_descriptor',
   );
@@ -148,7 +148,7 @@ function assertShellDescriptor(manifest) {
 function resolverProof(inputs) {
   return {
     policy: POLICY,
-    version: '1.62.1',
+    version: '1.65.0',
     resolverSha256: PINS['lib/coreBundle.js'],
     manifestSha256: PINS['browsers.json'],
     packageSha256: PINS['package.json'],
@@ -166,7 +166,7 @@ function assertResolverProof(v) {
       'descriptorSha256',
     ]) &&
       v.policy === POLICY &&
-      v.version === '1.62.1' &&
+      v.version === '1.65.0' &&
       v.resolverSha256 === PINS['lib/coreBundle.js'] &&
       v.manifestSha256 === PINS['browsers.json'] &&
       v.packageSha256 === PINS['package.json'] &&
@@ -174,9 +174,9 @@ function assertResolverProof(v) {
         sha(
           JSON.stringify({
             name: 'chromium-headless-shell',
-            revision: '1234',
+            revision: '1254',
             installByDefault: true,
-            browserVersion: '151.0.7922.34',
+            browserVersion: '158.0.8127.18',
             title: 'Chrome Headless Shell',
           }),
         ),
@@ -225,9 +225,9 @@ function admitDefaultBrowsers(root, cache, env = process.env, ports = {}) {
     );
     if (name === 'chromium')
       check(
-        entry.revision === '1234' &&
-          entry.browserVersion === '151.0.7922.34' &&
-          executable === path.join(cache, 'chromium_headless_shell-1234', ...suffix),
+        entry.revision === '1254' &&
+          entry.browserVersion === '158.0.8127.18' &&
+          executable === path.join(cache, 'chromium_headless_shell-1254', ...suffix),
         'runtime_chromium_mapping',
       );
     browsers[name] = {
@@ -274,7 +274,7 @@ function assertBrowserBindings(binding, cache) {
     );
     if (name === 'chromium')
       check(
-        b.cache.directory === path.join(cache, 'chromium_headless_shell-1234') &&
+        b.cache.directory === path.join(cache, 'chromium_headless_shell-1254') &&
           [
             '/chrome-headless-shell-mac-arm64/chrome-headless-shell',
             '/chrome-headless-shell-linux64/chrome-headless-shell',

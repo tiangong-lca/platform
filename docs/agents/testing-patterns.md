@@ -46,8 +46,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Platform #1488: reviewed native Ant Design collection tests, real schema predicates and classification round trips; parser adapter, external-boundary mocks and serial Umi proof remain in use.'
 ---
 
@@ -175,7 +175,7 @@ Special cases:
 
 Browser semantic E2E pattern:
 
-- use `@playwright/test` `1.62.1` through `playwright.config.ts` and keep specs/helpers under `tests/e2e/i18n/**`
+- use `@playwright/test` `1.65.0` through `playwright.config.ts` and keep specs/helpers under `tests/e2e/i18n/**`
 - use `pnpm e2e:dev` for a dirty/focused worktree loop; it serves the candidate with `pnpm start:main` and must still reject a non-loopback Playwright base URL
 - a dirty credential-free qualification diagnostic must compile `REACT_APP_ENV=qualification`, serve that candidate on loopback, and run Playwright with `E2E_EXTERNAL_SERVER=true`; do not combine qualification simulator flags with the `start:main` bundle because its real backend target must be rejected by readiness
 - use `pnpm e2e:release` for exact committed browser qualification: require a clean commit, export only the Next candidate, build/serve the production bundle inside the digest-pinned image, and never mount the parent workspace, Git metadata, host dependencies, or browser profiles

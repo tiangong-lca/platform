@@ -17,8 +17,8 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-13
-lastReviewedCommit: 80233538667725434011524a64c482f89f14dccb
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
 lastReviewedNote: 'Platform #1488: reviewed classification encode/decode and required-language display; product demand, allocation, functional units, instance multipliers, result identity and model/result save semantics remain unchanged.'
 related:
   - ./util_calculate.md
@@ -195,15 +195,9 @@ h = C g
 
 ## 8. 主产品结果与其他产品结果
 
-主产品结果对应 Model 选定的参考产品或处理服务及其目标量；它决定主模型的活动量、连接数量和标准实例倍率。
+新建 Model 或从已有 Model 创建新版本时，平台按 `json_tg.resultPolicy = single-primary-v1` 保存。每个版本仅生成一份与所选功能单位对应的主结果。更换主产品或把参考交换从供应改为处置时，需创建新的 Model 版本。内部流已经抵消，仍有外部产品或废物交换的清单标记为部分终止系统。多产品分配和标准计算图所需的 `allocated` 单位过程继续保留在模型依赖中。
 
-其他产品结果覆盖模型内各过程的有效定量参考、已连接且具有明确归属的产品，以及已声明的分配产品，包括中间产品、边界产品和独立节点。是否连接下游不决定结果资格。普通排放等输出不自动成为产品目标；缺少必要分配时保留可定位的计算错误，不推定份额。
-
-其他产品结果以该产品在来源清单中的参考数量为目标，每份结果使用自己的需求向量求解供应依赖（包括反馈循环）。这些独立计算不改写主模型活动量、倍率或连接数量。参考数量随结果明确保存；本次扩展不把已有结果静默归一到 1 单位。未展开的外部交换保留为模型边界，结果不隐含完整生命周期覆盖。
-
-界面保留主产品和其他产品两个区域。分配后的单位过程属于计算依赖，不列入这两个汇总结果列表；已有 `primary`、`secondary`、`allocated` 存储角色继续使用，`secondary` 表示其他产品结果而非工艺副产品。产品从边界变成中间位置不会仅因此改变其结果身份或删除其结果。
-
-多份结果可以引用同一上游过程。每份结果中的上游贡献，由该结果自身的产品需求决定。比较或汇总结果时，使用与研究目标一致的功能单位和系统边界。
+历史版本沿用原有主、次结果及其独立需求计算，编辑历史版本不会自动转换或删除已被下游引用的副产品。创建新版本才启用单结果策略。结果视图在存在其他产品结果时展示相应区域。
 
 结果 Process 记录该功能单位下汇总的投入与产出。分配后的单位过程记录一个产品活动的清单，结果 Process 记录一段供应链计算后的清单，两者分别承担供应建模和结果表达的职责。
 

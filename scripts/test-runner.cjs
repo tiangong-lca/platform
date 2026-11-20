@@ -2,6 +2,7 @@
 'use strict';
 
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
@@ -11,9 +12,11 @@ const isAgentMode =
   process.env.TIANGONG_AGENT_MODE === '1' || process.env.TIANGONG_AGENT_MODE === 'true';
 let resolvedAgentLogDirectory;
 
-function parseRunnerArgs(argv) {
+function parseRunnerArgs(argv, host) {
   const args = [];
   let stage;
+  let defaultCoverageWorkers = false;
+  let positional = false;
   for (let index = 0; index < argv.length; index += 1) {
     const argument = argv[index];
     if (argument === '--stage') {
@@ -23,9 +26,25 @@ function parseRunnerArgs(argv) {
     } else if (argument.startsWith('--stage=')) {
       stage = argument.slice('--stage='.length);
       if (!stage) throw new Error('--stage requires a value');
+    } else if (argument === '--default-coverage-workers' && !positional) {
+      defaultCoverageWorkers = true;
+      const workers = coverageWorkerCount(
+        host ?? {
+          platform: process.platform,
+          arch: process.arch,
+          logicalCpuCount: os.cpus().length,
+          availableCpuCount: os.availableParallelism(),
+          memoryBytes: os.totalmem(),
+        },
+      );
+      args.push(`--maxWorkers=${workers}`);
     } else {
       args.push(argument);
+      if (argument === '--') positional = true;
     }
+  }
+  if (defaultCoverageWorkers && stage !== 'coverage') {
+    throw new Error('--default-coverage-workers requires --stage coverage');
   }
   return { args, stage };
 }
@@ -85,6 +104,16 @@ function unitWorkerArgs(platform = process.platform) {
   return platform === 'darwin'
     ? ['--maxWorkers=25%', '--workerIdleMemoryLimit=512MB']
     : ['--maxWorkers=50%'];
+}
+
+function coverageWorkerCount({ platform, arch, logicalCpuCount, availableCpuCount, memoryBytes }) {
+  return platform === 'darwin' &&
+    arch === 'arm64' &&
+    logicalCpuCount === 18 &&
+    availableCpuCount === 18 &&
+    memoryBytes === 128 * 1024 ** 3
+    ? 3
+    : 2;
 }
 
 function jestNodeArgs(platform = process.platform) {
@@ -204,6 +233,7 @@ function main(argv = process.argv.slice(2)) {
 
 module.exports = {
   agentLogDirectory,
+  coverageWorkerCount,
   failedItems,
   jestNodeArgs,
   main,
