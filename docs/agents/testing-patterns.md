@@ -46,8 +46,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-20
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedAt: 2026-11-21
+lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
 lastReviewedNote: 'Reviewed mixed reviewer and author-path errors, dataset-root isolation and legacy path-format regression controls.'
 ---
 
