@@ -1,3 +1,5 @@
+import { getClassificationSource } from '@/services/classifications/system';
+import * as schemas from '@tiangong-lca/tidas-sdk/schemas';
 import { genContactFromData, genContactJsonOrdered } from '@/services/contacts/util';
 import {
   genFlowpropertyFromData,
@@ -12,7 +14,7 @@ import { genProcessFromData, genProcessJsonOrdered } from '@/services/processes/
 import { genSourceFromData, genSourceJsonOrdered } from '@/services/sources/util';
 import { genUnitGroupFromData, genUnitGroupJsonOrdered } from '@/services/unitgroups/util';
 
-it.each([
+const datasets = [
   ['contact', 'contactInformation', genContactFromData, genContactJsonOrdered],
   [
     'flowProperty',
@@ -30,7 +32,9 @@ it.each([
   ['process', 'processInformation', genProcessFromData, genProcessJsonOrdered],
   ['source', 'sourceInformation', genSourceFromData, genSourceJsonOrdered],
   ['unitGroup', 'unitGroupInformation', genUnitGroupFromData, genUnitGroupJsonOrdered],
-] as const)(
+] as const;
+
+it.each(datasets)(
   'preserves named classification systems across the %s serializer',
   (kind, information, read, write) => {
     const systems = [
@@ -62,3 +66,207 @@ it.each([
     ).toEqual(systems);
   },
 );
+
+it.each(datasets)(
+  'round-trips a default-named %s taxonomy selection',
+  (kind, information, read, write) => {
+    const name =
+      kind === 'process' || kind === 'lifeCycleModel'
+        ? 'ISIC Rev. 5'
+        : kind === 'flow'
+          ? 'CPC Ver. 3.0'
+          : 'ILCD';
+    const system = {
+      '@name': name,
+      '@classes': getClassificationSource(kind[0].toUpperCase() + kind.slice(1)).uri,
+      'common:class': [
+        { '@level': '0', '@classId': 'A', '#text': 'Agriculture' },
+        { '@level': '1', '@classId': '01', '#text': 'Crop production' },
+      ],
+    };
+    const data = {
+      [information]: {
+        dataSetInformation: { classificationInformation: { 'common:classification': system } },
+      },
+    };
+    const form = read(data) as any;
+    expect(
+      form[information].dataSetInformation.classificationInformation['common:classification'][
+        'common:class'
+      ],
+    ).toEqual({
+      id: ['A', '01'],
+      value: ['Agriculture', 'Crop production'],
+    });
+    const saved = write('00000000-0000-4000-8000-000000000001', form) as any;
+    expect(
+      saved[`${kind}DataSet`][information].dataSetInformation.classificationInformation[
+        'common:classification'
+      ],
+    ).toEqual(system);
+  },
+);
+
+it.each(datasets)(
+  'preserves an externally sourced %s system even when its name matches the default',
+  (kind, information, read, write) => {
+    const name =
+      kind === 'process' || kind === 'lifeCycleModel'
+        ? 'ISIC Rev. 5'
+        : kind === 'flow'
+          ? 'CPC Ver. 3.0'
+          : 'ILCD';
+    const systems = [
+      {
+        '@name': name,
+        '@classes': 'https://example.org/custom.xml',
+        'common:class': [{ '@level': '0', '@classId': 'x', '#text': 'External' }],
+      },
+      {
+        '@name': name,
+        'common:class': { '@level': '2', '@classId': 'y', '#text': 'Partial hierarchy' },
+      },
+    ];
+    const data = {
+      [information]: {
+        dataSetInformation: { classificationInformation: { 'common:classification': systems } },
+      },
+    };
+    const form = read(data) as any;
+    expect(
+      form[information].dataSetInformation.classificationInformation['common:classification'],
+    ).toEqual(systems);
+    const saved = write('00000000-0000-4000-8000-000000000001', form) as any;
+    expect(
+      saved[`${kind}DataSet`][information].dataSetInformation.classificationInformation[
+        'common:classification'
+      ],
+    ).toEqual([systems[0], { ...systems[1], 'common:class': [systems[1]['common:class']] }]);
+    const schemaName = `${kind[0].toUpperCase()}${kind.slice(1)}Schema`;
+    const schema = (schemas as any)[schemaName].shape[`${kind}DataSet`].shape[information].shape
+      .dataSetInformation.shape.classificationInformation;
+    const persisted =
+      saved[`${kind}DataSet`][information].dataSetInformation.classificationInformation;
+    expect(schema.parse(persisted)).toEqual(persisted);
+  },
+);
+
+it.each(datasets)(
+  'keeps one-level classes as arrays inside repeated %s systems',
+  (kind, information, read, write) => {
+    const name =
+      kind === 'process' || kind === 'lifeCycleModel'
+        ? 'ISIC Rev. 5'
+        : kind === 'flow'
+          ? 'CPC Ver. 3.0'
+          : 'ILCD';
+    const systems = [
+      {
+        '@name': name,
+        'common:class': [{ '@level': '0', '@classId': 'A', '#text': 'Agriculture' }],
+      },
+    ];
+    const form = read({
+      [information]: {
+        dataSetInformation: { classificationInformation: { 'common:classification': systems } },
+      },
+    });
+    const saved = write('00000000-0000-4000-8000-000000000001', form) as any;
+    expect(
+      saved[`${kind}DataSet`][information].dataSetInformation.classificationInformation[
+        'common:classification'
+      ],
+    ).toEqual(systems);
+    const schemaName = `${kind[0].toUpperCase()}${kind.slice(1)}Schema`;
+    const datasetSchema = (schemas as any)[schemaName].shape[`${kind}DataSet`];
+    const classificationInformation =
+      datasetSchema.shape[information].shape.dataSetInformation.shape.classificationInformation;
+    const persisted =
+      saved[`${kind}DataSet`][information].dataSetInformation.classificationInformation;
+    expect(classificationInformation.parse(persisted)).toEqual({
+      'common:classification': systems,
+    });
+  },
+);
+
+it.each([
+  [
+    'contact',
+    'contactInformation',
+    genContactFromData,
+    genContactJsonOrdered,
+    'Contact',
+    '1',
+    'Group of organisations, project',
+  ],
+  [
+    'process',
+    'processInformation',
+    genProcessFromData,
+    genProcessJsonOrdered,
+    'Process',
+    'A',
+    'Agriculture, forestry and fishing',
+  ],
+  [
+    'flow',
+    'flowInformation',
+    genFlowFromData,
+    genFlowJsonOrdered,
+    'Flow',
+    '0',
+    'Agriculture, forestry and fishery products',
+  ],
+  [
+    'lifeCycleModel',
+    'lifeCycleModelInformation',
+    genLifeCycleModelInfoFromData,
+    genLifeCycleModelJsonOrdered,
+    'LifeCycleModel',
+    'A',
+    'Agriculture, forestry and fishing',
+  ],
+] as const)(
+  'keeps a valid one-level singleton classification for %s',
+  (kind, information, read, write, dataType, code, label) => {
+    const source = getClassificationSource(dataType);
+    const system = {
+      '@name': source.name,
+      '@classes': source.uri,
+      'common:class': [{ '@level': '0', '@classId': code, '#text': label }],
+    };
+    const initialClassification = { 'common:classification': system };
+    const schema = (schemas as any)[dataType + 'Schema'].shape[kind + 'DataSet'].shape[information]
+      .shape.dataSetInformation.shape.classificationInformation;
+    expect(schema.parse(initialClassification)).toEqual(initialClassification);
+    const input = {
+      [information]: { dataSetInformation: { classificationInformation: initialClassification } },
+    };
+    const form = read(input);
+    const saved = write('00000000-0000-4000-8000-000000000001', form) as any;
+    const persisted =
+      saved[kind + 'DataSet'][information].dataSetInformation.classificationInformation;
+    expect(schema.parse(persisted)).toEqual(initialClassification);
+    expect(persisted).toEqual(initialClassification);
+  },
+);
+
+it('serializes a newly selected one-level Process classification as an array', () => {
+  const classification = {
+    'common:classification': {
+      'common:class': { id: ['A'], value: ['Agriculture, forestry and fishing'] },
+    },
+  };
+  const saved = genProcessJsonOrdered('00000000-0000-4000-8000-000000000001', {
+    processInformation: { dataSetInformation: { classificationInformation: classification } },
+  });
+  const persisted =
+    saved.processDataSet.processInformation.dataSetInformation.classificationInformation;
+  const schema =
+    schemas.ProcessSchema.shape.processDataSet.shape.processInformation.shape.dataSetInformation
+      .shape.classificationInformation;
+  expect(schema.safeParse(persisted).success).toBe(true);
+  expect(persisted['common:classification']['common:class']).toEqual([
+    { '@level': '0', '@classId': 'A', '#text': 'Agriculture, forestry and fishing' },
+  ]);
+});

@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-20
+lastReviewedAt: 2026-11-21
 lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
-lastReviewedNote: 'Added proof retaining same-named fields outside the current dataset reviewer subtrees.'
+lastReviewedNote: 'Platform #1549 reviewed installed SDK classification round trips, multilingual validation and reviewer responsibilities.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -231,6 +231,8 @@ If a coverage change excludes framework-heavy wrapper files from `collectCoverag
 ## Author review validation
 
 For author-review validation changes, run the focused `review.validation`, `review`, Lifecycle Model `sdkValidation` and toolbar `eidtInfo`, `ValidationIssueModal`, and review `reviewPayload`/`validateComment` suites. Exercise the installed SDK with absent, empty-object, empty-array and empty-item compliance containers, retain rejection of missing author fields and malformed reviewer metadata, and prove local field/tab/node navigation alongside exact reference links and foreign-owner notifications. Filtering regressions must retain same-named fields outside the current dataset's two reviewer subtrees, including other/rootless dataset paths, nested author fields, and legacy dotted/slash paths. Keep the installed-package contract outside Jest's SDK mapper and the unchanged full gate.
+
+For dataset authoring changes, exercise an installed-SDK read/save round trip for both singleton and repeated one-level classifications. In the editor, remove the first and last system and a nested class, then refill the empty view. Verify that a prefilled empty additional language is excluded from the draft payload and preserves validation-only English placeholder handling for Chinese-only content.
 
 ## Minimum PR Validation Note
 

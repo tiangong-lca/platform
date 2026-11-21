@@ -1,5 +1,6 @@
 import LangTextItemForm from '@/components/LangTextItem/form';
 import RequiredMark from '@/components/RequiredMark';
+import schema from '@/pages/Processes/processes_schema.json';
 import ContactSelectForm from '@/pages/Contacts/Components/select/form';
 import SourceSelectForm from '@/pages/Sources/Components/select/form';
 // import { getRules } from '@/pages/Utils';
@@ -134,6 +135,9 @@ const ReveiwItemForm: FC<Props> = ({ name, lang, formRef, onData, showRules = fa
                           defaultMessage='Review details'
                         />
                       }
+                      autoExpandRequired={schema['processDataSet']['modellingAndValidation'][
+                        'validation'
+                      ]['review']['common:reviewDetails']['rules'].some((rule) => rule.required)}
                       setRuleErrorState={setReviewDetailsError}
                       // rules={
                       //   showRules

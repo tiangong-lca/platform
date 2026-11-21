@@ -1,8 +1,8 @@
 version: 1
 layout: repo
-lastReviewedAt: "2026-11-20"
+lastReviewedAt: "2026-11-21"
 lastReviewedCommit: "5e03a441b03a043e077a051842d43b29f066d102"
-lastReviewedNote: 'Reviewed the current-dataset modellingAndValidation filter scope and regressions; ownership rules remain unchanged.'
+lastReviewedNote: 'Platform #1549 reviewed dataset authoring and reviewer-stage validation boundaries on the combined delivery.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.

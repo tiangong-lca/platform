@@ -1,4 +1,9 @@
 export default {
+  'pages.classification.requiredValue': '请填写此分类必填字段。',
+  'pages.classification.addSystem': '添加分类体系',
+  'pages.classification.deleteSystem': '删除分类体系',
+  'pages.classification.addEntry': '添加分类条目',
+  'pages.classification.deleteEntry': '删除分类条目',
   'pages.classification.systemName': '分类体系',
   'pages.classification.systemUri': '分类体系 URI',
   'pages.classification.level': '层级',

@@ -1,3 +1,4 @@
+import { classificationFormNameMatcher } from '@/pages/Utils/validation/classification';
 import type { ValidationIssueSdkDetail } from '@/pages/Utils/review';
 import {
   normalizeSimpleDatasetSdkValidationDetails,
@@ -188,18 +189,10 @@ export const normalizeLifeCycleModelSdkValidationDetails = (issues: any[], order
       },
     ],
     specialFormNames: [
-      {
-        formName: [
-          'lifeCycleModelInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^lifeCycleModelInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'lifeCycleModelDataSet',
+        dataType: 'LifeCycleModel',
+      }),
     ],
   });
 };
@@ -218,18 +211,10 @@ export const normalizeLifeCycleModelProcessInstanceSdkValidationDetails = (
     fieldLabelsByKey: LIFECYCLEMODEL_FIELD_LABELS_BY_KEY,
     requiredLangTextFields: LIFECYCLEMODEL_REQUIRED_LANG_TEXT_FIELDS,
     specialFormNames: [
-      {
-        formName: [
-          'lifeCycleModelInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^lifeCycleModelInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'lifeCycleModelDataSet',
+        dataType: 'LifeCycleModel',
+      }),
     ],
   }).flatMap((detail) => {
     const normalizedDetail = toProcessInstanceFieldDetail(detail, orderedJson, locale);

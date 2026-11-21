@@ -276,6 +276,8 @@ describe('LifeCycleModels sdkValidation', () => {
                   'common:class': [
                     {
                       '@classId': 'missing-classification',
+                      '@level': '0',
+                      '#text': 'Missing classification',
                     },
                   ],
                 },

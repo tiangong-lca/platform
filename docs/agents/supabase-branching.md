@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-20
-lastReviewedCommit: be1055c098968b00db74991d013d4ec31c8fd53d
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Platform #1488: reviewed classification shaping in existing app-side services; Supabase clients, RPCs, environments, schema ownership and production-write authorization remain unchanged.'
 ---
 
 # Supabase Environment And Database Workflow

@@ -21,9 +21,9 @@ checkPaths:
   - src/services/lciaMethods/**
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
-lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Platform #1488: reviewed classification-only dataset serialization and editor markers; matrix compilation/solving, allocation, LCIA, multiplier write-back, cancellation and result persistence orchestration remain unchanged.'
 ---
 
 # Lifecycle Model Calculation Reference

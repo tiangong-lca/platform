@@ -171,6 +171,7 @@ const ProcessExchangeCreate: FC<Props> = ({
                   defaultMessage='Exchange direction'
                 />
               }
+              required
               name={'exchangeDirection'}
               rules={
                 showRules
@@ -209,6 +210,7 @@ const ProcessExchangeCreate: FC<Props> = ({
             <UnitsContext.Provider value={{ units, setUnits, setTargetUnit }}>
               <FlowsSelectForm
                 name={['referenceToFlowDataSet']}
+                showRequiredLabel
                 label={
                   <FormattedMessage
                     id='pages.process.view.exchange.referenceToFlowDataSet'
@@ -271,6 +273,7 @@ const ProcessExchangeCreate: FC<Props> = ({
                   defaultMessage='Mean amount'
                 />
               }
+              required
               name={'meanAmount'}
               rules={
                 showRules
@@ -294,6 +297,7 @@ const ProcessExchangeCreate: FC<Props> = ({
                   defaultMessage='Resulting amount'
                 />
               }
+              required
               name={'resultingAmount'}
               rules={
                 showRules
@@ -449,6 +453,7 @@ const ProcessExchangeCreate: FC<Props> = ({
                   defaultMessage='Data derivation type / status'
                 />
               }
+              required
               name={'dataDerivationTypeStatus'}
               rules={
                 showRules
