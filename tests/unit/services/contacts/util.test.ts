@@ -43,7 +43,7 @@ describe('Contacts Util Service', () => {
             'common:name': [{ '@xml:lang': 'en', '#text': 'Test Full Name' }],
             classificationInformation: {
               'common:classification': {
-                'common:class': [{ '@level': '0', '#text': 'Category 1' }],
+                'common:class': { id: ['1'], value: ['Category 1'] },
               },
             },
             contactAddress: [{ '@xml:lang': 'en', '#text': '123 Test St' }],
@@ -202,7 +202,7 @@ describe('Contacts Util Service', () => {
             'common:name': [{ '@xml:lang': 'en', '#text': 'Test Full Name' }],
             classificationInformation: {
               'common:classification': {
-                'common:class': [{ '@level': '0', '#text': 'Category' }],
+                'common:class': [{ '@level': '0', '@classId': '1', '#text': 'Category' }],
               },
             },
             contactAddress: [{ '@xml:lang': 'en', '#text': '123 Test St' }],

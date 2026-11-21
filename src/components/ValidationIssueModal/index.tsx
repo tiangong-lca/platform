@@ -998,8 +998,18 @@ const ValidationIssueModalContent = ({
         const isNotifyActionDisabled = notifiedIssueKeys[issueKey] || loadingIssueKey === issueKey;
         const isOpenActionDisabled = isValidationIssueLinkDisabled(groupedIssue);
         const isDisabled = shouldNotifyDataOwner ? isNotifyActionDisabled : isOpenActionDisabled;
+        // Only sdkInvalid describes the current dataset. Reference rows must
+        // keep their own dataset link even when the editor supplies onNavigate.
+        const sdkIssue = groupedIssue.issues.find((issue) => issue.code === 'sdkInvalid');
+        const detail = sdkIssue
+          ? getValidationIssueInteractiveDetails(sdkIssue).find((item) => item.tabName)
+          : undefined;
+        const tabName =
+          detail?.tabName ??
+          (sdkIssue ? getValidationIssueInteractiveTabNames(sdkIssue)[0] : undefined);
+        const canNavigateLocally = !shouldNotifyDataOwner && !!onNavigate && !!tabName;
 
-        return groupedIssue.link ? (
+        return groupedIssue.link || canNavigateLocally ? (
           <Button
             type='link'
             disabled={isDisabled}
@@ -1012,6 +1022,11 @@ const ValidationIssueModalContent = ({
             onClick={() => {
               if (shouldNotifyDataOwner) {
                 void handleNotifyDataOwner(groupedIssue);
+                return;
+              }
+
+              if (canNavigateLocally) {
+                onNavigate?.({ detail, tabName });
                 return;
               }
 

@@ -1,3 +1,4 @@
+import { classificationFormNameMatcher } from '@/pages/Utils/validation/classification';
 import { normalizeSimpleDatasetSdkValidationDetails } from '@/pages/Utils/validation/sdkDetails';
 
 const FLOWPROPERTY_REQUIRED_LANG_TEXT_FIELDS = new Set<string>([
@@ -26,18 +27,10 @@ export const normalizeFlowpropertySdkValidationDetails = (issues: any[], ordered
     fieldLabelsByKey: FLOWPROPERTY_FIELD_LABELS_BY_KEY,
     requiredLangTextFields: FLOWPROPERTY_REQUIRED_LANG_TEXT_FIELDS,
     specialFormNames: [
-      {
-        formName: [
-          'flowPropertiesInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^flowPropertiesInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'flowPropertyDataSet',
+        dataType: 'FlowProperty',
+      }),
     ],
   });
 };

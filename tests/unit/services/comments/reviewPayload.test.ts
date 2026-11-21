@@ -104,15 +104,18 @@ it('does not validate fields outside the review comment ownership boundary', () 
   });
 });
 
-it('blocks invalid compliance metadata', () => {
+it.each(['process', 'lifeCycleModel'] as const)('blocks invalid %s compliance metadata', (kind) => {
   expect(() =>
-    prepareReviewCommentApproval({
-      modellingAndValidation: {
-        complianceDeclarations: {
-          compliance: { 'common:approvalOfOverallCompliance': '完全符合' },
+    prepareReviewCommentApproval(
+      {
+        modellingAndValidation: {
+          complianceDeclarations: {
+            compliance: { 'common:approvalOfOverallCompliance': '完全符合' },
+          },
         },
       },
-    }),
+      kind,
+    ),
   ).toThrow(ReviewPayloadValidationError);
 });
 

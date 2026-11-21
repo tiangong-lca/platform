@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-20
-lastReviewedCommit: 71469010010347aa68ab0cfaeafd60f3ff7392b6
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedAt: 2026-11-21
+lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
+lastReviewedNote: 'Reviewed mixed reviewer and author-path errors, dataset-root isolation and legacy path-format regression controls.'
 ---
 
 # Testing Patterns Reference

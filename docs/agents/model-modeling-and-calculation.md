@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-18
-lastReviewedCommit: 8980351d81886bbd3641257505a6bb962ce22992
-lastReviewedNote: 'Platform #1529 verifies Model result-save field ownership, preserved annualized units and Process-to-CLI replay. Reviewed the existing branch, API, calculation and verification contracts.'
+lastReviewedAt: 2026-11-20
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Platform #1488: reviewed classification encode/decode and required-language display; product demand, allocation, functional units, instance multipliers, result identity and model/result save semantics remain unchanged.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md

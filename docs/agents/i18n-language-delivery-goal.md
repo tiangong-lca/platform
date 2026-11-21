@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-19
-lastReviewedCommit: 16fe119589303764bc420c1abec74b24be9fac90
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedAt: 2026-11-21
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Platform #1549 reviewed required-only language expansion and localized classification action labels across the four active locales.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

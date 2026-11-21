@@ -14,6 +14,7 @@ import {
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'umi';
 import {
+  getLifeCycleModelSdkIssueTabName,
   normalizeLifeCycleModelProcessInstanceSdkValidationDetails,
   normalizeLifeCycleModelSdkValidationDetails,
 } from '../../sdkValidation';
@@ -282,6 +283,7 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
 
       const tabName = target.detail?.tabName ?? target.tabName;
 
+      setDrawerVisible(true);
       if (tabName) {
         setActiveTabKey(tabName);
       }
@@ -432,7 +434,7 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
         if (err.path.includes('processInstance')) {
           processInstanceValid = false;
         } else {
-          const tabName = typeof err?.path[1] === 'string' ? err.path[1] : undefined;
+          const tabName = getLifeCycleModelSdkIssueTabName(err.path);
           if (tabName && !errTabNames.includes(tabName)) {
             errTabNames.push(tabName);
           }

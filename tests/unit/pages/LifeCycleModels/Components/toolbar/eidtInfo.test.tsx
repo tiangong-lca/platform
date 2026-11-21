@@ -45,10 +45,22 @@ jest.mock('@/pages/LifeCycleModels/Components/form', () => {
   const React = require('react');
   return {
     __esModule: true,
-    LifeCycleModelForm: ({ children, onTabChange, onData, formRef, activeTabKey }: any) => (
+    LifeCycleModelForm: ({
+      children,
+      onTabChange,
+      onData,
+      formRef,
+      activeTabKey,
+      sdkValidationFocus,
+      sdkValidationDetails,
+    }: any) => (
       <div data-testid='life-cycle-model-form'>
         {children}
         <div data-testid='active-tab'>{activeTabKey}</div>
+        <div data-testid='validation-focus'>{sdkValidationFocus?.fieldPath}</div>
+        <div data-testid='invalid-tabs'>
+          {JSON.stringify(sdkValidationDetails?.map((detail: any) => detail.tabName))}
+        </div>
         <button type='button' onClick={() => onTabChange?.('validation')}>
           switch-validation
         </button>
@@ -1714,6 +1726,94 @@ describe('ToolbarEditInfo', () => {
       'Please complete the main product process data in the model results',
     );
     expect(result.checkResult).toBe(false);
+  });
+
+  it('uses the mapped metadata tab for both the issue summary and field navigation', async () => {
+    const ref = React.createRef<any>();
+    mockValidateDatasetWithSdk.mockReturnValueOnce({
+      success: false,
+      issues: [
+        {
+          code: 'required_missing',
+          path: ['lifeCycleModelDataSet', 'modellingAndValidation', 'complianceDeclarations'],
+        },
+      ],
+    });
+    mockBuildValidationIssues.mockReturnValueOnce([{ code: 'sdkInvalid' }]);
+    mockGetLifeCycleModelDetail.mockResolvedValue(createModelDetail());
+    mockGetProcessDetail.mockResolvedValue({ data: {} });
+    mockCheckReferences.mockResolvedValue({ findProblemNodes: () => [] });
+    render(<ToolbarEditInfo ref={ref} {...baseProps} />);
+    await act(async () => {
+      await ref.current.handleCheckData('review', [{ data: { quantitativeReference: '1' } }], []);
+    });
+    expect(mockBuildValidationIssues).toHaveBeenCalledWith(
+      expect.objectContaining({ sdkInvalidTabNames: ['complianceDeclarations'] }),
+    );
+    expect(screen.getByTestId('invalid-tabs')).toHaveTextContent('["complianceDeclarations"]');
+    const detail = mockBuildValidationIssues.mock.calls[0][0].sdkInvalidDetails[0];
+    await act(async () => {
+      mockShowValidationIssueModal.mock.calls[0][0].onNavigate({ detail });
+    });
+    expect(screen.getByTestId('active-tab')).toHaveTextContent('complianceDeclarations');
+    expect(screen.getByTestId('validation-focus')).toHaveTextContent(
+      'modellingAndValidation.complianceDeclarations',
+    );
+  });
+
+  it('opens model metadata when a process-instance target cannot be handled by the graph', async () => {
+    const ref = React.createRef<any>();
+    const onNavigateProcessInstance = jest.fn().mockReturnValue(false);
+    mockValidateDatasetWithSdk.mockReturnValueOnce({
+      success: false,
+      issues: [
+        {
+          code: 'required_missing',
+          path: [
+            'lifeCycleModelDataSet',
+            'lifeCycleModelInformation',
+            'technology',
+            'processes',
+            'processInstance',
+            0,
+            'referenceToProcess',
+            '@refObjectId',
+          ],
+        },
+      ],
+    });
+    mockGenLifeCycleModelJsonOrdered.mockReturnValueOnce({
+      lifeCycleModelDataSet: {
+        lifeCycleModelInformation: {
+          technology: {
+            processes: {
+              processInstance: [{ '@dataSetInternalID': 'node-1', referenceToProcess: {} }],
+            },
+          },
+        },
+      },
+    });
+    mockBuildValidationIssues.mockReturnValueOnce([{ code: 'sdkInvalid' }]);
+    mockGetLifeCycleModelDetail.mockResolvedValue(createModelDetail());
+    mockGetProcessDetail.mockResolvedValue({ data: {} });
+    mockCheckReferences.mockResolvedValue({ findProblemNodes: () => [] });
+    render(
+      <ToolbarEditInfo
+        ref={ref}
+        {...baseProps}
+        onNavigateProcessInstance={onNavigateProcessInstance}
+      />,
+    );
+    await act(async () => {
+      await ref.current.handleCheckData('review', [{ data: { quantitativeReference: '1' } }], []);
+    });
+    expect(screen.queryByTestId('active-tab')).not.toBeInTheDocument();
+    const detail = mockBuildValidationIssues.mock.calls[0][0].sdkInvalidDetails[0];
+    await act(async () => {
+      mockShowValidationIssueModal.mock.calls[0][0].onNavigate({ detail });
+    });
+    expect(onNavigateProcessInstance).toHaveBeenCalledWith(detail);
+    expect(screen.getByTestId('active-tab')).toHaveTextContent('lifeCycleModelInformation');
   });
 
   it('shows tab-level validation errors and reopens the drawer for correction', async () => {

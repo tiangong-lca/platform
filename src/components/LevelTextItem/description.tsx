@@ -1,3 +1,4 @@
+import { usesBuiltInClassification } from '@/services/classifications/system';
 import { getILCDClassification, getILCDFlowCategorization } from '@/services/classifications/api';
 import { genClassStr } from '@/services/general/util';
 import { Button, Descriptions, Spin } from 'antd';
@@ -114,7 +115,7 @@ const ClassificationSystemsDescription: FC<Props> = (props) => {
     <>
       {systems.map((system: any, index: number) => {
         const classes = system?.['common:class'] ?? system?.['common:category'];
-        if (!system?.['@name']) {
+        if (usesBuiltInClassification(system, props.categoryType)) {
           const values =
             classes?.value ??
             (Array.isArray(classes)

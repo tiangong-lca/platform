@@ -1,3 +1,7 @@
+import {
+  classificationClassesToForm,
+  classificationSystemsToJson,
+} from '../classifications/serialization';
 import { mapTidasRepeated } from '../general/tidasRepeatedFields';
 import { FormFlow } from '@/services/flows/data';
 import { createFlow as createTidasFlow } from '@tiangong-lca/tidas-sdk/core';
@@ -75,24 +79,22 @@ export function genFlowJsonOrdered(id: string, data: any) {
         data?.flowInformation?.dataSetInformation?.classificationInformation?.[
           'common:elementaryFlowCategorization'
         ],
-        (item) => ({
-          ...item,
-          'common:category': classificationToJsonList(item?.['common:category'], true),
-        }),
+        (item) => {
+          const categories = classificationToJsonList(item?.['common:category'], true);
+          return {
+            ...item,
+            'common:category': Array.isArray(categories) ? categories : [categories],
+          };
+        },
       ),
     };
   } else {
     classificationInformation = {
-      'common:classification': mapTidasRepeated(
+      'common:classification': classificationSystemsToJson(
         data?.flowInformation?.dataSetInformation?.classificationInformation?.[
           'common:classification'
         ],
-        (item) => ({
-          ...item,
-          'common:class': item?.['@name']
-            ? item?.['common:class']
-            : classificationToJsonList(item?.['common:class']),
-        }),
+        'Flow',
       ),
     };
   }
@@ -352,9 +354,7 @@ export function genFlowFromData(data: any): FormFlow {
         ],
         (item) => ({
           ...item,
-          'common:class': item?.['@name']
-            ? item?.['common:class']
-            : classificationToStringList(item?.['common:class']),
+          'common:class': classificationClassesToForm(item, 'Flow'),
         }),
       ),
     };
