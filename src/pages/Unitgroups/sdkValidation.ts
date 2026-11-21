@@ -1,3 +1,4 @@
+import { classificationFormNameMatcher } from '@/pages/Utils/validation/classification';
 import type { ValidationIssueSdkDetail } from '@/pages/Utils/review';
 import { normalizeSimpleDatasetSdkValidationDetails } from '@/pages/Utils/validation/sdkDetails';
 
@@ -104,18 +105,10 @@ export const normalizeUnitgroupSdkValidationDetails = (issues: any[], orderedJso
     fieldLabelsByKey: UNITGROUP_FIELD_LABELS_BY_KEY,
     requiredLangTextFields: UNITGROUP_REQUIRED_LANG_TEXT_FIELDS,
     specialFormNames: [
-      {
-        formName: [
-          'unitGroupInformation',
-          'dataSetInformation',
-          'classificationInformation',
-          'common:classification',
-          'common:class',
-          'showValue',
-        ],
-        match:
-          /^unitGroupInformation\.dataSetInformation\.classificationInformation\.common:classification/,
-      },
+      classificationFormNameMatcher(orderedJson, {
+        datasetKey: 'unitGroupDataSet',
+        dataType: 'UnitGroup',
+      }),
     ],
   }).map((detail) => toUnitFieldDetail(detail, orderedJson));
 };

@@ -1,4 +1,9 @@
 export default {
+  'pages.classification.requiredValue': 'Please fill in this required classification field.',
+  'pages.classification.addSystem': 'Add system',
+  'pages.classification.deleteSystem': 'Remove system',
+  'pages.classification.addEntry': 'Add class',
+  'pages.classification.deleteEntry': 'Remove class',
   'pages.classification.systemName': 'Classification system',
   'pages.classification.systemUri': 'Classification system URI',
   'pages.classification.level': 'Level',

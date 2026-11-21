@@ -2184,3 +2184,26 @@ describe('General Utility Functions', () => {
     });
   });
 });
+
+it.each(['de', 'fr'])(
+  'ignores an empty %s authoring row when supplementing English during validation',
+  async (language) => {
+    const title = [
+      { '@xml:lang': 'zh', '#text': '钢铁制造' },
+      { '@xml:lang': language, '#text': ' ' },
+      { '@xml:lang': 'en' },
+    ];
+    const options = { intent: 'validation' as const };
+    const result = await normalizeLangPayloadBeforeSave({ title }, options);
+    expect(result.issues).toEqual([]);
+    expect(result.payload.title).toEqual([title[0], { '@xml:lang': 'en', '#text': undefined }]);
+    expect(result.supplementedEnglishPlaceholderPaths).toEqual(['title']);
+
+    const withTranslation = title.map((entry) =>
+      entry['@xml:lang'] === language ? { ...entry, '#text': 'Traduction' } : entry,
+    );
+    const mixed = await normalizeLangPayloadBeforeSave({ title: withTranslation }, options);
+    expect(mixed.issues).toEqual([expect.objectContaining({ code: 'missing_en', path: 'title' })]);
+    expect(mixed.supplementedEnglishPlaceholderPaths).toEqual([]);
+  },
+);

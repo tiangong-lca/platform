@@ -221,7 +221,9 @@ describe('FlowForm (src/pages/Flows/Components/form.tsx)', () => {
     lang: 'en',
     activeTabKey: 'flowInformation',
     drawerVisible: true,
-    formRef: { current: { setFieldValue: jest.fn() } },
+    formRef: {
+      current: { setFieldValue: jest.fn(), getFieldValue: jest.fn().mockReturnValue(null) },
+    },
     onData: jest.fn(),
     flowType: 'Elementary flow',
     propertyDataSource: [
@@ -293,10 +295,11 @@ describe('FlowForm (src/pages/Flows/Components/form.tsx)', () => {
   });
 
   it('resets classification fields when switching away from elementary flow', async () => {
-    const props = baseProps();
+    const props = { ...baseProps(), showRules: true };
     await act(async () => {
       render(<FlowForm {...props} />);
     });
+    expect(mockLevelFormCalls.find((call) => call.hidden === false)?.showRules).toBe(true);
 
     const typeSelect = mockSelectProps.find((p) => (p.options || []).length === 2);
     act(() => {
@@ -369,6 +372,22 @@ describe('FlowForm (src/pages/Flows/Components/form.tsx)', () => {
       flowType: 'Product flow',
     };
 
+    const classification = [
+      {
+        '@name': 'CPC Ver. 3.0',
+        '@classes': 'https://example.org/cpc',
+        'common:class': { id: ['1'], value: ['One'] },
+      },
+    ];
+    const categories = {
+      '@name': 'Category source',
+      'common:category': { id: ['2'], value: ['Two'] },
+    };
+    props.formRef.current.getFieldValue.mockImplementation((path: any[]) => {
+      if (path.at(-1) === 'common:classification') return classification;
+      if (path.at(-1) === 'common:elementaryFlowCategorization') return categories;
+      return undefined;
+    });
     await act(async () => {
       render(<FlowForm {...props} />);
     });
@@ -380,12 +399,13 @@ describe('FlowForm (src/pages/Flows/Components/form.tsx)', () => {
 
     expect(props.formRef.current.setFieldValue).toHaveBeenCalledWith(
       expect.arrayContaining(['common:elementaryFlowCategorization']),
-      null,
+      { ...categories, 'common:category': null },
     );
     expect(props.formRef.current.setFieldValue).toHaveBeenCalledWith(
       expect.arrayContaining(['common:classification']),
-      null,
+      [{ ...classification[0], 'common:class': null }],
     );
+    expect(props.onData).toHaveBeenCalled();
   });
 
   it('does not inject create-only default sources when the form type is not create', async () => {

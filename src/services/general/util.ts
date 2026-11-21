@@ -647,14 +647,8 @@ async function normalizeLangEntries(
   const hasOnlyChineseMeaningfulTexts =
     orderedLangCodes.length > 0 &&
     orderedLangCodes.every((langCode) => isChineseLangCode(langCode));
-  const rawLanguagesSupportValidationPlaceholder =
-    rawLangCodes.length > 0 &&
-    rawLangCodes.every((langCode) => isChineseLangCode(langCode) || isEnglishLangCode(langCode));
   const shouldSupplementEnglishPlaceholder =
-    (options.intent ?? 'save') === 'validation' &&
-    hasOnlyChineseMeaningfulTexts &&
-    rawLanguagesSupportValidationPlaceholder &&
-    !englishEntry;
+    (options.intent ?? 'save') === 'validation' && hasOnlyChineseMeaningfulTexts && !englishEntry;
 
   if (!englishEntry) {
     const translatedEnglish = await getValidEnglishTranslation(chineseEntry?.[TEXT_KEY]);

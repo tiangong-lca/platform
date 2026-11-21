@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-20
-lastReviewedCommit: 71469010010347aa68ab0cfaeafd60f3ff7392b6
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Reviewed the filter refinement delivery through the checked-push hook; Docpact and the complete pre-push gate remain required.'
 ---
 
 # Pre-Push Gate Policy

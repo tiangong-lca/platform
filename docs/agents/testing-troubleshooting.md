@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-20
-lastReviewedCommit: 71469010010347aa68ab0cfaeafd60f3ff7392b6
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Reviewed the serial focused-test workflow for the filter refinement; recovery commands and runtime workarounds remain unchanged.'
 ---
 
 # Testing Troubleshooting

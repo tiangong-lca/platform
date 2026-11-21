@@ -185,6 +185,11 @@ export const SourceForm: FC<Props> = ({
               />
             }
             setRuleErrorState={setShowShortNameError}
+            autoExpandRequired={(
+              schema['sourceDataSet']['sourceInformation']['dataSetInformation'][
+                'common:shortName'
+              ]['rules'] ?? []
+            ).some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(

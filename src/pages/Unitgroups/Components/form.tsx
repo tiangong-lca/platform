@@ -373,6 +373,11 @@ export const UnitGroupForm: FC<Props> = ({
               />
             }
             setRuleErrorState={setShowNameError}
+            autoExpandRequired={(
+              schema['unitGroupDataSet']['unitGroupInformation']['dataSetInformation'][
+                'common:name'
+              ]['rules'] ?? []
+            ).some((rule) => rule.required)}
             rules={
               showRules
                 ? getRules(

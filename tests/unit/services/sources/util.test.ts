@@ -276,7 +276,7 @@ describe('Source Utility Functions', () => {
       const result = genSourceJsonOrdered('new-id', {});
 
       expect(result).toBe(sanitized);
-      expect(mockClassificationToJsonList).toHaveBeenCalledWith(undefined);
+      expect(mockClassificationToJsonList).not.toHaveBeenCalled();
       expect(mockListToJson).toHaveBeenCalledWith(undefined);
       expect(mockRemoveEmptyObjects).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -510,7 +510,7 @@ describe('Source Utility Functions', () => {
       expect(mockCreateSource).toHaveBeenCalledTimes(1);
       expect(mockGetLangList).toHaveBeenCalledWith(undefined);
       expect(mockJsonToList).toHaveBeenCalledWith(undefined);
-      expect(mockClassificationToStringList).toHaveBeenCalledWith(undefined);
+      expect(mockClassificationToStringList).not.toHaveBeenCalled();
       expect(mockRemoveEmptyObjects).toHaveBeenCalledWith(
         expect.objectContaining({
           sourceInformation: expect.objectContaining({

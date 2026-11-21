@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-20
-lastReviewedCommit: 71469010010347aa68ab0cfaeafd60f3ff7392b6
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedAt: 2026-11-21
+lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedNote: 'Platform #1549 reviewed installed SDK classification round trips, multilingual validation and reviewer responsibilities.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -227,6 +227,12 @@ Clean-checkout Jest, active German validation, new-locale activation, and the re
 For active German, do not reinterpret or delete the inherited Issue #601/#602/#606 evidence. The accepted current boundary is pinned at `c26f306e82ac66f50a56aafe8f89ea96c0b0c67d` in `docs/plans/i18n/corrections.json`. New source messages pass the shared context closure. Any post-baseline change to an existing `zh-CN` or `de-DE` value must add one compact dossier with exact before/after text, evidence, affected closure, tests, and digest. `pnpm i18n:corrections:check` proves that the ledger exactly matches the active catalog; no new human confirmation is requested or inferred.
 
 If a coverage change excludes framework-heavy wrapper files from `collectCoverageFrom`, document why those files are excluded and re-check the affected save, validation, navigation, and highlighting flows with focused tests before relying on `pnpm prepush:gate`.
+
+## Author review validation
+
+For author-review validation changes, run the focused `review.validation`, `review`, Lifecycle Model `sdkValidation` and toolbar `eidtInfo`, `ValidationIssueModal`, and review `reviewPayload`/`validateComment` suites. Exercise the installed SDK with absent, empty-object, empty-array and empty-item compliance containers, retain rejection of missing author fields and malformed reviewer metadata, and prove local field/tab/node navigation alongside exact reference links and foreign-owner notifications. Filtering regressions must retain same-named fields outside the current dataset's two reviewer subtrees, including other/rootless dataset paths, nested author fields, and legacy dotted/slash paths. Keep the installed-package contract outside Jest's SDK mapper and the unchanged full gate.
+
+For dataset authoring changes, exercise an installed-SDK read/save round trip for both singleton and repeated one-level classifications. In the editor, remove the first and last system and a nested class, then refill the empty view. Verify that a prefilled empty additional language is excluded from the draft payload and preserves validation-only English placeholder handling for Chinese-only content.
 
 ## Minimum PR Validation Note
 

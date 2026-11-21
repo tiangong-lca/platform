@@ -286,6 +286,27 @@ describe('FlowsSelectForm', () => {
     jest.clearAllMocks();
   });
 
+  it('shows the required label without activating reference validation', () => {
+    const formRef = {
+      current: { getFieldValue: jest.fn(), setFieldValue: jest.fn() },
+    };
+    renderWithProviders(
+      <FlowsSelectForm
+        name={['reference']}
+        label='Flow'
+        lang='en'
+        formRef={formRef}
+        drawerVisible
+        onData={jest.fn()}
+        rules={[]}
+        showRequiredLabel
+      />,
+    );
+    expect(screen.getByTestId('required-title')).toHaveTextContent('Flow');
+    expect(mockRefObjectIdRules).toEqual([]);
+    expect(formRef.current.setFieldValue).not.toHaveBeenCalled();
+  });
+
   it('handles flow selection, renders related actions, and clears the selected ref', async () => {
     const onData = jest.fn();
     const formRef = {

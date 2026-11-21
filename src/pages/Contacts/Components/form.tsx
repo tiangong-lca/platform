@@ -133,6 +133,11 @@ export const ContactForm: FC<Props> = ({
                   defaultMessage='Short name for contact'
                 />
               }
+              autoExpandRequired={(
+                schema['contactDataSet']['contactInformation']['dataSetInformation'][
+                  'common:shortName'
+                ]['rules'] ?? []
+              ).some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(
@@ -161,6 +166,11 @@ export const ContactForm: FC<Props> = ({
               setRuleErrorState={setShowNameError}
               name={['contactInformation', 'dataSetInformation', 'common:name']}
               label={<FormattedMessage id='pages.contact.name' defaultMessage='Name of contact' />}
+              autoExpandRequired={(
+                schema['contactDataSet']['contactInformation']['dataSetInformation']['common:name'][
+                  'rules'
+                ] ?? []
+              ).some((rule) => rule.required)}
               rules={
                 showRules
                   ? getRules(
