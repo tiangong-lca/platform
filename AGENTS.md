@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-21
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
 lastReviewedNote: 'Platform #1549 reviewed authoring defaults, classification persistence and reviewer-stage validation against current frontend boundaries.'
 related:
   - .docpact/config.yaml

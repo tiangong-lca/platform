@@ -28,7 +28,7 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-21
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
 lastReviewedNote: 'Platform #1549 reviewed required language rows, classification source identity and collection editing.'
 related:
   - ../AGENTS.md

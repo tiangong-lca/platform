@@ -46,8 +46,8 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-20
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
+lastReviewedAt: 2026-11-21
+lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
 lastReviewedNote: 'Reviewed the filter refinement delivery through the checked-push hook; Docpact and the complete pre-push gate remain required.'
 ---
 
