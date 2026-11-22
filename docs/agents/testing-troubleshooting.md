@@ -44,7 +44,7 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
 lastReviewedNote: 'Platform #1554. Reviewed focused route and browser proof and the renderer qualification workflow.'
 ---
 
