@@ -18,9 +18,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/study-report.yml
   - tests/unit/config/studyReportWorkflow.test.ts
-lastReviewedAt: 2026-11-19
-lastReviewedCommit: f34f676c1b706d567336f2f433b62d7b3a7b4555
-lastReviewedNote: 'Platform #1539 and #1540. Reviewed the thirteen pnpm/setup 3.1.2 workflow sites and their exact-SHA checks on the Dev baseline containing the qualified Study and installed Escape fixture corrections.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedNote: 'Platform #1554. Reviewed the offline delivery contract after the first-party online preview was retired.'
 related:
   - repo-architecture.md
   - repo-validation.md
@@ -46,7 +46,7 @@ Timestamp validation checks the declared local calendar/time and numeric offset 
 
 ## Rendering and trust
 
-`renderReport(view, context): Promise<string>` uses portable Web standards only, including Web Crypto for fixed CSP resource hashes. It reads no clock, random source, filesystem, environment, credentials or network. All dates are supplied. `renderReportBody` retains export framing and requires a real RenderContext. The internal `content.ts` module shares only validated semantic content/table/chart/escaping presentation with Platform’s separate online preview; it is not a new public renderer API. The preview has no export identity, receipt or exporter-verification claim. Renderer3.0.0 is a separate artifact and versioned export identity. Independently pinned renderer1.0.0 and the original renderer2.0.0 source44da/archive dfbc artifacts and frozen bytes remain unchanged. The current validator and both export entrypoints require view3/renderer3. Online view1/view2 preview uses the separately retained exact renderer2 package, while view3 uses validated current content; the online-only about:srcdoc fragment binding preserves same-document chapter navigation. No version fallback or projection relabeling is permitted. Controls only filter/reorder already supplied facts and expand evidence. Any facts absent from the supplied tables appear in an implicit additional-facts table, derived only from the already approved view projection. This does not mutate the 32-entry user table array or add numerical claims. Supplied and implicit table DOM IDs use disjoint namespaces.
+`renderReport(view, context): Promise<string>` uses portable Web standards only, including Web Crypto for fixed CSP resource hashes. It reads no clock, random source, filesystem, environment, credentials or network. All dates are supplied. `renderReportBody` retains export framing and requires a real RenderContext. The internal `content.ts` module renders validated report content, tables and charts for the portable export. Renderer3.0.0 is a separate artifact and versioned export identity. Independently pinned renderer1.0.0 and the original renderer2.0.0 source44da/archive dfbc artifacts and frozen bytes remain unchanged. The current validator and both export entrypoints require view3/renderer3. No version fallback or projection relabeling is permitted. Controls only filter/reorder already supplied facts and expand evidence. Any facts absent from the supplied tables appear in an implicit additional-facts table, derived only from the already approved view projection. This does not mutate the 32-entry user table array or add numerical claims. Supplied and implicit table DOM IDs use disjoint namespaces.
 
 W10's renderer copy is English. Its document `lang` and `dir` come from the shared typed locale registry's English entry, generated into the portable `documentLanguage.ts` module by `pnpm study-report:language:write`. The package build rejects stale generated metadata. Host/browser language never changes this fixed-copy renderer's document language, and the standalone artifact imports no application locale runtime. Additional report languages require a separately reviewed view/copy contract.
 

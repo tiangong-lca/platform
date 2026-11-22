@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Reviewed six path-scope regressions; focused behavior tests preserve the existing coverage strategy.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
+lastReviewedNote: 'Platform #1554. Reviewed route retirement coverage against the existing coverage strategy.'
 ---
 
 # Testing Strategy

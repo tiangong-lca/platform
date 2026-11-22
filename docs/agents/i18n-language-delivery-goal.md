@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
-lastReviewedNote: 'Platform #1549 reviewed required-only language expansion and localized classification action labels across the four active locales.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedNote: 'Platform #1554. Reviewed four active catalogs and their route, context and activation evidence after Study retirement.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md

@@ -46,9 +46,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Reviewed the filter refinement delivery through the checked-push hook; Docpact and the complete pre-push gate remain required.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
+lastReviewedNote: 'Platform #1554. Reviewed the checked-push and independent renderer gates for frontend-only retirement.'
 ---
 
 # Pre-Push Gate Policy

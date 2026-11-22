@@ -32,7 +32,6 @@
     ".umi/",
     "mock/",
     "docker/",
-    "/vendor/study-contract/",
     "/src/standalone/studyReport/methodProtocol.mjs"
   ],
   "options": {

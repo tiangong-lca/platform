@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Reviewed mixed reviewer and author-path errors, dataset-root isolation and legacy path-format regression controls.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
+lastReviewedNote: 'Platform #1554. Reviewed route regression and authenticated browser proof with the existing closed simulator.'
 ---
 
 # Testing Patterns Reference

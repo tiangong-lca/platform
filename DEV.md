@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Reviewed the serial focused-test and checked-push workflow for the filter refinement; bootstrap commands remain unchanged.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
+lastReviewedNote: 'Platform #1554. Removed the retired online preview proof from local development commands.'
 ---
 
 # Development Bootstrap
@@ -167,7 +167,6 @@ If no push will occur and a standalone handoff needs final evidence, run `pnpm d
 | native TypeScript 7 web typecheck | `pnpm tsc` |
 | native TypeScript 7 Electron typecheck | `pnpm tsc:electron` |
 | shared CI-style test runner | `pnpm test` |
-| isolated online Study preview navigation/keyboard browser proof | `node --import tsx --test --test-concurrency=1 tests/browser/studyPreviewNavigation.test.mjs` (synthetic component proof only) |
 | direct/focused semantic localization E2E development | `pnpm e2e:dev <Playwright arguments>` (`pnpm test:e2e:i18n` remains the CI-compatible alias) |
 | scope-closure adapter unit proof | `pnpm test:qualification:scope-closure:unit` |
 | scope-closure loopback browser proof | `pnpm test:qualification:scope-closure:browser` (normally invoked by the exact-commit adapter) |

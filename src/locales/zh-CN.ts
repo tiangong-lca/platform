@@ -1,4 +1,3 @@
-import pages_study from './zh-CN/pages_study';
 import component from './zh-CN/component';
 import component_AISuggestion from './zh-CN/component_AISuggestion';
 import component_allTeams from './zh-CN/component_allTeams';
@@ -31,7 +30,6 @@ import settingDrawer from './zh-CN/settingDrawer';
 import settings from './zh-CN/settings';
 import validator from './zh-CN/validator';
 export default {
-  ...pages_study,
   'navBar.lang': '语言',
   'layout.user.link.help': '帮助',
   'layout.user.link.privacy': '隐私',

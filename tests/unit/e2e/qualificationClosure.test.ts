@@ -33,21 +33,21 @@ const completeReport = () => ({
 describe('semantic qualification closure', () => {
   it('binds the current governed assertion IDs and reviewed complete browser discovery', () => {
     // Intentional inventory snapshot: new routes require explicit review.
-    expect(contract.assertionIds).toHaveLength(65);
+    expect(contract.assertionIds).toHaveLength(62);
     expect(contract.assertionIds).toEqual(
       expect.arrayContaining([
         'rv.data-transfer.import-export',
-        'rv.studies.localized',
-        'rv.study-report.localized',
-        'rv.study-share.localized',
+        'rv.process-analysis.process-analysis',
+        'rv.process-lists.mydata',
+        'rv.team.team-membership',
       ]),
     );
     expect(contract.coverage).toEqual({
-      contractAssertionCount: 65,
+      contractAssertionCount: 62,
       discoveredCases: 87,
       executedCases: 57,
       harnessControlCases: 12,
-      liveAssertionCount: 65,
+      liveAssertionCount: 62,
       qualificationDiscoveredCases: 99,
       skippedCases: 30,
     });
