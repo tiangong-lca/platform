@@ -44,7 +44,7 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
+lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
 lastReviewedNote: 'Platform #1559. Reviewed exact-set response pagination and isolated browser qualification for canvas navigation.'
 ---
 
