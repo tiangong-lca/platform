@@ -2,6 +2,7 @@
 import { GraphEdge, GraphNode, useGraphEvent, useGraphStore } from '@/contexts/graphContext';
 import ProcessEdit from '@/pages/Processes/Components/edit';
 import ProcessView from '@/pages/Processes/Components/view';
+import { resolveProcessModelVersion } from '@/services/processes/data';
 import type { refDataType, ValidationIssueSdkDetail } from '@/pages/Utils/review';
 import { checkReferences, getAllRefObj, getRefTableName, ReffPath } from '@/pages/Utils/review';
 import { getRefData, hasLangNormalizationDraftChanges } from '@/services/general/api';
@@ -2266,7 +2267,7 @@ const ToolbarEdit: FC<Props> = ({
         return (
           <LifeCycleModelEdit
             id={processInstance.modelId}
-            version={selectedNode?.data?.version ?? ''}
+            version={resolveProcessModelVersion(processInstance)}
             lang={lang}
             buttonType={'toolIcon'}
             disabled={!selectedNode}
@@ -2294,7 +2295,7 @@ const ToolbarEdit: FC<Props> = ({
         return (
           <LifeCycleModelView
             id={processInstance.modelId}
-            version={selectedNode?.data?.version ?? ''}
+            version={resolveProcessModelVersion(processInstance)}
             lang={lang}
             actionRef={undefined}
             buttonType={'toolIcon'}

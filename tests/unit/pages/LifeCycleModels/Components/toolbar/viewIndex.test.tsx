@@ -68,8 +68,6 @@ jest.mock('antd', () => {
   };
 });
 
-const mockMessage = jest.requireMock('antd').message as Record<string, jest.Mock>;
-
 jest.mock('@/pages/LifeCycleModels/Components/toolbar/viewInfo', () => ({
   __esModule: true,
   default: ({ data, lang }: any) => (
@@ -454,27 +452,41 @@ describe('ToolbarView', () => {
     fireEvent.click(screen.getByTestId('target-amount-on-data'));
   });
 
-  it('renders life cycle model view when the selected process instance belongs to a submodel', async () => {
-    mockGetProcessesByIdAndVersion.mockResolvedValue({
-      data: [{ id: 'proc-1', version: '1.0', modelId: 'submodel-1' }],
-    });
+  it.each([
+    [undefined, '1.0'],
+    ['01.01.023', '01.01.023'],
+  ])(
+    'opens the selected submodel with its exact version (%s)',
+    async (modelVersion, expectedVersion) => {
+      mockGetProcessesByIdAndVersion.mockResolvedValue({
+        data: [{ id: 'proc-1', version: '1.0', modelId: 'submodel-1', modelVersion }],
+      });
 
-    render(<ToolbarView id='model-1' version='1.0.0' lang='en' drawerVisible />);
+      render(<ToolbarView id='model-1' version='1.0.0' lang='en' drawerVisible />);
 
-    await waitFor(() => expect(screen.getByTestId('life-cycle-model-view')).toBeInTheDocument());
-    expect(screen.getByTestId('life-cycle-model-view')).toHaveTextContent(
-      'submodel-1:1.0:toolIcon:en',
+      await waitFor(() => expect(screen.getByTestId('life-cycle-model-view')).toBeInTheDocument());
+      expect(screen.getByTestId('life-cycle-model-view')).toHaveTextContent(
+        `submodel-1:${expectedVersion}:toolIcon:en`,
+      );
+    },
+  );
+
+  it.each([
+    [{}, 'unavailable'],
+    [{ error: { message: 'network' } }, 'failed'],
+  ])('reports the model read outcome (%j)', async (fields, expected) => {
+    mockGetLifeCycleModelDetail.mockResolvedValueOnce({ success: false, ...fields });
+    const onReadProblem = jest.fn();
+    render(
+      <ToolbarView
+        id='model-1'
+        version='1.0.0'
+        lang='en'
+        drawerVisible
+        onReadProblem={onReadProblem}
+      />,
     );
-  });
-
-  it('shows an error when the model is not public', async () => {
-    mockGetLifeCycleModelDetail.mockResolvedValueOnce({
-      success: false,
-    });
-
-    render(<ToolbarView id='model-1' version='1.0.0' lang='en' drawerVisible />);
-
-    await waitFor(() => expect(mockMessage.error).toHaveBeenCalledWith('Model is not public'));
+    await waitFor(() => expect(onReadProblem).toHaveBeenCalledWith(expected));
   });
 
   it('builds default view state without loading a model and keeps process and edge actions disabled', async () => {

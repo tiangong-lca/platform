@@ -1370,6 +1370,9 @@ export async function getProcessDetail(id: string, version: string) {
         .order('version', { ascending: false })
         .range(0, 0);
     }
+    if (result.error) {
+      return { data: null, success: false };
+    }
     if (result?.data && result.data.length > 0) {
       const data = result.data[0];
       return Promise.resolve({

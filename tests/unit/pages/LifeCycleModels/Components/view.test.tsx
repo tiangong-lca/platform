@@ -2,7 +2,7 @@
 import { lifeCycleModelConnectionOptions } from '@/pages/LifeCycleModels/Components/graphConnectionOptions';
 import LifeCycleModelView from '@/pages/LifeCycleModels/Components/view';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders, screen, waitFor } from '../../../../helpers/testUtils';
+import { act, renderWithProviders, screen, waitFor } from '../../../../helpers/testUtils';
 
 const toText = (node: any): string => {
   if (node === null || node === undefined) return '';
@@ -129,6 +129,21 @@ describe('LifeCycleModelView', () => {
     latestDrawerProps = null;
     mockLatestContentStyle = null;
     mockLatestLayoutStyles = [];
+  });
+
+  it('shows the requested model identity and retries a failed read', async () => {
+    renderWithProviders(
+      <LifeCycleModelView id='model-1' version='01.01.023' lang='en' buttonType='icon' autoOpen />,
+    );
+    await waitFor(() => expect(latestToolbarProps).toBeTruthy());
+    act(() => latestToolbarProps.onReadProblem('unavailable'));
+    expect(screen.getByRole('alert')).toHaveTextContent('01.01.023');
+    expect(screen.getByRole('alert')).toHaveTextContent('model-1');
+    expect(screen.queryByTestId('x6-graph')).not.toBeInTheDocument();
+    act(() => latestToolbarProps.onReadProblem('failed'));
+    await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    expect(latestToolbarProps.readAttempt).toBe(1);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('does not open the tool icon entry when disabled', async () => {

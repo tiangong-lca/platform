@@ -260,6 +260,7 @@ export type LifeCycleModelDetailResponse =
   | {
       data: object;
       success: false;
+      error?: unknown;
     };
 
 export type LifeCycleModelImportData = Array<{
@@ -268,7 +269,10 @@ export type LifeCycleModelImportData = Array<{
   [key: string]: unknown;
 }>;
 
-export type LifeCycleModelProcessInstance = Pick<ProcessTable, 'id' | 'version'> & {
+export type LifeCycleModelProcessInstance = Pick<
+  ProcessTable,
+  'id' | 'version' | 'modelVersion'
+> & {
   modelId?: string;
   userId?: string;
 };

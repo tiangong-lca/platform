@@ -4242,6 +4242,14 @@ describe('table/search helpers', () => {
 });
 
 describe('getLifeCycleModelDetail fallbacks', () => {
+  it('preserves the public model query failure separately from an empty response', async () => {
+    const error = { message: 'query failed' };
+    mockFrom.mockReturnValueOnce(createQueryBuilder({ data: null, error }));
+    await expect(
+      lifeCycleModelsApi.getLifeCycleModelDetail(sampleModelId, sampleVersion),
+    ).resolves.toEqual({ data: {}, success: false, error });
+  });
+
   it('returns a failed empty payload when no lifecycle model detail row exists', async () => {
     mockFrom.mockReturnValueOnce(
       createQueryBuilder({
