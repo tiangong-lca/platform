@@ -951,6 +951,41 @@ describe('ToolbarView', () => {
     expect(mockUpdateEdge).toHaveBeenCalledWith('', { selected: false });
   });
 
+  it('reports a rejected model request only while its drawer is current', async () => {
+    const onReadProblem = jest.fn();
+    mockGetLifeCycleModelDetail.mockRejectedValueOnce(new Error('offline'));
+    const { rerender, unmount } = render(
+      <ToolbarView
+        id='model-1'
+        version='01.01.000'
+        lang='en'
+        drawerVisible
+        onReadProblem={onReadProblem}
+      />,
+    );
+    await waitFor(() => expect(onReadProblem).toHaveBeenCalledWith('failed'));
+    let rejectRead!: (error: Error) => void;
+    mockGetLifeCycleModelDetail.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectRead = reject;
+        }),
+    );
+    rerender(
+      <ToolbarView
+        id='model-1'
+        version='01.01.001'
+        lang='en'
+        drawerVisible
+        onReadProblem={onReadProblem}
+      />,
+    );
+    unmount();
+    onReadProblem.mockClear();
+    await act(async () => rejectRead(new Error('late response')));
+    expect(onReadProblem).not.toHaveBeenCalled();
+  });
+
   it('rebuilds graph-derived labels for the latest language and rejects stale detail responses', async () => {
     const englishResolution = createDeferred();
     const frenchResolution = createDeferred();

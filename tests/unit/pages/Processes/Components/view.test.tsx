@@ -1001,6 +1001,43 @@ describe('ProcessView component', () => {
     expect(mockGenProcessFromData).not.toHaveBeenCalled();
   });
 
+  it('discards pending review comments after closing the drawer', async () => {
+    let resolveComments!: (value: unknown[]) => void;
+    mockGetProcessDetail.mockResolvedValueOnce({
+      success: true,
+      data: { stateCode: 20, json: {} },
+    });
+    mockGetRejectedComments.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveComments = resolve;
+        }),
+    );
+    const { unmount } = render(<ProcessView {...defaultProps} autoOpen />);
+    await waitFor(() => expect(mockGetRejectedComments).toHaveBeenCalled());
+    unmount();
+    await act(async () => resolveComments([]));
+    expect(mockMergeCommentsToData).not.toHaveBeenCalled();
+  });
+
+  it('discards a rejected request after the target changes', async () => {
+    let rejectRead!: (error: Error) => void;
+    mockGetProcessDetail.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectRead = reject;
+        }),
+    );
+    mockGetProcessDetail.mockResolvedValueOnce({ success: true, data: null });
+    const { rerender } = render(<ProcessView {...defaultProps} version='01.01.000' autoOpen />);
+    await waitFor(() => expect(mockGetProcessDetail).toHaveBeenCalledTimes(1));
+    rerender(<ProcessView {...defaultProps} version='01.01.001' autoOpen />);
+    await screen.findByRole('alert');
+    await act(async () => rejectRead(new Error('late failure')));
+    expect(screen.getByRole('alert')).toHaveTextContent('This version is unavailable.');
+    expect(screen.queryByRole('button', { name: 'Retry' })).not.toBeInTheDocument();
+  });
+
   it('ignores a late response for a previous process version', async () => {
     let resolveFirst!: (result: unknown) => void;
     mockGetProcessDetail.mockImplementationOnce(
@@ -1019,8 +1056,9 @@ describe('ProcessView component', () => {
     expect(mockGenProcessFromData).not.toHaveBeenCalled();
   });
 
-  it('retries the exact version after a failed process read', async () => {
-    mockGetProcessDetail.mockRejectedValueOnce(new Error('offline'));
+  it.each(['transport', 'query'])('retries the exact version after a %s failure', async (kind) => {
+    if (kind === 'transport') mockGetProcessDetail.mockRejectedValueOnce(new Error('offline'));
+    else mockGetProcessDetail.mockResolvedValueOnce({ data: null, success: false });
     render(<ProcessView {...defaultProps} version='01.01.000' autoOpen />);
     fireEvent.click(await screen.findByRole('button', { name: 'Retry' }));
     await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
