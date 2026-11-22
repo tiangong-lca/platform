@@ -1,3 +1,4 @@
+import DatasetDetailFeedback, { type DetailReadProblem } from '@/components/DatasetDetailFeedback';
 import { mapTidasRepeated } from '@/services/general/tidasRepeatedFields';
 import LangTextItemDescription from '@/components/LangTextItem/description';
 import LevelTextItemDescription from '@/components/LevelTextItem/description';
@@ -170,6 +171,8 @@ const ProcessView: FC<Props> = ({
   const currentExchangeContentLanguageRef = useRef(exchangeTableParams.contentLanguage);
   currentExchangeContentLanguageRef.current = exchangeTableParams.contentLanguage;
   const [spinning, setSpinning] = useState(false);
+  const [readProblem, setReadProblem] = useState<DetailReadProblem | null>(null);
+  const [readAttempt, setReadAttempt] = useState(0);
   const [initData, setInitData] = useState<Partial<ProcessFormWithId>>({});
   const [downloadableReviewReportKeys, setDownloadableReviewReportKeys] = useState<string[]>([]);
   const processClassification =
@@ -1896,51 +1899,56 @@ const ProcessView: FC<Props> = ({
     onDrawerClose?.();
   }, [onDrawerClose]);
 
-  const onView = useCallback(async () => {
-    setDrawerVisible(true);
+  const onView = useCallback(() => setDrawerVisible(true), []);
+
+  useEffect(() => {
+    if (!drawerVisible) return;
+    let current = true;
     setActiveTabKey('processInformation');
     setSpinning(true);
+    setReadProblem(null);
+    setInitData({});
+    setExchangeDataSource([]);
     setLoadedProcess(undefined);
     setDownloadableReviewReportKeys([]);
-    getProcessDetail(id, version).then(async (result: ProcessDetailResponse) => {
-      const formData = genProcessFromData(result.data?.json?.processDataSet ?? {});
-      if ((result?.data?.stateCode ?? 100) < 100) {
-        const rejectedCommentsRes = await getRejectedComments(id, version);
-        setDownloadableReviewReportKeys([
-          ...new Set(
-            rejectedCommentsRes.flatMap((comment: any) =>
-              collectReviewReportReferenceKeys(comment?.modellingAndValidation?.validation?.review),
+
+    const load = async () => {
+      try {
+        const result: ProcessDetailResponse = await getProcessDetail(id, version);
+        if (!current) return;
+        if (result.success === false || !result.data) {
+          setReadProblem(result.success === false ? 'failed' : 'unavailable');
+          return;
+        }
+        const formData = genProcessFromData(result.data.json?.processDataSet ?? {});
+        if ((result.data.stateCode ?? 100) < 100) {
+          const rejectedComments = await getRejectedComments(id, version);
+          if (!current) return;
+          setDownloadableReviewReportKeys([
+            ...new Set(
+              rejectedComments.flatMap((comment: any) =>
+                collectReviewReportReferenceKeys(
+                  comment?.modellingAndValidation?.validation?.review,
+                ),
+              ),
             ),
-          ),
-        ]);
-        mergeCommentsToData(rejectedCommentsRes, formData);
+          ]);
+          mergeCommentsToData(rejectedComments, formData);
+        }
+        setLoadedProcess({ id, version, stateCode: result.data.stateCode });
+        setInitData({ ...formData, id });
+        setExchangeDataSource([...(formData?.exchanges?.exchange ?? [])]);
+      } catch {
+        if (current) setReadProblem('failed');
+      } finally {
+        if (current) setSpinning(false);
       }
-      setLoadedProcess({ id, version, stateCode: result.data?.stateCode });
-      setInitData({ ...formData, id: id });
-      setExchangeDataSource([...(formData?.exchanges?.exchange ?? [])]);
-      // if (dataSource === 'my') {
-      //   setFooterButtons(
-      //     <>
-      //       {/* <ContactDelete
-      //         id={id}
-      //         buttonType={'text'}
-      //         actionRef={actionRef}
-      //         setViewDrawerVisible={setDrawerVisible}
-      //       />
-      //       <ContactEdit
-      //         id={id}
-      //         buttonType={'text'}
-      //         actionRef={actionRef}
-      //         setViewDrawerVisible={setDrawerVisible}
-      //       /> */}
-      //     </>,
-      //   );
-      // } else {
-      //   setFooterButtons(<></>);
-      // }
-      setSpinning(false);
-    });
-  }, [id, version]);
+    };
+    void load();
+    return () => {
+      current = false;
+    };
+  }, [drawerVisible, id, version, readAttempt]);
 
   useEffect(() => {
     if (autoOpen && id && version) {
@@ -2031,21 +2039,36 @@ const ProcessView: FC<Props> = ({
       >
         <span
           aria-hidden='true'
-          data-detail-ready={initData.id === id && !spinning ? 'true' : 'false'}
+          data-detail-ready={
+            loadedProcess?.id === id && loadedProcess?.version === version && !spinning
+              ? 'true'
+              : 'false'
+          }
           data-route-mode='view'
           data-testid='process-deep-link-state'
           hidden
         />
         <Spin spinning={spinning}>
-          <Card
-            style={{ width: '100%' }}
-            tabList={tabList}
-            activeTabKey={activeTabKey}
-            styles={activeTabKey === 'calculationResults' ? { body: { paddingTop: 8 } } : undefined}
-            onTabChange={onTabChange}
-          >
-            {contentList[activeTabKey]}
-          </Card>
+          {readProblem ? (
+            <DatasetDetailFeedback
+              problem={readProblem}
+              id={id}
+              version={version}
+              onRetry={() => setReadAttempt((attempt) => attempt + 1)}
+            />
+          ) : loadedProcess?.id === id && loadedProcess?.version === version ? (
+            <Card
+              style={{ width: '100%' }}
+              tabList={tabList}
+              activeTabKey={activeTabKey}
+              styles={
+                activeTabKey === 'calculationResults' ? { body: { paddingTop: 8 } } : undefined
+              }
+              onTabChange={onTabChange}
+            >
+              {contentList[activeTabKey]}
+            </Card>
+          ) : null}
         </Spin>
       </Drawer>
     </>

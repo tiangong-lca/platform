@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-20
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
-lastReviewedNote: 'Platform #1488: reviewed classification encode/decode and required-language display; product demand, allocation, functional units, instance multipliers, result identity and model/result save semantics remain unchanged.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
+lastReviewedNote: 'Platform #1559. Reviewed linked Process and Model identities used by canvas navigation.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md

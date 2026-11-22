@@ -1525,6 +1525,9 @@ export async function getLifeCycleModelDetail(
     .select('json, json_tg,state_code,rule_verification,team_id')
     .eq('id', id)
     .eq('version', version);
+  if (result.error) {
+    return { data: {}, success: false, error: result.error };
+  }
   if (result.data && result.data.length > 0) {
     const data = result.data[0];
 

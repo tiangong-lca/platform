@@ -21,7 +21,7 @@ export const toProcessModelVersionField = (
 
 export const resolveProcessModelVersion = (
   process: Pick<ProcessTable, 'version' | 'modelVersion'>,
-): string => process.modelVersion?.trim() || process.version;
+): string => process.modelVersion?.trim() || process.version || '';
 
 export type ProcessImportItem = {
   processDataSet: Process['processDataSet'];

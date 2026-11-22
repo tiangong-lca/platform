@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
-lastReviewedNote: 'Platform #1554. Reviewed the checked-push and independent renderer gates for frontend-only retirement.'
+lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
+lastReviewedNote: 'Platform #1559. Reviewed checked-push requirements for the canvas and process viewer regression.'
 ---
 
 # Pre-Push Gate Policy

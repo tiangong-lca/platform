@@ -1,4 +1,7 @@
 export default {
+  'pages.datasetDetail.unavailable': 'This version is unavailable.',
+  'pages.datasetDetail.failed': 'Failed to load this version.',
+  'pages.datasetDetail.retry': 'Retry',
   'pages.classification.requiredValue': 'Please fill in this required classification field.',
   'pages.classification.addSystem': 'Add system',
   'pages.classification.deleteSystem': 'Remove system',
