@@ -33,12 +33,6 @@ export default defineConfig({
    * @doc https://umijs.org/docs/api/config#hash
    */
   hash: true,
-  // Portable ESM keeps .js specifiers; the SPA resolves its TypeScript sources.
-  // Prefer real .js files so retained renderer packages keep their exact modules.
-  chainWebpack(memo) {
-    memo.resolve.set('extensionAlias', { '.js': ['.js', '.ts'] });
-  },
-
   targets: browserTargets,
   jsMinifierOptions: { target: esbuildTargets },
   cssMinifierOptions: { target: esbuildTargets },

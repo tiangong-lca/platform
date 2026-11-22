@@ -30,16 +30,11 @@ function registerInstalledCompilerTests() {
   const targets = { chrome: 152, edge: 156, firefox: 115, safari: '26.6', ios: '26.6' };
   const broadTransform = 'transform-function-name';
   const edgeTransform = 'transform-edge-function-name';
-  const protocolFiles = [
-    ...['v2', 'v3', 'v4', 'v5', 'v6'].map(
-      (version) => `vendor/study-contract/${version}/index.mjs`,
-    ),
-    'src/standalone/studyReport/methodProtocol.mjs',
-  ].map((file) => path.join(root, file));
-  const studyPreview = path.join(root, 'src/pages/Study/preview.ts');
+  const protocolFile = path.join(root, 'src/standalone/studyReport/methodProtocol.mjs');
+  const applicationSource = path.join(root, 'src/services/general/routeViewState.ts');
   const renderer = path.join(root, 'vendor/study-renderer/v2/content.js');
   const extraSource = path.join(path.dirname(root), 'extra', 'platform-browser-policy-fixture.mjs');
-  const sourceFiles = [renderer, studyPreview, extraSource];
+  const sourceFiles = [renderer, applicationSource, extraSource];
   const extraBabelIncludes = [/platform-browser-policy-fixture/u];
 
   function installedHook(configTargets: unknown = appConfig.targets) {
@@ -184,7 +179,6 @@ function registerInstalledCompilerTests() {
             assert.equal(/\$RefreshReg\$/u.test(code), mode === 'development', filename);
           }
         });
-        assert.deepEqual(config.resolve.extensionAlias, { '.js': ['.js', '.ts'] });
       }
     },
   );
@@ -244,11 +238,11 @@ function registerInstalledCompilerTests() {
   );
 
   nativeTest(
-    'retiring the override preserves the six protocol outputs and unrelated source outputs',
+    'retiring the override preserves the protocol output and unrelated source outputs',
     async () => {
       const config = await webpackConfig('production');
       await withBabelLoader(config, (select) => {
-        for (const filename of [...protocolFiles, studyPreview, renderer]) {
+        for (const filename of [protocolFile, applicationSource, renderer]) {
           const input = readFileSync(filename, 'utf8');
           const loaderOptions = babelOptions(select(filename));
           const options = { ...loaderOptions, filename, sourceMaps: true };
@@ -261,7 +255,7 @@ function registerInstalledCompilerTests() {
             ...options,
             overrides: [
               {
-                test: (file: string) => protocolFiles.includes(file),
+                test: (file: string) => file === protocolFile,
                 presets: [
                   [
                     request,

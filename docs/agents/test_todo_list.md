@@ -44,9 +44,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Reviewed the additional reviewer-filter regressions; historical baseline and testing queue remain unchanged.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedNote: 'Platform #1554. Reviewed the Study frontend retirement against the retained standalone renderer testing scope.'
 ---
 
 # Testing Execution State

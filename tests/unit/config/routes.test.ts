@@ -23,6 +23,19 @@ describe('route access config', () => {
     });
   });
 
+  it('retires the Study workbench and deep links while retaining process analysis', () => {
+    const topLevelPaths = routes.map((route) => route.path);
+    for (const path of ['/studies', '/study-report', '/study-share']) {
+      expect(topLevelPaths).not.toContain(path);
+    }
+    expect(routes.find((route) => route.path === '/mydata')?.routes).toContainEqual(
+      expect.objectContaining({
+        path: '/mydata/processes/analysis',
+        component: './Processes/Analysis',
+      }),
+    );
+  });
+
   it('places data processing after the user and team data modules', () => {
     const routePaths = routes.map((route) => route.path);
 

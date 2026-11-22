@@ -22,9 +22,9 @@ checkPaths:
   - pnpm-workspace.yaml
   - tests/unit/config/protocolBabel.test.ts
   - docs/agents/browser-support-contract.md
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Platform #1543 reviewed the Playwright and Jest source identities, pinned Node and Corepack image assembly, and browser gates on the Dev compiler toolchain delivered in #1542.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedNote: 'Platform #1554. Reviewed installed Babel coverage for the remaining method protocol module and application TypeScript.'
 related:
   - ../../AGENTS.md
   - repo-architecture.md
@@ -58,7 +58,7 @@ The standalone report renderer has its own packaging contract. A passing raw ren
 
 The validation guide owns command selection and existing aggregate/release gates. Installed-toolchain tests must check actual effective Babel plugin selection and nested targets, real Umi loader construction in both modes, generated polyfill imports, Browserslist/PostCSS floor expansion, explicit minifier inputs and the Electron mapping. When retiring an exception, compare the exact six contained modules and unrelated controls with and without it under the final target policy, including raw source maps.
 
-For source/target/dependency adoption, preserve source-bound baseline/candidate data for both brands, ordered module/plugin settings, generated polyfills, complete raw artifact inventories and explained deltas. Candidate repeat and ordinary-production outputs must match exactly; baseline output equality is not expected after a global target change. Use the existing canonical semantic qualification and scoped brand/Study/report checks rather than treating the timing or a tiny compiler fixture as semantic proof.
+For source/target/dependency adoption, preserve source-bound baseline/candidate data for both brands, ordered module/plugin settings, generated polyfills, complete raw artifact inventories and explained deltas. Candidate repeat and ordinary-production outputs must match exactly; baseline output equality is not expected after a global target change. Use the existing canonical semantic qualification and scoped brand and standalone report checks rather than treating the timing or a tiny compiler fixture as semantic proof.
 
 Actual floor/current browser runs must bind official binary/version provenance, the served candidate bytes, harness identity, scenarios and failures. Patched Playwright Firefox/WebKit and mobile viewport emulation are complementary tests; they do not prove vendor Firefox, branded Safari or an actual iPhone/iPad. A different Safari major or mobile simulator patch cannot be silently substituted for the promised minimum. Record every unavailable device/platform pair explicitly and obtain the necessary resources or an explicit scope decision before claiming complete policy qualification.
 

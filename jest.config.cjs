@@ -86,7 +86,6 @@ module.exports = async () => {
     modulePathIgnorePatterns: [
       ...(config.modulePathIgnorePatterns || []),
       ...dockerPathIgnores,
-      '<rootDir>/vendor/study-contract/.*/package.json',
       '<rootDir>/vendor/study-renderer/.*/package.json',
       '<rootDir>/dist-study-report/package/package.json',
     ],

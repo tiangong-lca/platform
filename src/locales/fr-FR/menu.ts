@@ -1,6 +1,5 @@
 export default {
   'menu.dataTransfer': 'Importation et exportation',
-  'menu.studies': 'Calculs d’ACV',
   'menu.supportingData': 'Données complémentaires',
   'menu.welcome': 'Bienvenue',
   'menu.more-blocks': 'Plus de blocs',

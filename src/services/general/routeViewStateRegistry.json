@@ -133,29 +133,6 @@
           "queryValue": "0"
         }
       ]
-    },
-    {
-      "id": "study-view",
-      "parameter": "view",
-      "defaultVariantId": "overview",
-      "variants": [
-        {
-          "id": "overview",
-          "queryValue": "overview"
-        },
-        {
-          "id": "model",
-          "queryValue": "model"
-        },
-        {
-          "id": "results",
-          "queryValue": "results"
-        },
-        {
-          "id": "reports",
-          "queryValue": "reports"
-        }
-      ]
     }
   ]
 }

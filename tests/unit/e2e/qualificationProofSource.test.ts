@@ -128,13 +128,13 @@ it('round-trips a synthetic current report through producer receipt, private pro
   const written = JSON.parse(fs.readFileSync(proof, 'utf8'));
   expect(written.assertionBrowsers['rv.login.password-forgot']).toEqual(['chromium']);
   expect(written.assertionBrowsers['rv.login.password-reset']).toEqual(['chromium']);
-  expect(written.assertionIds).toHaveLength(65);
+  expect(written.assertionIds).toHaveLength(62);
   expect(written.assertionIds).toEqual(
     expect.arrayContaining([
       'rv.data-transfer.import-export',
-      'rv.studies.localized',
-      'rv.study-report.localized',
-      'rv.study-share.localized',
+      'rv.process-analysis.process-analysis',
+      'rv.process-lists.mydata',
+      'rv.team.team-membership',
     ]),
   );
   expect(written.diagnostics.qualificationReportSha256).toBe(
@@ -274,16 +274,17 @@ it.each([
   expect(verified.stderr).not.toContain('private-secret-sentinel');
 });
 
-it.each(['rv.studies.localized', 'rv.study-report.localized', 'rv.study-share.localized'])(
-  'refuses to write proof if the current Study assertion %s is absent',
-  (id) => {
-    const report = JSON.parse(currentReport.toString('utf8'));
-    report.assertionIds = report.assertionIds.filter((value: string) => value !== id);
-    delete report.assertionBrowsers[id];
-    const result = artifacts(Buffer.from(JSON.stringify(report)));
-    const error = refusal(result);
-    expect(error.failureCode).toBe('E2E_QUALIFICATION_INCOMPLETE');
-    expect(error.details.closureFailures).toContain('assertion-id-set');
-    expect(error.details.closureFailures).toContain('assertion-browser-id-set');
-  },
-);
+it.each([
+  'rv.process-analysis.process-analysis',
+  'rv.process-lists.mydata',
+  'rv.team.team-membership',
+])('refuses to write proof if the current route assertion %s is absent', (id) => {
+  const report = JSON.parse(currentReport.toString('utf8'));
+  report.assertionIds = report.assertionIds.filter((value: string) => value !== id);
+  delete report.assertionBrowsers[id];
+  const result = artifacts(Buffer.from(JSON.stringify(report)));
+  const error = refusal(result);
+  expect(error.failureCode).toBe('E2E_QUALIFICATION_INCOMPLETE');
+  expect(error.details.closureFailures).toContain('assertion-id-set');
+  expect(error.details.closureFailures).toContain('assertion-browser-id-set');
+});

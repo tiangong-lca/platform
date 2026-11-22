@@ -1,4 +1,3 @@
-import pages_study from './de-DE/pages_study';
 import component from './de-DE/component';
 import component_AISuggestion from './de-DE/component_AISuggestion';
 import component_allTeams from './de-DE/component_allTeams';
@@ -32,7 +31,6 @@ import settings from './de-DE/settings';
 import validator from './de-DE/validator';
 
 export default {
-  ...pages_study,
   'navBar.lang': 'Sprachen',
   'layout.user.link.help': 'Hilfe',
   'layout.user.link.privacy': 'Datenschutz',
