@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
 lastReviewedNote: 'Platform #1554. Reviewed frontend route ownership and the independently packaged Study renderer.'
 related:
   - .docpact/config.yaml
