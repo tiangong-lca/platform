@@ -48,7 +48,7 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
+lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
 lastReviewedNote: 'Platform #1559. Recorded isolated canvas drill-down coverage for model and process references.'
 related:
   - ../AGENTS.md
