@@ -1,3 +1,4 @@
+import type { DetailReadProblem } from '@/components/DatasetDetailFeedback';
 import { useGraphEvent, useGraphStore } from '@/contexts/graphContext';
 import LifeCycleModelView from '@/pages/LifeCycleModels/Components/view';
 import ProcessView from '@/pages/Processes/Components/view';
@@ -6,6 +7,7 @@ import { DEFAULT_BROWSER_APP_LOCALE } from '@/services/general/localeRegistry';
 import { normalizeRuntimeLocale } from '@/services/general/runtimeLocale';
 import { formatDateTime, getLangText } from '@/services/general/util';
 import { getLifeCycleModelDetail } from '@/services/lifeCycleModels/api';
+import { resolveProcessModelVersion } from '@/services/processes/data';
 import type {
   FormLifeCycleModel,
   LifeCycleModelFormState,
@@ -31,7 +33,7 @@ import {
 } from '@/services/processes/api';
 import type { ProcessDetailByVersionItem } from '@/services/processes/data';
 import { ActionType } from '@ant-design/pro-components';
-import { App, Space, Spin, theme } from 'antd';
+import { Space, Spin, theme } from 'antd';
 import type { FC } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'umi';
@@ -55,12 +57,21 @@ type Props = {
   version: string;
   lang: string;
   drawerVisible: boolean;
+  onReadProblem?: (problem: DetailReadProblem | null) => void;
+  readAttempt?: number;
   actionRef?: React.RefObject<ActionType | undefined>;
 };
 
 const VISUAL_ONLY_MUTATION_OPTIONS = { ignoreHistory: true };
 
-const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
+const ToolbarView: FC<Props> = ({
+  id,
+  version,
+  lang,
+  drawerVisible,
+  onReadProblem,
+  readAttempt,
+}) => {
   const readOnlyCursor = 'move';
   const [spinning, setSpinning] = useState(false);
   const [infoData, setInfoData] = useState<LifeCycleModelFormState>({});
@@ -75,7 +86,6 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
   const modelData = useGraphStore((state) => state.initData);
   const updateNode = useGraphStore((state) => state.updateNode);
   const intl = useIntl();
-  const { message } = App.useApp();
   const edgeLabelText = {
     balanced: intl.formatMessage({
       id: 'pages.button.model.edgeStatus.balanced',
@@ -476,6 +486,7 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
         }
       };
     }
+    onReadProblem?.(null);
     if (id && version) {
       setSpinning(true);
       setProcessInstances([]);
@@ -485,12 +496,7 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
             return;
           }
           if (!result.success) {
-            message.error(
-              intl.formatMessage({
-                id: 'pages.lifecyclemodel.notPublic',
-                defaultMessage: 'Model is not public',
-              }),
-            );
+            onReadProblem?.(result.error ? 'failed' : 'unavailable');
             return;
           }
           const fromData = genLifeCycleModelInfoFromData(
@@ -605,6 +611,9 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
           setNodeCount(initNodes.length);
           setProcessInstances(nextProcessInstances);
         })
+        .catch(() => {
+          if (isCurrentResolution()) onReadProblem?.('failed');
+        })
         .finally(() => {
           if (isCurrentResolution()) {
             setSpinning(false);
@@ -633,7 +642,7 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
         modelResolutionEpochRef.current += 1;
       }
     };
-  }, [canonicalAppLocale, drawerVisible, id, lang, version]);
+  }, [canonicalAppLocale, drawerVisible, id, lang, version, onReadProblem, readAttempt]);
 
   useEffect(() => {
     nodes.forEach((node) => {
@@ -664,7 +673,7 @@ const ToolbarView: FC<Props> = ({ id, version, lang, drawerVisible }) => {
     return processInstance?.modelId ? (
       <LifeCycleModelView
         id={processInstance.modelId}
-        version={selectedNode?.data?.version ?? ''}
+        version={resolveProcessModelVersion(processInstance)}
         lang={lang}
         buttonType={'toolIcon'}
       />

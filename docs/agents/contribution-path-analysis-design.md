@@ -20,9 +20,9 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-11-20
-lastReviewedCommit: 5e03a441b03a043e077a051842d43b29f066d102
-lastReviewedNote: 'Platform #1488: reviewed classification-only model serialization and editor validation; contribution-path inputs, Worker ownership, result artifacts and frontend boundaries remain unchanged.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
+lastReviewedNote: 'Platform #1559. Reviewed the distinction between canvas navigation and contribution-path computation.'
 ---
 
 # Contribution Path Analysis Design

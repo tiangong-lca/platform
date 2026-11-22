@@ -1,8 +1,8 @@
 version: 1
 layout: repo
 lastReviewedAt: "2026-11-22"
-lastReviewedCommit: "ef78d3502e3d1ce5b90d80ed84b44238939b7114"
-lastReviewedNote: 'Platform #1549 reviewed dataset authoring and reviewer-stage validation boundaries on the combined delivery.'
+lastReviewedCommit: "8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9"
+lastReviewedNote: 'Platform #1559. Reviewed the frontend, data-read and testing rule coverage for exact-version canvas navigation.'
 
 # Keep path-level ownership, routing intents, and governed-doc rules here.
 # AGENTS.md keeps the entry-level repo contract and minimal execution summary.

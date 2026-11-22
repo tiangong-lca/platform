@@ -1,4 +1,7 @@
 export default {
+  'pages.datasetDetail.unavailable': '当前无法查看此版本。',
+  'pages.datasetDetail.failed': '加载此版本失败。',
+  'pages.datasetDetail.retry': '重试',
   'pages.classification.requiredValue': '请填写此分类必填字段。',
   'pages.classification.addSystem': '添加分类体系',
   'pages.classification.deleteSystem': '删除分类体系',

@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: ef78d3502e3d1ce5b90d80ed84b44238939b7114
-lastReviewedNote: 'Platform #1554. Removed the Study application routes, services and SPA-only renderer resolution.'
+lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
+lastReviewedNote: 'Platform #1559. Documented exact-version canvas navigation and unavailable/error detail states.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -143,6 +143,7 @@ Rules:
 - Contact, FlowProperty, Source, and UnitGroup keyword searches use `src/services/general/hybridSearch.ts` and their four allowlisted Hybrid Edge Functions. UUID-mention and empty-keyword list paths remain on their existing RPCs. The shared service forwards the current user JWT plus query/filter/paging and optional state/team context, returns Team Data as a genuine empty result when no team is selected, and preserves transport/auth/mapping failures as `success: false` instead of presenting them as empty data
 - Process keyword searches use the indexed `search_processes` RPC and pass explicit escaped query terms without app-side field filtering. The `public_plus_owner_draft` calculation picker enables the database-owned actor-draft mode for its personal branch, requiring owner `state_code=0` rows regardless of team/review workflow metadata, then merges that result with public state-100 rows. Database migrations own the `search_text` lexical source and its PGroonga index
 - Process list rows carry nullable `model_version` alongside `model_id`. LifecycleModel actions resolve the exact owner version as `model_version ?? process.version`; null remains the legacy same-version fallback, while an explicit version must never be replaced with the latest LifecycleModel revision. LifecycleModel result submodels are queried with each submodel reference's own Process version rather than the parent Model version
+- Canvas view and edit actions use the linked Model version for model-backed nodes. Standalone nodes open their referenced Process version. Both viewers identify unreadable versions by UUID and version and offer an exact-target retry for failed requests.
 - LifecycleModel view and edit surfaces hydrate lightweight `json_tg.xflow` nodes from each referenced Process's exact ID and version through the shared compatibility normalizer. The editor calculates and validates against that hydrated graph, but save planning reconciles untouched compatibility and editor-only fields back to the stored graph representation; explicit graph edits remain persistent
 - LifecycleModel product-demand calculation expands allocated source inventories into unit-product Process providers. The original editor graph remains in `json_tg.xflow`; standard instances reference the product providers with whole-inventory scalars. New Model revisions expose one primary aggregated Process. Existing unmarked revisions keep their original product results on update. The same atomic bundle persists allocated providers used by standard instances.
 

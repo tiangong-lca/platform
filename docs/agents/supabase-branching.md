@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-22
-lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
-lastReviewedNote: 'Platform #1554. Reviewed removal of the frontend Study client against the existing Supabase and OAuth boundaries.'
+lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
+lastReviewedNote: 'Platform #1559. Reviewed target selection and read-only exact-version queries in the isolated browser fixture.'
 ---
 
 # Supabase Environment And Database Workflow

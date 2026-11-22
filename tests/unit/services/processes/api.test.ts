@@ -731,6 +731,22 @@ describe('deleteProcess', () => {
 });
 
 describe('getProcessDetail', () => {
+  it('distinguishes a query failure from an unreadable exact version', async () => {
+    for (const [error, success] of [
+      [{ message: 'query failed' }, false],
+      [null, true],
+    ] as const) {
+      const builder = createQueryBuilder({ data: [], error });
+      mockFrom.mockReturnValueOnce(builder);
+      await expect(processesApi.getProcessDetail(sampleId, sampleVersion)).resolves.toEqual({
+        data: null,
+        success,
+      });
+      expect(builder.eq).toHaveBeenCalledWith('version', sampleVersion);
+      expect(builder.order).not.toHaveBeenCalled();
+    }
+  });
+
   it('returns process detail for explicit version', async () => {
     const selectResult = {
       data: [

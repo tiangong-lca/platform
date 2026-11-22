@@ -555,7 +555,7 @@ describe('ProcessView component', () => {
     fireEvent.click(screen.getByRole('button'));
 
     await waitFor(() => expect(mockGetProcessDetail).toHaveBeenCalled());
-    fireEvent.click(screen.getByRole('button', { name: 'Inputs and Outputs' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Inputs and Outputs' }));
     await waitFor(() => expect(mockGetFlowStateCode).toHaveBeenCalledTimes(2));
     rerender(<ProcessView {...defaultProps} lang='fr' />);
     await waitFor(() => expect(mockGetFlowStateCode.mock.calls.length).toBeGreaterThanOrEqual(4));
@@ -858,7 +858,7 @@ describe('ProcessView component', () => {
 
     render(<ProcessView {...defaultProps} />);
     fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'Inputs and Outputs' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Inputs and Outputs' }));
 
     await waitFor(() => expect(mockGetProcessExchange).toHaveBeenCalledTimes(2));
     expect(mockGetProcessExchange).toHaveBeenNthCalledWith(1, [{ id: 'row-1' }], 'Input', {
@@ -919,7 +919,7 @@ describe('ProcessView component', () => {
 
     render(<ProcessView {...defaultProps} />);
     fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'Inputs and Outputs' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Inputs and Outputs' }));
 
     await waitFor(() => expect(mockGetProcessExchange.mock.calls.length).toBeGreaterThanOrEqual(2));
     await waitFor(() =>
@@ -979,7 +979,7 @@ describe('ProcessView component', () => {
 
     render(<ProcessView {...defaultProps} />);
     fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('button', { name: 'Inputs and Outputs' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Inputs and Outputs' }));
 
     await waitFor(() => expect(mockGetProcessExchange.mock.calls.length).toBeGreaterThanOrEqual(2));
     await waitFor(() =>
@@ -988,6 +988,84 @@ describe('ProcessView component', () => {
           .length,
       ).toBeGreaterThanOrEqual(2),
     );
+  });
+
+  it('keeps the requested version visible when a process cannot be read', async () => {
+    mockGetProcessDetail.mockResolvedValueOnce({ success: true, data: null });
+    render(<ProcessView {...defaultProps} version='01.01.000' autoOpen />);
+    const alert = await screen.findByRole('alert');
+    expect(alert).toHaveTextContent('This version is unavailable.');
+    expect(alert).toHaveTextContent(defaultProps.id);
+    expect(alert).toHaveTextContent('01.01.000');
+    expect(screen.queryByRole('button', { name: 'Retry' })).not.toBeInTheDocument();
+    expect(mockGenProcessFromData).not.toHaveBeenCalled();
+  });
+
+  it('discards pending review comments after closing the drawer', async () => {
+    let resolveComments!: (value: unknown[]) => void;
+    mockGetProcessDetail.mockResolvedValueOnce({
+      success: true,
+      data: { stateCode: 20, json: {} },
+    });
+    mockGetRejectedComments.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveComments = resolve;
+        }),
+    );
+    const { unmount } = render(<ProcessView {...defaultProps} autoOpen />);
+    await waitFor(() => expect(mockGetRejectedComments).toHaveBeenCalled());
+    unmount();
+    await act(async () => resolveComments([]));
+    expect(mockMergeCommentsToData).not.toHaveBeenCalled();
+  });
+
+  it('discards a rejected request after the target changes', async () => {
+    let rejectRead!: (error: Error) => void;
+    mockGetProcessDetail.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectRead = reject;
+        }),
+    );
+    mockGetProcessDetail.mockResolvedValueOnce({ success: true, data: null });
+    const { rerender } = render(<ProcessView {...defaultProps} version='01.01.000' autoOpen />);
+    await waitFor(() => expect(mockGetProcessDetail).toHaveBeenCalledTimes(1));
+    rerender(<ProcessView {...defaultProps} version='01.01.001' autoOpen />);
+    await screen.findByRole('alert');
+    await act(async () => rejectRead(new Error('late failure')));
+    expect(screen.getByRole('alert')).toHaveTextContent('This version is unavailable.');
+    expect(screen.queryByRole('button', { name: 'Retry' })).not.toBeInTheDocument();
+  });
+
+  it('ignores a late response for a previous process version', async () => {
+    let resolveFirst!: (result: unknown) => void;
+    mockGetProcessDetail.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveFirst = resolve;
+        }),
+    );
+    mockGetProcessDetail.mockResolvedValueOnce({ success: true, data: null });
+    const { rerender } = render(<ProcessView {...defaultProps} version='01.01.001' autoOpen />);
+    await waitFor(() => expect(mockGetProcessDetail).toHaveBeenCalledTimes(1));
+    rerender(<ProcessView {...defaultProps} version='01.01.000' autoOpen />);
+    expect(await screen.findByRole('alert')).toHaveTextContent('01.01.000');
+    await act(async () => resolveFirst({ success: true, data: { json: {} } }));
+    expect(screen.getByRole('alert')).toHaveTextContent('01.01.000');
+    expect(mockGenProcessFromData).not.toHaveBeenCalled();
+  });
+
+  it.each(['transport', 'query'])('retries the exact version after a %s failure', async (kind) => {
+    if (kind === 'transport') mockGetProcessDetail.mockRejectedValueOnce(new Error('offline'));
+    else mockGetProcessDetail.mockResolvedValueOnce({ data: null, success: false });
+    render(<ProcessView {...defaultProps} version='01.01.000' autoOpen />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Retry' }));
+    await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
+    expect(mockGetProcessDetail.mock.calls).toEqual([
+      [defaultProps.id, '01.01.000'],
+      [defaultProps.id, '01.01.000'],
+    ]);
   });
 
   it('falls back to empty process payloads without crashing', async () => {
@@ -1004,7 +1082,7 @@ describe('ProcessView component', () => {
 
     expect(screen.queryByRole('button', { name: 'Calculation results' })).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Inputs and Outputs' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Inputs and Outputs' }));
     await waitFor(() => expect(mockGetProcessExchange.mock.calls.length).toBeGreaterThanOrEqual(2));
   });
 

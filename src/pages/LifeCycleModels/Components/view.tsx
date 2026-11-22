@@ -1,3 +1,4 @@
+import DatasetDetailFeedback, { type DetailReadProblem } from '@/components/DatasetDetailFeedback';
 import X6GraphComponent from '@/components/X6Graph';
 import { GraphProvider } from '@/contexts/graphContext';
 import { AppstoreOutlined, CloseOutlined, ProfileOutlined } from '@ant-design/icons';
@@ -34,11 +35,14 @@ const LifeCycleModelView: FC<Props> = ({
   onDrawerClose,
 }) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [readProblem, setReadProblem] = useState<DetailReadProblem | null>(null);
+  const [readAttempt, setReadAttempt] = useState(0);
   const { token } = theme.useToken();
 
   const { Sider, Content } = Layout;
 
   const onView = useCallback(() => {
+    setReadProblem(null);
     setDrawerVisible(true);
   }, []);
 
@@ -146,7 +150,7 @@ const LifeCycleModelView: FC<Props> = ({
           wrapper: { maxWidth: '100vw', overflow: 'hidden', width: '100vw' },
         }}
       >
-        <GraphProvider>
+        <GraphProvider key={JSON.stringify([id, version])}>
           <Layout style={layoutStyle}>
             <Layout style={{ height: '100%', minHeight: 0, minWidth: 0, overflow: 'hidden' }}>
               <Content
@@ -158,35 +162,52 @@ const LifeCycleModelView: FC<Props> = ({
                   position: 'relative',
                 }}
               >
-                <X6GraphComponent
-                  selectOptions={{
-                    enabled: true,
-                  }}
-                  zoomable
-                  pannable
-                  minScale={0.5}
-                  connectionOptions={lifeCycleModelConnectionOptions}
-                  gridOptions={{
-                    type: 'dot',
-                    color: undefined,
-                    thickness: 1,
-                    visible: true,
-                  }}
-                  transformOptions={{
-                    resizing: {
+                {readProblem ? (
+                  <DatasetDetailFeedback
+                    problem={readProblem}
+                    id={id}
+                    version={version}
+                    onRetry={() => {
+                      setReadProblem(null);
+                      setReadAttempt((attempt) => attempt + 1);
+                    }}
+                  />
+                ) : (
+                  <X6GraphComponent
+                    selectOptions={{
                       enabled: true,
-                      orthogonal: false,
-                    },
-                  }}
-                />
+                    }}
+                    zoomable
+                    pannable
+                    minScale={0.5}
+                    connectionOptions={lifeCycleModelConnectionOptions}
+                    gridOptions={{
+                      type: 'dot',
+                      color: undefined,
+                      thickness: 1,
+                      visible: true,
+                    }}
+                    transformOptions={{
+                      resizing: {
+                        enabled: true,
+                        orthogonal: false,
+                      },
+                    }}
+                  />
+                )}
               </Content>
             </Layout>
-            <Sider width='50px' style={siderStyle}>
+            <Sider
+              width='50px'
+              style={{ ...siderStyle, display: readProblem ? 'none' : undefined }}
+            >
               <ToolbarView
                 id={id}
                 version={version}
                 lang={lang}
                 drawerVisible={drawerVisible}
+                readAttempt={readAttempt}
+                onReadProblem={setReadProblem}
                 actionRef={actionRef}
               />
             </Sider>

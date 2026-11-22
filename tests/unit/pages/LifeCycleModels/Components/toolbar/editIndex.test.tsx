@@ -2847,7 +2847,15 @@ describe('ToolbarEdit', () => {
       edges: [],
     });
     mockGetProcessesByIdAndVersion.mockResolvedValueOnce({
-      data: [{ id: 'proc-1', version: '1.0', userId: 'user-1', modelId: 'child-model' }],
+      data: [
+        {
+          id: 'proc-1',
+          version: '1.0',
+          userId: 'user-1',
+          modelId: 'child-model',
+          modelVersion: '01.01.023',
+        },
+      ],
     });
 
     render(
@@ -2864,7 +2872,7 @@ describe('ToolbarEdit', () => {
     );
     await waitFor(() => expect(mockGetProcessesByIdAndVersion).toHaveBeenCalled());
     expect(screen.getByText('toolbar-edit-info:edit:9.9.9')).toBeInTheDocument();
-    expect(screen.getByText('life-cycle-model-edit:child-model:1.0')).toBeInTheDocument();
+    expect(screen.getByText('life-cycle-model-edit:child-model:01.01.023')).toBeInTheDocument();
     expect(screen.getByText('model-result:model-1:1.0:edit')).toBeInTheDocument();
     expect(JSON.parse(screen.getByTestId('model-result').getAttribute('data-submodels')!)).toEqual([
       { id: 'submodel-1', version: '1.0' },
@@ -3203,13 +3211,21 @@ describe('ToolbarEdit', () => {
       },
     });
     mockGetProcessesByIdAndVersion.mockResolvedValue({
-      data: [{ id: 'proc-1', version: '1.0', userId: 'someone-else', modelId: 'child-model' }],
+      data: [
+        {
+          id: 'proc-1',
+          version: '1.0',
+          userId: 'someone-else',
+          modelId: 'child-model',
+          modelVersion: '01.01.023',
+        },
+      ],
     });
 
     render(<ToolbarEdit {...baseProps} drawerVisible={true} />);
 
     await waitFor(() =>
-      expect(screen.getByText('life-cycle-model-view:child-model:1.0')).toBeInTheDocument(),
+      expect(screen.getByText('life-cycle-model-view:child-model:01.01.023')).toBeInTheDocument(),
     );
   });
 
