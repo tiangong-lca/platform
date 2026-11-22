@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Platform #1549 reviewed authoring defaults, classification persistence and reviewer-stage validation against current frontend boundaries.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedNote: 'Platform #1554. Reviewed frontend route ownership and the independently packaged Study renderer.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

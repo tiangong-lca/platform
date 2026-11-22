@@ -1,6 +1,5 @@
 export default {
   'menu.dataTransfer': '导入与导出',
-  'menu.studies': 'LCA计算',
   'menu.supportingData': '支撑数据',
   'menu.welcome': '欢迎',
   'menu.more-blocks': '更多区块',

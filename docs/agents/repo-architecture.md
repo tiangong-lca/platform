@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-21
-lastReviewedCommit: 59f4b454bda28563945340a5389e6e7dfdb6f32f
-lastReviewedNote: 'Platform #1549 reviewed required language rows, classification source identity and collection editing.'
+lastReviewedAt: 2026-11-22
+lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedNote: 'Platform #1554. Removed the Study application routes, services and SPA-only renderer resolution.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml
@@ -54,7 +54,6 @@ This repo is a Umi `4.7.33` React 19 SPA on one native Ant Design `6.6.6` / ProC
 | `src/pages/**` | route-level product pages |
 | `src/pages/*/sdkValidation.ts`, `src/pages/Utils/validation/**` | page-level SDK-code adapters plus shared localized validation messages, detail mapping, and form-support helpers |
 | `src/components/**` | shared UI and reusable flows |
-| `src/pages/Study/**`, `src/services/study/**`, `vendor/study-contract/**` | authenticated four-view Study workbench, exact report review and named-share routes; [consumer contract](study-workbench-contract.md) owns codec, frozen-evidence, identity and mutation boundaries |
 | `src/standalone/studyReport/**`, `scripts/study-report/**`, `vendor/study-renderer/**` | dependency-free versioned report view and separate artifact build; [renderer contract](study-report-renderer-contract.md) owns strict projection, offline, receipt and release boundaries |
 | `src/components/DataNavigation/navigation.ts` | native ProLayout menu shaping and scope-link destinations; preserves the received route/access metadata |
 | `src/services/**` | app-side Supabase/API access, ordered-dataset shaping, typed locale normalization and runtime fallback for Node-loaded services, explicit anonymous-route policy, and service logic |
@@ -78,7 +77,7 @@ This repo is a Umi `4.7.33` React 19 SPA on one native Ant Design `6.6.6` / ProC
 
 ## Browser support and compilation
 
-The [browser support contract](browser-support-contract.md) owns the rolling policy and qualification boundary; `config/browserSupport.ts` freezes its concrete browser/ESR/Apple inventory and derives conservative shared targets, including the existing Electron renderer's Chromium. Both brands use that same map. `config/plugins/babelTargets.ts` forwards Umi's effective targets into the existing nested preset-env through the supported `modifyBabelPresetOpts` hook in development and production; incompatible overrides fail explicitly. The separate MFSU dependency prebundle uses the supported `mfsu.chainWebpack` callback to forward the same targets into its existing Umi preset tuples. The six generated Study protocol modules use the ordinary compiler path without a filename-specific function-name exclusion.
+The [browser support contract](browser-support-contract.md) owns the rolling policy and qualification boundary; `config/browserSupport.ts` freezes its concrete browser/ESR/Apple inventory and derives conservative shared targets, including the existing Electron renderer's Chromium. Both brands use that same map. `config/plugins/babelTargets.ts` forwards Umi's effective targets into the existing nested preset-env through the supported `modifyBabelPresetOpts` hook in development and production; incompatible overrides fail explicitly. The separate MFSU dependency prebundle uses the supported `mfsu.chainWebpack` callback to forward the same targets into its existing Umi preset tuples. The standalone method protocol module uses the ordinary compiler path without a filename-specific function-name exclusion.
 
 Umi's polyfill and CSS consumers receive the same reviewed engine intent. Explicit JS/CSS esbuild target lists include iOS and retain the prior conservative ES2015 minifier baseline. Browser-data package pins and installed-toolchain tests prevent stale CSS data from silently dropping an engine. Cache settings and publishing are unchanged. Protocol inputs remain immutable; actual minimum-browser proof and the separately packaged report renderer are distinct from configuration/source tests.
 
@@ -334,11 +333,5 @@ Result preview uses the shared data-list pagination defaults through the native 
 ## Frozen LCIA display metadata
 
 Private solver and published `process_all_impacts` rows retain optional `impact_version` through normalization. A result keeps its frozen numeric value, revision and unit; labels may be localized only from matching method ID/revision metadata. Saved rows for the same method are replaced by the returned solver rows without collapsing distinct revisions. Missing revisions remain unknown and do not block display. Historical saved results with no unit may use the exact static revision to fill that unit; explicit frozen units, including an empty unit, are never overwritten by this enrichment. These are result-display rules and do not change calculation eligibility or data-quality policy.
-
-The Study report/share adapter explicitly selects retained V4, advanced V5 or method V6 from a validated stable link. Family-bound queries, actions and pending-write namespaces use the same identity fences and owner codecs; `api=5` / `api=6` do not select another Supabase target or grant core Study access. Report preview shares the portable presentation modules while keeping online framing separate from export verification.
-
-Method authoring is an explicit selection inside the existing reports tab. `src/services/study/method.ts` delegates exact evidence/facts/stored-content reads to the contained V6 owner parsers; the UI copies supplied facts and preserves immutable predecessors. The [Study consumer contract](study-workbench-contract.md) owns its permission, recovery and qualification boundaries.
-
-The SPA's Webpack resolver prefers real `.js` modules and falls back to `.ts` for portable ESM source specifiers. This permits the method renderer source in online previews while preserving retained renderer modules and immutable portable package bytes.
 
 Account-menu pages (`Account`, `Teams`, `DataTransfer`) share the responsive `AccountPage` container style: title, side tabs and content form one centered group capped at 1320 px. The current Result-library card uses only `final_current`, backed by actor-scoped `api.qry_current_final_result_publication`; no legacy `current` fallback or fabricated source lookup. A null publication is empty, request failure is an error, and archive signing remains pinned to the returned publication ID. History is loaded on expansion through the bounded `final_history` cursor API; only superseded publications are listed, while withdrawn versions stay hidden. Current and historical rows share their layout, with the current version highlighted. Each archive action pins its exact publication ID. Single-Process result export reads every unfiltered LCI page and LCIA under the same publication/runtime pins before downloading a JSON file; whole-library 7z archives live only on DataTransfer. Database/Edge catalog support must ship before the card can read a live publication.
