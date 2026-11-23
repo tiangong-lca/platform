@@ -9,6 +9,8 @@ interface CoverageHost {
   logicalCpuCount: number;
   availableCpuCount: number;
   memoryBytes: number;
+  runnerEnvironment?: string;
+  imageOS?: string;
 }
 
 const {
@@ -46,6 +48,16 @@ const qualifiedMac: CoverageHost = {
   logicalCpuCount: 18,
   availableCpuCount: 18,
   memoryBytes: 128 * 1024 ** 3,
+};
+
+const qualifiedHostedLinux: CoverageHost = {
+  platform: 'linux',
+  arch: 'x64',
+  logicalCpuCount: 4,
+  availableCpuCount: 4,
+  memoryBytes: 16 * 1024 ** 3 - 256 * 1024 ** 2,
+  runnerEnvironment: 'github-hosted',
+  imageOS: 'ubuntu26',
 };
 
 describe('agent-aware Jest runner', () => {
@@ -107,6 +119,32 @@ describe('agent-aware Jest runner', () => {
     }
   });
 
+  it('uses three coverage workers for the qualified hosted Ubuntu profile', () => {
+    expect(coverageWorkerCount(qualifiedHostedLinux)).toBe(3);
+    for (const memoryBytes of [15 * 1024 ** 3, 16 * 1024 ** 3]) {
+      expect(coverageWorkerCount({ ...qualifiedHostedLinux, memoryBytes })).toBe(3);
+    }
+    for (const difference of [
+      { platform: 'darwin' },
+      { platform: 'win32' },
+      { arch: 'arm64' },
+      { logicalCpuCount: 3 },
+      { logicalCpuCount: 5 },
+      { availableCpuCount: 3 },
+      { availableCpuCount: 5 },
+      { memoryBytes: 15 * 1024 ** 3 - 1 },
+      { memoryBytes: 16 * 1024 ** 3 + 1 },
+      { runnerEnvironment: undefined },
+      { runnerEnvironment: 'self-hosted' },
+      { runnerEnvironment: 'GitHub-hosted' },
+      { imageOS: undefined },
+      { imageOS: 'ubuntu24' },
+      { imageOS: 'Ubuntu26' },
+    ] satisfies Partial<CoverageHost>[]) {
+      expect(coverageWorkerCount({ ...qualifiedHostedLinux, ...difference })).toBe(2);
+    }
+  });
+
   it('keeps the canonical worker argument and all caller arguments in their original positions', () => {
     for (const callerArgs of [
       ['--maxWorkers', '9'],
@@ -129,6 +167,11 @@ describe('agent-aware Jest runner', () => {
         ...callerArgs,
       ];
       expect(parseRunnerArgs(argv, qualifiedMac).args).toEqual([
+        '--coverage',
+        '--maxWorkers=3',
+        ...callerArgs,
+      ]);
+      expect(parseRunnerArgs(argv, qualifiedHostedLinux).args).toEqual([
         '--coverage',
         '--maxWorkers=3',
         ...callerArgs,
@@ -157,6 +200,8 @@ describe('agent-aware Jest runner', () => {
         logicalCpuCount: os.cpus().length,
         availableCpuCount: os.availableParallelism(),
         memoryBytes: os.totalmem(),
+        runnerEnvironment: process.env.RUNNER_ENVIRONMENT,
+        imageOS: process.env.ImageOS,
       });
       try {
         process.env.TIANGONG_AGENT_MODE = agentMode ? '1' : '0';

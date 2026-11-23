@@ -35,6 +35,8 @@ function parseRunnerArgs(argv, host) {
           logicalCpuCount: os.cpus().length,
           availableCpuCount: os.availableParallelism(),
           memoryBytes: os.totalmem(),
+          runnerEnvironment: process.env.RUNNER_ENVIRONMENT,
+          imageOS: process.env.ImageOS,
         },
       );
       args.push(`--maxWorkers=${workers}`);
@@ -106,14 +108,31 @@ function unitWorkerArgs(platform = process.platform) {
     : ['--maxWorkers=50%'];
 }
 
-function coverageWorkerCount({ platform, arch, logicalCpuCount, availableCpuCount, memoryBytes }) {
-  return platform === 'darwin' &&
+function coverageWorkerCount({
+  platform,
+  arch,
+  logicalCpuCount,
+  availableCpuCount,
+  memoryBytes,
+  runnerEnvironment,
+  imageOS,
+}) {
+  const qualifiedMac =
+    platform === 'darwin' &&
     arch === 'arm64' &&
     logicalCpuCount === 18 &&
     availableCpuCount === 18 &&
-    memoryBytes === 128 * 1024 ** 3
-    ? 3
-    : 2;
+    memoryBytes === 128 * 1024 ** 3;
+  const qualifiedHostedLinux =
+    platform === 'linux' &&
+    arch === 'x64' &&
+    logicalCpuCount === 4 &&
+    availableCpuCount === 4 &&
+    memoryBytes >= 15 * 1024 ** 3 &&
+    memoryBytes <= 16 * 1024 ** 3 &&
+    runnerEnvironment === 'github-hosted' &&
+    imageOS === 'ubuntu26';
+  return qualifiedMac || qualifiedHostedLinux ? 3 : 2;
 }
 
 function jestNodeArgs(platform = process.platform) {

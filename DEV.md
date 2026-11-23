@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
-lastReviewedNote: 'Platform #1559. Reviewed the qualification build and checked-push workflow for exact-version canvas navigation.'
+lastReviewedAt: 2026-11-23
+lastReviewedCommit: a3ad70aa7162146c98f40b49a96e87fa0eb151bf
+lastReviewedNote: 'Platform #1565. Reviewed the hosted Linux coverage profile, existing protective gates and regular Dev-to-Main release process.'
 ---
 
 # Development Bootstrap
