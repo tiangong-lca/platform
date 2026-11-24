@@ -46,8 +46,8 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-23
-lastReviewedCommit: a3ad70aa7162146c98f40b49a96e87fa0eb151bf
+lastReviewedAt: 2026-11-24
+lastReviewedCommit: c35836878f79b58304226b2cde5bacb9cb581bb3
 lastReviewedNote: 'Platform #1565. Reviewed qualified hosted Ubuntu coverage worker selection, caller arguments, local and Mac fallbacks, complete gates and next regular release boundaries.'
 ---
 

@@ -43,8 +43,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-23
-lastReviewedCommit: a3ad70aa7162146c98f40b49a96e87fa0eb151bf
+lastReviewedAt: 2026-11-24
+lastReviewedCommit: 50eb9a801670d7405e954983e6924c0fa113b41d
 lastReviewedNote: 'Platform #1565. Reviewed qualified hosted Ubuntu coverage worker selection, caller arguments, local and Mac fallbacks, complete gates and next regular release boundaries.'
 ---
 
