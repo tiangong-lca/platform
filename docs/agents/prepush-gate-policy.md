@@ -46,9 +46,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-24
-lastReviewedCommit: c35836878f79b58304226b2cde5bacb9cb581bb3
-lastReviewedNote: 'Platform #1565. Reviewed qualified hosted Ubuntu coverage worker selection, caller arguments, local and Mac fallbacks, complete gates and next regular release boundaries.'
+lastReviewedAt: 2026-11-25
+lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
+lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
 ---
 
 # Pre-Push Gate Policy

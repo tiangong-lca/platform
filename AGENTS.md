@@ -49,9 +49,9 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-24
-lastReviewedCommit: c35836878f79b58304226b2cde5bacb9cb581bb3
-lastReviewedNote: 'Platform #1565. Reviewed the hosted Linux coverage profile, existing protective gates and regular Dev-to-Main release process.'
+lastReviewedAt: 2026-11-25
+lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
+lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

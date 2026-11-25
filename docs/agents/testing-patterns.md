@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-24
-lastReviewedCommit: 50eb9a801670d7405e954983e6924c0fa113b41d
-lastReviewedNote: 'Platform #1565. Reviewed qualified hosted Ubuntu coverage worker selection, caller arguments, local and Mac fallbacks, complete gates and next regular release boundaries.'
+lastReviewedAt: 2026-11-25
+lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
+lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
 ---
 
 # Testing Patterns Reference
