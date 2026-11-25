@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-25
-lastReviewedCommit: f67a4ba2b8a03985768ff5d9ad4d1507f5b2903f
-lastReviewedNote: 'Platform #1572. Reviewed the responsive team-title browser check and the existing local and hosted validation entrypoints.'
+lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
+lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

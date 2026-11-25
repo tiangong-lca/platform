@@ -47,8 +47,8 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-25
-lastReviewedCommit: f67a4ba2b8a03985768ff5d9ad4d1507f5b2903f
-lastReviewedNote: 'Platform #1572. Reviewed responsive team-title language selection against the default translation rows and duplicate-language rule.'
+lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
+lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
 ---
 
 # Pre-Push Gate Policy
