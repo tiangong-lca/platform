@@ -46,9 +46,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/reference-data/**
   - .github/workflows/**
-lastReviewedAt: 2026-11-23
-lastReviewedCommit: a3ad70aa7162146c98f40b49a96e87fa0eb151bf
-lastReviewedNote: 'Platform #1565. Reviewed qualified hosted Ubuntu coverage worker selection, caller arguments, local and Mac fallbacks, complete gates and next regular release boundaries.'
+lastReviewedAt: 2026-11-25
+lastReviewedCommit: f67a4ba2b8a03985768ff5d9ad4d1507f5b2903f
+lastReviewedNote: 'Platform #1572. Reviewed responsive team-title language selection against the default translation rows and duplicate-language rule.'
 ---
 
 # Pre-Push Gate Policy

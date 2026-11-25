@@ -46,9 +46,9 @@ checkPaths:
   - .github/workflows/release-readiness.yml
   - .github/workflows/build.yml
   - .nvmrc
-lastReviewedAt: 2026-11-23
-lastReviewedCommit: a3ad70aa7162146c98f40b49a96e87fa0eb151bf
-lastReviewedNote: 'Platform #1565. Reviewed the hosted Linux coverage profile, existing protective gates and regular Dev-to-Main release process.'
+lastReviewedAt: 2026-11-25
+lastReviewedCommit: f67a4ba2b8a03985768ff5d9ad4d1507f5b2903f
+lastReviewedNote: 'Platform #1572. Reviewed the responsive team-title browser check and the existing local and hosted validation entrypoints.'
 ---
 
 # Development Bootstrap
