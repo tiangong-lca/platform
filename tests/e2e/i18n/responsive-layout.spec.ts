@@ -1,11 +1,14 @@
 import { expect, test, type Locator, type Page } from './fixtures';
 
+import {
+  CANONICAL_CONTENT_LANGUAGE,
+  getAuthoringLanguageOptions,
+} from '../../../src/services/general/contentLanguageRegistry';
 import { getLocaleCapability } from '../../../src/services/general/localeCapabilities';
 import { signInViaUi } from './auth';
 import {
   annotateEvidence,
   APP_LOCALES,
-  AUTHORING_LANGUAGE_LABELS,
   findRouteAssertion,
   getLocaleMessage,
   PLAYWRIGHT_BROWSER_PROJECTS,
@@ -124,8 +127,9 @@ test('Every registry locale keeps the team layout operable across responsive the
         const surfaceColor = await test.step(`${locale} ${viewport.id} ${theme.id}`, async () => {
           await page.setViewportSize({ height: viewport.height, width: viewport.width });
           await page.goto('/#/team?action=create', { waitUntil: 'domcontentloaded' });
-          await configureThemeAndReload(page, theme.dark);
           await selectAppLocaleThroughUi(page, locale);
+          // Mount a fresh create form in this locale, without rows from the previous locale.
+          await configureThemeAndReload(page, theme.dark);
           await expect.poll(() => readStoredAppLocale(page)).toBe(locale);
 
           const themeToggle = page.getByRole('button', {
@@ -156,17 +160,31 @@ test('Every registry locale keeps the team layout operable across responsive the
 
           switch (scenario.status) {
             case 'native': {
-              const firstLanguageSelector = form.getByRole('combobox').first();
-              await expectElementInsideViewport(
-                firstLanguageSelector,
-                viewport.width,
-                viewport.height,
-              );
-              await expect(firstLanguageSelector).toBeEnabled();
-              for (const label of AUTHORING_LANGUAGE_LABELS) {
-                await firstLanguageSelector.press('ArrowDown');
-                await expect(firstLanguageSelector).toHaveAttribute('aria-expanded', 'true');
-                const listboxId = await firstLanguageSelector.getAttribute('aria-controls');
+              const title = form.locator('.team-lang-field').filter({
+                hasText: getLocaleMessage(locale, 'pages.team.info.title'),
+              });
+              const rows = title.locator('.lang-text-item-row');
+              const languageRow = (language: string) =>
+                title.locator(`.lang-text-item-row[data-content-language="${language}"]`);
+              const defaults = new Set([scenario.contentLanguage, CANONICAL_CONTENT_LANGUAGE]);
+              await expect(rows).toHaveCount(defaults.size);
+              for (const language of defaults) {
+                await expect(languageRow(language).getByRole('textbox')).toBeEditable();
+              }
+
+              let editedLanguage = scenario.contentLanguage;
+              const editedSelector = () => languageRow(editedLanguage).getByRole('combobox');
+              await expectElementInsideViewport(editedSelector(), viewport.width, viewport.height);
+              const options = getAuthoringLanguageOptions();
+              for (const { value, label } of [
+                ...options.filter((option) => option.value !== scenario.contentLanguage),
+                ...options.filter((option) => option.value === scenario.contentLanguage),
+              ]) {
+                const selector = editedSelector();
+                await expect(selector).toBeEnabled();
+                await selector.press('ArrowDown');
+                await expect(selector).toHaveAttribute('aria-expanded', 'true');
+                const listboxId = await selector.getAttribute('aria-controls');
                 expect(listboxId).toBeTruthy();
                 const activeLanguageListbox = page.locator(`[id="${listboxId}"]`);
                 await expect(activeLanguageListbox).toHaveAttribute('role', 'listbox');
@@ -175,26 +193,23 @@ test('Every registry locale keeps the team layout operable across responsive the
                   exact: true,
                 });
                 await expect(option).toHaveCount(1);
-                await expect(option).toBeEnabled();
                 await option.scrollIntoViewIfNeeded();
                 await expectElementInsideViewport(option, viewport.width, viewport.height);
-                await option.click();
-                await expect(firstLanguageSelector).toHaveAttribute('aria-expanded', 'false');
+                if (value === CANONICAL_CONTENT_LANGUAGE && value !== scenario.contentLanguage) {
+                  // The canonical translation already owns a separate title row.
+                  await expect(option).toBeDisabled();
+                  await selector.press('Escape');
+                } else {
+                  await expect(option).toBeEnabled();
+                  await option.click();
+                  editedLanguage = value;
+                }
+                await expect(editedSelector()).toHaveAttribute('aria-expanded', 'false');
                 await expect(activeLanguageListbox).toBeHidden();
               }
-
-              await firstLanguageSelector.press('ArrowDown');
-              const finalListboxId = await firstLanguageSelector.getAttribute('aria-controls');
-              expect(finalListboxId).toBeTruthy();
-              const finalLanguageListbox = page.locator(`[id="${finalListboxId}"]`);
-              const targetOption = finalLanguageListbox.getByRole('option', {
-                name: scenario.contentLanguageDefinition.nativeLabel,
-                exact: true,
-              });
-              await targetOption.scrollIntoViewIfNeeded();
-              await targetOption.click();
-              await expect(firstLanguageSelector).toHaveAttribute('aria-expanded', 'false');
-              await expect(finalLanguageListbox).toBeHidden();
+              await expect(
+                languageRow(scenario.contentLanguage).getByRole('textbox'),
+              ).toBeEditable();
               observedSurfaces.add('authoring-language-dropdown');
               break;
             }
