@@ -22,9 +22,9 @@ checkPaths:
   - pnpm-workspace.yaml
   - tests/unit/config/protocolBabel.test.ts
   - docs/agents/browser-support-contract.md
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
-lastReviewedNote: 'Platform #1554. Reviewed installed Babel coverage for the remaining method protocol module and application TypeScript.'
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 related:
   - ../../AGENTS.md
   - repo-architecture.md

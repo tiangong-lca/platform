@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
-lastReviewedNote: 'Platform #1559. Reviewed target selection and read-only exact-version queries in the isolated browser fixture.'
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 
 # Supabase Environment And Database Workflow

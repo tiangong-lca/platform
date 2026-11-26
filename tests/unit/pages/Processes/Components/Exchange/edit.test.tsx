@@ -487,6 +487,55 @@ describe('ProcessExchangeEdit', () => {
     });
   });
 
+  it('blocks an untouched conflict and saves the amount explicitly chosen by the editor', async () => {
+    const onData = jest.fn();
+    const row = { ...exchangeList[0], meanAmount: '0.306', resultingAmount: '306.0' };
+    render(<ProcessExchangeEdit {...defaultProps} data={[row]} onData={onData} />);
+    fireEvent.click(screen.getByRole('button'));
+    await waitFor(() =>
+      expect(mockProFormApi.getFieldsValue()).toEqual(expect.objectContaining(row)),
+    );
+    await act(async () => {
+      await mockProFormApi.submit();
+    });
+    expect(onData).not.toHaveBeenCalled();
+    await act(async () => {
+      const change = { resultingAmount: '0.307' };
+      mockProFormApi.setFieldsValue(change);
+      triggerValuesChange?.(change, mockProFormApi.getFieldsValue());
+    });
+    await act(async () => {
+      await mockProFormApi.submit();
+    });
+    expect(onData).toHaveBeenCalledWith([
+      expect.objectContaining({ meanAmount: '0.307', resultingAmount: '0.307' }),
+    ]);
+  });
+
+  it('keeps the independent calculated amount on a variable exchange', async () => {
+    const onData = jest.fn();
+    const row = {
+      ...exchangeList[0],
+      referenceToVariable: 'factor',
+      meanAmount: '0.306',
+      resultingAmount: '306.0',
+    };
+    render(<ProcessExchangeEdit {...defaultProps} data={[row]} onData={onData} />);
+    fireEvent.click(screen.getByRole('button'));
+    await waitFor(() => expect(mockProFormApi.getFieldValue('referenceToVariable')).toBe('factor'));
+    await act(async () => {
+      const change = { meanAmount: '0.5' };
+      mockProFormApi.setFieldsValue(change);
+      triggerValuesChange?.(change, mockProFormApi.getFieldsValue());
+    });
+    await act(async () => {
+      await mockProFormApi.submit();
+    });
+    expect(onData).toHaveBeenCalledWith([
+      expect.objectContaining({ meanAmount: '0.5', resultingAmount: '306.0' }),
+    ]);
+  });
+
   it('normalizes historical undefined amount strings to empty form values', async () => {
     render(
       <ProcessExchangeEdit

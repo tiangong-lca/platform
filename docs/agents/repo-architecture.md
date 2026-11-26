@@ -28,8 +28,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-26
-lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
-lastReviewedNote: 'Platform #1559. Documented exact-version canvas navigation and unavailable/error detail states.'
+lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

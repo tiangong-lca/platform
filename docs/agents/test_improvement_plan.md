@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-11-25
-lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
-lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 
 # Testing Strategy

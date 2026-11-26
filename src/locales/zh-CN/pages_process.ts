@@ -1,4 +1,5 @@
 export default {
+  'pages.process.exchange.amountConflict': '此交换未引用变量，但两个用量不同。请核对原始记录，在任一用量字段输入确认后的值，两项将同步更新。',
   'pages.process.allocation.reason.target': '目标不存在，或不是已验证的产品输出。',
   'pages.process.allocation.reason.duplicate': '分配目标重复。',
   'pages.process.allocation.reason.fraction': '每个分配比例必须是 0 到 100 的数值。',

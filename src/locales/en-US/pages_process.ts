@@ -1,4 +1,5 @@
 export default {
+  'pages.process.exchange.amountConflict': 'These amounts differ without a variable. Check the source and enter the verified amount in either field to update both.',
   'pages.process.allocation.reason.target': 'The target is missing or is not a verified product output.',
   'pages.process.allocation.reason.duplicate': 'A target is repeated.',
   'pages.process.allocation.reason.fraction': 'Each share must be a number from 0 to 100.',

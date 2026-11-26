@@ -44,8 +44,8 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-26
-lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
-lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
+lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 
 # Testing Troubleshooting
