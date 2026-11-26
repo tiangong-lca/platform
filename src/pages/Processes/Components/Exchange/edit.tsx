@@ -1,3 +1,5 @@
+import { findProcessExchangeAmountConflict } from '@tiangong-lca/tidas-sdk/core';
+import { synchronizedAmountEdit } from './amountFields';
 import AllocationField from './allocationField';
 import { isLegacyAllocation } from '@/services/processes/allocation';
 import LangTextItemForm from '@/components/LangTextItem/form';
@@ -433,8 +435,11 @@ const ProcessExchangeEdit: FC<Props> = ({
         visible={unitConvertVisible}
         onCancel={() => setUnitConvertVisible(false)}
         onOk={(result) => {
-          formRefEdit.current?.setFieldValue(unitConvertName, result);
-          setFromData({ ...fromData, [unitConvertName]: result });
+          const changed = { [unitConvertName]: result };
+          const values = { ...fromData, ...formRefEdit.current?.getFieldsValue(true) };
+          const patch = { ...changed, ...synchronizedAmountEdit(changed, values) };
+          formRefEdit.current?.setFieldsValue(patch);
+          setFromData({ ...values, ...patch });
         }}
         units={units}
         value={undefined}
@@ -480,8 +485,10 @@ const ProcessExchangeEdit: FC<Props> = ({
             onReset();
             applySdkFieldMessages();
           }}
-          onValuesChange={(_, allValues) => {
-            setFromData(allValues ?? {});
+          onValuesChange={(changed, allValues) => {
+            const synchronized = synchronizedAmountEdit(changed, allValues ?? {});
+            if (Object.keys(synchronized).length) formRefEdit.current?.setFieldsValue(synchronized);
+            setFromData({ ...allValues, ...synchronized });
             setFunctionalUnitOrOther(allValues?.quantitativeReference ?? false);
           }}
           submitter={{
@@ -494,6 +501,7 @@ const ProcessExchangeEdit: FC<Props> = ({
             const nextFormData = normalizeExchangeFormData(
               formRefEdit.current?.getFieldsValue(true) ?? {},
             );
+            if (findProcessExchangeAmountConflict(nextFormData)) return false;
             const nextExchangeData = normalizeQuantitativeReferenceSelection(
               data.map((item) => {
                 if (item['@dataSetInternalID'] === id) {
@@ -677,6 +685,11 @@ const ProcessExchangeEdit: FC<Props> = ({
                 }
                 required
                 name={'resultingAmount'}
+                extra={
+                  findProcessExchangeAmountConflict(fromData) ? (
+                    <FormattedMessage id='pages.process.exchange.amountConflict' />
+                  ) : undefined
+                }
                 rules={
                   showRules
                     ? getRules(

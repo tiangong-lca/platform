@@ -160,7 +160,7 @@ export type LciaUncharacterizedExchange = {
   direction: string;
   exchange_id: string;
   amount: string;
-  amount_source: 'meanAmount';
+  amount_source: 'meanAmount' | 'resultingAmount';
   resulting_amount: string | null;
   reason: LciaUncharacterizedReason;
 };

@@ -1,3 +1,4 @@
+import { findProcessExchangeAmountConflict } from '@tiangong-lca/tidas-sdk/core';
 import { toBigNumberOrNaN, toBigNumberOrZero } from '@/services/general/bignumber';
 import { CANONICAL_CONTENT_LANGUAGE } from '@/services/general/contentLanguageRegistry';
 import type { ProcessExchangeData } from '@/services/processes/data';
@@ -37,6 +38,13 @@ const normalizeExchangeFlowRef = (exchange: ProcessExchangeData) =>
     ? exchange.referenceToFlowDataSet[0]
     : exchange.referenceToFlowDataSet;
 
+function calculationAmountSource(exchange: ProcessExchangeData) {
+  return (exchange.resultingAmount !== null && exchange.resultingAmount !== undefined) ||
+    exchange.referenceToVariable?.trim()
+    ? 'resultingAmount'
+    : 'meanAmount';
+}
+
 function buildGap(
   method: LciaStaticCacheMethod,
   exchange: ProcessExchangeData,
@@ -52,8 +60,8 @@ function buildGap(
     flow_version: String(flowRef?.['@version'] ?? ''),
     direction: String(exchange.exchangeDirection ?? '').toUpperCase(),
     exchange_id: String(exchange['@dataSetInternalID'] ?? `exchange-${exchangeIndex + 1}`),
-    amount: String(exchange.meanAmount ?? ''),
-    amount_source: 'meanAmount',
+    amount: String(exchange[calculationAmountSource(exchange)] ?? ''),
+    amount_source: calculationAmountSource(exchange),
     resulting_amount:
       exchange.resultingAmount === undefined || exchange.resultingAmount === null
         ? null
@@ -238,7 +246,16 @@ export async function calculateStaticLcia(
     const direction = String(exchange.exchangeDirection ?? '')
       .trim()
       .toUpperCase();
-    const amount = toBigNumberOrNaN(exchange.meanAmount);
+    const conflict = findProcessExchangeAmountConflict(exchange);
+    if (conflict) {
+      return await buildStaticNoResult(
+        exchanges,
+        'calculation_failure',
+        `exchange[${exchangeIndex}].resultingAmount: ${conflict.message}`,
+        { listSha256: observedListSha256, factorSha256: observedFactorSha256 },
+      );
+    }
+    const amount = toBigNumberOrNaN(exchange[calculationAmountSource(exchange)]);
     let sharedReason: LciaUncharacterizedReason | null = null;
     let countKey: keyof LciaCoverageCounts | null = null;
 
@@ -248,7 +265,12 @@ export async function calculateStaticLcia(
     } else if (direction !== 'INPUT' && direction !== 'OUTPUT') {
       sharedReason = 'unsupported_direction';
       countKey = 'unsupported_direction';
-    } else if (amount.isNaN() || !amount.isFinite()) {
+    } else if (
+      !amount.isFinite() ||
+      (exchange.meanAmount !== null &&
+        exchange.meanAmount !== undefined &&
+        !toBigNumberOrNaN(exchange.meanAmount).isFinite())
+    ) {
       sharedReason = 'invalid_exchange_amount';
       countKey = 'invalid';
     }

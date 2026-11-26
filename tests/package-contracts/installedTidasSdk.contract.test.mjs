@@ -49,7 +49,7 @@ function assertStableErrorEnvelope(result, factoryName) {
 
 test('loads the exact released SDK from the installed package graph', () => {
   assert.equal(installedManifest.name, '@tiangong-lca/tidas-sdk');
-  assert.equal(installedManifest.version, '0.6.0');
+  assert.equal(installedManifest.version, '0.9.0');
   assert.match(resolvedCoreEntry, /node_modules/u);
 });
 
@@ -243,6 +243,28 @@ test('Platform form projections defer covered public rules to the installed SDK'
       `${field} must retain a field-addressable SDK failure`,
     );
   }
+});
+
+test('Process exchange amount conflicts are field-addressable in the installed SDK', () => {
+  const issues = (referenceToVariable) =>
+    installedCore
+      .createProcess(
+        {
+          processDataSet: {
+            exchanges: {
+              exchange: [{ meanAmount: '0.306', resultingAmount: '306.0', referenceToVariable }],
+            },
+          },
+        },
+        { mode: 'strict' },
+      )
+      .validateEnhanced()
+      .validationIssues.filter((issue) => issue.code === 'process_exchange_amount_conflict');
+  assert.deepEqual(
+    issues(' ').map((issue) => issue.path),
+    [['processDataSet', 'exchanges', 'exchange', 0, 'resultingAmount']],
+  );
+  assert.deepEqual(issues('factor'), []);
 });
 
 test('Flow property entry retains local field prompts for the SDK union-path gap', () => {

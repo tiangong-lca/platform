@@ -1,4 +1,5 @@
 export default {
+  'pages.process.exchange.amountConflict': 'Ces quantités diffèrent alors qu’aucune variable n’est référencée. Vérifiez la source et saisissez la quantité confirmée dans l’un des deux champs pour les mettre à jour.',
   'pages.process.allocation.reason.target': 'La cible est absente ou ne constitue pas une sortie de produit vérifiée.',
   'pages.process.allocation.reason.duplicate': 'Une cible est répétée.',
   'pages.process.allocation.reason.fraction': 'Chaque part doit être un nombre compris entre 0 et 100.',

@@ -27,9 +27,9 @@ checkPaths:
   - src/services/processes/api.ts
   - .github/workflows/ci.yml
   - .github/workflows/build.yml
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: b9411ce407153063367a5bf2a8dbb9a4f9053a4c
-lastReviewedNote: 'Platform #1493: reviewed DataTransfer, exact current/history archives, JSON result export and centered account layouts; retained role, calculation, test and release boundaries.'
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 
 # LCIA Method Bundle and Calculation Evidence Contract
@@ -56,7 +56,7 @@ Calculations and evidence use the canonical method ID. Artifact URLs use the loc
 
 Coverage is counted per exchange × LCIA method using the key dimensions `method_id`, `method_version`, `flow_uuid`, exact Flow version, and `direction`. The existing evidence matrix retains its compatibility shape.
 
-- The calculation amount is `meanAmount`; `resultingAmount` is retained only as evidence.
+- Calculation and gap evidence use the effective `resultingAmount`. Older unparameterized records with only a mean use `meanAmount`. An unparameterized amount conflict fails the calculation and identifies the source exchange. Parsers retain older mean-based evidence.
 - A missing factor is incomplete coverage, never an implicit zero.
 - An explicit finite zero factor remains a valid numeric result.
 - Nonregional calculation selects exactly one source default per exact method/Flow version/direction. `public/lciamethods/nonregional_defaults.json` is the byte-identical prepared mapping from Worker #344 (`d5ed7b76d96aa6640371fdba12076e129240e01f11e360d374b65fb89f9c3373`), bound to this immutable bundle and Data commit `367642d7994e0e75188e7e241fb2a4b85ffff62f`. Worker owns its XML verification/generator. Regional alternatives are never added together; unexplained duplicate families fail source integrity.

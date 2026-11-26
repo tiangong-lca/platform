@@ -5,12 +5,12 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "3df339c817ae0d4f64792632698aef5030f9eff049063706ea657749faf5e987",
-    "auditedInputDigest": "2837b39ca6982ab302920abdf67f21f4b2f28281e241f7562cd7e5361a1578db"
+    "sourceManifestDigest": "904cbc12138d7e1ddaa582d12c5df923be231263b61adbf1a24e1469817091db",
+    "auditedInputDigest": "9d0fa8ce88b8ba26484e11f75b53dd2866d0ff327b09940aa4aff691965c40d8"
   },
   "inventory": {
-    "sourceMessageCount": 3697,
-    "localeMessageCount": 3697,
+    "sourceMessageCount": 3698,
+    "localeMessageCount": 3698,
     "leafModuleCount": 31,
     "dynamicFamilyCount": 18,
     "dynamicCallsiteCount": 38,
@@ -44,18 +44,18 @@
       "preserved tokens and layout/RTL/dark risks",
       "candidate/rationale/risk/validation"
     ],
-    "messageCount": 3697,
-    "completeCount": 3697,
+    "messageCount": 3698,
+    "completeCount": 3698,
     "blockedCount": 0,
-    "dossierDigest": "96455062d0c601c8d7c31c118dc1bd4b372d4cd18b5e5cd0fc463246766ebffd",
-    "catalogDigest": "782b437c9c581d72fba0ccd5bfef96d3591972cf73302c345042375b2663864e",
+    "dossierDigest": "154c267c0bcb4271d91a441cda76bb6a447f10d44ff69246a1a9e787a4d310e5",
+    "catalogDigest": "25eed778656e9269084727b667d76ba354666889bd770863ca549e7990e8d809",
     "moduleCount": 32,
     "moduleDigest": "3b4f2df2201d552cc6e09b75bcebf64a30ac3511d401d79c50d4eb6e806195d3",
     "roleCounts": {
       "error-or-validation": 419,
       "explanatory-copy": 129,
       "field-guidance": 66,
-      "label-or-body-copy": 1519,
+      "label-or-body-copy": 1520,
       "navigation-or-tab": 246,
       "reserved-catalog-copy": 352,
       "status-or-empty-state": 136,
@@ -69,9 +69,9 @@
       "interactive-ready": 593,
       "retained-not-currently-reachable": 492,
       "successful-completion": 198,
-      "visible": 1929
+      "visible": 1930
     },
-    "riskCounts": { "high": 1753, "low": 1725, "medium": 219 },
+    "riskCounts": { "high": 1753, "low": 1725, "medium": 220 },
     "highRiskMessageCount": 1753,
     "highRiskMessageDigest": "386028777de028d7349a3b71d4f191cf9beec528620fba21d6d26692a9ef2877"
   },
@@ -94,7 +94,7 @@
   },
   "usageIndex": {
     "source": "docs/plans/i18n-de-DE/manifest.json messages[*].references/moduleOwnership/dynamicFamilies",
-    "literalReferenceCount": 4514,
+    "literalReferenceCount": 4516,
     "dynamicCallsiteCount": 38,
     "glossaryRuleScope": "full target catalog at the automated quality gate",
     "onDemandCommand": "pnpm i18n:context:dossier --locale en-US --message <MESSAGE_ID>"
@@ -704,7 +704,7 @@
           "viewState": "dataset-list-and-drawers",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "e9f9a95ede0ac9e4870de5d94b810694f7e2f25087a20b331bc52543b251d678",
-          "focusedTestDigest": "3c3d8fbfe92acd2ccd8639ca9d6b35fff16599ed779ca20df0daf0c79b8d26dc",
+          "focusedTestDigest": "3e94aed7bc8d323985469579fe87a3022c8e325759da58c18a054d29956ff2ae",
           "plannedBrowserAssertionCount": 1,
           "plannedBrowserAssertionDigest": "c1a717241a2262686b0800ebe4da4f59e4dd2e5f00f5e7a036a58f36a79d5b53",
           "derivedMessageCount": 24,
@@ -722,7 +722,7 @@
           "viewState": "dataset-list-and-drawers",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "e9f9a95ede0ac9e4870de5d94b810694f7e2f25087a20b331bc52543b251d678",
-          "focusedTestDigest": "3c3d8fbfe92acd2ccd8639ca9d6b35fff16599ed779ca20df0daf0c79b8d26dc",
+          "focusedTestDigest": "3e94aed7bc8d323985469579fe87a3022c8e325759da58c18a054d29956ff2ae",
           "plannedBrowserAssertionCount": 1,
           "plannedBrowserAssertionDigest": "c1a717241a2262686b0800ebe4da4f59e4dd2e5f00f5e7a036a58f36a79d5b53",
           "derivedMessageCount": 24,
@@ -740,7 +740,7 @@
           "viewState": "dataset-list-and-drawers",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "e9f9a95ede0ac9e4870de5d94b810694f7e2f25087a20b331bc52543b251d678",
-          "focusedTestDigest": "3c3d8fbfe92acd2ccd8639ca9d6b35fff16599ed779ca20df0daf0c79b8d26dc",
+          "focusedTestDigest": "3e94aed7bc8d323985469579fe87a3022c8e325759da58c18a054d29956ff2ae",
           "plannedBrowserAssertionCount": 1,
           "plannedBrowserAssertionDigest": "c1a717241a2262686b0800ebe4da4f59e4dd2e5f00f5e7a036a58f36a79d5b53",
           "derivedMessageCount": 24,
@@ -758,7 +758,7 @@
           "viewState": "dataset-list-and-drawers",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "e9f9a95ede0ac9e4870de5d94b810694f7e2f25087a20b331bc52543b251d678",
-          "focusedTestDigest": "3c3d8fbfe92acd2ccd8639ca9d6b35fff16599ed779ca20df0daf0c79b8d26dc",
+          "focusedTestDigest": "3e94aed7bc8d323985469579fe87a3022c8e325759da58c18a054d29956ff2ae",
           "plannedBrowserAssertionCount": 1,
           "plannedBrowserAssertionDigest": "c1a717241a2262686b0800ebe4da4f59e4dd2e5f00f5e7a036a58f36a79d5b53",
           "derivedMessageCount": 24,
@@ -776,7 +776,7 @@
           "viewState": "dataset-list-and-drawers",
           "requiredEvidenceScope": "internal-localization",
           "sourceDigest": "e9f9a95ede0ac9e4870de5d94b810694f7e2f25087a20b331bc52543b251d678",
-          "focusedTestDigest": "3c3d8fbfe92acd2ccd8639ca9d6b35fff16599ed779ca20df0daf0c79b8d26dc",
+          "focusedTestDigest": "3e94aed7bc8d323985469579fe87a3022c8e325759da58c18a054d29956ff2ae",
           "plannedBrowserAssertionCount": 1,
           "plannedBrowserAssertionDigest": "c1a717241a2262686b0800ebe4da4f59e4dd2e5f00f5e7a036a58f36a79d5b53",
           "derivedMessageCount": 24,
@@ -1334,7 +1334,7 @@
           "unownedVisibleLiteralCount": 0
         }
       ],
-      "rowEvidenceDigest": "75a800ac1c358f462416cb654a55c065ddeaeb53601a19e2fd7738d209f2b837",
+      "rowEvidenceDigest": "117db22a4ebb87bd6dcce0268e996d9f1bf17d249e27bb9b20e4f947915994d0",
       "blockedDerivedStateCount": 0,
       "unownedVisibleLiteralCount": 0
     }
@@ -1358,5 +1358,5 @@
     "docs/plans/i18n-en-US/style-guide.md": "be570ee8db2b034dde7274f774730575ad9b9226af7a5ac7ab35a45d1ef2620c"
   },
   "blockedContext": [],
-  "contextDigest": "784d4cf453e635d25532c96fff3c4c8ebd93f5387968db246a2552dfb84f9718"
+  "contextDigest": "2307ed39a9c5a3e935b98b8e7f358736587a69fc575c1fde4b505d75b12a26eb"
 }
