@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const repositoryRoot = path.resolve(__dirname, '../../..');
-const pinnedPnpmSetup = 'uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2';
+const pinnedPnpmSetup = 'uses: pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1 # v3.2.0';
 const expectedPnpmVersion = '11.24.0';
 
 function read(relativePath: string): string {
