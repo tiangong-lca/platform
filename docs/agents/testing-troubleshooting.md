@@ -43,8 +43,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-25
-lastReviewedCommit: bc3f4132ec51299a10af47d3076827dd68828b37
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
 lastReviewedNote: 'Platform #1567 and #1572. Reviewed the docpact binary cache, dev cache warming, PR concurrency, and responsive team-title language coverage.'
 ---
 

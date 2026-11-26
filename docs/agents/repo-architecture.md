@@ -27,8 +27,8 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
 lastReviewedNote: 'Platform #1559. Documented exact-version canvas navigation and unavailable/error detail states.'
 related:
   - ../AGENTS.md
