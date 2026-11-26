@@ -38,7 +38,7 @@ describe('standalone report PR qualification', () => {
 
   it('runs the pinned frozen portable package and actual Chromium proof in order', () => {
     expect(workflow).toContain(
-      'uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2',
+      'uses: pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1 # v3.2.0',
     );
     expect(workflow).toContain('version: 11.24.0');
     expect(workflow).toContain('runtime: node@24.19.0');

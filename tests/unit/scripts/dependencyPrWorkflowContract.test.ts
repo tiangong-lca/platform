@@ -109,7 +109,7 @@ describe('ordinary dependency workflow validation ownership', () => {
     expect(probe).toContain(
       'uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0',
     );
-    expect(probe).toContain('uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2');
+    expect(probe).toContain('uses: pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1 # v3.2.0');
     expect(probe).toContain(
       'uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2',
     );

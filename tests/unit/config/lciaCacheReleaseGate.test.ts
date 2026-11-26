@@ -24,7 +24,7 @@ describe('Publication workflow gates', () => {
     const workflow = read('.github/workflows/build.yml');
     const releaseGate = read('.github/workflows/release-gate.yml');
     expect(releaseGate).toContain(
-      'uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2',
+      'uses: pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1 # v3.2.0',
     );
     expect(releaseGate).toContain('run: pnpm install --frozen-lockfile');
     expect(releaseGate).toContain('run: pnpm lcia-cache:verify');
