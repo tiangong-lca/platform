@@ -47,8 +47,8 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-27
-lastReviewedCommit: 4164bbff94d36500640209b5008e7f46eaa8579c
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 2e94ae74add1c9b428aca7bc965e4a24413f2180
 lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 related:
   - ../AGENTS.md

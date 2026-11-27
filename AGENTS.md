@@ -49,8 +49,8 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-27
-lastReviewedCommit: 2fa6963209063042d9e30ea2b8710083f70ef38d
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 2e94ae74add1c9b428aca7bc965e4a24413f2180
 lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 related:
   - .docpact/config.yaml
