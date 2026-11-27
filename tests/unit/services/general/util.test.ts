@@ -1165,6 +1165,76 @@ describe('General Utility Functions', () => {
       ]);
       expect(result.supplementedEnglishPlaceholderPaths).toEqual([]);
     });
+
+    it('should preserve all distinct same-language generalComment paragraphs in source order and deduplicate exact repeats (#1325)', async () => {
+      const payload = {
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: {
+              'common:generalComment': [
+                { '@xml:lang': 'en', '#text': 'First original paragraph.' },
+                { '@xml:lang': 'en', '#text': 'Second original paragraph.' },
+                { '@xml:lang': 'en', '#text': 'First original paragraph.' },
+                { '@xml:lang': 'zh', '#text': '第一段说明。' },
+                { '@xml:lang': 'zh', '#text': '第二段说明。' },
+              ],
+            },
+          },
+        },
+      };
+
+      const validationResult = await normalizeLangPayloadBeforeSave(payload, {
+        intent: 'validation',
+      });
+      const saveResult = await normalizeLangPayloadBeforeSave(payload);
+
+      expect(validationResult.issues).toEqual([]);
+      expect(validationResult.payload.processDataSet.processInformation.dataSetInformation).toEqual(
+        {
+          'common:generalComment': [
+            {
+              '@xml:lang': 'en',
+              '#text': 'First original paragraph.\n\nSecond original paragraph.',
+            },
+            { '@xml:lang': 'zh', '#text': '第一段说明。\n\n第二段说明。' },
+          ],
+        },
+      );
+      expect(saveResult.issues).toEqual([]);
+      expect(saveResult.payload).toEqual(validationResult.payload);
+    });
+
+    it('should retain first text and emit duplicate_lang without joining non-descriptive fields (#1325)', async () => {
+      const payload = {
+        processDataSet: {
+          processInformation: {
+            dataSetInformation: {
+              name: {
+                baseName: [
+                  { '@xml:lang': 'en', '#text': 'Primary process name' },
+                  { '@xml:lang': 'en', '#text': 'Conflicting duplicate name' },
+                  { '@xml:lang': 'en', '#text': 'Primary process name' },
+                ],
+              },
+            },
+          },
+        },
+      };
+
+      const result = await normalizeLangPayloadBeforeSave(payload);
+
+      expect(result.payload.processDataSet.processInformation.dataSetInformation.name).toEqual({
+        baseName: { '@xml:lang': 'en', '#text': 'Primary process name' },
+      });
+      expect(result.issues).toEqual([
+        {
+          path: 'processDataSet.processInformation.dataSetInformation.name.baseName',
+          code: 'duplicate_lang',
+          message:
+            'Duplicate "en" content at "processDataSet.processInformation.dataSetInformation.name.baseName".',
+        },
+      ]);
+    });
   });
 
   describe('getLangValidationErrorMessage', () => {

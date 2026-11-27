@@ -511,7 +511,7 @@ export function getLangList(langTexts: any) {
   }
 }
 
-export type LangValidationIssueCode = 'missing_en' | 'invalid_en';
+export type LangValidationIssueCode = 'missing_en' | 'invalid_en' | 'duplicate_lang';
 
 export type LangNormalizationIntent = 'save' | 'validation';
 
@@ -575,6 +575,43 @@ const pushUniquePath = (paths: string[], path: string) => {
   paths.push(path);
 };
 
+const JOINABLE_DESCRIPTIVE_LANG_FIELDS = new Set([
+  'common:generalComment',
+  'generalComment',
+  'useAdviceForDataSet',
+  'common:timeRepresentativenessDescription',
+  'descriptionOfRestrictions',
+  'technologyDescriptionAndIncludedProcesses',
+  'technologicalApplicability',
+  'dataCutOffAndCompletenessPrinciples',
+  'dataSelectionAndCombinationPrinciples',
+  'dataTreatmentAndExtrapolationsPrinciples',
+  'samplingProcedure',
+  'deviationsFromCutOffAndCompletenessPrinciples',
+  'deviationsFromDataSelectionAndCombinationPrinciples',
+  'deviationsFromTreatmentAndExtrapolationsPrinciples',
+  'deviationsFromLCIMethodApproaches',
+  'deviationsFromLCIMethodPrinciple',
+  'deviationsFromModellingConstants',
+  'common:intendedApplications',
+  'common:accessRestrictions',
+  'reviewDetails',
+]);
+
+const getLangValidationFieldName = (path: string, rootLabel: string) => {
+  const normalizedPath = path?.trim();
+  if (!normalizedPath) {
+    return rootLabel;
+  }
+
+  const lastPathSegment = normalizedPath.split('.').pop() ?? normalizedPath;
+  const fieldName = lastPathSegment.replace(/\[\d+\]$/u, '');
+  return fieldName || rootLabel;
+};
+
+const isJoinableDescriptiveLangPath = (path: string): boolean =>
+  JOINABLE_DESCRIPTIVE_LANG_FIELDS.has(getLangValidationFieldName(path, ''));
+
 async function normalizeLangEntries(
   langEntries: any[],
   path: string,
@@ -610,8 +647,10 @@ async function normalizeLangEntries(
   };
 
   const rawLangCodes: string[] = [];
-  const normalizedMap = new Map<string, string>();
+  const normalizedSegmentsMap = new Map<string, string[]>();
   const orderedLangCodes: string[] = [];
+  const duplicateLangCodes = new Set<string>();
+  const allowDuplicateJoin = isJoinableDescriptiveLangPath(path);
 
   for (const entry of langEntries) {
     if (!isLangTextEntry(entry)) {
@@ -628,16 +667,31 @@ async function normalizeLangEntries(
     if (!textValue) {
       continue;
     }
-    if (!orderedLangCodes.includes(langCode)) {
+    const existingSegments = normalizedSegmentsMap.get(langCode);
+    if (!existingSegments) {
       orderedLangCodes.push(langCode);
+      normalizedSegmentsMap.set(langCode, [textValue]);
+    } else if (!existingSegments.includes(textValue)) {
+      if (allowDuplicateJoin) {
+        existingSegments.push(textValue);
+      } else {
+        duplicateLangCodes.add(langCode);
+      }
     }
-    normalizedMap.set(langCode, textValue);
   }
 
   let normalizedList: NormalizedLangEntry[] = orderedLangCodes.map((langCode) => ({
     [LANG_KEY]: langCode,
-    [TEXT_KEY]: normalizedMap.get(langCode),
+    [TEXT_KEY]: normalizedSegmentsMap.get(langCode)!.join('\n\n'),
   }));
+
+  for (const langCode of duplicateLangCodes) {
+    issues.push({
+      path,
+      code: 'duplicate_lang',
+      message: `Duplicate "${langCode}" content at "${path}".`,
+    });
+  }
 
   const englishEntry = normalizedList.find((entry) => isEnglishLangCode(String(entry[LANG_KEY])));
   const chineseSourceLangCode = orderedLangCodes.find((langCode) => isChineseLangCode(langCode));
@@ -847,17 +901,6 @@ const formatLangValidationTemplate = (
     (result, [key, value]) => result.split(`{${key}}`).join(String(value)),
     pluralizedTemplate,
   );
-};
-
-const getLangValidationFieldName = (path: string, rootLabel: string) => {
-  const normalizedPath = path?.trim();
-  if (!normalizedPath) {
-    return rootLabel;
-  }
-
-  const lastPathSegment = normalizedPath.split('.').pop() ?? normalizedPath;
-  const fieldName = lastPathSegment.replace(/\[\d+\]$/u, '');
-  return fieldName || rootLabel;
 };
 
 export function getLangValidationErrorMessage(
