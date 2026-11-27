@@ -61,8 +61,19 @@ jobs:
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Restore cached docpact 0.1.9 binary
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cargo/bin/docpact
+          key: docpact-bin-${{ runner.os }}-${{ runner.arch }}-0.1.9
+
       - name: Install docpact
-        run: cargo install docpact --version 0.1.9 --force
+        run: |
+          if [ -x "$HOME/.cargo/bin/docpact" ] && [ "$("$HOME/.cargo/bin/docpact" --version)" = "docpact 0.1.9" ]; then
+            echo "Using cached docpact 0.1.9"
+          else
+            cargo install docpact --version 0.1.9 --locked --force
+          fi
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

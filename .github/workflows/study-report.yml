@@ -54,6 +54,11 @@ jobs:
         run: pnpm test:ci --runInBand --runTestsByPath tests/unit/standalone/studyReport.test.ts tests/unit/standalone/studyMethodReport.test.ts tests/unit/standalone/studyMethodPresentation.test.ts tests/unit/config/studyReportWorkflow.test.ts --no-coverage
       - name: Verify packed independent consumer
         run: pnpm study-report:test:package
+      - name: Restore Playwright Chromium cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('pnpm-lock.yaml') }}
       - name: Install the lockfile-selected Chromium and system dependencies
         run: pnpm exec playwright install --with-deps chromium
       - name: Qualify actual packed HTML online and offline

@@ -3,6 +3,10 @@ name: Manual Web Deploy
 on:
   workflow_dispatch:
 
+concurrency:
+  group: manual-web-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-and-deploy:
     name: Build and Deploy Web App

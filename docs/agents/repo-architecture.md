@@ -28,7 +28,7 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-27
-lastReviewedCommit: fad8d00935d5089e91cbd35e59d81b41a358c106
+lastReviewedCommit: 2a038b3579e21b403b091329c9a6950bdeb1e17b
 lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 related:
   - ../AGENTS.md
