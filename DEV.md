@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-27
-lastReviewedCommit: 2a038b3579e21b403b091329c9a6950bdeb1e17b
+lastReviewedCommit: 2fa6963209063042d9e30ea2b8710083f70ef38d
 lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 

@@ -47,7 +47,7 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-27
-lastReviewedCommit: 2a038b3579e21b403b091329c9a6950bdeb1e17b
+lastReviewedCommit: 4164bbff94d36500640209b5008e7f46eaa8579c
 lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 

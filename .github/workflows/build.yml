@@ -360,6 +360,7 @@ jobs:
           version: 11.24.0
           runtime: node@24.19.0
           cache: true
+          install: false
       - name: Frozen install
         if: steps.renderer.outputs.available == 'true'
         run: pnpm install --frozen-lockfile
@@ -760,9 +761,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Restore Electron download cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ${{ runner.temp }}/electron-cache
+            ${{ runner.temp }}/electron-builder-cache
+          key: electron-cache-v1-${{ runner.os }}-${{ matrix.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Build/release Electron app
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELECTRON_CACHE: ${{ runner.temp }}/electron-cache
+          ELECTRON_BUILDER_CACHE: ${{ runner.temp }}/electron-builder-cache
         run: |
           pnpm build
           pnpm tsc:electron
