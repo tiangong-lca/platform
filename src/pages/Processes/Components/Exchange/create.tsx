@@ -1,3 +1,5 @@
+import { findProcessExchangeAmountConflict } from '@tiangong-lca/tidas-sdk/core';
+import { synchronizedAmountEdit } from './amountFields';
 import AllocationField from './allocationField';
 import LangTextItemForm from '@/components/LangTextItem/form';
 import LocationCodeSelect from '@/components/LocationTextItem/codeSelect';
@@ -104,8 +106,11 @@ const ProcessExchangeCreate: FC<Props> = ({
         visible={unitConvertVisible}
         onCancel={() => setUnitConvertVisible(false)}
         onOk={(result) => {
-          formRefCreate.current?.setFieldValue(unitConvertName, `${result}`);
-          setFromData({ ...fromData, [unitConvertName]: result });
+          const changed = { [unitConvertName]: `${result}` };
+          const values = { ...fromData, ...formRefCreate.current?.getFieldsValue(true) };
+          const patch = { ...changed, ...synchronizedAmountEdit(changed, values) };
+          formRefCreate.current?.setFieldsValue(patch);
+          setFromData({ ...values, ...patch });
         }}
         units={units}
         value={undefined}
@@ -146,8 +151,11 @@ const ProcessExchangeCreate: FC<Props> = ({
         <ProForm
           formRef={formRefCreate}
           initialValues={initialValues}
-          onValuesChange={(_, allValues) => {
-            setFromData(allValues ?? {});
+          onValuesChange={(changed, allValues) => {
+            const synchronized = synchronizedAmountEdit(changed, allValues ?? {});
+            if (Object.keys(synchronized).length)
+              formRefCreate.current?.setFieldsValue(synchronized);
+            setFromData({ ...allValues, ...synchronized });
             setFunctionalUnitOrOther(allValues?.quantitativeReference ?? false);
           }}
           submitter={{
@@ -157,7 +165,11 @@ const ProcessExchangeCreate: FC<Props> = ({
           }}
           onFinish={async () => {
             // Reference selectors can update Form.List before its fields finish registering.
-            onData(normalizeExchangeFormData(formRefCreate.current?.getFieldsValue(true) ?? {}));
+            const row = normalizeExchangeFormData(
+              formRefCreate.current?.getFieldsValue(true) ?? {},
+            );
+            if (findProcessExchangeAmountConflict(row)) return false;
+            onData(row);
             formRefCreate.current?.resetFields();
             setDrawerVisible(false);
             return true;
@@ -299,6 +311,11 @@ const ProcessExchangeCreate: FC<Props> = ({
               }
               required
               name={'resultingAmount'}
+              extra={
+                findProcessExchangeAmountConflict(fromData) ? (
+                  <FormattedMessage id='pages.process.exchange.amountConflict' />
+                ) : undefined
+              }
               rules={
                 showRules
                   ? getRules(

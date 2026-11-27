@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const repositoryRoot = path.resolve(__dirname, '../../..');
-const pinnedPnpmSetup = 'uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2';
+const pinnedPnpmSetup = 'uses: pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1 # v3.2.0';
 const expectedPnpmVersion = '11.24.0';
 
 function read(relativePath: string): string {
@@ -74,9 +74,9 @@ describe('pnpm package-manager contract', () => {
     const packageJson = JSON.parse(read('package.json'));
     const lockfile = read('pnpm-lock.yaml');
 
-    expect(packageJson.dependencies['@tiangong-lca/tidas-sdk']).toBe('0.6.0');
+    expect(packageJson.dependencies['@tiangong-lca/tidas-sdk']).toBe('0.9.0');
     expect(packageJson.devDependencies.typescript).toBe('7.0.2');
-    expect(lockfile).toMatch(/^\s{2}'?@tiangong-lca\/tidas-sdk@0\.6\.0'?\s*:/mu);
+    expect(lockfile).toMatch(/^\s{2}'?@tiangong-lca\/tidas-sdk@0\.9\.0'?\s*:/mu);
     expect(lockfile).toMatch(/^\s{2}typescript@7\.0\.2\s*:/mu);
     expect(lockfile).not.toMatch(/^\s{2}typescript@[0-6]\./mu);
     expect(lockfile).not.toMatch(/^\s{2}(?:'@typescript\/vfs|ts-to-zod)@/mu);

@@ -289,9 +289,55 @@ describe('reviewed LCIA calculation and evidence', () => {
     expect(normalizeLcaCalculationEvidence({ schema_version: 'unknown' })).toBeNull();
   });
 
+  it('records a missing variable-dependent effective amount as an invalid quantity', async () => {
+    const run = await calculateStaticLcia({
+      exchanges: [
+        exchange({ meanAmount: '2', resultingAmount: undefined, referenceToVariable: 'factor' }),
+      ],
+      listData,
+      factors: {},
+      ...sourceProof,
+    });
+    expect(run.report.method_factor_coverage.uncharacterized_exchanges?.[0]).toMatchObject({
+      amount: '',
+      amount_source: 'resultingAmount',
+      resulting_amount: null,
+      reason: 'invalid_exchange_amount',
+    });
+  });
+
+  it('rejects unparameterized conflicts and uses the supplied effective amount for a variable', async () => {
+    const run = (referenceToVariable?: string) =>
+      calculateStaticLcia({
+        exchanges: [
+          exchange({ meanAmount: '0.306', resultingAmount: '306.0', referenceToVariable }),
+        ],
+        listData,
+        factors: {
+          'flow-1:OUTPUT': {
+            '@version': '01.00.000',
+            factor: [{ key: primary.method_id, value: '2' }],
+          },
+        },
+        ...sourceProof,
+      });
+    const conflict = await run();
+    expect(conflict.results).toEqual([]);
+    expect(conflict.report.failure_reason).toContain('exchange[0].resultingAmount');
+    const valid = await run('scale');
+    expect(valid.results[0].meanAmount).toBe('612');
+    expect(valid.report.method_factor_coverage.uncharacterized_exchanges?.[0]).toMatchObject({
+      amount: '306.0',
+      amount_source: 'resultingAmount',
+    });
+  });
+
   it('emits explicit zero and maps locator aliases', async () => {
     const result = await calculateStaticLcia({
-      exchanges: [exchange(), exchange({ '@dataSetInternalID': 'exchange-2', meanAmount: '4' })],
+      exchanges: [
+        exchange(),
+        exchange({ '@dataSetInternalID': 'exchange-2', meanAmount: '4', resultingAmount: '4' }),
+      ],
       listData,
       factors: {
         'flow-1:OUTPUT': {
@@ -657,7 +703,13 @@ describe('reviewed LCIA calculation and evidence', () => {
       (v) => (v.uncharacterized_exchanges[0].exchange_id = ''),
       (v) => (v.uncharacterized_exchanges[0].flow_uuid = ''),
       (v) => (v.uncharacterized_exchanges[0].direction = 'SIDEWAYS'),
-      (v) => (v.uncharacterized_exchanges[0].amount_source = 'resultingAmount'),
+      (v) => (v.uncharacterized_exchanges[0].amount_source = 'unknown'),
+      (v) =>
+        Object.assign(v.uncharacterized_exchanges[0], {
+          amount_source: 'resultingAmount',
+          amount: '1',
+          resulting_amount: null,
+        }),
       (v) => (v.uncharacterized_exchanges[0].resulting_amount = 1),
       (v) => (v.uncharacterized_exchanges[0].amount = 1),
       (v) => (v.uncharacterized_exchanges[0].reason = 'invalid_factor'),

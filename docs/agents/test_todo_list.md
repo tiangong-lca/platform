@@ -44,12 +44,14 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
-lastReviewedNote: 'Platform #1559. Reviewed the canvas drill-down regression coverage and exact public read assertions.'
+lastReviewedAt: 2026-11-27
+lastReviewedCommit: fad8d00935d5089e91cbd35e59d81b41a358c106
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 
 # Testing Execution State
+
+The Linux coverage scheduling study [#1564](https://github.com/tiangong-lca/platform/issues/1564) completed the registered eight-trial same-runner comparison at `a3ad70aa`: three workers reduced median coverage wall time by 12.01% with identical assertions and mapped coverage. [Implementation #1565](https://github.com/tiangong-lca/platform/issues/1565) narrows the new default to the measured GitHub-hosted Ubuntu 26 four-CPU memory class. Its focused regression proof and ordinary checked-push gate validate the maintained selector. Regular-release promotion and eligible Main/root inclusion remain separate tracked delivery stages.
 
 > Source of truth for the current operational testing state. Use this file for present-state execution facts, not for long-term strategy.
 

@@ -382,12 +382,16 @@ describe('ProcessExchangeCreate', () => {
     const currentValues = proFormApi?.getFieldsValue() ?? {};
     await act(async () => {
       proFormApi?.setFieldsValue({ meanAmount: 10, quantitativeReference: true });
-      triggerValuesChange?.({}, { ...currentValues, meanAmount: 10, quantitativeReference: true });
+      triggerValuesChange?.(
+        { meanAmount: 10 },
+        { ...currentValues, meanAmount: 10, quantitativeReference: true },
+      );
     });
 
     await waitFor(() => {
       expect(proFormApi?.getFieldsValue()).toEqual({
         meanAmount: 10,
+        resultingAmount: 10,
         quantitativeReference: true,
         exchangeDirection: 'Output',
       });
@@ -405,6 +409,25 @@ describe('ProcessExchangeCreate', () => {
     await waitFor(() =>
       expect(screen.queryByRole('dialog', { name: 'Create Exchange' })).not.toBeInTheDocument(),
     );
+  });
+
+  it('blocks a new inconsistent exchange after removing its variable', async () => {
+    const onData = jest.fn();
+    render(<ProcessExchangeCreate {...defaultProps} onData={onData} />);
+    fireEvent.click(screen.getByRole('button'));
+    await act(async () => {
+      proFormApi.setFieldsValue({
+        meanAmount: '0.306',
+        resultingAmount: '306.0',
+        referenceToVariable: '',
+      });
+      triggerValuesChange?.({ referenceToVariable: '' }, proFormApi.getFieldsValue());
+    });
+    await act(async () => {
+      await proFormApi.submit();
+    });
+    expect(onData).not.toHaveBeenCalled();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
   it('saves the latest flow reference even when the change snapshot has no name', async () => {
@@ -461,6 +484,7 @@ describe('ProcessExchangeCreate', () => {
 
     await waitFor(() => {
       expect(proFormApi?.getFieldValue('meanAmount')).toBe('123');
+      expect(proFormApi?.getFieldValue('resultingAmount')).toBe('123');
     });
   });
 

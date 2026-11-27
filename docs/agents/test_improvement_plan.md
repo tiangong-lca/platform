@@ -46,9 +46,9 @@ checkPaths:
   - pnpm-lock.yaml
   - pnpm-workspace.yaml
   - Dockerfile.app
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 8f926e4de18fbc883fe9b2fa3e1367c3a8d865c9
-lastReviewedNote: 'Platform #1559. Reviewed unit and isolated browser coverage for exact and unavailable references.'
+lastReviewedAt: 2026-11-27
+lastReviewedCommit: fad8d00935d5089e91cbd35e59d81b41a358c106
+lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 ---
 
 # Testing Strategy
@@ -60,7 +60,7 @@ lastReviewedNote: 'Platform #1559. Reviewed unit and isolated browser coverage f
 - current strategy is maintenance, not expansion for its own sake
 - full closure already exists; the job is to preserve it while the codebase changes
 - dependency installation is a governed proof input: the repository pins Node `24.19.0`, pnpm `11.24.0`, and TypeScript `7.0.2`, requires a frozen lock, keeps isolated linking with only the reviewed Umi/Babel public-hoist patterns, collapses Umi fallback metadata to one exact React 19 / antd 6 / ProComponents 3 generation through narrow overrides, decides every lifecycle build explicitly, and validates clean-install plus dependency-identity drift through focused contracts before the final gate
-- CI bootstrap provenance is part of the same proof: every owned `pnpm/setup` invocation uses the reviewed peeled executable v3.1.2 commit SHA rather than an annotated-tag object or movable major tag
+- CI bootstrap provenance is part of the same proof: every owned `pnpm/setup` invocation uses the reviewed peeled executable v3.2.0 commit SHA rather than an annotated-tag object or movable major tag
 - the released TIDAS SDK consumer is protected by a child Node contract outside Jest's module mapper; it resolves the real installed package at the exact version pinned by package.json and exercises all seven dataset factories plus the normalized `validateEnhanced` error envelope so mocked application suites cannot hide a package incompatibility
 - add integration-test expansion only when it reduces real product risk
 - validation-heavy surfaces such as process-editor SDK guidance, multilingual field checks, and review jump targets should prefer behavior-level tests over snapshot growth

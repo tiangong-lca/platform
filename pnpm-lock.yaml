@@ -59,8 +59,8 @@ importers:
         specifier: ^2.118.0
         version: 2.118.0
       '@tiangong-lca/tidas-sdk':
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.9.0
+        version: 0.9.0
       antd:
         specifier: 6.6.6
         version: 6.6.6(date-fns@2.30.0)(moment@2.31.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -2668,8 +2668,8 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
 
-  '@tiangong-lca/tidas-sdk@0.6.0':
-    resolution: {integrity: sha512-CSGPNqvWTGqOm2cC9+Q+3ytCx/W1C7E5rFFPnM3zg25+QBELQwlvdEzL9BuvLSRZiViKnd82AkxX9QQNWnOIrQ==}
+  '@tiangong-lca/tidas-sdk@0.9.0':
+    resolution: {integrity: sha512-xjJC9bGAq08PcSL8pghPRqbK18nPuzRQHGaWBTgBnLKEfawdFR31FFAUWTqgUd9XaEIj0A29JrxRFtoNSwe34w==}
     engines: {node: 24.19.0}
 
   '@tweenjs/tween.js@23.1.3':
@@ -11687,7 +11687,7 @@ snapshots:
     dependencies:
       '@testing-library/dom': 10.4.2
 
-  '@tiangong-lca/tidas-sdk@0.6.0':
+  '@tiangong-lca/tidas-sdk@0.9.0':
     dependencies:
       jsonschema: 1.5.0
       xmltodict: 1.0.5

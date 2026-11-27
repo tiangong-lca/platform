@@ -1,4 +1,5 @@
 export default {
+  'pages.process.exchange.amountConflict': 'Die Mengen weichen ohne Variablenreferenz voneinander ab. Prüfen Sie die Quelle und geben Sie die bestätigte Menge in eines der Felder ein, um beide zu aktualisieren.',
   'pages.process.allocation.reason.target': 'Das Ziel fehlt oder ist kein verifizierter Produktausgang.',
   'pages.process.allocation.reason.duplicate': 'Ein Ziel ist mehrfach angegeben.',
   'pages.process.allocation.reason.fraction': 'Jeder Anteil muss eine Zahl zwischen 0 und 100 sein.',

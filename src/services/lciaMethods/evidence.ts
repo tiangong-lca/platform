@@ -340,7 +340,9 @@ function normalizeUncharacterizedExchange(value: unknown): LciaUncharacterizedEx
     return null;
   }
   if (
-    value.amount_source !== 'meanAmount' ||
+    (value.amount_source !== 'meanAmount' && value.amount_source !== 'resultingAmount') ||
+    (value.amount_source === 'resultingAmount' &&
+      value.amount !== (value.resulting_amount ?? '')) ||
     (value.resulting_amount !== null && typeof value.resulting_amount !== 'string')
   ) {
     return null;
@@ -354,7 +356,7 @@ function normalizeUncharacterizedExchange(value: unknown): LciaUncharacterizedEx
     direction: value.direction as string,
     exchange_id: value.exchange_id as string,
     amount: value.amount as string,
-    amount_source: 'meanAmount',
+    amount_source: value.amount_source,
     resulting_amount: value.resulting_amount as string | null,
     reason: value.reason as LciaUncharacterizedReason,
   };

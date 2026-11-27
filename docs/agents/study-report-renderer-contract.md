@@ -18,8 +18,8 @@ checkPaths:
   - .github/workflows/build.yml
   - .github/workflows/study-report.yml
   - tests/unit/config/studyReportWorkflow.test.ts
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
 lastReviewedNote: 'Platform #1554. Reviewed the offline delivery contract after the first-party online preview was retired.'
 related:
   - repo-architecture.md

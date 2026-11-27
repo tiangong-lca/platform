@@ -56,9 +56,9 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 0883fee75166ec341038dcb5041b8d54075466c7
-lastReviewedNote: 'Platform #1554. Reviewed four active catalogs and their route, context and activation evidence after Study retirement.'
+lastReviewedAt: 2026-11-26
+lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
+lastReviewedNote: 'Platform #1572. Reviewed responsive team-title language selection against the default translation rows and duplicate-language rule.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md
