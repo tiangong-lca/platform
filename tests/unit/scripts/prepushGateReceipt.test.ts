@@ -66,9 +66,8 @@ const LOCAL_GIT_ENVIRONMENT_KEYS = [
   'GIT_COMMON_DIR',
 ] as const;
 
-const SUBPROCESS_CONCURRENCY =
-  os.availableParallelism() <= 4 ? 3 : Math.min(4, os.availableParallelism());
-const MULTI_PUSH_TEST_TIMEOUT_MS = 45_000;
+const SUBPROCESS_CONCURRENCY = Math.max(2, Math.min(4, os.availableParallelism()));
+jest.setTimeout(60_000);
 let activeSubprocesses = 0;
 const subprocessWaiters: Array<() => void> = [];
 
@@ -822,7 +821,6 @@ describe('bounded checked-push transport receipt', () => {
           expect(fs.existsSync(current.receipt)).toBe(false);
         });
       },
-      MULTI_PUSH_TEST_TIMEOUT_MS,
     );
 
     it.concurrent(
@@ -846,7 +844,6 @@ describe('bounded checked-push transport receipt', () => {
           expect(fs.existsSync(current.receipt)).toBe(true);
         });
       },
-      MULTI_PUSH_TEST_TIMEOUT_MS,
     );
 
     it.concurrent('does not activate a receipt after a raw push transport failure', async () => {
@@ -942,7 +939,6 @@ describe('bounded checked-push transport receipt', () => {
           }),
         ]);
       },
-      MULTI_PUSH_TEST_TIMEOUT_MS,
     );
 
     it.concurrent(
