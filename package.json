@@ -152,7 +152,7 @@
     "@dagrejs/dagre": "^3.1.1",
     "@supabase/supabase-js": "^2.118.0",
     "@tiangong-lca/tidas-sdk": "0.9.0",
-    "antd": "6.6.6",
+    "antd": "6.7.1",
     "bignumber.js": "^11.1.5",
     "d3-geo": "^3.1.1",
     "dayjs": "^1.11.23",
