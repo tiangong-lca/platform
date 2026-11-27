@@ -47,9 +47,9 @@ checkPaths:
   - scripts/typescript-native-parser.*
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
-lastReviewedAt: 2026-11-28
-lastReviewedCommit: 2e94ae74add1c9b428aca7bc965e4a24413f2180
-lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
+lastReviewedAt: 2026-11-27
+lastReviewedCommit: ff6f10a86a18722533f2a879ee2918eb7326e8b9
+lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

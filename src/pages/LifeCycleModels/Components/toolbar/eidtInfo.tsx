@@ -529,7 +529,19 @@ const ToolbarEditInfo = forwardRef<ToolbarEditInfoHandle, Props>(
       if (sameProcressWithModel) {
         allRefs.add(`${primaryRef!.id}:${primaryRef!.version}:process data set`);
       }
-      await checkVersions(allRefs, path);
+      const versionCheck = await checkVersions(allRefs, path);
+      if (versionCheck?.success === false) {
+        if (!silent) {
+          message.error(
+            intl.formatMessage({
+              id: 'pages.button.check.error',
+              defaultMessage: 'Data check failed, please check the data!',
+            }),
+          );
+        }
+        setSpinning(false);
+        return { checkResult: false, unReview, problemNodes: [] };
+      }
 
       const problemNodes = (path?.findProblemNodes(from) ?? []) as ReviewProblemNode[];
       const modelDataset = orderedValidationDataset?.lifeCycleModelDataSet;
