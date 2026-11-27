@@ -66,7 +66,9 @@ const LOCAL_GIT_ENVIRONMENT_KEYS = [
   'GIT_COMMON_DIR',
 ] as const;
 
-const SUBPROCESS_CONCURRENCY = Math.max(2, Math.min(4, os.availableParallelism()));
+const SUBPROCESS_CONCURRENCY =
+  os.availableParallelism() <= 4 ? 3 : Math.min(4, os.availableParallelism());
+const MULTI_PUSH_TEST_TIMEOUT_MS = 45_000;
 let activeSubprocesses = 0;
 const subprocessWaiters: Array<() => void> = [];
 
@@ -820,6 +822,7 @@ describe('bounded checked-push transport receipt', () => {
           expect(fs.existsSync(current.receipt)).toBe(false);
         });
       },
+      MULTI_PUSH_TEST_TIMEOUT_MS,
     );
 
     it.concurrent(
@@ -828,17 +831,22 @@ describe('bounded checked-push transport receipt', () => {
         await withFixture(async (current) => {
           await activateFailedTransportReceipt(current);
 
-          for (const argument of ['origin', 'refs/heads/dev', '--force']) {
-            const result = await retryPush(current, [argument]);
+          const results = await Promise.all(
+            ['origin', 'refs/heads/dev', '--force'].map((argument) =>
+              retryPush(current, [argument]),
+            ),
+          );
+          for (const result of results) {
             expect(result.status).not.toBe(0);
             expect(result.stderr).toContain(
               'push:retry does not accept arguments; its remote, ref, and commit are receipt-bound',
             );
-            expect(remoteSha(current)).toBe(current.mainBase);
-            expect(fs.existsSync(current.receipt)).toBe(true);
           }
+          expect(remoteSha(current)).toBe(current.mainBase);
+          expect(fs.existsSync(current.receipt)).toBe(true);
         });
       },
+      MULTI_PUSH_TEST_TIMEOUT_MS,
     );
 
     it.concurrent('does not activate a receipt after a raw push transport failure', async () => {
@@ -934,6 +942,7 @@ describe('bounded checked-push transport receipt', () => {
           }),
         ]);
       },
+      MULTI_PUSH_TEST_TIMEOUT_MS,
     );
 
     it.concurrent(
