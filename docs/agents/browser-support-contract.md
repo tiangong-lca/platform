@@ -22,8 +22,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - tests/unit/config/protocolBabel.test.ts
   - docs/agents/browser-support-contract.md
-lastReviewedAt: 2026-11-27
-lastReviewedCommit: fad8d00935d5089e91cbd35e59d81b41a358c106
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 278ad5f8f5caa2f5babe6ff940e2f8ac0a28c818
 lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
 related:
   - ../../AGENTS.md

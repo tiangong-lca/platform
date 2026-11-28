@@ -48,7 +48,7 @@ checkPaths:
   - scripts/i18n/locale-delivery.mjs
   - .github/workflows/**
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 3e77c80d073de62c56718b388000aed4aeb8b546
+lastReviewedCommit: 278ad5f8f5caa2f5babe6ff940e2f8ac0a28c818
 lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
 related:
   - ../AGENTS.md
