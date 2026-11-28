@@ -1302,11 +1302,15 @@ export const checkVersions = async (refs: Set<string>, path?: ReffPath) => {
     }
   });
 
-  for (let tableName of Object.keys(refsRecord)) {
-    const { data: details } = await getRefDataByIds(
-      refsRecord[tableName],
-      getRefTableName(tableName),
-    );
+  for (const tableName of Object.keys(refsRecord)) {
+    const {
+      data: details,
+      success,
+      error,
+    } = await getRefDataByIds(refsRecord[tableName], getRefTableName(tableName));
+    if (!success || error) {
+      return { success: false, error };
+    }
 
     if (details && details.length > 0) {
       details.forEach((detail: any) => {
@@ -1356,6 +1360,8 @@ export const checkVersions = async (refs: Set<string>, path?: ReffPath) => {
       });
     }
   }
+
+  return { success: true };
 };
 
 export const checkReferences = async (
@@ -1597,8 +1603,17 @@ export const checkData = async (
 
   if (actionFrom === 'review') {
     allRefs.add(`${data['@refObjectId']}:${data['@version']}:${data['@type']}`);
-    await checkVersions(allRefs, pathRef);
+    const versionCheck = await checkVersions(allRefs, pathRef);
+    if (!versionCheck.success) {
+      pathRef.set(data, 'nonExistent', true);
+      if (!nonExistentRef.some((ref) => isSameRef(ref, data))) {
+        nonExistentRef.push(data);
+      }
+      return versionCheck;
+    }
   }
+
+  return { success: true };
 };
 
 export const validateDatasetRuleVerification = async (

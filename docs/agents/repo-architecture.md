@@ -27,9 +27,9 @@ checkPaths:
   - config/docs-capture/**
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-27
-lastReviewedCommit: fad8d00935d5089e91cbd35e59d81b41a358c106
-lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 278ad5f8f5caa2f5babe6ff940e2f8ac0a28c818
+lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
 related:
   - ../AGENTS.md
   - ../.docpact/config.yaml

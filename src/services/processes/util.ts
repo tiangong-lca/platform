@@ -75,6 +75,22 @@ export function genProcessJsonOrdered(
 ) {
   let quantitativeReference = {};
   const exchangeList = jsonToList(data?.exchanges?.exchange);
+  const referenceToCommissioner =
+    data?.administrativeInformation?.['common:commissionerAndGoal']?.[
+      'common:referenceToCommissioner'
+    ];
+  const serializeCommissionerReference = (reference: any) => ({
+    '@refObjectId': reference?.['@refObjectId'],
+    '@type': reference?.['@type'],
+    '@uri': reference?.['@uri'],
+    '@version': reference?.['@version'],
+    'common:shortDescription': getLangJson(reference?.['common:shortDescription']),
+  });
+  const serializedReferenceToCommissioner = Array.isArray(referenceToCommissioner)
+    ? referenceToCommissioner.map(serializeCommissionerReference)
+    : referenceToCommissioner
+      ? serializeCommissionerReference(referenceToCommissioner)
+      : undefined;
   const normalizeAnnualSupplyOrProductionVolume = (value: unknown) =>
     normalizeAnnualSupplyVolumeMultiLang(
       value,
@@ -594,29 +610,7 @@ export function genProcessJsonOrdered(
       },
       administrativeInformation: {
         ['common:commissionerAndGoal']: {
-          'common:referenceToCommissioner': {
-            '@refObjectId':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@refObjectId'] ?? {},
-            '@type':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@type'] ?? {},
-            '@uri':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@uri'] ?? {},
-            '@version':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@version'] ?? {},
-            'common:shortDescription': getLangJson(
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['common:shortDescription'],
-            ),
-          },
+          'common:referenceToCommissioner': serializedReferenceToCommissioner,
           'common:project': getLangJson(
             data?.administrativeInformation?.['common:commissionerAndGoal']?.['common:project'],
           ),
@@ -872,12 +866,18 @@ export function genProcessJsonOrdered(
         LCIAResult: data?.LCIAResults?.LCIAResult ?? [],
         'common:other': data?.LCIAResults?.['common:other'],
       },
+      'common:other': data?.['common:other'],
     },
   });
 }
 
 export function genProcessFromData(data: any): FormProcess {
   const exchange = data?.exchanges?.exchange ?? [];
+  const [referenceToCommissioner] = jsonToList(
+    data?.administrativeInformation?.['common:commissionerAndGoal']?.[
+      'common:referenceToCommissioner'
+    ],
+  );
   let exchangeList = [];
   if (!Array.isArray(exchange)) {
     exchangeList = [exchange];
@@ -1277,29 +1277,17 @@ export function genProcessFromData(data: any): FormProcess {
       },
       administrativeInformation: {
         ['common:commissionerAndGoal']: {
-          'common:referenceToCommissioner': {
-            '@refObjectId':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@refObjectId'] ?? {},
-            '@type':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@type'] ?? {},
-            '@uri':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@uri'] ?? {},
-            '@version':
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['@version'] ?? {},
-            'common:shortDescription': getLangList(
-              data?.administrativeInformation?.['common:commissionerAndGoal']?.[
-                'common:referenceToCommissioner'
-              ]?.['common:shortDescription'],
-            ),
-          },
+          'common:referenceToCommissioner': referenceToCommissioner
+            ? {
+                '@refObjectId': referenceToCommissioner?.['@refObjectId'],
+                '@type': referenceToCommissioner?.['@type'],
+                '@uri': referenceToCommissioner?.['@uri'],
+                '@version': referenceToCommissioner?.['@version'],
+                'common:shortDescription': getLangList(
+                  referenceToCommissioner?.['common:shortDescription'],
+                ),
+              }
+            : undefined,
           'common:project': getLangList(
             data?.administrativeInformation?.['common:commissionerAndGoal']?.['common:project'],
           ),
@@ -1648,6 +1636,7 @@ export function genProcessFromData(data: any): FormProcess {
         LCIAResult: data?.LCIAResults?.LCIAResult ?? [],
         'common:other': data?.LCIAResults?.['common:other'],
       },
+      'common:other': data?.['common:other'],
     },
   } as any);
   return removeEmptyObjects({
@@ -1656,6 +1645,7 @@ export function genProcessFromData(data: any): FormProcess {
     LCIAResults: process.processDataSet.LCIAResults,
     modellingAndValidation: process.processDataSet.modellingAndValidation,
     administrativeInformation: process.processDataSet.administrativeInformation,
+    'common:other': data?.['common:other'],
   });
 }
 

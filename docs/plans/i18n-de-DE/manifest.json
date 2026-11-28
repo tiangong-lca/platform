@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "365b1c4229dd92bc3a57e8dfc5240354d2952e695c260734b1293d6232e783eb",
+    "auditedInputDigest": "8d961799844825474e00f28c6b5c00ca20193241ee842119db9edd56bd57e5b4",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -75,7 +75,7 @@
     "activeDynamicKeyCount": 323,
     "reservedKeyCount": 904,
     "productionSourceFileCount": 548,
-    "literalReferenceCount": 4516,
+    "literalReferenceCount": 4518,
     "dynamicCallsiteCount": 38,
     "dynamicCallsiteSummaryCount": 38,
     "registeredDynamicCallsiteCount": 38,
@@ -50342,7 +50342,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 807,
+          "line": 819,
           "column": 17,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Cancel",
@@ -50369,7 +50369,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1257,
+          "line": 1275,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Cancel",
@@ -50612,7 +50612,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 807,
+              "line": 819,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -50630,7 +50630,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1257,
+              "line": 1275,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -50812,7 +50812,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1232,
+          "line": 1250,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Data Check",
@@ -50869,7 +50869,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1232,
+              "line": 1250,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -50976,7 +50976,16 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 600,
+          "line": 536,
+          "column": 13,
+          "symbol": "handleCheckData",
+          "defaultMessage": "Data check failed, please check the data!",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
+          "line": 612,
           "column": 28,
           "symbol": "validationHint",
           "defaultMessage": "Data check failed, please check the data!",
@@ -50988,6 +50997,15 @@
           "line": 862,
           "column": 14,
           "symbol": "getValidationHint",
+          "defaultMessage": "Data check failed, please check the data!",
+          "defaultMessageExpression": null
+        },
+        {
+          "kind": "formatMessage",
+          "path": "src/pages/Processes/Components/edit.tsx",
+          "line": 898,
+          "column": 11,
+          "symbol": "handleCheckData",
           "defaultMessage": "Data check failed, please check the data!",
           "defaultMessageExpression": null
         },
@@ -51036,7 +51054,13 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 600,
+              "line": 536,
+              "column": 13,
+              "kind": "formatMessage"
+            },
+            {
+              "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
+              "line": 612,
               "column": 28,
               "kind": "formatMessage"
             },
@@ -51044,6 +51068,12 @@
               "path": "src/pages/Processes/Components/edit.tsx",
               "line": 862,
               "column": 14,
+              "kind": "formatMessage"
+            },
+            {
+              "path": "src/pages/Processes/Components/edit.tsx",
+              "line": 898,
+              "column": 11,
               "kind": "formatMessage"
             },
             {
@@ -51232,7 +51262,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 590,
+          "line": 602,
           "column": 13,
           "symbol": "handleCheckData",
           "defaultMessage": "Data validation passed.",
@@ -51241,7 +51271,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 933,
+          "line": 945,
           "column": 11,
           "symbol": "handleCheckData",
           "defaultMessage": "Data validation passed.",
@@ -51292,13 +51322,13 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 590,
+              "line": 602,
               "column": 13,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 933,
+              "line": 945,
               "column": 11,
               "kind": "formatMessage"
             },
@@ -54141,7 +54171,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1178,
+          "line": 1196,
           "column": 27,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit",
@@ -54150,7 +54180,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1189,
+          "line": 1207,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit",
@@ -54327,13 +54357,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1178,
+              "line": 1196,
               "column": 27,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1189,
+              "line": 1207,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -56084,7 +56114,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 736,
+          "line": 748,
           "column": 13,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Basic information",
@@ -56117,7 +56147,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 736,
+              "line": 748,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -56339,7 +56369,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1129,
+          "line": 1147,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Process information",
@@ -56363,7 +56393,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1129,
+              "line": 1147,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -56651,7 +56681,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1148,
+          "line": 1166,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Model Results",
@@ -56660,7 +56690,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1164,
+          "line": 1182,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Model Results",
@@ -56696,13 +56726,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1148,
+              "line": 1166,
               "column": 15,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1164,
+              "line": 1182,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -57952,7 +57982,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1242,
+          "line": 1260,
           "column": 21,
           "symbol": "ProcessEdit",
           "defaultMessage": "Submit for Review",
@@ -57973,7 +58003,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1242,
+              "line": 1260,
               "column": 21,
               "kind": "FormattedMessage"
             }
@@ -58131,7 +58161,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 819,
+          "line": 831,
           "column": 17,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Save",
@@ -58149,7 +58179,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1271,
+          "line": 1289,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Save",
@@ -58314,7 +58344,7 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 819,
+              "line": 831,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -58326,7 +58356,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1271,
+              "line": 1289,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -59307,7 +59337,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 793,
+          "line": 805,
           "column": 21,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Update Reference",
@@ -59316,7 +59346,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1250,
+          "line": 1268,
           "column": 19,
           "symbol": "ProcessEdit",
           "defaultMessage": "Update Reference",
@@ -59409,13 +59439,13 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 793,
+              "line": 805,
               "column": 21,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1250,
+              "line": 1268,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -95627,7 +95657,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 754,
+          "line": 766,
           "column": 13,
           "symbol": "ToolbarEditInfo",
           "defaultMessage": "Model base information",
@@ -95660,7 +95690,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 754,
+              "line": 766,
               "column": 13,
               "kind": "FormattedMessage"
             },
@@ -148233,7 +148263,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 639,
+          "line": 651,
           "column": 28,
           "symbol": "handleCheckData",
           "defaultMessage": "Please complete the main product process data in the model results",
@@ -148248,7 +148278,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 639,
+              "line": 651,
               "column": 28,
               "kind": "formatMessage"
             }
@@ -148316,7 +148346,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 617,
+          "line": 629,
           "column": 26,
           "symbol": "handleCheckData",
           "defaultMessage": "Please complete the process instance data",
@@ -148331,7 +148361,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 617,
+              "line": 629,
               "column": 26,
               "kind": "formatMessage"
             }
@@ -148482,7 +148512,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 644,
+          "line": 656,
           "column": 28,
           "symbol": "handleCheckData",
           "defaultMessage": "Please complete the sub product process data in the model results",
@@ -148497,7 +148527,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 644,
+              "line": 656,
               "column": 28,
               "kind": "formatMessage"
             }
@@ -148565,7 +148595,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 685,
+          "line": 697,
           "column": 36,
           "symbol": "fallbackErrorMessage",
           "defaultMessage": "Submit review failed",
@@ -148580,7 +148610,7 @@
           "locations": [
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 685,
+              "line": 697,
               "column": 36,
               "kind": "formatMessage"
             }
@@ -161378,7 +161408,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1199,
+          "line": 1217,
           "column": 11,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit process",
@@ -161393,7 +161423,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1199,
+              "line": 1217,
               "column": 11,
               "kind": "FormattedMessage"
             }
@@ -195769,7 +195799,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1007,
+          "line": 1025,
           "column": 15,
           "symbol": "submitReview",
           "defaultMessage": "Review submission failed",
@@ -195784,7 +195814,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1007,
+              "line": 1025,
               "column": 15,
               "kind": "formatMessage"
             }
@@ -195861,7 +195891,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-          "line": 709,
+          "line": 721,
           "column": 11,
           "symbol": "submitReview",
           "defaultMessage": "Review submitted successfully",
@@ -195870,7 +195900,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1016,
+          "line": 1034,
           "column": 11,
           "symbol": "submitReview",
           "defaultMessage": "Review submitted successfully",
@@ -195891,13 +195921,13 @@
             },
             {
               "path": "src/pages/LifeCycleModels/Components/toolbar/eidtInfo.tsx",
-              "line": 709,
+              "line": 721,
               "column": 11,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1016,
+              "line": 1034,
               "column": 11,
               "kind": "formatMessage"
             }

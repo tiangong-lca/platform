@@ -497,10 +497,15 @@ function discoverPlaywrightTests(): Record<string, unknown> {
 
 async function runPlaywright(): Promise<number> {
   const args = JSON.parse(process.env.E2E_PLAYWRIGHT_ARGS_JSON || '[]') as string[];
+  const qualificationWorkerArgs =
+    process.env.E2E_QUALIFICATION === 'true' &&
+    !args.some((arg) => arg === '--workers' || arg.startsWith('--workers=') || arg === '-j')
+      ? ['--workers=3']
+      : [];
   return new Promise((resolve, reject) => {
     const child = spawn(
       path.join(process.cwd(), 'node_modules/.bin/playwright'),
-      ['test', '--config=playwright.config.ts', ...args],
+      ['test', '--config=playwright.config.ts', ...qualificationWorkerArgs, ...args],
       {
         cwd: process.cwd(),
         env: process.env,

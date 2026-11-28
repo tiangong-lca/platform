@@ -486,6 +486,79 @@ describe('Process Utility Functions', () => {
       expect(result.processDataSet.processInformation.dataSetInformation['common:UUID']).toBe(id);
     });
 
+    it('serializes every commissioner reference when form input is array-shaped', () => {
+      const references = [
+        {
+          '@refObjectId': 'contact-1',
+          '@type': 'contact data set',
+          '@uri': '../contacts/contact-1.xml',
+          '@version': '01.00.000',
+          'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'First commissioner' }],
+        },
+        {
+          '@refObjectId': 'contact-2',
+          '@type': 'contact data set',
+          '@uri': '../contacts/contact-2.xml',
+          '@version': '02.00.000',
+          'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Second commissioner' }],
+        },
+      ];
+
+      const result = genProcessJsonOrdered('test-id', {
+        ...mockProcessData,
+        administrativeInformation: {
+          ...mockProcessData.administrativeInformation,
+          'common:commissionerAndGoal': {
+            'common:referenceToCommissioner': references,
+          },
+        },
+      });
+
+      expect(
+        result.processDataSet.administrativeInformation['common:commissionerAndGoal'][
+          'common:referenceToCommissioner'
+        ],
+      ).toEqual(references);
+    });
+
+    it('keeps single-object commissioner serialization and use-advice fallback intact', () => {
+      const reference = {
+        '@refObjectId': 'contact-1',
+        '@type': 'contact data set',
+        '@uri': '../contacts/contact-1.xml',
+        '@version': '01.00.000',
+        'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Commissioner' }],
+      };
+      const useAdvice = [{ '@xml:lang': 'en', '#text': 'Use only for steel studies' }];
+
+      const result = genProcessJsonOrdered('test-id', {
+        ...mockProcessData,
+        administrativeInformation: {
+          ...mockProcessData.administrativeInformation,
+          'common:commissionerAndGoal': {
+            'common:referenceToCommissioner': reference,
+          },
+        },
+        modellingAndValidation: {
+          ...mockProcessData.modellingAndValidation,
+          LCIMethodAndAllocation: {
+            ...mockProcessData.modellingAndValidation.LCIMethodAndAllocation,
+            useAdviceForDataSet: useAdvice,
+          },
+        },
+      });
+
+      expect(
+        result.processDataSet.administrativeInformation['common:commissionerAndGoal'][
+          'common:referenceToCommissioner'
+        ],
+      ).toEqual(reference);
+      expect(
+        result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .useAdviceForDataSet,
+      ).toEqual(useAdvice);
+    });
+
     it('omits an unselected review report but preserves a supplied reference', () => {
       const review = { '@type': 'Independent external review' };
       const withReview = {
@@ -569,6 +642,30 @@ describe('Process Utility Functions', () => {
         result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
           .annualSupplyOrProductionVolume,
       ).toEqual([{ '@xml:lang': 'en', '#text': '100 1 kg steel' }, { '#text': '200 1 kg steel' }]);
+    });
+
+    it('should preserve annual supply volume text when normalization is explicitly disabled', () => {
+      const annualSupplyOrProductionVolume = [
+        { '@xml:lang': 'en', '#text': '100 imported suffix' },
+      ];
+      const result = genProcessJsonOrdered(
+        'test-id',
+        {
+          ...mockProcessData,
+          modellingAndValidation: {
+            ...mockProcessData.modellingAndValidation,
+            dataSourcesTreatmentAndRepresentativeness: {
+              annualSupplyOrProductionVolume,
+            },
+          },
+        },
+        { preserveAnnualSupplyVolume: true },
+      );
+
+      expect(
+        result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
+          .annualSupplyOrProductionVolume,
+      ).toEqual(annualSupplyOrProductionVolume);
     });
 
     it('should cap every localized annual supply volume value while saving', () => {
@@ -1257,6 +1354,85 @@ describe('Process Utility Functions', () => {
       expect(result).toBeDefined();
       expect(result.processInformation).toBeDefined();
       expect(result.exchanges).toBeDefined();
+    });
+
+    it('normalizes an array-shaped commissioner into the form single-object shape', () => {
+      const commissioner = {
+        '@refObjectId': 'contact-commissioner',
+        '@type': 'contact data set',
+        '@uri': '../contacts/contact-commissioner.xml',
+        '@version': '01.02.003',
+        'common:shortDescription': { '@xml:lang': 'en', '#text': 'Commissioner' },
+      };
+
+      const result = genProcessFromData({
+        ...mockRawData,
+        administrativeInformation: {
+          ...mockRawData.administrativeInformation,
+          'common:commissionerAndGoal': {
+            'common:referenceToCommissioner': [commissioner],
+          },
+        },
+      });
+
+      expect(
+        result.administrativeInformation?.['common:commissionerAndGoal']?.[
+          'common:referenceToCommissioner'
+        ],
+      ).toEqual({
+        ...commissioner,
+        'common:shortDescription': [commissioner['common:shortDescription']],
+      });
+    });
+
+    it.each([undefined, []])(
+      'does not fabricate a commissioner for empty input %p',
+      (referenceToCommissioner) => {
+        const result = genProcessFromData({
+          ...mockRawData,
+          administrativeInformation: {
+            ...mockRawData.administrativeInformation,
+            'common:commissionerAndGoal': {
+              'common:referenceToCommissioner': referenceToCommissioner,
+            },
+          },
+        });
+
+        expect(
+          result.administrativeInformation?.['common:commissionerAndGoal']?.[
+            'common:referenceToCommissioner'
+          ],
+        ).toBeUndefined();
+      },
+    );
+
+    it('roundtrips only the schema-defined process common:other extension container', () => {
+      const commonOther = {
+        '@xmlns:example': 'https://example.test/tidas-extension',
+        'example:scopeNote': {
+          '@xml:lang': 'en',
+          '#text': 'Preserve this extension payload',
+        },
+      };
+      const rawData = {
+        ...mockRawData,
+        'common:other': commonOther,
+        generatedFromLifecycleModel: { id: 'model-1' },
+        projectionMetadata: { generated: true },
+        topologySummary: { nodes: 3 },
+      };
+
+      const formData = genProcessFromData(rawData);
+      const ordered = genProcessJsonOrdered('process-with-extension', formData);
+
+      expect(formData['common:other']).toEqual(commonOther);
+      expect(ordered.processDataSet['common:other']).toEqual(commonOther);
+      expect(formData).not.toHaveProperty('generatedFromLifecycleModel');
+      expect(formData).not.toHaveProperty('projectionMetadata');
+      expect(formData).not.toHaveProperty('topologySummary');
+      expect(ordered.processDataSet).not.toHaveProperty('generatedFromLifecycleModel');
+      expect(ordered.processDataSet).not.toHaveProperty('projectionMetadata');
+      expect(ordered.processDataSet).not.toHaveProperty('topologySummary');
     });
 
     it('keeps an absent review report absent in the editable form', () => {

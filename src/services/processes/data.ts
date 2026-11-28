@@ -186,7 +186,9 @@ export type ProcessDataSetObjectKeys = Exclude<
   undefined | 'common:other'
 >;
 
-export type FormProcess = Pick<Process['processDataSet'], ProcessDataSetObjectKeys>;
+export type FormProcess = Pick<Process['processDataSet'], ProcessDataSetObjectKeys> & {
+  'common:other'?: Process['processDataSet']['common:other'];
+};
 
 export type ProcessFormState = FormProcess & {
   id?: string;

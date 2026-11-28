@@ -112,6 +112,7 @@ describe('review utilities', () => {
     jest.clearAllMocks();
     mockGetRefData.mockReset();
     mockGetRefDataByIds.mockReset();
+    mockGetRefDataByIds.mockResolvedValue({ data: [], success: true });
     mockUpdateStateCodeApi.mockReset();
     mockGetLifeCycleModelDetail.mockReset();
     mockGetRejectReviewsByProcess.mockReset();
@@ -514,6 +515,7 @@ describe('review utilities', () => {
     mockGetRefDataByIds.mockImplementation(async (ids: string[], tableName: string) => {
       if (tableName === 'processes') {
         return {
+          success: true,
           data: [
             {
               id: 'proc-1',
@@ -525,6 +527,7 @@ describe('review utilities', () => {
       }
       if (tableName === 'flows') {
         return {
+          success: true,
           data: [
             {
               id: 'flow-1',
@@ -534,7 +537,7 @@ describe('review utilities', () => {
           ],
         };
       }
-      return { data: [] };
+      return { data: [], success: true };
     });
 
     await checkVersions(new Set(['proc-1:01:process data set', 'flow-1:01:flow data set']), path);
@@ -565,6 +568,7 @@ describe('review utilities', () => {
     refs.forEach((ref) => path.addChild(ref));
 
     mockGetRefDataByIds.mockResolvedValue({
+      success: true,
       data: [
         {
           id: 'flow-1',
@@ -592,6 +596,7 @@ describe('review utilities', () => {
     });
 
     mockGetRefDataByIds.mockResolvedValue({
+      success: true,
       data: [
         {
           id: 'other-flow',
@@ -620,6 +625,7 @@ describe('review utilities', () => {
     path.addChild(child);
 
     mockGetRefDataByIds.mockResolvedValue({
+      success: true,
       data: [
         {
           id: 'flow-1',
@@ -797,6 +803,7 @@ describe('review utilities', () => {
       },
     });
     mockGetRefDataByIds.mockImplementation(async (_ids: string[], tableName: string) => ({
+      success: true,
       data:
         tableName === 'sources'
           ? [
@@ -844,6 +851,80 @@ describe('review utilities', () => {
       }),
     ]);
     expect((path.children[0] as any).versionUnderReview).toBeUndefined();
+  });
+
+  it('fails checkVersions when a reference metadata query is unsuccessful', async () => {
+    const queryError = { message: 'metadata unavailable' };
+    mockGetRefDataByIds.mockResolvedValue({
+      data: null,
+      error: queryError,
+      success: false,
+    });
+
+    await expect(checkVersions(new Set(['flow-1:01:flow data set']), undefined)).resolves.toEqual({
+      success: false,
+      error: queryError,
+    });
+  });
+
+  it('fails checkVersions when a query returns an error despite a success flag', async () => {
+    const queryError = { message: 'metadata inconsistent' };
+    mockGetRefDataByIds.mockResolvedValue({
+      data: [],
+      error: queryError,
+      success: true,
+    });
+
+    await expect(checkVersions(new Set(['flow-1:01:flow data set']))).resolves.toEqual({
+      success: false,
+      error: queryError,
+    });
+  });
+
+  it('propagates review version-query failures and marks the root path as blocked', async () => {
+    const queryError = { message: 'version lookup failed' };
+    mockGetRefDataByIds.mockResolvedValue({ data: null, error: queryError, success: false });
+    const rootRef = {
+      '@refObjectId': 'root-flow',
+      '@version': '01',
+      '@type': 'flow data set',
+    } as const;
+    const path = new ReffPath(rootRef, true, false);
+    const nonExistentRef: any[] = [];
+
+    await expect(
+      checkData(rootRef, [], nonExistentRef, path, {
+        actionFrom: 'review',
+        orderedJson: { flowDataSet: {} },
+      }),
+    ).resolves.toEqual({ success: false, error: queryError });
+
+    expect(nonExistentRef).toEqual([rootRef]);
+    expect(path.findProblemNodes('review')).toEqual([
+      expect.objectContaining({
+        '@refObjectId': 'root-flow',
+        nonExistent: true,
+      }),
+    ]);
+  });
+
+  it('does not duplicate an existing blocked root after a review version-query failure', async () => {
+    mockGetRefDataByIds.mockResolvedValue({ data: null, success: false });
+    const rootRef = {
+      '@refObjectId': 'root-flow',
+      '@version': '01',
+      '@type': 'flow data set',
+    } as const;
+    const path = new ReffPath(rootRef, true, false);
+    const nonExistentRef = [{ ...rootRef }];
+
+    const result = await checkData(rootRef, [], nonExistentRef, path, {
+      actionFrom: 'review',
+      orderedJson: { flowDataSet: {} },
+    });
+
+    expect(result).toEqual({ success: false, error: undefined });
+    expect(nonExistentRef).toHaveLength(1);
   });
 
   it('returns early when orderedJson contains no additional references', async () => {
