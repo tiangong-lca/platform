@@ -338,10 +338,6 @@ export const buildAnnualSupplyVolumeMultiLang = (
   });
 };
 
-export const getQuantitativeReferenceExchange = (exchangeDataSource: ProcessExchangeData[]) => {
-  return exchangeDataSource.find((exchange) => exchange?.quantitativeReference === true);
-};
-
 export const buildAnnualSupplyVolumeUnitLookupRows = (
   exchangeDataSource: ProcessExchangeData[],
 ): AnnualSupplyVolumeUnitLookupRow[] => {

@@ -227,11 +227,20 @@ describe('annualSupplyOrProductionVolume helpers', () => {
     );
   });
 
+  it('keeps a non-finite computed conversion at its declared unit', () => {
+    expect(normalizeAnnualSupplyVolumeText('1e1000000001 t/year', 'kg/year')).toBe(
+      '1e1000000001 t/year',
+    );
+    expect(normalizeAnnualSupplyVolumeText('24 widget/day', 'kg/year')).toBe('24 widget/day');
+    expect(normalizeAnnualSupplyVolumeText('24 product/context', 'kg/year')).toBe('24 kg/year');
+  });
+
   it('derives a localized annual period from an exact unit and a supported language', () => {
     expect(annualSupplyVolumeSuffix('kg', 'de-DE')).toBe('kg/Jahr');
     expect(annualSupplyVolumeSuffix('kg', 'fr-FR')).toBe('kg/an');
     expect(annualSupplyVolumeSuffix('kg', 'unknown')).toBe('');
     expect(annualSupplyVolumeSuffix(undefined, 'en')).toBe('');
+    expect(annualSupplyVolumeSuffix('kg', 12)).toBe('');
   });
 
   it('builds exact unit lookup rows', () => {

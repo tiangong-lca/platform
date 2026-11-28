@@ -4,6 +4,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 const mockGetAnnualUnit = jest.fn(async () => 'kg');
 const mockFormItems: any[] = [];
+const mockThemeToken = jest.fn(() => ({ colorError: '#ff4d4f', fontSizeSM: 12, marginXXS: 4 }));
 
 const findFormItem = (name: Array<string | number>) => {
   return mockFormItems.findLast((item) => JSON.stringify(item.name) === JSON.stringify(name));
@@ -65,14 +66,7 @@ jest.mock('antd', () => {
     InputNumber,
     Space,
     theme: {
-      useToken: () => ({
-        token: {
-          colorError: '#ff4d4f',
-          fontSizeSM: 12,
-          lineHeightSM: 1.5,
-          marginXXS: 4,
-        },
-      }),
+      useToken: () => ({ token: mockThemeToken() }),
     },
   };
 });
@@ -211,6 +205,17 @@ describe('AnnualSupplyOrProductionVolumeForm', () => {
     expect(setRuleErrorState).toHaveBeenLastCalledWith(true);
     await expect(validator(null, '123')).resolves.toBeUndefined();
     expect(setRuleErrorState).toHaveBeenLastCalledWith(false);
+  });
+
+  it('uses default rules, validation copy and theme fallbacks when absent', async () => {
+    mockThemeToken.mockReturnValueOnce({ colorError: '#ff4d4f' });
+    renderInput(undefined, 'en', { rules: undefined, contextErrorMessage: 'No reference unit' });
+    expect(getItem().rules).toEqual([]);
+    expect(screen.getByRole('alert')).toHaveStyle({ fontSize: '12px', marginTop: '4px' });
+    renderInput(annual('2 kg/year'), 'en');
+    const validator = getItem().rules[0].validator;
+    await expect(validator(null, '')).rejects.toThrow('Please input this field!');
+    await expect(validator(null, '2')).resolves.toBeUndefined();
   });
 
   it('renders optional and invalid-context states', () => {
