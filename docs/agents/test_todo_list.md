@@ -45,7 +45,7 @@ checkPaths:
   - .github/workflows/release-gate.yml
   - .github/workflows/release-readiness.yml
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 7a1e05ec4a5692051eb73f62ba2ad162298e7f67
+lastReviewedCommit: ba6f54645be9fdb32b24c1bb204ede523475dcab
 lastReviewedNote: 'Reviewed #432 focused regressions and matching isolated service handoff.'
 ---
 
