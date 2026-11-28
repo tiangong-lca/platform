@@ -310,6 +310,20 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
     success: false,
     data: {},
   });
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: {
+      ok: true,
+      protocol: 'model-bundle.v1',
+      status: 'observed',
+      snapshot: { model: { ...model, json_tg: { submodels: members } }, revision },
+    },
+  });
+  await expect(
+    lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
+  ).resolves.toMatchObject({
+    success: true,
+    data: { json_tg: { submodels: members } },
+  });
   expect(mockFrom).not.toHaveBeenCalled();
 });
 
@@ -578,10 +592,10 @@ const createQueryBuilder = <T>(resolvedValue: T) => {
   return builder;
 };
 
-test.each(['unchanged', 'edited', 'legacy fallback'])(
+test.each(['unchanged', 'edited', 'legacy fallback', 'missing destination'])(
   'uses persisted activities only with matching scientific bindings (%s)',
   async (variant) => {
-    const edited = variant === 'edited';
+    const unchanged = variant === 'unchanged' || variant === 'legacy fallback';
     const before = {
       lifeCycleModelDataSet: {
         lifeCycleModelInformation: {
@@ -615,7 +629,7 @@ test.each(['unchanged', 'edited', 'legacy fallback'])(
       },
     };
     const out = structuredClone(before);
-    if (edited) {
+    if (variant === 'edited') {
       out.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes.processInstance[0].connections.outputExchange[0].downstreamProcess[0][
         '@version'
       ] = '03.00.000';
@@ -625,6 +639,13 @@ test.each(['unchanged', 'edited', 'legacy fallback'])(
         before.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes
           .processInstance[0].connections.outputExchange[0].downstreamProcess[0],
         { '@flowUUID': undefined },
+      );
+    }
+    if (variant === 'missing destination') {
+      Object.assign(
+        before.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes
+          .processInstance[0].connections.outputExchange[0].downstreamProcess[0],
+        { '@id': undefined },
       );
     }
     const data = { id: sampleModelId, version: sampleVersion, model: { nodes: [], edges: [] } };
@@ -646,7 +667,7 @@ test.each(['unchanged', 'edited', 'legacy fallback'])(
       [],
       out,
       [],
-      ...(edited ? [] : [preserved]),
+      ...(unchanged ? [preserved] : []),
     );
     expect(mockFunctionsInvoke).not.toHaveBeenCalled();
   },
