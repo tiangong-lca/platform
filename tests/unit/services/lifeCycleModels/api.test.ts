@@ -258,6 +258,7 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
   const version = sampleVersion;
   const target = { modelId: id, version };
   const revision = 'a'.repeat(64);
+  const members = [{ id: sampleProcessId, version: '02.00.000', type: 'secondary' }];
   const model = {
     id,
     version,
@@ -273,7 +274,7 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
         ...target,
         protocol: 'model-bundle.v1',
         status: 'observed',
-        snapshot: { model, revision },
+        snapshot: { model, revision, members },
       },
     })
     .mockResolvedValueOnce({ data: { ok: true, ...target } });
@@ -281,7 +282,7 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
     lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
   ).resolves.toMatchObject({
     success: true,
-    data: { id, version, bundleRevision: revision },
+    data: { id, version, bundleRevision: revision, json_tg: { submodels: members } },
   });
   await expect(
     lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
@@ -292,6 +293,18 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
   });
   mockFunctionsInvoke.mockResolvedValueOnce({
     data: { ok: true, ...target, protocol: 'model-bundle.v1', status: 'observed' },
+  });
+  await expect(lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true)).resolves.toEqual({
+    success: false,
+    data: {},
+  });
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: {
+      ok: true,
+      protocol: 'model-bundle.v1',
+      status: 'observed',
+      snapshot: { model: { ...model, version: '03.00.000' }, revision, members },
+    },
   });
   await expect(lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true)).resolves.toEqual({
     success: false,
@@ -565,9 +578,10 @@ const createQueryBuilder = <T>(resolvedValue: T) => {
   return builder;
 };
 
-test.each([false, true])(
-  'uses persisted canonical activities only while the graph bindings are unchanged (edited: %s)',
-  async (edited) => {
+test.each(['unchanged', 'edited', 'legacy fallback'])(
+  'uses persisted activities only with matching scientific bindings (%s)',
+  async (variant) => {
+    const edited = variant === 'edited';
     const before = {
       lifeCycleModelDataSet: {
         lifeCycleModelInformation: {
@@ -605,6 +619,13 @@ test.each([false, true])(
       out.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes.processInstance[0].connections.outputExchange[0].downstreamProcess[0][
         '@version'
       ] = '03.00.000';
+    }
+    if (variant === 'legacy fallback') {
+      Object.assign(
+        before.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes
+          .processInstance[0].connections.outputExchange[0].downstreamProcess[0],
+        { '@flowUUID': undefined },
+      );
     }
     const data = { id: sampleModelId, version: sampleVersion, model: { nodes: [], edges: [] } };
     mockFrom.mockReturnValueOnce(
