@@ -47,7 +47,7 @@ checkPaths:
   - scripts/reference-data/**
   - .github/workflows/**
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: a1870253c3ffbde10b7edb2887d153e687fef948
+lastReviewedCommit: 7a1e05ec4a5692051eb73f62ba2ad162298e7f67
 lastReviewedNote: 'Reviewed #432 focused serializer and editor regression proof and ordinary fork delivery gate.'
 ---
 

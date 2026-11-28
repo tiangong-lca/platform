@@ -28,7 +28,7 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: a1870253c3ffbde10b7edb2887d153e687fef948
+lastReviewedCommit: 7a1e05ec4a5692051eb73f62ba2ad162298e7f67
 lastReviewedNote: 'Reviewed #432 Process candidate serialization and explicit Save and read-only Data Check boundaries.'
 related:
   - ../AGENTS.md
