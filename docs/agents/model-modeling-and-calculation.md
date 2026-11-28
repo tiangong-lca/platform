@@ -17,9 +17,9 @@ checkPaths:
   - src/services/lifeCycleModels/**
   - src/services/processes/allocation.ts
   - src/pages/LifeCycleModels/**
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
-lastReviewedNote: 'Platform #1559. Reviewed linked Process and Model identities used by canvas navigation.'
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 300fca4542d0d99e312b2931c4902f4fc5fdadb7
+lastReviewedNote: 'Documented independent terminal demand recovery and the exact guarded readback rules for Platform #1519.'
 related:
   - ./util_calculate.md
   - ../plans/model-product-demand.md
@@ -223,11 +223,13 @@ Model 的数据有三种相互关联的表达：
 
 平台的 `json_tg.xflow` 承载编辑图。生命周期模型数据集承载标准计算图，结果 Process 承载汇总清单。数据包包含计算实例引用的过程及其依赖，接收方据此恢复供应关系和计算数量。
 
+重算已保存且科学连接未变的模型时，平台可以从完整的历史活动倍率恢复隔离支路的最终需求。支路的余额必须由当前精确过程清单及其连接给出，正需求只能位于与主结果相同的精确输出 Flow 版本。平台用该需求再次求解，核对全部活动量，再把支路计入主结果。无法证明余额时，计算返回支路节点和产品，保留已保存结果。常规单支路和旧结果的独立产品需求沿用原有路径。
+
 保存结果表示上一次成功计算的清单。重新计算需要明确当前所引用过程的产品归属。若非参考产品缺少分配，需在源过程中补全分配或选用已分配的产品过程；若旧式统一分配仅声明其他产品的份额，需明确参考产品的份额（可以为 0），并使所有产品份额合计为 100%。模型节点引用修复后的过程版本，再进行计算。
 
 计算诊断显示涉及的过程与产品，并提供节点定位和对应的处理说明。计算失败时保持已保存的模型与结果；成功计算并保存后，结果才反映新的过程版本、需求和分配依据。
 
-保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主产品/其他产品角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
+保存和重算沿用已有结果自己的 ID 与版本，结果不必与模型同 ID、同版本。 保存回执确认后，页面读取同一 Model 的精确版本，核对 canonical 正文以及结果组成员的版本、角色和来源。分配供方属于完整结果组的计算依赖，不能作为结果 Process 写进 `referenceToResultingProcess`。检查只校验当前编辑内容；送审要求先明确保存，不隐式保存或重算。结果列表按主产品/其他产品角色和精确引用读取。只有一个标准结果引用、且缺少页面附加成员信息时，可以据此显示主结果；多个引用缺少明确角色时，不推测哪个是主结果。
 
 ## 10. 计算流程
 

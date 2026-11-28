@@ -21,14 +21,16 @@ checkPaths:
   - src/services/lciaMethods/**
   - src/components/LcaTaskCenter/**
   - src/pages/Processes/Analysis/**
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
-lastReviewedNote: 'Platform #1559. Reviewed exact dataset identity in viewer navigation against the calculation utility boundary.'
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 300fca4542d0d99e312b2931c4902f4fc5fdadb7
+lastReviewedNote: 'Reviewed the supported worker input and output demand boundary for Platform #1519.'
 ---
 
 # Lifecycle Model Calculation Reference
 
 > Purpose: exact reference for the matrix-based calculation pipeline that generates or updates life-cycle-model submodels.
+
+When an unchanged canonical graph is recalculated, the worker can restore a detached terminal demand from the saved activities only after proving that its exact output Flow and activity balance agree with the primary result. The main-thread adapter supplies the stored factors and the graph proof flag.
 
 ## Use When
 
