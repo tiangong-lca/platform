@@ -50,8 +50,8 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 278ad5f8f5caa2f5babe6ff940e2f8ac0a28c818
-lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
+lastReviewedCommit: 300fca4542d0d99e312b2931c4902f4fc5fdadb7
+lastReviewedNote: 'Reviewed the maintained Model ownership and protected push boundary for Platform #1519.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-validation.md

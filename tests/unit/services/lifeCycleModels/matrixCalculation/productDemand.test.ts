@@ -283,20 +283,11 @@ describe('authored activity in a result-group save', () => {
   });
 
   it('recomputes matching detached output demand without overwriting authored activity', () => {
-    const request = {
-      type: 'calculate' as const,
-      runId: 'two-branch-save',
-      payload: {
-        refInstanceIndex: '1',
-        targetAmount: firstShare,
-        instances: [
-          source('0', 'feed-a', firstShare, '1'),
-          source('1', 'product', firstShare, undefined, 'feed-a'),
-          source('2', 'feed-b', secondShare, '3'),
-          source('3', 'product', secondShare, undefined, 'feed-b'),
-        ],
-      },
-    };
+    const payload = detachedPayload();
+    delete payload.preserveAuthoredBranches;
+    payload.instances[1].process.exchanges.push(ex('power-a', 'INPUT', 'electricity', 1.548));
+    payload.instances[3].process.exchanges.push(ex('power-b', 'INPUT', 'electricity', 1.224));
+    const request = { type: 'calculate' as const, runId: 'two-branch-save', payload };
     const projection = runMatrixCalculation({
       ...request,
       payload: {
@@ -326,6 +317,9 @@ describe('authored activity in a result-group save', () => {
     expect(retained.result.groups[0].exchanges).toContainEqual(
       expect.objectContaining({ flowId: 'product', quantitativeReference: true, amount: 1 }),
     );
+    expect(
+      retained.result.groups[0].exchanges.find((entry) => entry.flowId === 'electricity')?.amount,
+    ).toBeCloseTo(-1.3632661912124084, 12);
     const stale = structuredClone(request);
     stale.payload.instances[2].authoredMultiplicationFactor = 0.2;
     for (const payload of [request.payload, { ...stale.payload, preserveAuthoredBranches: true }]) {

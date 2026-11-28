@@ -300,7 +300,7 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
   expect(mockFrom).not.toHaveBeenCalled();
 });
 
-test.each(['body', 'member'] as const)(
+test.each(['body', 'member', 'read unavailable', 'identity'] as const)(
   'reports an unverified guarded commit when the fresh %s disagrees with the plan at the same revision',
   async (change) => {
     const version = sampleVersion;
@@ -343,7 +343,11 @@ test.each(['body', 'member'] as const)(
           },
         };
       }
+      if (committed && change === 'read unavailable') {
+        return { data: { ok: false, code: 'MODEL_NOT_FOUND', message: 'Not found' } };
+      }
       const fresh = structuredClone(snapshot);
+      if (committed && change === 'identity') fresh.model.id = 'other-model';
       if (committed && change === 'body') {
         fresh.model.json_ordered.processInstance[0]['@multiplicationFactor'] = '0';
       }
@@ -361,50 +365,54 @@ test.each(['body', 'member'] as const)(
   },
 );
 
-test('refuses to write an allocated provider as a forward result reference', async () => {
-  const version = sampleVersion;
-  const modelId = sampleModelId;
-  const revision = 'a'.repeat(64);
-  const provider = { id: sampleProcessId, version: '02.00.000', type: 'allocated' };
-  mockFunctionsInvoke.mockResolvedValueOnce({
-    data: {
-      ok: true,
-      protocol: 'model-bundle.v1',
-      status: 'observed',
-      snapshot: {
-        revision,
-        model: {
-          id: modelId,
-          version,
-          rule_verification: false,
-          json_tg: { submodels: [provider] },
-          json_ordered: {
-            lifeCycleModelDataSet: {
-              lifeCycleModelInformation: {
-                dataSetInformation: {
-                  referenceToResultingProcess: [
-                    { '@refObjectId': provider.id, '@version': provider.version },
-                  ],
+test.each(['02.00.000', undefined])(
+  'refuses an allocated forward result at member version %s',
+  async (declaredVersion) => {
+    const version = sampleVersion;
+    const modelId = sampleModelId;
+    const revision = 'a'.repeat(64);
+    const provider = { id: sampleProcessId, version: declaredVersion, type: 'allocated' };
+    const exactVersion = declaredVersion ?? version;
+    mockFunctionsInvoke.mockResolvedValueOnce({
+      data: {
+        ok: true,
+        protocol: 'model-bundle.v1',
+        status: 'observed',
+        snapshot: {
+          revision,
+          model: {
+            id: modelId,
+            version,
+            rule_verification: false,
+            json_tg: { submodels: [provider] },
+            json_ordered: {
+              lifeCycleModelDataSet: {
+                lifeCycleModelInformation: {
+                  dataSetInformation: {
+                    referenceToResultingProcess: [
+                      { '@refObjectId': provider.id, '@version': exactVersion },
+                    ],
+                  },
                 },
               },
             },
           },
         },
       },
-    },
-  });
-  await expect(
-    lifeCycleModelsApi.updateLifeCycleModel(
-      { id: modelId, version },
-      { guardedSave: { revision, layoutOnly: true }, persistenceGraph: { nodes: [], edges: [] } },
-    ),
-  ).resolves.toMatchObject({
-    ok: false,
-    code: 'MODEL_MEMBERSHIP_INVALID',
-    details: { id: provider.id, version: provider.version },
-  });
-  expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
-});
+    });
+    await expect(
+      lifeCycleModelsApi.updateLifeCycleModel(
+        { id: modelId, version },
+        { guardedSave: { revision, layoutOnly: true }, persistenceGraph: { nodes: [], edges: [] } },
+      ),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: 'MODEL_MEMBERSHIP_INVALID',
+      details: { id: provider.id, version: exactVersion },
+    });
+    expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
+  },
+);
 
 test('guarded layout refuses stale, cancelled, changed, and unversioned input before writing', async () => {
   const data = { id: sampleModelId, version: sampleVersion };
