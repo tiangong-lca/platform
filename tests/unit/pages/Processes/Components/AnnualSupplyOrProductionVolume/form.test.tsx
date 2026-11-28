@@ -1,6 +1,6 @@
 // @ts-nocheck
 import AnnualSupplyOrProductionVolumeForm from '@/pages/Processes/Components/AnnualSupplyOrProductionVolume/form';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 const mockGetAnnualUnit = jest.fn(async () => 'kg');
 const mockFormItems: any[] = [];
@@ -153,6 +153,41 @@ describe('AnnualSupplyOrProductionVolumeForm', () => {
     await waitFor(() => expect(mockGetAnnualUnit).toHaveBeenCalled());
     expect(context()).toHaveValue('m3/年');
     expect(getItem().normalize('42')).toEqual(annual('42 m3/year', '42 m3/年'));
+  });
+
+  it('ignores a lookup that completes after the exact reference has changed', async () => {
+    let firstResolve: (unit: string) => void;
+    mockGetAnnualUnit.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          firstResolve = resolve;
+        }),
+    );
+    const { rerender, element } = renderInput(annual('3.6'));
+    mockGetAnnualUnit.mockResolvedValueOnce('MJ');
+    rerender({
+      ...element,
+      props: {
+        ...element.props,
+        exchangeDataSource: [
+          {
+            ...data[0],
+            referenceToFlowDataSet: { '@refObjectId': 'flow-1', '@version': '02.00.000' },
+          },
+        ],
+      },
+    });
+    await waitFor(() => expect(context()).toHaveValue('MJ/年'));
+    await act(async () => firstResolve('kg'));
+    expect(context()).toHaveValue('MJ/年');
+  });
+
+  it('keeps a historical nonannual period visible while exact annual context resolves', async () => {
+    const amount = annual('24 kg/day', '24 kg/日');
+    renderInput(amount);
+    await waitFor(() => expect(mockGetAnnualUnit).toHaveBeenCalled());
+    expect(context()).toHaveValue('kg/日');
+    expect(getItem().getValueProps(amount)).toEqual({ value: '24' });
   });
 
   it('uses the German annual period without inventing other locales', async () => {

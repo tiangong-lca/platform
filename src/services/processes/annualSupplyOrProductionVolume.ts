@@ -122,6 +122,32 @@ const normalizeMassUnit = (unit: string) => {
   return unit;
 };
 
+// These bare physical units can occur on historical annual entries. A product
+// name or functional-unit description in the same position cannot establish a unit.
+const bareUnits = new Set([
+  'g',
+  'kg',
+  't',
+  'm',
+  'm2',
+  'm²',
+  'm3',
+  'm³',
+  'L',
+  'l',
+  'J',
+  'kJ',
+  'MJ',
+  'GJ',
+  'Wh',
+  'kWh',
+  'MWh',
+  'mol',
+]);
+const rateSuffix = /^(.+?)\s*\/\s*([^/]+)$/;
+const otherPeriods =
+  /^(?:s|sec|second|min|minute|h|hr|hour|d|day|wk|week|mo|month|jour|mois|Tag|Monat|秒|分|小时|日|天|周|月)$/i;
+
 export const sanitizeAnnualSupplyVolumeNumericInput = (value: unknown) => {
   const text = typeof value === 'string' ? value.trim() : '';
 
@@ -182,9 +208,14 @@ export const normalizeAnnualSupplyVolumeText = (
   options: AnnualSupplyVolumeFormatOptions = {},
 ) => {
   const { numericText, suffixText } = parseAnnualSupplyVolumeText(value);
-  const sourceUnit = suffixText.match(annualUnit)?.[1];
   const targetUnit = normalizeText(suffix).match(annualUnit)?.[1];
-  if (sourceUnit && sourceUnit !== targetUnit) {
+  const declaredAnnualUnit = suffixText.match(annualUnit)?.[1];
+  const sourceUnit =
+    declaredAnnualUnit ??
+    (bareUnits.has(normalizeMassUnit(suffixText)) || suffixText === targetUnit
+      ? suffixText
+      : undefined);
+  if (sourceUnit) {
     const source = normalizeMassUnit(sourceUnit);
     const target = targetUnit && normalizeMassUnit(targetUnit);
     if (source === target) return formatAnnualSupplyVolumeText(numericText, suffix, options);
@@ -194,6 +225,15 @@ export const normalizeAnnualSupplyVolumeText = (
         return formatAnnualSupplyVolumeText(converted.toString(), suffix, options);
     }
     // The declared quantity can only be relabelled after proving equivalence.
+    return formatAnnualSupplyVolumeText(numericText, suffixText, options);
+  }
+  const rate = suffixText.match(rateSuffix);
+  if (
+    rate &&
+    (otherPeriods.test(rate[2]) ||
+      rate[1] === targetUnit ||
+      bareUnits.has(normalizeMassUnit(rate[1])))
+  ) {
     return formatAnnualSupplyVolumeText(numericText, suffixText, options);
   }
   return formatAnnualSupplyVolumeText(numericText, suffix, options);
@@ -323,4 +363,4 @@ export const getAnnualSupplyVolumeStoredSuffix = (value: unknown, lang: string) 
   parseAnnualSupplyVolumeText(getAnnualSupplyVolumeTextForLang(value, lang)).suffixText;
 
 export const localizeAnnualSupplyVolumeSuffix = (suffix: string, lang: string) =>
-  annualSupplyVolumeSuffix(suffix.match(annualUnit)?.[1], lang);
+  annualSupplyVolumeSuffix(suffix.match(annualUnit)?.[1], lang) || suffix;

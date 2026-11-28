@@ -1,4 +1,7 @@
-import { getAnnualSupplyVolumeUnitRows } from '@/services/processes/annualSupplyVolumeUnit';
+import {
+  getAnnualSupplyVolumeUnit,
+  getAnnualSupplyVolumeUnitRows,
+} from '@/services/processes/annualSupplyVolumeUnit';
 jest.mock('@/services/flows/api', () => ({ getFlowDetail: jest.fn() }));
 jest.mock('@/services/flowproperties/api', () => ({ getFlowpropertyDetail: jest.fn() }));
 jest.mock('@/services/unitgroups/api', () => ({ getUnitGroupDetail: jest.fn() }));
@@ -74,6 +77,20 @@ describe('exact annual supply unit lookup', () => {
       },
     });
   };
+  it('requires a common exact unit on all selected reference exchanges', async () => {
+    mockChain();
+    expect(await getAnnualSupplyVolumeUnit([exchange, exchange])).toBe('kg');
+    expect(await getAnnualSupplyVolumeUnit([])).toBeUndefined();
+    await expect(
+      getAnnualSupplyVolumeUnit([
+        exchange,
+        {
+          ...exchange,
+          referenceToFlowDataSet: { '@refObjectId': 'flow', '@version': '99.00.000' },
+        },
+      ]),
+    ).resolves.toBeUndefined();
+  });
   it('reads each exact referenced version and selects its quantitative unit', async () => {
     mockChain();
     expect(await getAnnualSupplyVolumeUnitRows([exchange])).toEqual([
