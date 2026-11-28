@@ -5,8 +5,8 @@
     "repository": "tiangong-lca/platform",
     "baselineSha": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "sourceManifestPath": "docs/plans/i18n-de-DE/manifest.json",
-    "sourceManifestDigest": "e1cc2ae56e69dd3a7b5d7b6dcb71a47563542ff559768695083ace2700159e36",
-    "auditedInputDigest": "8d961799844825474e00f28c6b5c00ca20193241ee842119db9edd56bd57e5b4"
+    "sourceManifestDigest": "5c2597614546f8eb41143f0c123e322af0c9e1b10847882ef97dc345b564c00f",
+    "auditedInputDigest": "86a0a28157a0feb28c9b51eb94eab5c90ad7535a03893cd1d3c5813828b3115c"
   },
   "inventory": {
     "sourceMessageCount": 3698,
@@ -47,7 +47,7 @@
     "messageCount": 3698,
     "completeCount": 3698,
     "blockedCount": 0,
-    "dossierDigest": "336eec131cc7a9b36cf55fae864a1c5e37b9ee576731edd282a898f2e1e9bb80",
+    "dossierDigest": "d144bf59ab17c35b3320d1ae2609b8c4f0fb849af6b6bad67b59284237740966",
     "catalogDigest": "c5edc73aa022ca03e1a89b3bf4152c6d522c457f088f45be3dc2f0a66ede21ad",
     "moduleCount": 32,
     "moduleDigest": "3b4f2df2201d552cc6e09b75bcebf64a30ac3511d401d79c50d4eb6e806195d3",
@@ -1358,5 +1358,5 @@
     "docs/plans/i18n-de-DE/style-guide.md": "b139bb9cc48a23f9b9f69efc44611daba4684c3495aa5cf4fb0ac57e3ab3994f"
   },
   "blockedContext": [],
-  "contextDigest": "d43006d55a96a8403f45ce4bd3e261e578f008023e0eb47503597e95fba5a2e4"
+  "contextDigest": "df3b23eda0e83c513e99fe91b8fa8040f71e141a88dec71cde1b70d03ac907ab"
 }
