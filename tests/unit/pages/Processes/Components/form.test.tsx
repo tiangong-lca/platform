@@ -52,6 +52,7 @@ const createMockFormInstance = () => {
 
   return {
     getFieldError: jest.fn((name: any) => errorStore.get(normalizeFieldName(name)) ?? []),
+    getFieldValue: jest.fn(),
     scrollToField: jest.fn(),
     setFields: jest.fn((fields: Array<{ errors?: string[]; name: any }>) => {
       fields.forEach((field) => {

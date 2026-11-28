@@ -108,12 +108,19 @@ export const normalizeAnnualSupplyVolumeSuffix = (
   return ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX;
 };
 
-const yearLabels = { en: 'year', zh: '年', fr: 'an', de: 'Jahr' } as const;
 const annualUnit = /^(.+?)\s*\/\s*(?:year|yr|a|年|an|année|Jahr)$/i;
 
 export const annualSupplyVolumeSuffix = (unit: string | undefined, lang: unknown) => {
   const locale = normalizeSupportedContentLanguage(typeof lang === 'string' ? lang : undefined);
-  return unit && locale ? `${unit}/${yearLabels[locale]}` : '';
+  if (!unit || !locale) return '';
+
+  const parts = new Intl.NumberFormat(locale, {
+    style: 'unit',
+    unit: 'year',
+    unitDisplay: 'long',
+  }).formatToParts(1);
+  const yearLabel = parts.find((part) => part.type === 'unit')!.value;
+  return `${unit}/${yearLabel}`;
 };
 
 const normalizeMassUnit = (unit: string) => {
