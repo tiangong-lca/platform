@@ -1,14 +1,12 @@
 import {
   ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX,
   ANNUAL_SUPPLY_VOLUME_TEXT_MAX_LENGTH,
-  ANNUAL_SUPPLY_VOLUME_TEXT_PATTERN,
   buildAnnualSupplyVolumeMultiLang,
   buildAnnualSupplyVolumeUnitLookupRows,
-  deriveAnnualSupplyVolumeSuffix,
+  annualSupplyVolumeSuffix,
   formatAnnualSupplyVolumeText,
   getAnnualSupplyVolumeDisplayNumericText,
   getAnnualSupplyVolumeLanguages,
-  mergeAnnualSupplyVolumeUnitRows,
   normalizeAnnualSupplyVolumeMultiLang,
   normalizeAnnualSupplyVolumeText,
   parseAnnualSupplyVolumeText,
@@ -186,8 +184,8 @@ describe('annualSupplyOrProductionVolume helpers', () => {
     ).toEqual(['en', 'zh', 'ja', 'fr']);
   });
 
-  it('preserves an existing unit prefix when the derived suffix only has reference flow text', () => {
-    expect(normalizeAnnualSupplyVolumeText('100 kg Steel', 'Steel')).toBe('100 kg Steel');
+  it('preserves the stored annual unit when lookup provides no annual unit', () => {
+    expect(normalizeAnnualSupplyVolumeText('100 kg/year', 'Steel')).toBe('100 kg/year');
     expect(normalizeAnnualSupplyVolumeText('100 old suffix', 'Steel')).toBe('100 Steel');
     expect(normalizeAnnualSupplyVolumeText('100 old suffix', '', { useDefaultSuffix: false })).toBe(
       '100',
@@ -205,58 +203,47 @@ describe('annualSupplyOrProductionVolume helpers', () => {
     expect(normalizeAnnualSupplyVolumeMultiLang('100 old', 'kg')).toBe('100 old');
   });
 
-  it('derives suffixes from the quantitative reference exchange', () => {
-    const suffix = deriveAnnualSupplyVolumeSuffix({
-      exchangeDataSource: [
-        {
-          '@dataSetInternalID': 'input-1',
-          exchangeDirection: 'Input',
-          referenceToFlowDataSet: {
-            'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Iron ore' }],
-          },
-        },
-        {
-          '@dataSetInternalID': 'output-1',
-          exchangeDirection: 'Output',
-          quantitativeReference: true,
-          referenceToFlowDataSet: {
-            'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Steel slab' }],
-          },
-          refUnitRes: {
-            refUnitName: 'kg',
-          },
-        },
-      ],
-      lang: 'en',
-    });
-
-    expect(suffix).toBe('kg Steel slab');
-    expect(normalizeAnnualSupplyVolumeText('100 old suffix', suffix)).toBe('100 kg Steel slab');
-    expect(ANNUAL_SUPPLY_VOLUME_TEXT_PATTERN.test('100 kg Steel slab')).toBe(true);
+  it.each([
+    ['40900 t/year', 'kg/year', '40900000 kg/year'],
+    ['40900 吨/年', 'kg/年', '40900000 kg/年'],
+    ['40900 t', 'kg/year', '40900000 kg/year'],
+    ['40900 吨', 'kg/年', '40900000 kg/年'],
+    ['40900 t', '', '40900 t'],
+    ['24 kg/day', 'kg/year', '24 kg/day'],
+    ['24 kg/日', 'kg/年', '24 kg/日'],
+    ['24 kg/unspecified-period', 'kg/year', '24 kg/unspecified-period'],
+    ['24 m3/month', 'kg/year', '24 m3/month'],
+    ['24 MJ/year', 'kg/year', '24 MJ/year'],
+    ['40900000 kg/year', 'kg/year', '40900000 kg/year'],
+    ['1e-9 kg/year', 't/year', '1e-12 t/year'],
+    ['2 吨/年', 't/year', '2 t/year'],
+    ['2 千克/年', 'kg/year', '2 kg/year'],
+    ['3.6 electricity', 'MJ/年', '3.6 MJ/年'],
+    ['19 m3/year', 'kg/year', '19 m3/year'],
+    ['40900 t/year', '', '40900 t/year'],
+  ])('serializes %s to a scientifically equivalent value with %s', (input, target, expected) => {
+    expect(normalizeAnnualSupplyVolumeText(input, target, { useDefaultSuffix: false })).toBe(
+      expected,
+    );
   });
 
-  it('derives suffixes from unit display names when a unit symbol is unavailable', () => {
-    expect(
-      deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: [
-          {
-            '@dataSetInternalID': 'output-1',
-            exchangeDirection: 'Output',
-            quantitativeReference: true,
-            referenceToFlowDataSet: {
-              'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Steel slab' }],
-            },
-            refUnitRes: {
-              name: [{ '@xml:lang': 'en', '#text': 'kilogram' }],
-            },
-          },
-        ],
-        lang: 'en',
-      }),
-    ).toBe('kilogram Steel slab');
+  it('keeps a non-finite computed conversion at its declared unit', () => {
+    expect(normalizeAnnualSupplyVolumeText('1e1000000001 t/year', 'kg/year')).toBe(
+      '1e1000000001 t/year',
+    );
+    expect(normalizeAnnualSupplyVolumeText('24 widget/day', 'kg/year')).toBe('24 widget/day');
+    expect(normalizeAnnualSupplyVolumeText('24 product/context', 'kg/year')).toBe('24 kg/year');
   });
 
-  it('builds unit lookup rows and merges resolved flow units into exchange rows', () => {
+  it('derives a localized annual period from an exact unit and a supported language', () => {
+    expect(annualSupplyVolumeSuffix('kg', 'de-DE')).toBe('kg/Jahr');
+    expect(annualSupplyVolumeSuffix('kg', 'fr-FR')).toBe('kg/an');
+    expect(annualSupplyVolumeSuffix('kg', 'unknown')).toBe('');
+    expect(annualSupplyVolumeSuffix(undefined, 'en')).toBe('');
+    expect(annualSupplyVolumeSuffix('kg', 12)).toBe('');
+  });
+
+  it('builds exact unit lookup rows', () => {
     const exchangeRows = [
       {
         '@dataSetInternalID': 'output-1',
@@ -288,119 +275,5 @@ describe('annualSupplyOrProductionVolume helpers', () => {
     ]);
 
     expect(buildAnnualSupplyVolumeUnitLookupRows(null as never)).toEqual([]);
-    expect(mergeAnnualSupplyVolumeUnitRows(null as never, [])).toEqual([]);
-
-    expect(
-      mergeAnnualSupplyVolumeUnitRows(exchangeRows, [
-        {
-          referenceToFlowDataSetId: 'flow-1',
-          referenceToFlowDataSetVersion: '01.00.000',
-          refUnitRes: { refUnitName: 'kg' },
-        },
-        {
-          referenceToFlowDataSetId: 'flow-2',
-          referenceToFlowDataSetVersion: '02.00.000',
-          refUnitRes: { refUnitName: 'm3' },
-        },
-      ]),
-    ).toEqual([
-      {
-        ...exchangeRows[0],
-        refUnitRes: { refUnitName: 'kg' },
-      },
-      {
-        ...exchangeRows[1],
-        refUnitRes: { refUnitName: 'm3' },
-      },
-    ]);
-
-    expect(mergeAnnualSupplyVolumeUnitRows(exchangeRows, null)).toEqual(exchangeRows);
-  });
-
-  it('derives suffixes from fallback text shapes on the selected reference exchange', () => {
-    expect(
-      deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: [
-          {
-            '@dataSetInternalID': 'input-1',
-            exchangeDirection: 'Input',
-            referenceToFlowDataSet: {
-              'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Iron ore' }],
-            },
-          },
-          {
-            '@dataSetInternalID': 'output-1',
-            exchangeDirection: 'Output',
-            quantitativeReference: true,
-            functionalUnitOrOther: 'annual output' as unknown as { '#text': string },
-            referenceToFlowDataSet: {
-              'common:shortDescription': [{ '@xml:lang': 'zh', '#text': '钢板' }],
-            },
-            refUnitRes: {
-              refUnitName: 'kg',
-            },
-          },
-        ],
-        lang: 'en',
-      }),
-    ).toBe('kg annual output');
-
-    expect(
-      deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: [
-          {
-            '@dataSetInternalID': 'first-1',
-            quantitativeReference: true,
-            functionalUnitOrOther: { '#text': 'functional unit' },
-            referenceToFlowDataSet: {
-              'common:shortDescription': [{ '@xml:lang': 'zh', '#text': '钢板' }],
-            },
-            refUnitRes: {
-              refUnitName: 'kg',
-            },
-          },
-        ],
-        lang: 'en',
-      }),
-    ).toBe('kg functional unit');
-  });
-
-  it('does not use an undeclared reference-flow language and leaves suffix blank when none is selected', () => {
-    expect(
-      deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: [
-          {
-            '@dataSetInternalID': 'first-1',
-            quantitativeReference: true,
-            functionalUnitOrOther: 123 as unknown as { '#text': string },
-            referenceToFlowDataSet: [
-              {
-                'common:shortDescription': [{ '@xml:lang': 'zh', '#text': '钢板' }],
-              },
-            ],
-          },
-        ],
-        lang: 'en',
-      }),
-    ).toBe('');
-
-    expect(
-      deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: [
-          {
-            '@dataSetInternalID': 'output-1',
-            exchangeDirection: 'Output',
-            quantitativeReference: false,
-            referenceToFlowDataSet: {
-              'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Steel' }],
-            },
-            refUnitRes: {
-              refUnitName: 'kg',
-            },
-          },
-        ],
-        lang: 'en',
-      }),
-    ).toBe('');
   });
 });

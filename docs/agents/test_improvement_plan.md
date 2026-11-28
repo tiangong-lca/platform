@@ -47,8 +47,8 @@ checkPaths:
   - pnpm-workspace.yaml
   - Dockerfile.app
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 278ad5f8f5caa2f5babe6ff940e2f8ac0a28c818
-lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
+lastReviewedCommit: ba6f54645be9fdb32b24c1bb204ede523475dcab
+lastReviewedNote: 'Reviewed #432 synthetic native-to-form-to-native unit and field preservation controls.'
 ---
 
 # Testing Strategy

@@ -3,7 +3,7 @@
   "source": {
     "baseRef": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
     "baseCommit": "c26f306e82ac66f50a56aafe8f89ea96c0b0c67d",
-    "auditedInputDigest": "8d961799844825474e00f28c6b5c00ca20193241ee842119db9edd56bd57e5b4",
+    "auditedInputDigest": "38d634654a55f3c4053abc1b30173af7867f7a33a854262bd3d6d3293d569c04",
     "auditedInputDigestAlgorithm": "sha256(path\\0content\\0)",
     "repository": "tiangong-lca/platform"
   },
@@ -74,7 +74,7 @@
     "activeStaticKeyCount": 2471,
     "activeDynamicKeyCount": 323,
     "reservedKeyCount": 904,
-    "productionSourceFileCount": 548,
+    "productionSourceFileCount": 551,
     "literalReferenceCount": 4518,
     "dynamicCallsiteCount": 38,
     "dynamicCallsiteSummaryCount": 38,
@@ -50369,7 +50369,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1275,
+          "line": 1227,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Cancel",
@@ -50630,7 +50630,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1275,
+              "line": 1227,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -50812,7 +50812,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1250,
+          "line": 1202,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Data Check",
@@ -50869,7 +50869,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1250,
+              "line": 1202,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -50994,7 +50994,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 862,
+          "line": 814,
           "column": 14,
           "symbol": "getValidationHint",
           "defaultMessage": "Data check failed, please check the data!",
@@ -51003,7 +51003,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 898,
+          "line": 850,
           "column": 11,
           "symbol": "handleCheckData",
           "defaultMessage": "Data check failed, please check the data!",
@@ -51066,13 +51066,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 862,
+              "line": 814,
               "column": 14,
               "kind": "formatMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 898,
+              "line": 850,
               "column": 11,
               "kind": "formatMessage"
             },
@@ -51271,7 +51271,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 945,
+          "line": 897,
           "column": 11,
           "symbol": "handleCheckData",
           "defaultMessage": "Data validation passed.",
@@ -51328,7 +51328,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 945,
+              "line": 897,
               "column": 11,
               "kind": "formatMessage"
             },
@@ -54171,7 +54171,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1196,
+          "line": 1148,
           "column": 27,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit",
@@ -54180,7 +54180,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1207,
+          "line": 1159,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit",
@@ -54357,13 +54357,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1196,
+              "line": 1148,
               "column": 27,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1207,
+              "line": 1159,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -56369,7 +56369,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1147,
+          "line": 1099,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Process information",
@@ -56393,7 +56393,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1147,
+              "line": 1099,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -56681,7 +56681,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1166,
+          "line": 1118,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Model Results",
@@ -56690,7 +56690,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1182,
+          "line": 1134,
           "column": 15,
           "symbol": "ProcessEdit",
           "defaultMessage": "Model Results",
@@ -56726,13 +56726,13 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1166,
+              "line": 1118,
               "column": 15,
               "kind": "FormattedMessage"
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1182,
+              "line": 1134,
               "column": 15,
               "kind": "FormattedMessage"
             },
@@ -57982,7 +57982,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1260,
+          "line": 1212,
           "column": 21,
           "symbol": "ProcessEdit",
           "defaultMessage": "Submit for Review",
@@ -58003,7 +58003,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1260,
+              "line": 1212,
               "column": 21,
               "kind": "FormattedMessage"
             }
@@ -58179,7 +58179,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1289,
+          "line": 1241,
           "column": 17,
           "symbol": "ProcessEdit",
           "defaultMessage": "Save",
@@ -58356,7 +58356,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1289,
+              "line": 1241,
               "column": 17,
               "kind": "FormattedMessage"
             },
@@ -58511,7 +58511,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 592,
+          "line": 544,
           "column": 11,
           "symbol": "handleSubmit",
           "defaultMessage": "Saved successfully!",
@@ -58553,7 +58553,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 592,
+              "line": 544,
               "column": 11,
               "kind": "formatMessage"
             },
@@ -59346,7 +59346,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1268,
+          "line": 1220,
           "column": 19,
           "symbol": "ProcessEdit",
           "defaultMessage": "Update Reference",
@@ -59445,7 +59445,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1268,
+              "line": 1220,
               "column": 19,
               "kind": "FormattedMessage"
             },
@@ -159413,7 +159413,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 568,
+          "line": 520,
           "column": 11,
           "symbol": "handleSubmit",
           "defaultMessage": "Saved as a draft with existing allocation issues. Repair these before validation, review or calculation.",
@@ -159434,7 +159434,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 568,
+              "line": 520,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -160880,7 +160880,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 757,
+          "line": 709,
           "column": 11,
           "symbol": "handleCheckData",
           "defaultMessage": "This data set is under review and cannot be validated",
@@ -160895,7 +160895,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 757,
+              "line": 709,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -161408,7 +161408,7 @@
         {
           "kind": "FormattedMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1217,
+          "line": 1169,
           "column": 11,
           "symbol": "ProcessEdit",
           "defaultMessage": "Edit process",
@@ -161423,7 +161423,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1217,
+              "line": 1169,
               "column": 11,
               "kind": "FormattedMessage"
             }
@@ -195799,7 +195799,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1025,
+          "line": 977,
           "column": 15,
           "symbol": "submitReview",
           "defaultMessage": "Review submission failed",
@@ -195814,7 +195814,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1025,
+              "line": 977,
               "column": 15,
               "kind": "formatMessage"
             }
@@ -195900,7 +195900,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 1034,
+          "line": 986,
           "column": 11,
           "symbol": "submitReview",
           "defaultMessage": "Review submitted successfully",
@@ -195927,7 +195927,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 1034,
+              "line": 986,
               "column": 11,
               "kind": "formatMessage"
             }
@@ -205623,7 +205623,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/AnnualSupplyOrProductionVolume/form.tsx",
-          "line": 157,
+          "line": 112,
           "column": 19,
           "symbol": "fieldRules",
           "defaultMessage": "Please enter a number.",
@@ -205638,7 +205638,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/AnnualSupplyOrProductionVolume/form.tsx",
-              "line": 157,
+              "line": 112,
               "column": 19,
               "kind": "formatMessage"
             }
@@ -206815,7 +206815,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 840,
+          "line": 792,
           "column": 34,
           "symbol": "handleCheckData",
           "defaultMessage": "Select exactly one item as the quantitative reference.",
@@ -206830,7 +206830,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 840,
+              "line": 792,
               "column": 34,
               "kind": "formatMessage"
             }
@@ -206898,7 +206898,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 828,
+          "line": 780,
           "column": 34,
           "symbol": "handleCheckData",
           "defaultMessage": "Add at least one exchange",
@@ -206913,7 +206913,7 @@
           "locations": [
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 828,
+              "line": 780,
               "column": 34,
               "kind": "formatMessage"
             }
@@ -246975,7 +246975,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 608,
+          "line": 560,
           "column": 13,
           "symbol": "handleSubmit",
           "defaultMessage": "This data is open data, save failed",
@@ -247038,7 +247038,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 608,
+              "line": 560,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -259593,7 +259593,7 @@
         {
           "kind": "formatMessage",
           "path": "src/pages/Processes/Components/edit.tsx",
-          "line": 615,
+          "line": 567,
           "column": 13,
           "symbol": "handleSubmit",
           "defaultMessage": "Data is under review, save failed",
@@ -259656,7 +259656,7 @@
             },
             {
               "path": "src/pages/Processes/Components/edit.tsx",
-              "line": 615,
+              "line": 567,
               "column": 13,
               "kind": "formatMessage"
             },
@@ -303225,7 +303225,7 @@
       "count": 1,
       "file": "src/pages/Processes/Components/AnnualSupplyOrProductionVolume/form.tsx",
       "expression": "requiredRule?.messageKey ?? 'validator.lang.text.required'",
-      "locations": ["130:19"],
+      "locations": ["85:19"],
       "category": "active-dynamic",
       "family": "schemaValidation",
       "reviewStatus": "reviewed"

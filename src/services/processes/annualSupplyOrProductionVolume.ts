@@ -1,8 +1,10 @@
 import {
+  normalizeSupportedContentLanguage,
   REQUIRED_CONTENT_LANGUAGES,
   resolveContentLanguage,
   resolveContentLanguages,
 } from '../general/contentLanguageRegistry';
+import { toBigNumberOrNaN } from '../general/bignumber';
 import type { ProcessExchangeData, ProcessRefUnitDisplay } from './data';
 
 export const ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX = 'reference flow';
@@ -20,8 +22,6 @@ const ANNUAL_SUPPLY_VOLUME_NUMERIC_INPUT_PREFIX_PATTERN =
   /^[+-]?(?:$|\d+(?:\.\d*)?(?:[Ee][+-]?\d*)?|\.\d+(?:[Ee][+-]?\d*)?|\.\d*)$/;
 const ANNUAL_SUPPLY_VOLUME_NUMERIC_INPUT_ALLOWED_PATTERN = /[\d.+\-Ee]/;
 
-type LangTextResolver = (value: unknown, lang: string) => string;
-
 type AnnualSupplyVolumeTextParts = {
   numericText: string;
   suffixText: string;
@@ -31,7 +31,7 @@ type AnnualSupplyVolumeFormatOptions = {
   useDefaultSuffix?: boolean;
 };
 
-type AnnualSupplyVolumeUnitLookupRow = {
+export type AnnualSupplyVolumeUnitLookupRow = {
   referenceToFlowDataSetId?: unknown;
   referenceToFlowDataSetVersion?: unknown;
   refUnitRes?: ProcessRefUnitDisplay;
@@ -51,34 +51,6 @@ const getReferenceFlowIdentity = (exchange?: ProcessExchangeData) => {
     id: normalizeText(referenceFlow?.['@refObjectId']),
     version: normalizeText(referenceFlow?.['@version']),
   };
-};
-
-const getFallbackLangText = (value: unknown, lang: string): string => {
-  if (!value) {
-    return '';
-  }
-
-  if (typeof value === 'string') {
-    return normalizeText(value);
-  }
-
-  if (Array.isArray(value)) {
-    const localizedItem = resolveContentLanguages(lang)
-      .map((candidateLanguage) =>
-        value.find(
-          (item) => item?.['@xml:lang'] === candidateLanguage && normalizeText(item?.['#text']),
-        ),
-      )
-      .find(Boolean);
-
-    return normalizeText(localizedItem?.['#text']);
-  }
-
-  if (typeof value === 'object') {
-    return normalizeText((value as Record<string, unknown>)['#text']);
-  }
-
-  return '';
 };
 
 const uniqueNonEmpty = (values: readonly string[]) => {
@@ -136,28 +108,52 @@ export const normalizeAnnualSupplyVolumeSuffix = (
   return ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX;
 };
 
-const resolveAnnualSupplyVolumeSuffix = (
-  existingSuffix: unknown,
-  suffix: unknown,
-  options: AnnualSupplyVolumeFormatOptions,
-) => {
-  const normalizedExistingSuffix = normalizeText(existingSuffix);
-  const normalizedSuffix = normalizeAnnualSupplyVolumeSuffix(suffix, options);
+const annualUnit = /^(.+?)\s*\/\s*(?:year|yr|a|年|an|année|Jahr)$/i;
 
-  if (!normalizedSuffix) {
-    return '';
-  }
+export const annualSupplyVolumeSuffix = (unit: string | undefined, lang: unknown) => {
+  const locale = normalizeSupportedContentLanguage(typeof lang === 'string' ? lang : undefined);
+  if (!unit || !locale) return '';
 
-  if (
-    normalizedExistingSuffix &&
-    normalizedExistingSuffix !== normalizedSuffix &&
-    normalizedExistingSuffix.endsWith(` ${normalizedSuffix}`)
-  ) {
-    return normalizedExistingSuffix;
-  }
-
-  return normalizedSuffix;
+  const parts = new Intl.NumberFormat(locale, {
+    style: 'unit',
+    unit: 'year',
+    unitDisplay: 'long',
+  }).formatToParts(1);
+  const yearLabel = parts.find((part) => part.type === 'unit')!.value;
+  return `${unit}/${yearLabel}`;
 };
+
+const normalizeMassUnit = (unit: string) => {
+  if (unit === '吨') return 't';
+  if (unit === '千克') return 'kg';
+  return unit;
+};
+
+// These bare physical units can occur on historical annual entries. A product
+// name or functional-unit description in the same position cannot establish a unit.
+const bareUnits = new Set([
+  'g',
+  'kg',
+  't',
+  'm',
+  'm2',
+  'm²',
+  'm3',
+  'm³',
+  'L',
+  'l',
+  'J',
+  'kJ',
+  'MJ',
+  'GJ',
+  'Wh',
+  'kWh',
+  'MWh',
+  'mol',
+]);
+const rateSuffix = /^(.+?)\s*\/\s*([^/]+)$/;
+const otherPeriods =
+  /^(?:s|sec|second|min|minute|h|hr|hour|d|day|wk|week|mo|month|jour|mois|Tag|Monat|秒|分|小时|日|天|周|月)$/i;
 
 export const sanitizeAnnualSupplyVolumeNumericInput = (value: unknown) => {
   const text = typeof value === 'string' ? value.trim() : '';
@@ -219,11 +215,35 @@ export const normalizeAnnualSupplyVolumeText = (
   options: AnnualSupplyVolumeFormatOptions = {},
 ) => {
   const { numericText, suffixText } = parseAnnualSupplyVolumeText(value);
-  return formatAnnualSupplyVolumeText(
-    numericText,
-    resolveAnnualSupplyVolumeSuffix(suffixText, suffix, options),
-    options,
-  );
+  const targetUnit = normalizeText(suffix).match(annualUnit)?.[1];
+  const declaredAnnualUnit = suffixText.match(annualUnit)?.[1];
+  const sourceUnit =
+    declaredAnnualUnit ??
+    (bareUnits.has(normalizeMassUnit(suffixText)) || suffixText === targetUnit
+      ? suffixText
+      : undefined);
+  if (sourceUnit) {
+    const source = normalizeMassUnit(sourceUnit);
+    const target = targetUnit && normalizeMassUnit(targetUnit);
+    if (source === target) return formatAnnualSupplyVolumeText(numericText, suffix, options);
+    if ((source === 't' && target === 'kg') || (source === 'kg' && target === 't')) {
+      const converted = toBigNumberOrNaN(numericText).shiftedBy(source === 't' ? 3 : -3);
+      if (converted.isFinite())
+        return formatAnnualSupplyVolumeText(converted.toString(), suffix, options);
+    }
+    // The declared quantity can only be relabelled after proving equivalence.
+    return formatAnnualSupplyVolumeText(numericText, suffixText, options);
+  }
+  const rate = suffixText.match(rateSuffix);
+  if (
+    rate &&
+    (otherPeriods.test(rate[2]) ||
+      rate[1] === targetUnit ||
+      bareUnits.has(normalizeMassUnit(rate[1])))
+  ) {
+    return formatAnnualSupplyVolumeText(numericText, suffixText, options);
+  }
+  return formatAnnualSupplyVolumeText(numericText, suffix, options);
 };
 
 export const normalizeAnnualSupplyVolumeMultiLang = (
@@ -325,10 +345,6 @@ export const buildAnnualSupplyVolumeMultiLang = (
   });
 };
 
-export const getQuantitativeReferenceExchange = (exchangeDataSource: ProcessExchangeData[]) => {
-  return exchangeDataSource.find((exchange) => exchange?.quantitativeReference === true);
-};
-
 export const buildAnnualSupplyVolumeUnitLookupRows = (
   exchangeDataSource: ProcessExchangeData[],
 ): AnnualSupplyVolumeUnitLookupRow[] => {
@@ -346,67 +362,8 @@ export const buildAnnualSupplyVolumeUnitLookupRows = (
   });
 };
 
-export const mergeAnnualSupplyVolumeUnitRows = (
-  exchangeDataSource: ProcessExchangeData[],
-  unitRows: unknown,
-) => {
-  if (!Array.isArray(exchangeDataSource)) {
-    return [];
-  }
+export const getAnnualSupplyVolumeStoredSuffix = (value: unknown, lang: string) =>
+  parseAnnualSupplyVolumeText(getAnnualSupplyVolumeTextForLang(value, lang)).suffixText;
 
-  const normalizedUnitRows = Array.isArray(unitRows)
-    ? (unitRows as AnnualSupplyVolumeUnitLookupRow[])
-    : [];
-
-  return exchangeDataSource.map((exchange) => {
-    const { id, version } = getReferenceFlowIdentity(exchange);
-    const unitRow =
-      normalizedUnitRows.find((row) => {
-        const rowId = normalizeText(row?.referenceToFlowDataSetId);
-        const rowVersion = normalizeText(row?.referenceToFlowDataSetVersion);
-
-        return rowId === id && rowVersion === version;
-      }) ??
-      normalizedUnitRows.find((row) => {
-        return normalizeText(row?.referenceToFlowDataSetId) === id;
-      });
-
-    if (!unitRow?.refUnitRes) {
-      return exchange;
-    }
-
-    return {
-      ...exchange,
-      refUnitRes: unitRow.refUnitRes,
-    };
-  });
-};
-
-export const deriveAnnualSupplyVolumeSuffix = ({
-  exchangeDataSource,
-  getLangText = getFallbackLangText,
-  lang,
-}: {
-  exchangeDataSource: ProcessExchangeData[];
-  getLangText?: LangTextResolver;
-  lang: string;
-}) => {
-  const quantitativeReferenceExchange = getQuantitativeReferenceExchange(exchangeDataSource);
-  const referenceFlow = toReferenceValue(quantitativeReferenceExchange?.referenceToFlowDataSet);
-  if (!referenceFlow) {
-    return '';
-  }
-
-  const refUnitRes = quantitativeReferenceExchange?.refUnitRes as ProcessRefUnitDisplay | undefined;
-  const unitName =
-    normalizeText(refUnitRes?.refUnitName) || normalizeText(getLangText(refUnitRes?.name, lang));
-  const referenceFlowName = normalizeText(
-    getLangText(referenceFlow?.['common:shortDescription'], lang),
-  );
-  const contextText = normalizeText(
-    getLangText(quantitativeReferenceExchange?.functionalUnitOrOther, lang),
-  );
-  const suffixParts = uniqueNonEmpty([unitName, contextText || referenceFlowName]);
-
-  return suffixParts.join(' ');
-};
+export const localizeAnnualSupplyVolumeSuffix = (suffix: string, lang: string) =>
+  annualSupplyVolumeSuffix(suffix.match(annualUnit)?.[1], lang) || suffix;

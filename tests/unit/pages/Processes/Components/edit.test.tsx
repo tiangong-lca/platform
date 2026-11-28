@@ -602,6 +602,29 @@ describe('ProcessEdit component', () => {
     expect(mockAntdMessage.success).toHaveBeenCalledWith('Saved successfully!');
   });
 
+  it('keeps the stored Process when the form emits a callback during loading', async () => {
+    const detail = await mockGetProcessDetail();
+    let resolveDetail!: (value: typeof detail) => void;
+    mockGetProcessDetail.mockReturnValueOnce(
+      new Promise((resolve) => {
+        resolveDetail = resolve;
+      }),
+    );
+    render(<ProcessEdit {...baseProps} />);
+
+    fireEvent.click(screen.getByRole('button'));
+    await screen.findByRole('dialog', { name: 'Edit process' });
+    await act(async () => latestProcessFormProps.onData());
+    await act(async () => resolveDetail(detail));
+    await act(async () => proFormApi?.submit());
+
+    expect(mockUpdateProcess).toHaveBeenCalledWith(
+      'process-1',
+      '1.0.0',
+      expect.objectContaining({ exchanges: processDataset.exchanges }),
+    );
+  });
+
   it('handles validation-tab sync callbacks before saving', async () => {
     render(<ProcessEdit {...baseProps} />);
 

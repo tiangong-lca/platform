@@ -622,26 +622,32 @@ describe('Process Utility Functions', () => {
       ).toBe('2');
     });
 
-    it('should normalize annual supply volume numeric text with the quantitative reference suffix', () => {
+    it('normalizes equivalent annual values without replacing the functional unit', () => {
       const dataWithAnnualSupplyVolume = {
         ...mockProcessData,
         modellingAndValidation: {
           ...mockProcessData.modellingAndValidation,
           dataSourcesTreatmentAndRepresentativeness: {
             annualSupplyOrProductionVolume: [
-              { '@xml:lang': 'en', '#text': '100 old suffix' },
-              { '#text': '200 stale fallback suffix' },
+              { '@xml:lang': 'en', '#text': '40900 t/year' },
+              { '@xml:lang': 'zh', '#text': '40900 吨/年' },
             ],
           },
         },
       };
-
-      const result = genProcessJsonOrdered('test-id', dataWithAnnualSupplyVolume);
-
+      const result = genProcessJsonOrdered('test-id', dataWithAnnualSupplyVolume, {
+        annualSupplyVolumeUnit: 'kg',
+      });
       expect(
         result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
           .annualSupplyOrProductionVolume,
-      ).toEqual([{ '@xml:lang': 'en', '#text': '100 1 kg steel' }, { '#text': '200 1 kg steel' }]);
+      ).toEqual([
+        { '@xml:lang': 'en', '#text': '40900000 kg/year' },
+        { '@xml:lang': 'zh', '#text': '40900000 kg/年' },
+      ]);
+      expect(
+        result.processDataSet.processInformation.quantitativeReference.functionalUnitOrOther,
+      ).toBeDefined();
     });
 
     it('should preserve annual supply volume text when normalization is explicitly disabled', () => {
@@ -668,172 +674,30 @@ describe('Process Utility Functions', () => {
       ).toEqual(annualSupplyOrProductionVolume);
     });
 
-    it('should cap every localized annual supply volume value while saving', () => {
-      const dataWithLongAnnualSupplyContexts = {
-        ...mockProcessData,
-        exchanges: {
-          exchange: [
-            {
-              '@dataSetInternalID': '1',
-              referenceToFlowDataSet: {
-                '@refObjectId': 'flow-id-1',
-                '@version': '01.00.000',
-                'common:shortDescription': [
-                  { '@xml:lang': 'en', '#text': 'e'.repeat(600) },
-                  { '@xml:lang': 'zh', '#text': '中'.repeat(600) },
-                ],
-              },
-              refUnitRes: {
-                refUnitName: 'kg',
-              },
-              exchangeDirection: 'Output',
-              meanAmount: '1',
-              quantitativeReference: true,
-            },
-          ],
-        },
-        modellingAndValidation: {
-          ...mockProcessData.modellingAndValidation,
-          dataSourcesTreatmentAndRepresentativeness: {
-            annualSupplyOrProductionVolume: [
-              { '@xml:lang': 'en', '#text': '100 old suffix' },
-              { '@xml:lang': 'zh', '#text': '100 旧后缀' },
-            ],
-          },
-        },
-      };
-
-      const result = genProcessJsonOrdered('test-id', dataWithLongAnnualSupplyContexts);
-      const annualSupplyValues =
-        result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
-          .annualSupplyOrProductionVolume;
-
-      expect(annualSupplyValues).toHaveLength(2);
-      expect(annualSupplyValues.map((item: { '#text': string }) => item['#text'].length)).toEqual([
-        500, 500,
-      ]);
-      expect(
-        annualSupplyValues.every((item: { '#text': string }) => item['#text'].endsWith('...')),
-      ).toBe(true);
-    });
-
-    it('should preserve a previously resolved annual supply volume unit suffix while saving', () => {
-      const dataWithAnnualSupplyVolume = {
-        ...mockProcessData,
-        exchanges: {
-          exchange: [
-            {
-              '@dataSetInternalID': '1',
-              referenceToFlowDataSet: {
-                '@refObjectId': 'flow-id-1',
-                '@version': '01.00.000',
-                'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Steel' }],
-              },
-              exchangeDirection: 'Output',
-              meanAmount: '1',
-              quantitativeReference: true,
-            },
-          ],
-        },
-        modellingAndValidation: {
-          ...mockProcessData.modellingAndValidation,
-          dataSourcesTreatmentAndRepresentativeness: {
-            annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '100 kg Steel' }],
-          },
-        },
-      };
-
-      const result = genProcessJsonOrdered('test-id', dataWithAnnualSupplyVolume);
-
-      expect(
-        result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
-          .annualSupplyOrProductionVolume,
-      ).toEqual([{ '@xml:lang': 'en', '#text': '100 kg Steel' }]);
-    });
-
-    it.each(['de', 'fr'])(
-      'should not persist English fallback context as %s annual supply content',
-      (targetLanguage) => {
-        const dataWithMissingTargetContext = {
-          ...mockProcessData,
-          exchanges: {
-            exchange: [
-              {
-                '@dataSetInternalID': '1',
-                referenceToFlowDataSet: {
-                  '@refObjectId': 'flow-id-1',
-                  '@version': '01.00.000',
-                  'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Steel' }],
-                },
-                refUnitRes: {
-                  name: [{ '@xml:lang': 'en', '#text': 'kilogram' }],
-                },
-                exchangeDirection: 'Output',
-                meanAmount: '1',
-                quantitativeReference: true,
-              },
-            ],
-          },
+    it.each([{ value: [] }, { value: undefined }])(
+      'keeps explicit unknown values distinct from absence: $value',
+      ({ value }) => {
+        const before = {
           modellingAndValidation: {
-            ...mockProcessData.modellingAndValidation,
-            dataSourcesTreatmentAndRepresentativeness: {
-              annualSupplyOrProductionVolume: [
-                { '@xml:lang': 'en', '#text': '100 old suffix' },
-                { '@xml:lang': targetLanguage, '#text': '100 stale fallback suffix' },
-              ],
-            },
+            dataSourcesTreatmentAndRepresentativeness: { annualSupplyOrProductionVolume: value },
+          },
+          administrativeInformation: {
+            'common:commissionerAndGoal': { 'common:referenceToCommissioner': value },
           },
         };
-
-        const result = genProcessJsonOrdered('test-id', dataWithMissingTargetContext);
-
+        const form = genProcessFromData(before);
+        const { processDataSet } = genProcessJsonOrdered('test-id', form);
         expect(
-          result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
-            .annualSupplyOrProductionVolume,
-        ).toEqual([
-          { '@xml:lang': 'en', '#text': '100 kilogram Steel' },
-          { '@xml:lang': targetLanguage, '#text': '100' },
-        ]);
+          processDataSet.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+            ?.annualSupplyOrProductionVolume,
+        ).toEqual(value);
+        expect(
+          processDataSet.administrativeInformation?.['common:commissionerAndGoal']?.[
+            'common:referenceToCommissioner'
+          ],
+        ).toEqual(value);
       },
     );
-
-    it('should save annual supply volume with a suffix even when no quantitative reference is selected', () => {
-      const dataWithoutRef = {
-        ...mockProcessData,
-        exchanges: {
-          exchange: [
-            {
-              '@dataSetInternalID': '1',
-              referenceToFlowDataSet: {
-                '@refObjectId': 'flow-id-1',
-                '@version': '01.00.000',
-                'common:shortDescription': [{ '@xml:lang': 'en', '#text': 'Steel' }],
-              },
-              refUnitRes: {
-                refUnitName: 'kg',
-              },
-              exchangeDirection: 'Input',
-              meanAmount: '10',
-              quantitativeReference: false,
-            },
-          ],
-        },
-        modellingAndValidation: {
-          ...mockProcessData.modellingAndValidation,
-          dataSourcesTreatmentAndRepresentativeness: {
-            annualSupplyOrProductionVolume: [{ '@xml:lang': 'en', '#text': '100 old suffix' }],
-          },
-        },
-      };
-
-      const result = genProcessJsonOrdered('test-id', dataWithoutRef);
-
-      expect(result.processDataSet.processInformation.quantitativeReference).toEqual({});
-      expect(
-        result.processDataSet.modellingAndValidation.dataSourcesTreatmentAndRepresentativeness
-          .annualSupplyOrProductionVolume,
-      ).toEqual([{ '@xml:lang': 'en', '#text': '100 reference flow' }]);
-    });
 
     it('should use resultingAmount if not zero, otherwise use meanAmount', () => {
       const dataWithZeroResulting = {
@@ -1385,8 +1249,8 @@ describe('Process Utility Functions', () => {
       });
     });
 
-    it.each([undefined, []])(
-      'does not fabricate a commissioner for empty input %p',
+    it.each([[undefined], [[]]])(
+      'preserves commissioner emptiness for input %p',
       (referenceToCommissioner) => {
         const result = genProcessFromData({
           ...mockRawData,
@@ -1402,7 +1266,7 @@ describe('Process Utility Functions', () => {
           result.administrativeInformation?.['common:commissionerAndGoal']?.[
             'common:referenceToCommissioner'
           ],
-        ).toBeUndefined();
+        ).toEqual(referenceToCommissioner);
       },
     );
 

@@ -1,20 +1,20 @@
-import { normalizeSupportedContentLanguage } from '@/services/general/contentLanguageRegistry';
-import { getExactLangText, getUnitData } from '@/services/general/util';
 import {
   ANNUAL_SUPPLY_VOLUME_NUMERIC_TEXT_PATTERN,
   ANNUAL_SUPPLY_VOLUME_TEXT_PATTERN,
   buildAnnualSupplyVolumeMultiLang,
-  buildAnnualSupplyVolumeUnitLookupRows,
-  deriveAnnualSupplyVolumeSuffix,
+  annualSupplyVolumeSuffix,
   getAnnualSupplyVolumeDisplayNumericText,
   getAnnualSupplyVolumeLanguages,
-  mergeAnnualSupplyVolumeUnitRows,
+  getAnnualSupplyVolumeStoredSuffix,
+  localizeAnnualSupplyVolumeSuffix,
+  normalizeAnnualSupplyVolumeMultiLang,
 } from '@/services/processes/annualSupplyOrProductionVolume';
+import { getAnnualSupplyVolumeUnit } from '@/services/processes/annualSupplyVolumeUnit';
 import type { ProcessExchangeData } from '@/services/processes/data';
 import type { ProFormInstance } from '@ant-design/pro-components';
 import { Form, Input, InputNumber, Space, theme } from 'antd';
 import type { FC, ReactNode } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIntl } from 'umi';
 
 type Props = {
@@ -41,81 +41,36 @@ const AnnualSupplyOrProductionVolumeForm: FC<Props> = ({
 }) => {
   const intl = useIntl();
   const { token } = theme.useToken();
-  const [exchangeDataSourceWithUnits, setExchangeDataSourceWithUnits] =
-    useState(exchangeDataSource);
-  const form = formRef?.current;
-  const formValues = typeof form?.getFieldValue === 'function' ? form.getFieldValue(name) : [];
-  const hasStoredFormValue = Array.isArray(formValues)
-    ? formValues.length > 0
-    : formValues !== undefined && formValues !== null;
-  const isRequired = rules?.some((rule) => rule.required);
-  const requiredRule = rules?.find((rule) => rule.required);
-  const annualSupplyVolumeLangs = useMemo(
-    () => getAnnualSupplyVolumeLanguages(formValues, lang),
-    [formValues, lang],
+  const [resolved, setResolved] = useState<{ source: ProcessExchangeData[]; unit?: string }>();
+  const referenceUnit = resolved?.source === exchangeDataSource ? resolved.unit : undefined;
+  const formValues = formRef.current?.getFieldValue(name);
+  const normalizedValues = normalizeAnnualSupplyVolumeMultiLang(
+    formValues,
+    (item) => annualSupplyVolumeSuffix(referenceUnit, item['@xml:lang']),
+    { useDefaultSuffix: false },
   );
+  const annualSupplyVolumeLangs = getAnnualSupplyVolumeLanguages(formValues, lang);
+  const currentSuffix =
+    localizeAnnualSupplyVolumeSuffix(
+      getAnnualSupplyVolumeStoredSuffix(normalizedValues, lang),
+      lang,
+    ) || annualSupplyVolumeSuffix(referenceUnit, lang);
+  // Numeric edits are in the displayed unit across all generated locales.
+  const getSuffixForLang = (language: string) =>
+    localizeAnnualSupplyVolumeSuffix(currentSuffix, language);
 
-  const suffixByLang = useMemo(() => {
-    return annualSupplyVolumeLangs.reduce<Record<string, string>>((accumulator, language) => {
-      accumulator[language] = deriveAnnualSupplyVolumeSuffix({
-        exchangeDataSource: exchangeDataSourceWithUnits,
-        getLangText: getExactLangText,
-        lang: language,
-      });
-      return accumulator;
-    }, {});
-  }, [annualSupplyVolumeLangs, exchangeDataSourceWithUnits]);
-
-  const getSuffixForLang = useCallback(
-    (value: string) => {
-      const language =
-        normalizeSupportedContentLanguage(value) ??
-        value.trim().toLowerCase().replace('_', '-').split('-')[0];
-      return suffixByLang[language] ?? '';
-    },
-    [suffixByLang],
-  );
-  const currentSuffix = getSuffixForLang(lang);
+  const isRequired = rules.some((rule) => rule.required);
+  const requiredRule = rules.find((rule) => rule.required);
 
   useEffect(() => {
-    setExchangeDataSourceWithUnits(exchangeDataSource);
-
-    const unitLookupRows = buildAnnualSupplyVolumeUnitLookupRows(exchangeDataSource);
-    const hasReferenceFlow = unitLookupRows.some((row) => row.referenceToFlowDataSetId);
-
-    if (!hasReferenceFlow) {
-      return;
-    }
-
-    getUnitData('flow', unitLookupRows).then(
-      (unitRows) => {
-        setExchangeDataSourceWithUnits(
-          mergeAnnualSupplyVolumeUnitRows(exchangeDataSource, unitRows),
-        );
-      },
-      () => {
-        setExchangeDataSourceWithUnits(exchangeDataSource);
-      },
-    );
+    let active = true;
+    void getAnnualSupplyVolumeUnit(exchangeDataSource).then((unit) => {
+      if (active) setResolved({ source: exchangeDataSource, unit });
+    });
+    return () => {
+      active = false;
+    };
   }, [exchangeDataSource]);
-
-  useEffect(() => {
-    if (!form || typeof form.setFieldValue !== 'function' || !hasStoredFormValue) {
-      return;
-    }
-
-    const numericText = getAnnualSupplyVolumeDisplayNumericText(formValues, lang);
-    const normalizedValues = buildAnnualSupplyVolumeMultiLang(
-      numericText,
-      getSuffixForLang,
-      annualSupplyVolumeLangs,
-    );
-
-    if (JSON.stringify(normalizedValues) !== JSON.stringify(formValues)) {
-      form.setFieldValue(name, normalizedValues);
-      onData();
-    }
-  }, [form, formValues, getSuffixForLang, hasStoredFormValue, lang, name, onData]);
 
   const fieldRules = isRequired
     ? [
@@ -175,7 +130,14 @@ const AnnualSupplyOrProductionVolumeForm: FC<Props> = ({
         <Form.Item
           name={name}
           getValueProps={(value) => ({
-            value: getAnnualSupplyVolumeDisplayNumericText(value, lang),
+            value: getAnnualSupplyVolumeDisplayNumericText(
+              normalizeAnnualSupplyVolumeMultiLang(
+                value,
+                (item) => annualSupplyVolumeSuffix(referenceUnit, item['@xml:lang']),
+                { useDefaultSuffix: false },
+              ),
+              lang,
+            ),
           })}
           normalize={(value) =>
             buildAnnualSupplyVolumeMultiLang(value, getSuffixForLang, annualSupplyVolumeLangs)
