@@ -25,8 +25,8 @@ checkPaths:
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 3e77c80d073de62c56718b388000aed4aeb8b546
-lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
+lastReviewedCommit: 858827c5ba7aec3f85a4d24d08815418210007ff
+lastReviewedNote: 'Reviewed #432 version-pinned Flow, FlowProperty and UnitGroup read dependencies and unchanged mutation endpoints.'
 ---
 
 # Supabase Environment And Database Workflow

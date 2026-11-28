@@ -57,8 +57,8 @@ checkPaths:
   - .github/workflows/build.yml
   - package.json
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 3e77c80d073de62c56718b388000aed4aeb8b546
-lastReviewedNote: 'Platform #1572. Reviewed responsive team-title language selection against the default translation rows and duplicate-language rule.'
+lastReviewedCommit: 858827c5ba7aec3f85a4d24d08815418210007ff
+lastReviewedNote: 'Reviewed #432 annual-period labels for English, Chinese, German and French and their editable amount basis.'
 baselineObservedAt: 2026-07-18
 related:
   - ../../AGENTS.md
