@@ -56,8 +56,8 @@ checkPaths:
   - .github/workflows/i18n-semantic-e2e.yml
   - .github/workflows/build.yml
   - package.json
-lastReviewedAt: 2026-11-26
-lastReviewedCommit: 03ada95a3b5e2fcccb4231d845db160aa2301ff6
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 3e77c80d073de62c56718b388000aed4aeb8b546
 lastReviewedNote: 'Platform #1572. Reviewed responsive team-title language selection against the default translation rows and duplicate-language rule.'
 baselineObservedAt: 2026-07-18
 related:
