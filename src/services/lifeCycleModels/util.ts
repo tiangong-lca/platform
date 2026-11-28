@@ -344,29 +344,13 @@ export function genLifeCycleModelJsonOrdered(id: string, data: any) {
               'LifeCycleModel',
             ),
           },
-          referenceToResultingProcess: {
-            '@refObjectId':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@refObjectId'
-              ],
-            '@type':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@type'
-              ],
-            '@uri':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@uri'
-              ],
-            '@version':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@version'
-              ],
-            'common:shortDescription': getLangJson(
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@refObjectId'
-              ],
-            ),
-          },
+          referenceToResultingProcess: mapTidasRepeated(
+            data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess,
+            (reference) => ({
+              ...reference,
+              'common:shortDescription': getLangJson(reference?.['common:shortDescription']),
+            }),
+          ),
           'common:generalComment': getLangJson(
             data?.lifeCycleModelInformation?.dataSetInformation?.['common:generalComment'],
           ),
@@ -730,29 +714,13 @@ export function genLifeCycleModelInfoFromData(data: any): FormLifeCycleModel {
               }),
             ),
           },
-          referenceToResultingProcess: {
-            '@refObjectId':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@refObjectId'
-              ],
-            '@type':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@type'
-              ],
-            '@uri':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@uri'
-              ],
-            '@version':
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@version'
-              ],
-            'common:shortDescription': getLangList(
-              data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess?.[
-                '@refObjectId'
-              ],
-            ),
-          },
+          referenceToResultingProcess: mapTidasRepeated(
+            data?.lifeCycleModelInformation?.dataSetInformation?.referenceToResultingProcess,
+            (reference) => ({
+              ...reference,
+              'common:shortDescription': getLangList(reference?.['common:shortDescription']),
+            }),
+          ),
           'common:generalComment': getLangList(
             data?.lifeCycleModelInformation?.dataSetInformation?.['common:generalComment'],
           ),

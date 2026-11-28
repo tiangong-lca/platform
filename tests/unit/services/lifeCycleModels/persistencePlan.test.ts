@@ -494,7 +494,7 @@ describe('buildReviewUpdateLifeCycleModelPersistencePlan', () => {
     expect(result).toEqual({
       ok: false,
       code: 'INVALID_PAYLOAD',
-      message: 'Missing current process snapshot for submodel missing-process',
+      message: `Missing current process snapshot for submodel missing-process@${sampleVersion}`,
     });
   });
 

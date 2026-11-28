@@ -76,7 +76,11 @@ export async function genLifeCycleModelProcesses(
   modelNodes: any[] | null | undefined,
   lifeCycleModelJsonOrdered: any,
   oldSubmodels: any[],
-  options?: { operation?: CalculationOperation; primaryOnly?: boolean },
+  options?: {
+    operation?: CalculationOperation;
+    primaryOnly?: boolean;
+    preserveAuthoredBranches?: boolean;
+  },
 ) {
   const operation = options?.operation;
   const assertNotCancelled = (): void => {
@@ -169,9 +173,13 @@ export async function genLifeCycleModelProcesses(
           });
         }
       }
+      const authoredFactor = Number(mdProcess?.['@multiplicationFactor']);
       return {
         instanceIndex,
         nodeId: mdProcess?.nodeId,
+        ...(Number.isFinite(authoredFactor) && authoredFactor > 0
+          ? { authoredMultiplicationFactor: authoredFactor }
+          : {}),
         processId: processKey?.id ?? '',
         processVersion: processKey?.version ?? '',
         process: {
@@ -244,6 +252,7 @@ export async function genLifeCycleModelProcesses(
 
   const payload: MatrixCalculationPayload = {
     ...(options?.primaryOnly && { primaryOnly: true }),
+    ...(options?.preserveAuthoredBranches && { preserveAuthoredBranches: true }),
     refInstanceIndex: String(refProcessNodeId),
     targetAmount: Number.isFinite(targetAmount) ? (targetAmount as number) : NaN,
     instances: matrixInstances,

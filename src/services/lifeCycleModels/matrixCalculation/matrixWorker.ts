@@ -10,6 +10,7 @@
  */
 
 import { assembleResult } from './assemble';
+import { compileAuthoredDemand, verifyAuthoredDemand } from './authoredDemand';
 import { compileModel } from './compile';
 import { solveCompiledSystem } from './solve';
 import type {
@@ -30,8 +31,12 @@ export const runMatrixCalculation = (request: MatrixWorkerRequest): MatrixWorker
   try {
     assertCalculationPayloadValid(request.payload);
     const compilation = compileModel(request.payload);
-    const { x } = solveCompiledSystem(compilation);
-    const result = assembleResult(compilation, x, request.payload.primaryOnly);
+    const initial = solveCompiledSystem(compilation).x;
+    const authored = compileAuthoredDemand(compilation, initial, request.payload);
+    if (authored) compilation.demand = authored.demand;
+    const solution = authored ? solveCompiledSystem(compilation).x : initial;
+    if (authored) verifyAuthoredDemand(compilation, solution, authored);
+    const result = assembleResult(compilation, solution, request.payload.primaryOnly);
     return { type: 'result', runId: request.runId, ok: true, result };
   } catch (error) {
     if (error instanceof CalculationError) {

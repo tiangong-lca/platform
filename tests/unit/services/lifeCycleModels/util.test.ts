@@ -273,6 +273,32 @@ describe('genPortLabel', () => {
   });
 });
 
+it('retains exact product references and their captions across the Model form round trip', () => {
+  const original = structuredClone(baseModelData);
+  const main = original.lifeCycleModelInformation.dataSetInformation.referenceToResultingProcess;
+  const secondary = {
+    ...main,
+    '@refObjectId': 'secondary-result',
+    '@version': '02.00.000',
+    'common:shortDescription': [createLangText('Independent product')],
+  };
+  const refs = [main, secondary];
+  Object.assign(original.lifeCycleModelInformation.dataSetInformation, {
+    referenceToResultingProcess: refs,
+  });
+  const form = genLifeCycleModelInfoFromData(original);
+  const serialized = genLifeCycleModelJsonOrdered('model-uuid', form);
+  expect(
+    serialized.lifeCycleModelDataSet.lifeCycleModelInformation.dataSetInformation
+      .referenceToResultingProcess,
+  ).toEqual(
+    refs.map((reference) => ({
+      ...reference,
+      'common:shortDescription': reference['common:shortDescription'][0],
+    })),
+  );
+});
+
 describe('genReferenceToResultingProcess', () => {
   it('should return original data when process list is empty or data is missing', () => {
     const data = {

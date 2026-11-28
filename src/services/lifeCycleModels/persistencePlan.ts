@@ -196,16 +196,19 @@ export async function buildSaveLifeCycleModelPersistencePlan(
 export async function buildReviewUpdateLifeCycleModelPersistencePlan(
   args: BuildReviewUpdatePlanArgs,
 ): Promise<PlanBuildResult> {
-  const processMap = new Map(args.currentProcesses.map((item) => [item.id, item]));
+  const processMap = new Map(
+    args.currentProcesses.map((item) => [`${item.id}@${item.version}`, item]),
+  );
   const processMutations: LifeCycleModelProcessMutation[] = [];
 
   for (const submodel of args.submodels) {
-    const currentProcess = processMap.get(submodel.id);
+    const key = `${submodel.id}@${submodel.version ?? args.version}`;
+    const currentProcess = processMap.get(key);
     if (!currentProcess) {
       return {
         ok: false,
         code: 'INVALID_PAYLOAD',
-        message: `Missing current process snapshot for submodel ${submodel.id}`,
+        message: `Missing current process snapshot for submodel ${key}`,
       };
     }
 

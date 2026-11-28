@@ -40,6 +40,7 @@ export interface CalculationIssue {
   code: CalculationErrorCode;
   /** Why the product needs an explicit allocation before recalculation. */
   allocationReason?: 'MISSING_PRODUCT_ALLOCATION' | 'MISSING_REFERENCE_ALLOCATION';
+  reason?: 'AUTHORED_BRANCH_EXCLUDED';
   /** zh-CN: 过程实例内部 ID（@dataSetInternalID）。en-US: Process instance internal ID. */
   instanceIndex?: string;
   /** zh-CN: 画布节点 ID（运行期绑定，用于定位）。en-US: Canvas node id (run-bound, for locating). */
@@ -179,6 +180,8 @@ export interface MatrixInstancePayload {
   processVersion: string;
   process: MatrixProcessPayload;
   connections: MatrixConnectionPayload[];
+  /** Save intent from an existing canonical Model, never a solver demand. */
+  authoredMultiplicationFactor?: number;
 }
 
 /**
@@ -187,6 +190,7 @@ export interface MatrixInstancePayload {
  */
 export interface MatrixCalculationPayload {
   primaryOnly?: boolean;
+  preserveAuthoredBranches?: boolean;
   refInstanceIndex: string;
   targetAmount: number;
   instances: MatrixInstancePayload[];
