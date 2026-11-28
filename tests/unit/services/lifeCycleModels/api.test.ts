@@ -178,7 +178,13 @@ test('guarded layout save preserves the Model body and members without calculati
   mockFunctionsInvoke.mockImplementation(async (_name, { body }) => {
     if (body.action === 'inspect') {
       return {
-        data: { ok: true, ...target, protocol, status: 'observed', snapshot: { model, revision } },
+        data: {
+          ok: true,
+          ...target,
+          protocol,
+          status: 'observed',
+          snapshot: { model, revision, members: metadata.submodels },
+        },
       };
     }
     expect(body).toMatchObject({
@@ -252,6 +258,7 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
   const version = sampleVersion;
   const target = { modelId: id, version };
   const revision = 'a'.repeat(64);
+  const members = [{ id: sampleProcessId, version: '02.00.000', type: 'secondary' }];
   const model = {
     id,
     version,
@@ -267,7 +274,7 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
         ...target,
         protocol: 'model-bundle.v1',
         status: 'observed',
-        snapshot: { model, revision },
+        snapshot: { model, revision, members },
       },
     })
     .mockResolvedValueOnce({ data: { ok: true, ...target } });
@@ -275,11 +282,14 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
     lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
   ).resolves.toMatchObject({
     success: true,
-    data: { id, version, bundleRevision: revision },
+    data: { id, version, bundleRevision: revision, json_tg: { submodels: members } },
   });
-  await expect(lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true)).resolves.toEqual({
+  await expect(
+    lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
+  ).resolves.toMatchObject({
     success: false,
     data: {},
+    error: { code: 'MODEL_BUNDLE_UNSUPPORTED' },
   });
   mockFunctionsInvoke.mockResolvedValueOnce({
     data: { ok: true, ...target, protocol: 'model-bundle.v1', status: 'observed' },
@@ -288,8 +298,148 @@ test('guarded editor loads the exact baseline and refuses an unavailable protoco
     success: false,
     data: {},
   });
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: {
+      ok: true,
+      protocol: 'model-bundle.v1',
+      status: 'observed',
+      snapshot: { model: { ...model, version: '03.00.000' }, revision, members },
+    },
+  });
+  await expect(lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true)).resolves.toEqual({
+    success: false,
+    data: {},
+  });
+  mockFunctionsInvoke.mockResolvedValueOnce({
+    data: {
+      ok: true,
+      protocol: 'model-bundle.v1',
+      status: 'observed',
+      snapshot: { model: { ...model, json_tg: { submodels: members } }, revision },
+    },
+  });
+  await expect(
+    lifeCycleModelsApi.getLifeCycleModelDetail(id, version, true),
+  ).resolves.toMatchObject({
+    success: true,
+    data: { json_tg: { submodels: members } },
+  });
   expect(mockFrom).not.toHaveBeenCalled();
 });
+
+test.each(['body', 'member', 'read unavailable', 'identity'] as const)(
+  'reports an unverified guarded commit when the fresh %s disagrees with the plan at the same revision',
+  async (change) => {
+    const version = sampleVersion;
+    const modelId = sampleModelId;
+    const revision = 'a'.repeat(64);
+    const protocol = 'model-bundle.v1';
+    const members = [
+      { id: sampleProcessId, version, type: 'primary' },
+      {
+        id: '22222222-2222-4222-8222-222222222224',
+        version: '02.00.000',
+        type: 'allocated',
+        finalId: { processId: 'source', sourceVersion: '03.00.000', exchangeId: '15' },
+      },
+    ];
+    const snapshot = {
+      revision,
+      model: {
+        id: modelId,
+        version,
+        json_ordered: { processInstance: [{ '@multiplicationFactor': '1' }] },
+        json_tg: { submodels: members },
+        rule_verification: false,
+      },
+      members,
+    };
+    let committed = false;
+    mockFunctionsInvoke.mockImplementation(async (_name, { body }) => {
+      if (body.action === 'save') {
+        committed = true;
+        return {
+          data: {
+            ok: true,
+            protocol,
+            status: 'committed',
+            modelId,
+            version,
+            revision,
+            operationId: body.operationId,
+          },
+        };
+      }
+      if (committed && change === 'read unavailable') {
+        return { data: { ok: false, code: 'MODEL_NOT_FOUND', message: 'Not found' } };
+      }
+      const fresh = structuredClone(snapshot);
+      if (committed && change === 'identity') fresh.model.id = 'other-model';
+      if (committed && change === 'body') {
+        fresh.model.json_ordered.processInstance[0]['@multiplicationFactor'] = '0';
+      }
+      if (committed && change === 'member') {
+        fresh.members[1].version = '03.00.000';
+      }
+      return { data: { ok: true, protocol, status: 'observed', snapshot: fresh } };
+    });
+    await expect(
+      lifeCycleModelsApi.updateLifeCycleModel(
+        { id: modelId, version },
+        { guardedSave: { revision, layoutOnly: true }, persistenceGraph: { nodes: [], edges: [] } },
+      ),
+    ).resolves.toMatchObject({ ok: false, code: 'MODEL_BUNDLE_READBACK_CHANGED' });
+  },
+);
+
+test.each(['02.00.000', undefined])(
+  'refuses an allocated forward result at member version %s',
+  async (declaredVersion) => {
+    const version = sampleVersion;
+    const modelId = sampleModelId;
+    const revision = 'a'.repeat(64);
+    const provider = { id: sampleProcessId, version: declaredVersion, type: 'allocated' };
+    const exactVersion = declaredVersion ?? version;
+    mockFunctionsInvoke.mockResolvedValueOnce({
+      data: {
+        ok: true,
+        protocol: 'model-bundle.v1',
+        status: 'observed',
+        snapshot: {
+          revision,
+          model: {
+            id: modelId,
+            version,
+            rule_verification: false,
+            json_tg: { submodels: [provider] },
+            json_ordered: {
+              lifeCycleModelDataSet: {
+                lifeCycleModelInformation: {
+                  dataSetInformation: {
+                    referenceToResultingProcess: [
+                      { '@refObjectId': provider.id, '@version': exactVersion },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    await expect(
+      lifeCycleModelsApi.updateLifeCycleModel(
+        { id: modelId, version },
+        { guardedSave: { revision, layoutOnly: true }, persistenceGraph: { nodes: [], edges: [] } },
+      ),
+    ).resolves.toMatchObject({
+      ok: false,
+      code: 'MODEL_MEMBERSHIP_INVALID',
+      details: { id: provider.id, version: exactVersion },
+    });
+    expect(mockFunctionsInvoke).toHaveBeenCalledTimes(1);
+  },
+);
 
 test('guarded layout refuses stale, cancelled, changed, and unversioned input before writing', async () => {
   const data = { id: sampleModelId, version: sampleVersion };
@@ -441,6 +591,87 @@ const createQueryBuilder = <T>(resolvedValue: T) => {
   });
   return builder;
 };
+
+test.each(['unchanged', 'edited', 'legacy fallback', 'missing destination'])(
+  'uses persisted activities only with matching scientific bindings (%s)',
+  async (variant) => {
+    const unchanged = variant === 'unchanged' || variant === 'legacy fallback';
+    const before = {
+      lifeCycleModelDataSet: {
+        lifeCycleModelInformation: {
+          quantitativeReference: { referenceToReferenceProcess: 1 },
+          technology: {
+            processes: {
+              processInstance: [
+                {
+                  '@dataSetInternalID': '1',
+                  '@multiplicationFactor': '0.4298339234950875',
+                  referenceToProcess: {
+                    '@refObjectId': sampleProcessId,
+                    '@version': sampleVersion,
+                  },
+                  connections: {
+                    outputExchange: [
+                      {
+                        '@flowUUID': 'flow',
+                        '@version': '02.00.000',
+                        downstreamProcess: [
+                          { '@id': '2', '@flowUUID': 'flow', '@version': '02.00.000' },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+    const out = structuredClone(before);
+    if (variant === 'edited') {
+      out.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes.processInstance[0].connections.outputExchange[0].downstreamProcess[0][
+        '@version'
+      ] = '03.00.000';
+    }
+    if (variant === 'legacy fallback') {
+      Object.assign(
+        before.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes
+          .processInstance[0].connections.outputExchange[0].downstreamProcess[0],
+        { '@flowUUID': undefined },
+      );
+    }
+    if (variant === 'missing destination') {
+      Object.assign(
+        before.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes
+          .processInstance[0].connections.outputExchange[0].downstreamProcess[0],
+        { '@id': undefined },
+      );
+    }
+    const data = { id: sampleModelId, version: sampleVersion, model: { nodes: [], edges: [] } };
+    mockFrom.mockReturnValueOnce(
+      createQueryBuilder({
+        data: [{ id: sampleModelId, json: before, submodels: [] }],
+        error: null,
+      }),
+    );
+    mockGenLifeCycleModelJsonOrdered.mockReturnValue(out);
+    mockGenLifeCycleModelProcesses.mockRejectedValueOnce(
+      new CalculationError('NUMERIC_RESULT_INVALID'),
+    );
+    const result = await lifeCycleModelsApi.updateLifeCycleModel(data);
+    expect(result).toMatchObject({ code: 'NUMERIC_RESULT_INVALID' });
+    const preserved = expect.objectContaining({ preserveAuthoredBranches: true });
+    expect(mockGenLifeCycleModelProcesses).toHaveBeenLastCalledWith(
+      sampleModelId,
+      [],
+      out,
+      [],
+      ...(unchanged ? [preserved] : []),
+    );
+    expect(mockFunctionsInvoke).not.toHaveBeenCalled();
+  },
+);
 
 const buildProcessDataSet = () => ({
   processInformation: {
@@ -1299,21 +1530,31 @@ describe('createLifeCycleModel', () => {
         error: null,
       }),
     );
-    const snapshot = {
-      model: { ...data, json_ordered: raw, json_tg: {}, rule_verification: true },
-      revision: committed,
-    };
-    mockFunctionsInvoke.mockImplementation(async (_name, { body }) => ({
-      data: {
-        ok: true,
-        modelId: sampleModelId,
-        version: sampleVersion,
-        protocol: 'model-bundle.v1',
-        ...(body.action === 'inspect'
-          ? { status: 'observed', snapshot }
-          : { status: 'committed', revision: committed, operationId: body.operationId }),
-      },
-    }));
+    let sent: any;
+    mockFunctionsInvoke.mockImplementation(async (_name, { body }) => {
+      if (body.action === 'save') sent = JSON.parse(JSON.stringify(body.plan.parent));
+      const snapshot = {
+        model: {
+          ...data,
+          json_ordered: sent.jsonOrdered,
+          json_tg: sent.jsonTg,
+          rule_verification: true,
+        },
+        members: sent.jsonTg.submodels,
+        revision: committed,
+      };
+      return {
+        data: {
+          ok: true,
+          modelId: sampleModelId,
+          version: sampleVersion,
+          protocol: 'model-bundle.v1',
+          ...(body.action === 'inspect'
+            ? { status: 'observed', snapshot }
+            : { status: 'committed', revision: committed, operationId: body.operationId }),
+        },
+      };
+    });
     await expect(
       lifeCycleModelsApi.createLifeCycleModel(data, { guardedSave: { revision: null } }),
     ).resolves.toMatchObject({ ok: true, bundleRevision: committed });
@@ -2589,7 +2830,7 @@ describe('updateLifeCycleModelJsonApi', () => {
     expect(result).toMatchObject({
       ok: false,
       code: 'INVALID_PAYLOAD',
-      message: `Missing current process snapshot for submodel ${sampleProcessId}`,
+      message: `Missing current process snapshot for submodel ${sampleProcessId}@${sampleVersion}`,
     });
   });
 
@@ -2786,7 +3027,7 @@ describe('updateLifeCycleModelJsonApi', () => {
     expect(result).toEqual({
       ok: false,
       code: 'INVALID_PAYLOAD',
-      message: 'Missing current process snapshot for submodel missing-process',
+      message: `Missing current process snapshot for submodel missing-process@${sampleVersion}`,
     });
   });
 });

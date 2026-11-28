@@ -17,8 +17,7 @@ const computeGroupActivities = (
   compilation: Compilation,
   edges: Compilation['edges'],
   members: CompiledView[],
-  rootView: CompiledView,
-  targetAmount: number,
+  finalDemand: ReadonlyMap<string, number>,
 ): Map<string, number> => {
   const memberIndex = new Map(members.map((view, index) => [view.id, index]));
   const entries: Compilation['entries'] = [];
@@ -34,7 +33,7 @@ const computeGroupActivities = (
     ...compilation,
     views: members.map((view, columnIndex) => ({ ...view, columnIndex })),
     entries,
-    demand: members.map((view) => (view.id === rootView.id ? targetAmount : 0)),
+    demand: members.map((view) => finalDemand.get(view.id) ?? 0),
   });
   return new Map(members.map((view, index) => [view.id, x[index]]));
 };
@@ -130,11 +129,11 @@ export const assembleResult = (
   const buildGroup = (
     rootView: CompiledView,
     type: 'primary' | 'secondary',
-    targetAmount: number,
+    finalDemand: ReadonlyMap<string, number>,
   ): MatrixResultGroup | undefined => {
     const memberIds: string[] = [];
-    const visited = new Set<string>([rootView.id]);
-    const queue: Array<CompiledView> = [rootView];
+    const visited = new Set(finalDemand.keys());
+    const queue = [...visited].map((id) => viewById.get(id)!);
     while (queue.length > 0) {
       const view = queue.shift()!;
       memberIds.push(view.id);
@@ -155,13 +154,7 @@ export const assembleResult = (
 
     const memberSet = new Set(memberIds);
     // 每个组是独立归因情景：共享上游的组内活动量按组内归因需求求解
-    const groupActivity = computeGroupActivities(
-      compilation,
-      edges,
-      members,
-      rootView,
-      targetAmount,
-    );
+    const groupActivity = computeGroupActivities(compilation, edges, members, finalDemand);
     // computeGroupActivities 为全部成员写入活动量，查询对象均为成员
     const scenarioActivityOf = (view: CompiledView): number => groupActivity.get(view.id) as number;
     const aggregated = new Map<string, MatrixResultExchange>();
@@ -263,7 +256,7 @@ export const assembleResult = (
       // 参考交换数量 = 目标 + 组外导出，故只做下界校验。输入枢轴（处置
       // 模型）的参考交换可为内部流并净化为零，不做此校验。
       // 编译阶段保证主根的需求向量分量为目标量
-      const target = targetAmount;
+      const target = [...finalDemand.values()].reduce((total, amount) => total + amount, 0);
       const tolerance = CALCULATION_TOLERANCES.residual * Math.max(1, Math.abs(target));
       if (
         !refExchange ||
@@ -307,12 +300,18 @@ export const assembleResult = (
 
   const groups: MatrixResultGroup[] = [];
   const refView = viewById.get(compilation.refViewId)!;
-  groups.push(buildGroup(refView, 'primary', compilation.demand[refView.columnIndex])!);
+  const primaryDemand = new Map([[refView.id, compilation.demand[refView.columnIndex]]]);
+  for (const view of views) {
+    if (compilation.demand[view.columnIndex] > 0) {
+      primaryDemand.set(view.id, compilation.demand[view.columnIndex]);
+    }
+  }
+  groups.push(buildGroup(refView, 'primary', primaryDemand)!);
   for (const view of primaryOnly ? [] : views) {
     if (view.isReference) continue;
     // A downstream connection does not remove this product's independent result.
     // These scenario solves never change the primary solution or graph quantities.
-    groups.push(buildGroup(view, 'secondary', view.pivotAmount)!);
+    groups.push(buildGroup(view, 'secondary', new Map([[view.id, view.pivotAmount]]))!);
   }
 
   return {

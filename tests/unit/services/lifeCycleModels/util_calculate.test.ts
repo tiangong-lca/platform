@@ -293,6 +293,38 @@ beforeEach(() => {
 });
 
 describe('genLifeCycleModelProcesses (matrix calculation)', () => {
+  it('passes the authored activity and its guard to the worker for an output-preserving recalculation', async () => {
+    const model = createLifeCycleModelData();
+    Object.assign(
+      model.lifeCycleModelDataSet.lifeCycleModelInformation.technology.processes.processInstance[0],
+      {
+        '@multiplicationFactor': '2',
+      },
+    );
+    mockOr.mockResolvedValue({ data: createSupabaseProcesses() });
+    mockLCIAResultCalculation.mockResolvedValue([]);
+    const run = jest.spyOn(getSharedMatrixCalculationClient(), 'run');
+    try {
+      await genLifeCycleModelProcesses('model-123', createIndexedModelNodes(), model, [], {
+        preserveAuthoredBranches: true,
+      });
+      expect(run).toHaveBeenCalledWith(
+        expect.objectContaining({
+          preserveAuthoredBranches: true,
+          instances: expect.arrayContaining([
+            expect.objectContaining({
+              instanceIndex: 'nodeA',
+              authoredMultiplicationFactor: 2,
+            }),
+          ]),
+        }),
+        expect.anything(),
+      );
+    } finally {
+      run.mockRestore();
+    }
+  });
+
   it('saves one open primary inventory while retaining allocated Process instances', async () => {
     const rows = createSupabaseProcesses();
     for (const row of rows) {

@@ -20,9 +20,9 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
-lastReviewedNote: 'Platform #1559. Reviewed the distinction between canvas navigation and contribution-path computation.'
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 300fca4542d0d99e312b2931c4902f4fc5fdadb7
+lastReviewedNote: 'Reviewed the detached demand proof and the exact source identities available to contribution analysis for Platform #1519.'
 ---
 
 # Contribution Path Analysis Design

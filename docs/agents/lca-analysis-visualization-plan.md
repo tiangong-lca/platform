@@ -20,9 +20,9 @@ checkPaths:
   - docs/agents/util_calculate.md
   - src/pages/Processes/Analysis/**
   - src/components/LcaTaskCenter/**
-lastReviewedAt: 2026-11-22
-lastReviewedCommit: 667189da891fb045e816205a3641e9b482279e23
-lastReviewedNote: 'Platform #1559. Reviewed the boundary between detail read failures and computed analysis displays.'
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 300fca4542d0d99e312b2931c4902f4fc5fdadb7
+lastReviewedNote: 'Reviewed the projected result role and exchange basis consumed by analysis views for Platform #1519.'
 ---
 
 # LCA Analysis And Visualization Plan

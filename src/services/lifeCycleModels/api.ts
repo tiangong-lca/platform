@@ -1,3 +1,4 @@
+import { diff } from 'jsondiffpatch';
 import {
   getAllRefObj,
   getRefTableName,
@@ -246,6 +247,7 @@ async function runLifeCycleModelCalculation(input: {
   oldSubmodels: any[];
   resultPolicy?: LifeCycleModelJsonTg['resultPolicy'];
   operation?: CalculationOperation;
+  preserveAuthoredBranches?: boolean;
 }): Promise<LifeCycleModelCalculationOutcome> {
   try {
     const { lifeCycleModelProcesses, up2DownEdges, lciaIncomplete } =
@@ -254,8 +256,14 @@ async function runLifeCycleModelCalculation(input: {
         input.nodes,
         input.lifeCycleModelJsonOrdered,
         input.oldSubmodels,
-        ...(input.resultPolicy || input.operation
-          ? [{ ...(input.resultPolicy && { primaryOnly: true }), operation: input.operation }]
+        ...(input.resultPolicy || input.operation || input.preserveAuthoredBranches
+          ? [
+              {
+                ...(input.resultPolicy && { primaryOnly: true }),
+                ...(input.preserveAuthoredBranches && { preserveAuthoredBranches: true }),
+                operation: input.operation,
+              },
+            ]
           : []),
       );
     return { ok: true, lifeCycleModelProcesses, up2DownEdges, lciaIncomplete: !!lciaIncomplete };
@@ -407,10 +415,58 @@ function attachCalculationNotice(
   return { ...result, calculationNotice: 'LCIA_INCOMPLETE' };
 }
 
+function getBundleSaveVersion(plan: LifeCycleModelPersistencePlan): string | undefined {
+  const json = plan.parent.jsonOrdered as {
+    lifeCycleModelDataSet?: {
+      administrativeInformation?: {
+        publicationAndOwnership?: { 'common:dataSetVersion'?: string };
+      };
+    };
+  };
+  return (
+    plan.version ??
+    json?.lifeCycleModelDataSet?.administrativeInformation?.publicationAndOwnership?.[
+      'common:dataSetVersion'
+    ]
+  );
+}
+
 async function invokeLifecycleModelBundleFunction(
   functionName: 'save_lifecycle_model_bundle' | 'delete_lifecycle_model_bundle',
   body: Record<string, unknown>,
 ): Promise<LifeCycleModelMutationResult> {
+  if (functionName === 'save_lifecycle_model_bundle') {
+    const plan = (body.action === 'save' ? body.plan : body) as LifeCycleModelPersistencePlan;
+    const members = plan.parent?.jsonTg?.submodels ?? [];
+    const allocated = members.filter((member) => member.type === 'allocated');
+    const model = plan.parent?.jsonOrdered as
+      | {
+          lifeCycleModelDataSet?: {
+            lifeCycleModelInformation?: {
+              dataSetInformation?: { referenceToResultingProcess?: unknown };
+            };
+          };
+        }
+      | undefined;
+    const references = jsonToList(
+      model?.lifeCycleModelDataSet?.lifeCycleModelInformation?.dataSetInformation
+        ?.referenceToResultingProcess,
+    );
+    const invalidReference = references.find((ref) =>
+      allocated.some(
+        (member) =>
+          ref?.['@refObjectId'] === member.id &&
+          ref?.['@version'] === (member.version ?? getBundleSaveVersion(plan)),
+      ),
+    );
+    if (invalidReference) {
+      return buildMutationError(
+        'MODEL_MEMBERSHIP_INVALID',
+        'An allocated provider belongs in submodels and cannot be declared as a resulting product.',
+        { id: invalidReference['@refObjectId'], version: invalidReference['@version'] },
+      );
+    }
+  }
   try {
     const session = await supabase.auth.getSession();
     const accessToken = session.data.session?.access_token;
@@ -469,6 +525,7 @@ async function readGuardedModel(modelId: string, version: string) {
     status?: string;
     snapshot?: {
       revision: string;
+      members?: LifeCycleModelJsonTg['submodels'];
       model: {
         id: string;
         version: string;
@@ -485,25 +542,10 @@ async function readGuardedModel(modelId: string, version: string) {
   return { ok: true as const, snapshot: observed.snapshot ?? null };
 }
 
-function getBundleSaveVersion(plan: LifeCycleModelPersistencePlan): string | undefined {
-  const json = plan.parent.jsonOrdered as {
-    lifeCycleModelDataSet?: {
-      administrativeInformation?: {
-        publicationAndOwnership?: { 'common:dataSetVersion'?: string };
-      };
-    };
-  };
-  return (
-    plan.version ??
-    json?.lifeCycleModelDataSet?.administrativeInformation?.publicationAndOwnership?.[
-      'common:dataSetVersion'
-    ]
-  );
-}
-
 async function verifyGuardedModelSave(
   operation: ModelBundleOperation,
   reply: LifeCycleModelMutationResult,
+  plan?: LifeCycleModelPersistencePlan,
 ): Promise<LifeCycleModelMutationResult> {
   const receipt = reply.ok
     ? (reply as typeof reply & {
@@ -529,14 +571,37 @@ async function verifyGuardedModelSave(
     };
   }
   const current = await readGuardedModel(operation.modelId, operation.version);
-  if (!current.ok || !('snapshot' in current) || current.snapshot?.revision !== receipt.revision) {
+  const snapshot = current.ok && 'snapshot' in current ? current.snapshot : null;
+  const expectedMembers = plan?.parent.jsonTg.submodels ?? [];
+  const memberKey = (member: { id: string; version?: string }) => `${member.id}@${member.version}`;
+  const sameMembers =
+    expectedMembers.length === 0 ||
+    (expectedMembers.length === snapshot?.members?.length &&
+      expectedMembers.every((member) => {
+        const observed = snapshot.members?.find(
+          (candidate) => memberKey(candidate) === memberKey(member),
+        );
+        const expected = JSON.parse(JSON.stringify(member));
+        // The database group adds no scientific metadata to declared members.
+        return !!observed && diff(expected, observed) === undefined;
+      }));
+  if (
+    !snapshot ||
+    snapshot.revision !== receipt.revision ||
+    snapshot.model?.id !== operation.modelId ||
+    snapshot.model.version !== operation.version ||
+    (plan &&
+      diff(JSON.parse(JSON.stringify(plan.parent.jsonOrdered)), snapshot.model.json_ordered) !==
+        undefined) ||
+    !sameMembers
+  ) {
     return buildMutationError(
       'MODEL_BUNDLE_READBACK_CHANGED',
       'The save committed, but the current Model and results could not be verified. Reload the Model.',
       operation,
     );
   }
-  const row = current.snapshot.model;
+  const row = snapshot.model;
   return {
     ok: true,
     modelId: row.id,
@@ -554,13 +619,14 @@ async function verifyGuardedModelSave(
 
 export async function recoverLifecycleModelSave(
   operation: ModelBundleOperation,
+  plan?: LifeCycleModelPersistencePlan,
 ): Promise<LifeCycleModelMutationResult> {
   const reply = await invokeLifecycleModelBundleFunction('save_lifecycle_model_bundle', {
     ...operation,
     protocol: guardedBundleProtocol,
     action: 'recover',
   });
-  return verifyGuardedModelSave(operation, reply);
+  return verifyGuardedModelSave(operation, reply, plan);
 }
 
 async function saveGuardedModel(
@@ -595,9 +661,9 @@ async function saveGuardedModel(
       ].includes(reply.code)
     )
       return reply;
-    return recoverLifecycleModelSave(target);
+    return recoverLifecycleModelSave(target, plan);
   }
-  return verifyGuardedModelSave(target, reply);
+  return verifyGuardedModelSave(target, reply, plan);
 }
 
 async function saveModelLayout(
@@ -775,6 +841,39 @@ export async function createLifeCycleModel(
   );
 }
 
+// Match the canonical calculation input across sibling/object ordering, ignoring
+// reference labels and all XFlow layout. Stored factors cannot authorize a new graph.
+function modelActivitySignature(payload: any) {
+  const info = payload?.lifeCycleModelDataSet?.lifeCycleModelInformation;
+  const instances = jsonToList(info?.technology?.processes?.processInstance);
+  return {
+    reference: String(info?.quantitativeReference?.referenceToReferenceProcess ?? ''),
+    instances: instances
+      .map((instance) =>
+        JSON.stringify([
+          String(instance?.['@dataSetInternalID'] ?? ''),
+          instance?.referenceToProcess?.['@refObjectId'],
+          instance?.referenceToProcess?.['@version'],
+          String(instance?.['@multiplicationFactor'] ?? ''),
+          jsonToList(instance?.connections?.outputExchange)
+            .flatMap((output) =>
+              jsonToList(output?.downstreamProcess).map((input) =>
+                JSON.stringify([
+                  output?.['@flowUUID'],
+                  output?.['@version'],
+                  String(input?.['@id'] ?? ''),
+                  input?.['@flowUUID'] ?? output?.['@flowUUID'],
+                  input?.['@version'],
+                ]),
+              ),
+            )
+            .sort(),
+        ]),
+      )
+      .sort(),
+  };
+}
+
 export async function updateLifeCycleModel(
   data: any,
   options?: LifeCycleModelMutationOptions,
@@ -893,6 +992,15 @@ export async function updateLifeCycleModel(
     oldSubmodels,
     resultPolicy,
     operation: options?.operation,
+    preserveAuthoredBranches:
+      diff(
+        modelActivitySignature(currentModelResult.data[0].json),
+        modelActivitySignature(normalizedLifeCycleModelJsonOrdered),
+      ) === undefined &&
+      jsonToList(
+        normalizedLifeCycleModelJsonOrdered?.lifeCycleModelDataSet?.lifeCycleModelInformation
+          ?.technology?.processes?.processInstance,
+      ).some((instance) => Number(instance?.['@multiplicationFactor']) > 0),
   });
   if (!calculation.ok) {
     return attachLangNormalizationMetadata(calculation.error, langMetadata, options);
@@ -1034,7 +1142,10 @@ export async function updateLifeCycleModelJsonApi(
   const currentModel = currentModelResult.data[0];
   const currentJsonTg = (currentModel.json_tg ?? {}) as LifeCycleModelJsonTg;
   const submodels = jsonToList(currentJsonTg?.submodels);
-  const submodelIds = submodels.map((item: any) => item.id).filter(Boolean);
+  const memberKeys = submodels.map((member) => ({
+    id: member.id,
+    version: member.version ?? version,
+  }));
 
   let currentProcesses: Array<{
     id: string;
@@ -1043,11 +1154,15 @@ export async function updateLifeCycleModelJsonApi(
     rule_verification?: boolean | null;
   }> = [];
 
-  if (submodelIds.length > 0) {
+  if (memberKeys.length > 0) {
     const currentProcessesResult = await publicEntity('processes')
       .select('id, version, json_ordered, rule_verification')
-      .eq('version', version)
-      .in('id', submodelIds);
+      .eq('model_id', id)
+      .or(
+        memberKeys
+          .map((member) => `and(id.eq.${member.id},version.eq.${member.version})`)
+          .join(','),
+      );
 
     if (currentProcessesResult.error) {
       return buildMutationError(
@@ -1504,17 +1619,17 @@ export async function getLifeCycleModelDetail(
 ): Promise<LifeCycleModelDetailResponse> {
   if (guarded) {
     const observed = await readGuardedModel(id, version);
-    if (!observed.ok || !('snapshot' in observed) || !observed.snapshot) {
-      return { data: {}, success: false };
-    }
-    const { model, revision } = observed.snapshot;
+    if (!observed.ok) return { data: {}, success: false, error: observed };
+    if (!('snapshot' in observed) || !observed.snapshot) return { data: {}, success: false };
+    const { model, revision, members } = observed.snapshot;
+    if (model.id !== id || model.version !== version) return { data: {}, success: false };
     return {
       success: true,
       data: {
         id,
         version,
         json: model.json_ordered,
-        json_tg: model.json_tg,
+        json_tg: members ? { ...model.json_tg, submodels: members } : model.json_tg,
         stateCode: model.state_code,
         ruleVerification: model.rule_verification,
         bundleRevision: revision,
