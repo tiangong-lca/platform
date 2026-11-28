@@ -7,10 +7,6 @@ import { normalizeAllocation } from './allocation';
 import { FormProcess } from '@/services/processes/data';
 import { createProcess as createTidasProcess } from '@tiangong-lca/tidas-sdk/core';
 import {
-  CANONICAL_CONTENT_LANGUAGE,
-  normalizeSupportedContentLanguage,
-} from '../general/contentLanguageRegistry';
-import {
   normalizeOptionalTidasPercentage,
   normalizeOptionalTidasYear,
 } from '../general/tidasScalarStorage';
@@ -19,7 +15,6 @@ import {
   convertCopyrightToBoolean,
   convertToUTCISOString,
   formatDateTime,
-  getExactLangText,
   getLangJson,
   getLangList,
   getLangText,
@@ -29,8 +24,7 @@ import {
   toAmountNumber,
 } from '../general/util';
 import {
-  ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX,
-  deriveAnnualSupplyVolumeSuffix,
+  annualSupplyVolumeSuffix,
   normalizeAnnualSupplyVolumeMultiLang,
 } from './annualSupplyOrProductionVolume';
 import { normalizeExchangeLocationCode } from './exchangeLocation';
@@ -71,7 +65,7 @@ const hasReviewReportReference = (value: unknown): boolean => {
 export function genProcessJsonOrdered(
   id: string,
   data: any,
-  options: { preserveAnnualSupplyVolume?: boolean } = {},
+  options: { preserveAnnualSupplyVolume?: boolean; annualSupplyVolumeUnit?: string } = {},
 ) {
   let quantitativeReference = {};
   const exchangeList = jsonToList(data?.exchanges?.exchange);
@@ -91,27 +85,16 @@ export function genProcessJsonOrdered(
     : referenceToCommissioner
       ? serializeCommissionerReference(referenceToCommissioner)
       : undefined;
-  const normalizeAnnualSupplyOrProductionVolume = (value: unknown) =>
-    normalizeAnnualSupplyVolumeMultiLang(
-      value,
-      (item) => {
-        const language =
-          typeof item?.['@xml:lang'] === 'string' ? item['@xml:lang'] : CANONICAL_CONTENT_LANGUAGE;
-        const suffix = deriveAnnualSupplyVolumeSuffix({
-          exchangeDataSource: exchangeList,
-          getLangText: getExactLangText,
-          lang: language,
-        });
-
-        return (
-          suffix ||
-          (normalizeSupportedContentLanguage(language) === CANONICAL_CONTENT_LANGUAGE
-            ? ANNUAL_SUPPLY_VOLUME_DEFAULT_SUFFIX
-            : '')
-        );
-      },
-      { useDefaultSuffix: false },
-    );
+  const annualSupplyVolume =
+    data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+      ?.annualSupplyOrProductionVolume;
+  const serializedAnnualSupplyVolume = options.preserveAnnualSupplyVolume
+    ? annualSupplyVolume
+    : normalizeAnnualSupplyVolumeMultiLang(
+        annualSupplyVolume,
+        (item) => annualSupplyVolumeSuffix(options.annualSupplyVolumeUnit, item['@xml:lang']),
+        { useDefaultSuffix: false },
+      );
   const selectedReferenceIds = exchangeList
     .filter((item: any) => item?.quantitativeReference === true)
     .map((item: any) => item['@dataSetInternalID']);
@@ -457,15 +440,10 @@ export function genProcessJsonOrdered(
           percentageSupplyOrProductionCovered:
             data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
               ?.percentageSupplyOrProductionCovered ?? {},
-          annualSupplyOrProductionVolume: getLangJson(
-            options.preserveAnnualSupplyVolume
-              ? data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
-                  ?.annualSupplyOrProductionVolume
-              : normalizeAnnualSupplyOrProductionVolume(
-                  data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
-                    ?.annualSupplyOrProductionVolume,
-                ),
-          ),
+          annualSupplyOrProductionVolume:
+            Array.isArray(annualSupplyVolume) && annualSupplyVolume.length === 0
+              ? annualSupplyVolume
+              : getLangJson(serializedAnnualSupplyVolume),
           samplingProcedure: getLangJson(
             data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
               ?.samplingProcedure,
@@ -873,11 +851,15 @@ export function genProcessJsonOrdered(
 
 export function genProcessFromData(data: any): FormProcess {
   const exchange = data?.exchanges?.exchange ?? [];
-  const [referenceToCommissioner] = jsonToList(
+  const commissioner =
     data?.administrativeInformation?.['common:commissionerAndGoal']?.[
       'common:referenceToCommissioner'
-    ],
-  );
+    ];
+  const [referenceToCommissioner] = jsonToList(commissioner);
+  const originalAnnualVolume =
+    data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
+      ?.annualSupplyOrProductionVolume;
+
   let exchangeList = [];
   if (!Array.isArray(exchange)) {
     exchangeList = [exchange];
@@ -1167,10 +1149,8 @@ export function genProcessFromData(data: any): FormProcess {
           percentageSupplyOrProductionCovered:
             data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
               ?.percentageSupplyOrProductionCovered ?? {},
-          annualSupplyOrProductionVolume: getLangList(
-            data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
-              ?.annualSupplyOrProductionVolume,
-          ),
+          annualSupplyOrProductionVolume:
+            originalAnnualVolume === undefined ? undefined : getLangList(originalAnnualVolume),
           samplingProcedure: getLangList(
             data?.modellingAndValidation?.dataSourcesTreatmentAndRepresentativeness
               ?.samplingProcedure,
@@ -1277,17 +1257,20 @@ export function genProcessFromData(data: any): FormProcess {
       },
       administrativeInformation: {
         ['common:commissionerAndGoal']: {
-          'common:referenceToCommissioner': referenceToCommissioner
-            ? {
-                '@refObjectId': referenceToCommissioner?.['@refObjectId'],
-                '@type': referenceToCommissioner?.['@type'],
-                '@uri': referenceToCommissioner?.['@uri'],
-                '@version': referenceToCommissioner?.['@version'],
-                'common:shortDescription': getLangList(
-                  referenceToCommissioner?.['common:shortDescription'],
-                ),
-              }
-            : undefined,
+          'common:referenceToCommissioner':
+            Array.isArray(commissioner) && commissioner.length === 0
+              ? commissioner
+              : referenceToCommissioner
+                ? {
+                    '@refObjectId': referenceToCommissioner?.['@refObjectId'],
+                    '@type': referenceToCommissioner?.['@type'],
+                    '@uri': referenceToCommissioner?.['@uri'],
+                    '@version': referenceToCommissioner?.['@version'],
+                    'common:shortDescription': getLangList(
+                      referenceToCommissioner?.['common:shortDescription'],
+                    ),
+                  }
+                : undefined,
           'common:project': getLangList(
             data?.administrativeInformation?.['common:commissionerAndGoal']?.['common:project'],
           ),

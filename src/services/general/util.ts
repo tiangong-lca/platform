@@ -139,7 +139,18 @@ const removeEmptyObjectsInternal = (value: any, path: Array<string | number>): a
         return acc;
       }
 
-      if (!isRemovableEmptyValue(cleanedValue)) {
+      // Preserve explicitly empty required Process fields in both editor representations.
+      // A nonempty input cleaned to an empty array is still subject to validation.
+      const fieldPath = [...path, key].join('.');
+      const processPath = fieldPath.replace(/^processDataSet\./, '');
+      const preserveEmptyProcessArray =
+        Array.isArray(nestedValue) &&
+        nestedValue.length === 0 &&
+        (processPath ===
+          'modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.annualSupplyOrProductionVolume' ||
+          processPath ===
+            'administrativeInformation.common:commissionerAndGoal.common:referenceToCommissioner');
+      if (preserveEmptyProcessArray || !isRemovableEmptyValue(cleanedValue)) {
         acc[key] = cleanedValue;
       }
 
