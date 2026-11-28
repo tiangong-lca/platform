@@ -49,8 +49,8 @@ checkPaths:
   - .nvmrc
   - .husky/pre-push
   - .github/workflows/**
-lastReviewedAt: 2026-11-27
-lastReviewedCommit: ff6f10a86a18722533f2a879ee2918eb7326e8b9
+lastReviewedAt: 2026-11-28
+lastReviewedCommit: 61a9d691dd176f6f5483c3f86b41575666fe73ec
 lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
 related:
   - .docpact/config.yaml
