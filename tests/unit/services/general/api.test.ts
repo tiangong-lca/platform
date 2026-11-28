@@ -102,6 +102,30 @@ const createQueryBuilder = <T>(resolvedValue: T) => {
   return builder;
 };
 
+const createPagedQueryBuilder = (
+  resolvePage: (input: { ids: string[]; from: number; to: number }) => any,
+) => {
+  let ids: string[] = [];
+  let from = 0;
+  let to = 0;
+  const builder: any = {
+    select: jest.fn().mockReturnThis(),
+    in: jest.fn((_column: string, nextIds: string[]) => {
+      ids = nextIds;
+      return builder;
+    }),
+    order: jest.fn().mockReturnThis(),
+    range: jest.fn((nextFrom: number, nextTo: number) => {
+      from = nextFrom;
+      to = nextTo;
+      return builder;
+    }),
+    then: (resolve: any, reject?: any) =>
+      Promise.resolve(resolvePage({ ids, from, to })).then(resolve, reject),
+  };
+  return builder;
+};
+
 beforeEach(() => {
   mockFrom.mockReset();
   mockRpc.mockReset();
@@ -423,7 +447,14 @@ describe('getRefDataByIds', () => {
     expect(result).toEqual({ data: null, success: false });
   });
 
-  it('should fetch state codes for provided ids', async () => {
+  it('should return failure when all ids are empty', async () => {
+    const result = await generalApi.getRefDataByIds(['', ''], 'flows');
+
+    expect(result).toEqual({ data: null, success: false });
+    expect(mockFrom).not.toHaveBeenCalled();
+  });
+
+  it('should deduplicate ids and fetch state codes in deterministic order', async () => {
     const payload = {
       data: [
         { id: sampleId, version: sampleVersion, state_code: 100 },
@@ -434,7 +465,7 @@ describe('getRefDataByIds', () => {
     mockFrom.mockReturnValueOnce(builder);
 
     const result = await generalApi.getRefDataByIds(
-      [sampleId, '87654321-1234-1234-1234-123456789012'],
+      [sampleId, '', sampleId, '87654321-1234-1234-1234-123456789012'],
       'flows',
     );
 
@@ -443,7 +474,98 @@ describe('getRefDataByIds', () => {
       sampleId,
       '87654321-1234-1234-1234-123456789012',
     ]);
+    expect(builder.order).toHaveBeenNthCalledWith(1, 'id', { ascending: true });
+    expect(builder.order).toHaveBeenNthCalledWith(2, 'version', { ascending: true });
+    expect(builder.range).toHaveBeenCalledWith(0, 999);
     expect(result).toEqual({ data: payload.data, success: true });
+  });
+
+  it('treats a successful null page as an empty result', async () => {
+    const builder = createPagedQueryBuilder(() => ({ data: null, error: null }));
+    mockFrom.mockReturnValue(builder);
+
+    await expect(generalApi.getRefDataByIds([sampleId], 'flows')).resolves.toEqual({
+      data: [],
+      success: true,
+    });
+    expect(builder.range).toHaveBeenCalledWith(0, 999);
+  });
+
+  it('splits more than 100 unique ids into bounded batches', async () => {
+    const ids = Array.from({ length: 205 }, (_, index) => `id-${index}`);
+    const builder = createPagedQueryBuilder(({ ids: batchIds }) => ({
+      data: [{ id: batchIds[0], version: '01', state_code: 100 }],
+      error: null,
+    }));
+    mockFrom.mockImplementation(() => builder);
+
+    const result = await generalApi.getRefDataByIds(ids, 'flows');
+
+    expect(builder.in).toHaveBeenCalledTimes(3);
+    expect(builder.in.mock.calls.map((call: any[]) => call[1].length)).toEqual([100, 100, 5]);
+    expect(result).toEqual({
+      data: [
+        { id: 'id-0', version: '01', state_code: 100 },
+        { id: 'id-100', version: '01', state_code: 100 },
+        { id: 'id-200', version: '01', state_code: 100 },
+      ],
+      success: true,
+    });
+  });
+
+  it('paginates a full 1000-row result page before finishing the batch', async () => {
+    const firstPage = Array.from({ length: 1000 }, (_, index) => ({
+      id: sampleId,
+      version: `${index}`,
+      state_code: 100,
+    }));
+    const finalRow = { id: sampleId, version: 'final', state_code: 100 };
+    const builder = createPagedQueryBuilder(({ from }) => ({
+      data: from === 0 ? firstPage : [finalRow],
+      error: null,
+    }));
+    mockFrom.mockImplementation(() => builder);
+
+    const result = await generalApi.getRefDataByIds([sampleId], 'flows');
+
+    expect(builder.range).toHaveBeenNthCalledWith(1, 0, 999);
+    expect(builder.range).toHaveBeenNthCalledWith(2, 1000, 1999);
+    expect(result).toEqual({ data: [...firstPage, finalRow], success: true });
+  });
+
+  it('fails closed when a later result page errors', async () => {
+    const queryError = { message: 'later page failed' };
+    const builder = createPagedQueryBuilder(({ from }) => ({
+      data:
+        from === 0
+          ? Array.from({ length: 1000 }, (_, index) => ({
+              id: sampleId,
+              version: `${index}`,
+              state_code: 100,
+            }))
+          : null,
+      error: from === 0 ? null : queryError,
+    }));
+    mockFrom.mockImplementation(() => builder);
+
+    const result = await generalApi.getRefDataByIds([sampleId], 'flows');
+
+    expect(result).toEqual({ data: null, success: false, error: queryError });
+  });
+
+  it('fails closed when a later id batch errors', async () => {
+    const ids = Array.from({ length: 101 }, (_, index) => `id-${index}`);
+    const queryError = { message: 'later batch failed' };
+    const builder = createPagedQueryBuilder(({ ids: batchIds }) => ({
+      data: batchIds[0] === 'id-0' ? [{ id: 'id-0', version: '01', state_code: 100 }] : null,
+      error: batchIds[0] === 'id-0' ? null : queryError,
+    }));
+    mockFrom.mockImplementation(() => builder);
+
+    const result = await generalApi.getRefDataByIds(ids, 'flows');
+
+    expect(builder.in).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({ data: null, success: false, error: queryError });
   });
 });
 

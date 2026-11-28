@@ -1191,20 +1191,48 @@ export async function getRefData(
   });
 }
 
+const REF_DATA_ID_BATCH_SIZE = 100;
+const REF_DATA_PAGE_SIZE = 1000;
+
 export async function getRefDataByIds(ids: string[], table: string) {
-  if (!table || ids.length === 0) {
-    return Promise.resolve({
+  const uniqueIds = Array.from(new Set(ids.filter((id) => Boolean(id))));
+  if (!table || uniqueIds.length === 0) {
+    return {
       data: null,
       success: false,
-    });
+    };
   }
 
-  const result = await publicEntity(table).select('state_code,id,version').in('id', ids);
+  const allRows: any[] = [];
+  for (let batchStart = 0; batchStart < uniqueIds.length; batchStart += REF_DATA_ID_BATCH_SIZE) {
+    const batchIds = uniqueIds.slice(batchStart, batchStart + REF_DATA_ID_BATCH_SIZE);
+    let pageStart = 0;
 
-  return Promise.resolve({
-    data: result.data,
+    while (true) {
+      const result = await publicEntity(table)
+        .select('state_code,id,version')
+        .in('id', batchIds)
+        .order('id', { ascending: true })
+        .order('version', { ascending: true })
+        .range(pageStart, pageStart + REF_DATA_PAGE_SIZE - 1);
+
+      if (result.error) {
+        return { data: null, success: false, error: result.error };
+      }
+
+      const pageRows = result.data ?? [];
+      allRows.push(...pageRows);
+      if (pageRows.length < REF_DATA_PAGE_SIZE) {
+        break;
+      }
+      pageStart += REF_DATA_PAGE_SIZE;
+    }
+  }
+
+  return {
+    data: allRows,
     success: true,
-  });
+  };
 }
 
 export async function updateStateCodeApi(

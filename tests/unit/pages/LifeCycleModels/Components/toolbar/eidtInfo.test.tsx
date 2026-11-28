@@ -628,6 +628,28 @@ describe('ToolbarEditInfo', () => {
     expect(result?.checkResult).toBe(true);
   });
 
+  it('fails closed when reference version metadata cannot be queried', async () => {
+    const ref = React.createRef<any>();
+    mockGetLifeCycleModelDetail.mockResolvedValue(createModelDetail());
+    mockGetProcessDetail.mockResolvedValue({});
+    mockCheckReferences.mockResolvedValue({ findProblemNodes: () => [] });
+    mockCheckVersions.mockResolvedValueOnce({
+      success: false,
+      error: { message: 'reference version query failed' },
+    });
+    render(<ToolbarEditInfo ref={ref} {...baseProps} />);
+
+    const nodes = [{ data: { quantitativeReference: '1', id: 'proc-1', version: '1.0' } }];
+    let result;
+    await act(async () => {
+      result = await ref.current?.handleCheckData('checkData', nodes, []);
+    });
+
+    expect(mockAntdMessage.error).toHaveBeenCalledWith('Data check failed, please check the data!');
+    expect(result).toEqual({ checkResult: false, problemNodes: [], unReview: [] });
+    expect(mockBuildValidationIssues).not.toHaveBeenCalled();
+  });
+
   it('validates that one node must be selected as the quantitative reference', async () => {
     const ref = React.createRef<any>();
     render(<ToolbarEditInfo ref={ref} {...baseProps} />);

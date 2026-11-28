@@ -891,7 +891,19 @@ const ProcessEdit: FC<Props> = ({
       },
     );
     allRefs.add(`${processDetail.id}:${processDetail.version}:process data set`);
-    await checkVersions(allRefs, path);
+    const versionCheck = await checkVersions(allRefs, path);
+    if (versionCheck?.success === false) {
+      if (!silent) {
+        message.error(
+          intl.formatMessage({
+            id: 'pages.button.check.error',
+            defaultMessage: 'Data check failed, please check the data!',
+          }),
+        );
+      }
+      setSpinning(false);
+      return { checkResult: false, unReview };
+    }
     const problemNodes = (path?.findProblemNodes(from) ?? []) as RefProblemNode[];
     const { getRefTabNames, tabNames: referenceValidationTabNames } =
       collectValidationIssueRefTabNames({
@@ -970,13 +982,19 @@ const ProcessEdit: FC<Props> = ({
   const runCheckData = async (options?: { silent?: boolean }) => {
     const silent = options?.silent ?? false;
     setSpinning(true);
-    const updateResult = await handleSubmit(false, { silent, langIntent: 'validation' });
-    const validationTarget = await resolveProcessCheckTarget(updateResult);
-
-    if (!validationTarget) {
+    const currentData = cloneProcessData(getCurrentProcessData());
+    if (!currentData) {
       setSpinning(false);
       return { checkResult: false, unReview: [] as refDataType[] };
     }
+
+    const validationTarget = {
+      ...currentData,
+      id,
+      version,
+      ruleVerification: true,
+      stateCode: currentData.stateCode ?? fromData?.stateCode ?? initData?.stateCode ?? 0,
+    } satisfies ProcessCheckTarget;
 
     return handleCheckData('checkData', validationTarget, { silent });
   };

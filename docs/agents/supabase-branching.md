@@ -24,9 +24,9 @@ checkPaths:
   - playwright.dataset-lists.config.ts
   - tests/e2e/i18n/**
   - tests/e2e/dataset-lists/**
-lastReviewedAt: 2026-11-26
-lastReviewedCommit: 3d4d7450f135fc8f429ad84d6983182afe7c241e
-lastReviewedNote: 'Platform #1576 reviewed exchange editing, effective LCIA amounts, coverage evidence and the installed SDK contract.'
+lastReviewedAt: 2026-11-27
+lastReviewedCommit: ff6f10a86a18722533f2a879ee2918eb7326e8b9
+lastReviewedNote: 'Platform #1587 reviewed read-only Process Data Check (#1528), schema-defined common:other roundtrip (#1326), and bounded fail-closed reference metadata queries (#1327).'
 ---
 
 # Supabase Environment And Database Workflow

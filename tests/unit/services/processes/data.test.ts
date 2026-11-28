@@ -10,7 +10,11 @@ import type {
   ProcessReviewScopeItem,
   ProcessTable,
 } from '@/services/processes/data';
-import { resolveProcessModelVersion, toProcessModelVersionField } from '@/services/processes/data';
+import {
+  getFirstProcessExchangeAllocation,
+  resolveProcessModelVersion,
+  toProcessModelVersionField,
+} from '@/services/processes/data';
 
 describe('processes data shapes', () => {
   it('supports process table rows and exchange table rows used by process pages', () => {
@@ -53,10 +57,18 @@ describe('processes data shapes', () => {
     expect(resolveProcessModelVersion(process)).toBe('01.01.021');
     expect(resolveProcessModelVersion({ ...process, modelVersion: null })).toBe('01.00.000');
     expect(resolveProcessModelVersion({ ...process, modelVersion: '   ' })).toBe('01.00.000');
+    expect(resolveProcessModelVersion({ version: '', modelVersion: undefined })).toBe('');
     expect(toProcessModelVersionField(undefined)).toEqual({});
     expect(toProcessModelVersionField(null)).toEqual({ modelVersion: null });
     expect(toProcessModelVersionField('01.01.021')).toEqual({ modelVersion: '01.01.021' });
     expect(exchange.referenceToFlowDataSetId).toBe('flow-1');
+    const allocation = {
+      '@internalReferenceToCoProduct': '1',
+      '@allocatedFraction': '0.5',
+    };
+    expect(getFirstProcessExchangeAllocation(allocation)).toBe(allocation);
+    expect(getFirstProcessExchangeAllocation([allocation])).toBe(allocation);
+    expect(getFirstProcessExchangeAllocation()).toBeUndefined();
   });
 
   it('supports process detail responses with review logs', () => {
