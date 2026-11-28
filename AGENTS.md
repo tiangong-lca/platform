@@ -50,7 +50,7 @@ checkPaths:
   - .husky/pre-push
   - .github/workflows/**
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 858827c5ba7aec3f85a4d24d08815418210007ff
+lastReviewedCommit: a1870253c3ffbde10b7edb2887d153e687fef948
 lastReviewedNote: 'Reviewed #432 Process editor and exact reference unit lookup against frontend ownership and branch delivery.'
 related:
   - .docpact/config.yaml

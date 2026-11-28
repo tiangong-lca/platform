@@ -47,7 +47,7 @@ checkPaths:
   - .github/workflows/build.yml
   - .nvmrc
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: 858827c5ba7aec3f85a4d24d08815418210007ff
+lastReviewedCommit: a1870253c3ffbde10b7edb2887d153e687fef948
 lastReviewedNote: 'Reviewed #432 against the pinned local frontend setup and scoped Process proof loop.'
 ---
 
